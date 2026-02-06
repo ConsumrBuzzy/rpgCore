@@ -47,6 +47,11 @@ class ArbiterLogic(BaseModel):
     reasoning: str = Field(
         description="Brief tactical reason for the outcome (1 sentence)"
     )
+    
+    narrative_seed: str = Field(
+        default="",
+        description="Contextual 'vibe' for the Chronicler (e.g., 'The guard is helpful but tired', 'The bartender eyes you suspiciously')"
+    )
 
 
 class ArbiterEngine:
