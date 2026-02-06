@@ -32,7 +32,7 @@ class ChroniclerEngine:
     
     def __init__(
         self,
-        model_name: str = 'ollama:llama3.2',
+        model_name: str = 'ollama:llama3.2:latest',
         tone: str = "humorous"
     ):
         """
