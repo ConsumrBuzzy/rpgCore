@@ -243,6 +243,8 @@ class GameREPL:
                     "[bold red]You have died. Game Over.[/bold red]",
                     border_style="red"
                 )
+            )
+            return False
         return True
     
     def display_welcome(self):
