@@ -24,29 +24,41 @@ class IntentMatch:
 
 class IntentLibrary:
     """
-    Extensible repository of game intents.
+    Extensible repository of game intents with exemplar-based matching.
     
     Each intent has:
-    - intent_id: Unique identifier (e.g., 'distract', 'attack')
-    - description: Natural language description used for semantic matching
+    - intent_id: Unique identifier (e.g., 'distract', 'force')
+    - exemplars: List of concrete action examples for semantic matching
+    
+    Design: Multiple exemplars increase semantic hit-rate for small models
+    by providing diverse action patterns within the same intent category.
     """
     
     def __init__(self):
-        self._intents: Dict[str, str] = {}
-        self._embeddings: Optional[np.ndarray] = None
+        self._intents: Dict[str, list[str]] = {}
+        self._embeddings: Optional[Dict[str, np.ndarray]] = None
         self._embeddings_stale = True
     
-    def add_intent(self, intent_id: str, description: str) -> None:
-        """Add or update an intent definition."""
-        self._intents[intent_id] = description
+    def add_intent(self, intent_id: str, exemplars: list[str]) -> None:
+        """
+        Add or update an intent with action exemplars.
+        
+        Args:
+            intent_id: Unique intent identifier
+            exemplars: 3-5 concrete action examples (e.g., "Throw a beer", "Kick a table")
+        """
+        if not exemplars:
+            raise ValueError(f"Intent '{intent_id}' must have at least one exemplar")
+        
+        self._intents[intent_id] = exemplars
         self._embeddings_stale = True
-        logger.debug(f"Added intent: {intent_id}")
+        logger.debug(f"Added intent: {intent_id} with {len(exemplars)} exemplars")
     
-    def get_intents(self) -> Dict[str, str]:
-        """Return all registered intents."""
+    def get_intents(self) -> Dict[str, list[str]]:
+        """Return all registered intents with their exemplars."""
         return self._intents.copy()
     
-    def mark_embeddings_computed(self, embeddings: np.ndarray) -> None:
+    def mark_embeddings_computed(self, embeddings: Dict[str, np.ndarray]) -> None:
         """Cache precomputed embeddings (called by SemanticResolver)."""
         self._embeddings = embeddings
         self._embeddings_stale = False
@@ -85,28 +97,50 @@ class SemanticResolver:
         self._update_intent_embeddings()
     
     def _update_intent_embeddings(self) -> None:
-        """Compute and cache embeddings for all intents."""
+        """
+        Compute and cache embeddings for all intent exemplars.
+        
+        For each intent, we compute embeddings for ALL exemplars, allowing
+        max-similarity matching during resolution.
+        """
         intents = self.intent_library.get_intents()
         
         if not intents:
             logger.warning("Intent library is empty!")
             return
         
-        descriptions = list(intents.values())
-        embeddings = self.model.encode(descriptions, convert_to_numpy=True)
+        # Compute embeddings per-intent (each intent has multiple exemplars)
+        embeddings_dict = {}
+        total_exemplars = 0
         
-        self.intent_library.mark_embeddings_computed(embeddings)
-        logger.info(f"Precomputed embeddings for {len(intents)} intents")
+        for intent_id, exemplars in intents.items():
+            # Encode all exemplars for this intent
+            exemplar_embeddings = self.model.encode(exemplars, convert_to_numpy=True)
+            embeddings_dict[intent_id] = exemplar_embeddings
+            total_exemplars += len(exemplars)
+        
+        self.intent_library.mark_embeddings_computed(embeddings_dict)
+        logger.info(
+            f"Precomputed embeddings for {len(intents)} intents "
+            f"({total_exemplars} total exemplars)"
+        )
     
     def resolve_intent(self, player_input: str) -> Optional[IntentMatch]:
         """
-        Find the best matching intent for player input.
+        Find the best matching intent using max-similarity across exemplars.
+        
+        Algorithm:
+        1. Encode player input
+        2. For each intent, compute similarity against ALL exemplars
+        3. Take the MAX similarity score for that intent
+        4. Select the intent with the highest max score
+        5. Fallback to 'improvise' if confidence is too low
         
         Args:
             player_input: Natural language action (e.g., "I kick the table")
         
         Returns:
-            IntentMatch if confidence exceeds threshold, None otherwise
+            IntentMatch if confidence exceeds threshold, otherwise None
         """
         if not player_input.strip():
             logger.warning("Empty input received")
@@ -122,22 +156,35 @@ class SemanticResolver:
         if self.intent_library._embeddings_stale:
             self._update_intent_embeddings()
         
-        # Encode player input
+        # Encode player input once
         input_embedding = self.model.encode(player_input, convert_to_numpy=True)
         
-        # Compute cosine similarity
-        scores = util.cos_sim(input_embedding, self.intent_library._embeddings)[0]
+        # Find best intent via max-similarity matching
+        best_intent_id = None
+        best_score = 0.0
+        best_exemplar = ""
         
-        # Find best match
-        best_idx = int(np.argmax(scores))
-        best_score = float(scores[best_idx])
+        for intent_id, exemplar_embeddings in self.intent_library._embeddings.items():
+            # Compute similarity against all exemplars for this intent
+            scores = util.cos_sim(input_embedding, exemplar_embeddings)[0]
+            
+            # Take the MAX score (closest exemplar match)
+            max_score = float(np.max(scores))
+            max_idx = int(np.argmax(scores))
+            
+            # Track the best intent across all intents
+            if max_score > best_score:
+                best_score = max_score
+                best_intent_id = intent_id
+                best_exemplar = intents[intent_id][max_idx]
         
-        intent_ids = list(intents.keys())
-        best_intent_id = intent_ids[best_idx]
+        if best_intent_id is None:
+            logger.error("No intent matched (should not happen)")
+            return None
         
         logger.info(
             f"Intent resolution: '{player_input}' → {best_intent_id} "
-            f"(confidence: {best_score:.3f})"
+            f"(confidence: {best_score:.3f}, matched exemplar: '{best_exemplar}')"
         )
         
         # Reject low-confidence matches
@@ -150,7 +197,7 @@ class SemanticResolver:
         
         return IntentMatch(
             intent_id=best_intent_id,
-            description=intents[best_intent_id],
+            description=best_exemplar,  # Return the matched exemplar
             confidence=best_score
         )
     
