@@ -108,7 +108,7 @@ class VoyagerAgent:
                 base_url="http://127.0.0.1:11434/v1",
                 api_key="ollama"  # Required by client, ignored by Ollama
             )
-            model = OpenAIModel(model_name=model_name, openai_client=client)
+            model = OpenAIModel(model_name=model_name, http_client=client)
         else:
             # Fallback: try direct model string
             model = f"ollama:{model_name}"
