@@ -17,9 +17,9 @@ def main():
     console.print("[bold cyan]Semantic Intent Resolver - Standalone Demo[/bold cyan]\n")
     console.print("Loading embedding model (this may take a moment)...\n")
     
-    # Initialize resolver
+    # Initialize resolver with updated threshold
     library = create_default_intent_library()
-    resolver = SemanticResolver(library, confidence_threshold=0.4)
+    resolver = SemanticResolver(library, confidence_threshold=0.42)
     
     console.print("[green]✓ Model loaded![/green]\n")
     

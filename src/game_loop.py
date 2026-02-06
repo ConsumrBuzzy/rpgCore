@@ -55,7 +55,7 @@ class GameREPL:
         # Initialize semantic engine
         self.console.print("[cyan]Loading semantic engine...[/cyan]")
         intent_library = create_default_intent_library()
-        self.resolver = SemanticResolver(intent_library, confidence_threshold=0.5)
+        self.resolver = SemanticResolver(intent_library, confidence_threshold=0.42)
         
         # Initialize narrative engine
         self.console.print("[cyan]Connecting to Ollama...[/cyan]")
