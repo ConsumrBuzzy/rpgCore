@@ -254,3 +254,9 @@
 23:34:31 | DEBUG | Added intent: defend with 5 exemplars
 23:34:31 | DEBUG | Added intent: improvise with 5 exemplars
 23:34:31 | INFO | Loading embedding model: all-MiniLM-L6-v2
+23:34:41 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
+23:34:41 | INFO | Initializing Arbiter with ollama:llama3.2:1b
+23:34:42 | INFO | Initializing Chronicler with ollama:llama3.2:latest
+23:34:42 | INFO | Voyager initialized with 'curious' personality
+23:34:42 | INFO | Game initialized with Council of Three architecture
+23:34:42 | DEBUG | Voyager deciding action...
