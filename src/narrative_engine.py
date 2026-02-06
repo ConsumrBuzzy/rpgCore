@@ -57,7 +57,7 @@ class NarrativeEngine:
     
     def __init__(
         self,
-        model_name: str = 'ollama:llama3.2',
+        model_name: str = 'ollama:llama3.2:3b',
         tone: Literal["humorous", "serious", "gritty"] = "humorous"
     ):
         """
