@@ -74,6 +74,18 @@ class GameREPL:
         from loot_system import LootSystem
         self.loot = LootSystem()
         
+        # Initialize Voyager (auto-play agent) if in auto mode
+        self.auto_mode = auto_mode
+        self.voyager = None
+        if auto_mode:
+            from voyager_sync import SyncVoyagerAgent
+            personality = "curious"  # Can be overridden via CLI arg
+            self.console.print(f"[magenta]Loading Voyager (auto-play) with '{personality}' personality...[/magenta]")
+            self.voyager = SyncVoyagerAgent(personality=personality)
+        
+        # Turn history for stutter check (last 5 actions)
+        self.turn_history: list[str] = []
+        
         logger.info("Game initialized with Council of Three architecture")
     
     def display_context(self) -> None:
