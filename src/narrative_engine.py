@@ -80,7 +80,7 @@ class NarrativeEngine:
         
         self.agent = Agent(
             model_name,
-            result_type=ActionOutcome,
+            output_type=ActionOutcome,
             system_prompt=system_prompt
         )
     
