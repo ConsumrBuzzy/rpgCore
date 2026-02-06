@@ -275,3 +275,18 @@
 23:37:13 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
 23:37:13 | INFO | Initializing Arbiter with ollama:llama3.2:1b
 23:37:13 | INFO | Initializing Chronicler with ollama:llama3.2:latest
+23:37:49 | INFO | Game loaded from savegame.json
+23:37:49 | DEBUG | Added intent: distract with 5 exemplars
+23:37:49 | DEBUG | Added intent: force with 5 exemplars
+23:37:49 | DEBUG | Added intent: finesse with 5 exemplars
+23:37:49 | DEBUG | Added intent: charm with 5 exemplars
+23:37:49 | DEBUG | Added intent: intimidate with 5 exemplars
+23:37:49 | DEBUG | Added intent: deceive with 5 exemplars
+23:37:49 | DEBUG | Added intent: investigate with 5 exemplars
+23:37:49 | DEBUG | Added intent: use_item with 5 exemplars
+23:37:49 | DEBUG | Added intent: defend with 5 exemplars
+23:37:49 | DEBUG | Added intent: improvise with 5 exemplars
+23:37:49 | INFO | Loading embedding model: all-MiniLM-L6-v2
+23:37:57 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
+23:37:57 | INFO | Initializing Arbiter with ollama:llama3.2:1b
+23:37:58 | INFO | Initializing Chronicler with ollama:llama3.2:latest
