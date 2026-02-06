@@ -241,13 +241,9 @@ class GameREPL:
                     "[bold red]You have died. Game Over.[/bold red]",
                     border_style="red"
                 )
-            )
-            return False
-        
         return True
     
-    def run(self) -> None:
-        """Start the game loop."""
+    def display_welcome(self):
         self.console.print(
             Panel(
                 "[bold cyan]Welcome to the Semantic RPG![/bold cyan]\n\n"
