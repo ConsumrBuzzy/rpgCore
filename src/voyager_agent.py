@@ -14,7 +14,6 @@ Design:
 import os
 from pydantic import BaseModel
 from pydantic_ai import Agent
-from pydantic_ai.models.ollama import OllamaModel  # Native Ollama support
 from loguru import logger
 
 
