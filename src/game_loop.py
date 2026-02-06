@@ -47,6 +47,7 @@ class GameREPL:
         """
         self.console = Console()
         self.save_path = save_path or Path("savegame.json")
+        self.auto_mode = auto_mode
         
         # Initialize game state
         if state:
