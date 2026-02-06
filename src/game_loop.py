@@ -35,7 +35,8 @@ class GameREPL:
     def __init__(
         self,
         state: GameState | None = None,
-        save_path: Path | None = None
+        save_path: Path | None = None,
+        auto_mode: bool = False
     ):
         """
         Initialize the game REPL.
