@@ -12,37 +12,72 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
 
-class ActionOutcome(BaseModel):
+# ============================================================
+# COUNCIL OF THREE: Specialized Pydantic Contracts
+# ============================================================
+
+class ArbiterLogic(BaseModel):
     """
-    Structured result of an action resolution.
+    The Logic Gate: Pure deterministic state changes.
     
-    This schema CONSTRAINS the LLM to produce valid state changes.
+    This agent focuses ONLY on math and game mechanics.
+    No narrative flavor - just the numbers.
     """
-    
-    narrative: str = Field(
-        description="DM-style narration of what happened (2-3 sentences max)"
+    success: bool = Field(
+        description="Did the action succeed based on intent and context?"
     )
     
-    hp_change: int = Field(
+    hp_delta: int = Field(
         default=0,
         ge=-100,
         le=100,
-        description="Change to player HP (negative = damage, positive = healing)"
+        description="HP change (negative = damage, positive = healing)"
     )
     
-    npc_state: Literal["neutral", "hostile", "distracted", "charmed", "dead"] = Field(
-        default="neutral",
-        description="New state of the primary NPC affected by this action"
-    )
-    
-    success: bool = Field(
-        description="Did the player's intended action succeed?"
-    )
-    
-    gold_change: int = Field(
+    gold_delta: int = Field(
         default=0,
-        description="Gold gained or lost (negative = spent/lost)"
+        ge=-1000,
+        le=1000,
+        description="Gold change (negative = spent/lost, positive = gained)"
     )
+    
+    target_npc_id: str | None = Field(
+        default=None,
+        description="ID of NPC affected by this action (if any)"
+    )
+    
+    new_npc_state: Literal["neutral", "hostile", "distracted", "charmed", "dead"] = Field(
+        default="neutral",
+        description="New state of the target NPC"
+    )
+    
+    reasoning: str = Field(
+        description="Brief tactical reason for the outcome (1 sentence)"
+    )
+
+
+class ChroniclerProse(BaseModel):
+    """
+    The Narrative Gate: Pure storytelling.
+    
+    This agent focuses ONLY on D&D-style narration.
+    No mechanics - just the vibe.
+    """
+    narrative: str = Field(
+        description="DM-style narration of what happened (2-3 sentences, vivid and flavorful)"
+    )
+
+
+class ActionOutcome(BaseModel):
+    """
+    LEGACY: Combined outcome for backward compatibility.
+    Will be deprecated in favor of Arbiter + Chronicler pipeline.
+    """
+    narrative: str
+    hp_change: int = 0
+    npc_state: Literal["neutral", "hostile", "distracted", "charmed", "dead"] = "neutral"
+    success: bool
+    gold_change: int = 0
 
 
 class NarrativeEngine:
