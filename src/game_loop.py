@@ -52,8 +52,11 @@ class GameREPL:
             self.console.print(f"[green]Loading saved game from {self.save_path}[/green]")
             self.state = GameState.load_from_file(self.save_path)
         else:
-            self.console.print("[yellow]Starting new game...[/yellow]")
-            self.state = create_tavern_scenario()
+            self.console.print("[yellow]Starting new campaign...[/yellow]")
+            # Use multi-location scenario with Social Graph
+            from scenarios import create_multi_location_scenario
+            self.state = create_multi_location_scenario()
+            self.console.print("[cyan]Loaded: Rusty Flagon (Tavern) + Emerald City Plaza[/cyan]")
         
         # Initialize semantic engine
         self.console.print("[cyan]Loading semantic engine...[/cyan]")
