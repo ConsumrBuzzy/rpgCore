@@ -201,65 +201,161 @@ class SemanticResolver:
             confidence=best_score
         )
     
-    def add_intent(self, intent_id: str, description: str) -> None:
+    def add_intent(self, intent_id: str, exemplars: list[str]) -> None:
         """Convenience method to add intent and invalidate cache."""
-        self.intent_library.add_intent(intent_id, description)
+        self.intent_library.add_intent(intent_id, exemplars)
 
 
 def create_default_intent_library() -> IntentLibrary:
     """
-    Create a library with common RPG intents.
+    Create an intent library with action-focused exemplars.
     
-    These descriptions are optimized for semantic matching, not player display.
+    Design Philosophy:
+    - 3-5 exemplars per intent (more = semantic bleed)
+    - Use concrete action verbs (throw, kick, shout)
+    - Cover diverse player phrasings
+    - Focus on 4 core D&D pillars: Distract, Force, Finesse, Charm
     """
     library = IntentLibrary()
     
-    # Stealth & Avoidance
-    library.add_intent(
-        "sneak",
-        "Move quietly without being noticed, hide, or avoid detection"
-    )
+    # ============================================================
+    # DISTRACT: Diversions and attention manipulation
+    # ============================================================
     library.add_intent(
         "distract",
-        "Create a diversion, redirect attention, or cause a distraction"
+        [
+            "Throw a beer mug at someone to create a distraction",
+            "Kick over a table to cause a commotion",
+            "Shout loudly to draw attention away",
+            "Knock over furniture to cause a scene",
+            "Start a fake argument to divert guards"
+        ]
     )
     
-    # Force & Combat
+    # ============================================================
+    # FORCE: Direct physical violence or destruction
+    # ============================================================
     library.add_intent(
-        "attack",
-        "Use a weapon or physical force to harm a target"
-    )
-    library.add_intent(
-        "defend",
-        "Block, parry, dodge, or protect yourself from harm"
-    )
-    library.add_intent(
-        "improvised_attack",
-        "Use an unconventional object or environment to cause damage"
+        "force",
+        [
+            "Attack with a sword or weapon",
+            "Punch or kick someone aggressively",
+            "Break down a door with force",
+            "Tackle someone to the ground",
+            "Smash through an obstacle"
+        ]
     )
     
-    # Social & Persuasion
+    # ============================================================
+    # FINESSE: Stealth, precision, and subtlety
+    # ============================================================
     library.add_intent(
-        "persuade",
-        "Convince, negotiate, charm, or talk your way through a situation"
+        "finesse",
+        [
+            "Sneak past quietly without being noticed",
+            "Pick a lock with lockpicks",
+            "Pickpocket someone's belongings",
+            "Move silently through the shadows",
+            "Slip by undetected"
+        ]
     )
+    
+    # ============================================================
+    # CHARM: Social manipulation and persuasion
+    # ============================================================
+    library.add_intent(
+        "charm",
+        [
+            "Convince someone with words and charisma",
+            "Negotiate a deal or trade",
+            "Flirt or use charm to persuade",
+            "Talk your way out of trouble",
+            "Offer a bribe to gain cooperation"
+        ]
+    )
+    
+    # ============================================================
+    # INTIMIDATE: Threats and coercion
+    # ============================================================
     library.add_intent(
         "intimidate",
-        "Threaten, coerce, or frighten someone into compliance"
-    )
-    library.add_intent(
-        "deceive",
-        "Lie, bluff, trick, or mislead someone"
+        [
+            "Threaten someone with violence",
+            "Scare someone into compliance",
+            "Loom menacingly to frighten",
+            "Show your weapon as a threat",
+            "Use harsh words to coerce"
+        ]
     )
     
-    # Utility
+    # ============================================================
+    # DECEIVE: Lies, tricks, and misdirection
+    # ============================================================
+    library.add_intent(
+        "deceive",
+        [
+            "Lie convincingly about your identity",
+            "Bluff your way through a situation",
+            "Create a false story to mislead",
+            "Trick someone with deception",
+            "Pretend to be someone else"
+        ]
+    )
+    
+    # ============================================================
+    # INVESTIGATE: Examination and information gathering
+    # ============================================================
     library.add_intent(
         "investigate",
-        "Examine, search, inspect, or study something closely"
+        [
+            "Search the room carefully for clues",
+            "Examine an object closely",
+            "Inspect the area for hidden items",
+            "Study a document or text",
+            "Look for secret passages"
+        ]
     )
+    
+    # ============================================================
+    # USE_ITEM: Inventory and equipment usage
+    # ============================================================
     library.add_intent(
         "use_item",
-        "Utilize equipment, tools, or objects from your inventory"
+        [
+            "Drink a health potion to heal",
+            "Use a tool from your inventory",
+            "Equip a weapon or armor",
+            "Consume a magical item",
+            "Apply a potion or salve"
+        ]
+    )
+    
+    # ============================================================
+    # DEFEND: Protective actions
+    # ============================================================
+    library.add_intent(
+        "defend",
+        [
+            "Block an incoming attack with a shield",
+            "Dodge or parry an enemy strike",
+            "Take cover behind an obstacle",
+            "Protect yourself from harm",
+            "Raise your guard defensively"
+        ]
+    )
+    
+    # ============================================================
+    # IMPROVISE: Fallback for creative/unusual actions
+    # ============================================================
+    library.add_intent(
+        "improvise",
+        [
+            "Do something creative and unexpected",
+            "Try an unusual or wild action",
+            "Attempt something unconventional",
+            "Use the environment in a creative way",
+            "Take an unorthodox approach"
+        ]
     )
     
     return library
