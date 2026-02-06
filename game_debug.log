@@ -11,3 +11,16 @@
 22:53:42 | INFO | Loading embedding model: all-MiniLM-L6-v2
 22:53:46 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
 22:53:46 | INFO | Initializing Pydantic AI agent with ollama:llama3.2
+22:54:20 | DEBUG | Added intent: distract with 5 exemplars
+22:54:20 | DEBUG | Added intent: force with 5 exemplars
+22:54:20 | DEBUG | Added intent: finesse with 5 exemplars
+22:54:20 | DEBUG | Added intent: charm with 5 exemplars
+22:54:20 | DEBUG | Added intent: intimidate with 5 exemplars
+22:54:20 | DEBUG | Added intent: deceive with 5 exemplars
+22:54:20 | DEBUG | Added intent: investigate with 5 exemplars
+22:54:20 | DEBUG | Added intent: use_item with 5 exemplars
+22:54:20 | DEBUG | Added intent: defend with 5 exemplars
+22:54:20 | DEBUG | Added intent: improvise with 5 exemplars
+22:54:20 | INFO | Loading embedding model: all-MiniLM-L6-v2
+22:54:25 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
+22:54:25 | INFO | Initializing Pydantic AI agent with ollama:llama3.2

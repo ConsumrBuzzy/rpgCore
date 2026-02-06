@@ -71,6 +71,11 @@ class NarrativeEngine:
         
         system_prompt = self._build_system_prompt(tone)
         
+        # Set Ollama base URL (default localhost:11434)
+        import os
+        if 'OLLAMA_BASE_URL' not in os.environ:
+            os.environ['OLLAMA_BASE_URL'] = 'http://localhost:11434'
+        
         logger.info(f"Initializing Pydantic AI agent with {model_name}")
         
         self.agent = Agent(
