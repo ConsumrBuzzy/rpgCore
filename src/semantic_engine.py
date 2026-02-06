@@ -217,80 +217,83 @@ def create_default_intent_library() -> IntentLibrary:
     Create an intent library with action-focused exemplars.
     
     Design Philosophy:
-    - 3-5 exemplars per intent (more = semantic bleed)
-    - Use concrete action verbs (throw, kick, shout)
-    - Cover diverse player phrasings
-    - Focus on 4 core D&D pillars: Distract, Force, Finesse, Charm
+    - 3-5 exemplars per intent to maximize semantic coverage
+    - Use DISTINCT action verbs to prevent semantic bleed
+    - Concrete scenarios with specific objects (beer, table, guard, door)
+    - Separate vector neighborhoods (stealth ≠ protection, noise ≠ violence)
     """
     library = IntentLibrary()
     
     # ============================================================
-    # DISTRACT: Diversions and attention manipulation
+    # DISTRACT: Environmental chaos and loud diversions
     # ============================================================
     library.add_intent(
         "distract",
         [
             "Throw a beer mug at someone to create a distraction",
-            "Kick over a table to cause a commotion",
-            "Shout loudly to draw attention away",
-            "Knock over furniture to cause a scene",
-            "Start a fake argument to divert guards"
+            "Kick over a table to cause a loud commotion",
+            "Smash a bottle on the floor to draw attention",
+            "Shout something to divert the guard's gaze",
+            "Start a fake argument with another patron"
         ]
     )
     
     # ============================================================
-    # FORCE: Direct physical violence or destruction
+    # FORCE: Direct violence and physical destruction
     # ============================================================
     library.add_intent(
         "force",
         [
-            "Attack with a sword or weapon",
-            "Punch or kick someone aggressively",
-            "Break down a door with force",
-            "Tackle someone to the ground",
-            "Smash through an obstacle"
+            "Attack the guard with a sword or weapon",
+            "Punch someone in the face aggressively",
+            "Kick down a door with brute strength",
+            "Tackle an enemy to knock them down",
+            "Smash through a barrier with force"
         ]
     )
     
     # ============================================================
-    # FINESSE: Stealth, precision, and subtlety
+    # FINESSE: Stealth, silence, and going unnoticed
+    # (CRITICAL: Separated from 'defend' - no safety/protection language)
     # ============================================================
     library.add_intent(
         "finesse",
         [
-            "Sneak past quietly without being noticed",
-            "Pick a lock with lockpicks",
-            "Pickpocket someone's belongings",
-            "Move silently through the shadows",
-            "Slip by undetected"
+            "Sneak past the guard without making a sound",
+            "Tiptoe through the shadows to avoid detection",
+            "Pick the lock on a door quietly",
+            "Pickpocket coins from someone's belt",
+            "Hide behind a barrel and slip by unnoticed"
         ]
     )
     
     # ============================================================
     # CHARM: Social manipulation and persuasion
+    # (Added question phrasing to catch "Can I convince...")
     # ============================================================
     library.add_intent(
         "charm",
         [
-            "Convince someone with words and charisma",
-            "Negotiate a deal or trade",
-            "Flirt or use charm to persuade",
-            "Talk your way out of trouble",
-            "Offer a bribe to gain cooperation"
+            "Convince the guard to let me pass with words",
+            "Can I persuade someone to help me out",
+            "Offer a bribe of gold coins to gain cooperation",
+            "Flatter the bartender to get free information",
+            "Negotiate a deal by talking smoothly"
         ]
     )
     
     # ============================================================
-    # INTIMIDATE: Threats and coercion
+    # INTIMIDATE: Threats, fear, and coercion
+    # (Added "intimidate" as explicit action verb)
     # ============================================================
     library.add_intent(
         "intimidate",
         [
-            "Threaten someone with violence",
-            "Scare someone into compliance",
-            "Loom menacingly to frighten",
-            "Show your weapon as a threat",
-            "Use harsh words to coerce"
+            "Intimidate the bartender with a menacing glare",
+            "Threaten someone by showing my weapon",
+            "Loom over them to scare them into compliance",
+            "Use harsh threatening words to coerce",
+            "Growl menacingly to make them afraid"
         ]
     )
     
@@ -300,25 +303,25 @@ def create_default_intent_library() -> IntentLibrary:
     library.add_intent(
         "deceive",
         [
-            "Lie convincingly about your identity",
-            "Bluff your way through a situation",
-            "Create a false story to mislead",
-            "Trick someone with deception",
-            "Pretend to be someone else"
+            "Lie about my identity to fool the guard",
+            "Bluff my way through the checkpoint",
+            "Invent a false story to mislead them",
+            "Pretend to be someone I'm not",
+            "Trick them with a clever deception"
         ]
     )
     
     # ============================================================
-    # INVESTIGATE: Examination and information gathering
+    # INVESTIGATE: Searching and examination
     # ============================================================
     library.add_intent(
         "investigate",
         [
-            "Search the room carefully for clues",
-            "Examine an object closely",
-            "Inspect the area for hidden items",
-            "Study a document or text",
-            "Look for secret passages"
+            "Search the room carefully for hidden clues",
+            "Examine the suspicious object closely",
+            "Inspect the area for secret passages",
+            "Study the ancient text for information",
+            "Look around for anything unusual"
         ]
     )
     
@@ -328,25 +331,27 @@ def create_default_intent_library() -> IntentLibrary:
     library.add_intent(
         "use_item",
         [
-            "Drink a health potion to heal",
-            "Use a tool from your inventory",
-            "Equip a weapon or armor",
-            "Consume a magical item",
-            "Apply a potion or salve"
+            "Drink a health potion to restore HP",
+            "Use the lockpick tool from my inventory",
+            "Equip my sword and shield for combat",
+            "Consume the magical elixir",
+            "Apply healing salve to my wounds"
         ]
     )
     
     # ============================================================
-    # DEFEND: Protective actions
+    # DEFEND: Active blocking and combat defense
+    # (CRITICAL: Changed from safety/protection to ACTIVE combat blocking)
+    # (Removed "Take cover" to separate from stealth)
     # ============================================================
     library.add_intent(
         "defend",
         [
-            "Block an incoming attack with a shield",
-            "Dodge or parry an enemy strike",
-            "Take cover behind an obstacle",
-            "Protect yourself from harm",
-            "Raise your guard defensively"
+            "Raise my shield to block the incoming attack",
+            "Parry the enemy's sword strike with my blade",
+            "Dodge to the side to avoid the blow",
+            "Brace myself and prepare to deflect damage",
+            "Counter-block the attack with my weapon"
         ]
     )
     
@@ -356,11 +361,11 @@ def create_default_intent_library() -> IntentLibrary:
     library.add_intent(
         "improvise",
         [
-            "Do something creative and unexpected",
-            "Try an unusual or wild action",
-            "Attempt something unconventional",
-            "Use the environment in a creative way",
-            "Take an unorthodox approach"
+            "Try something creative and unconventional",
+            "Attempt an unusual wild action",
+            "Do something unexpected with the environment",
+            "Use objects around me in a creative way",
+            "Take an unorthodox approach to the problem"
         ]
     )
     
