@@ -262,25 +262,32 @@ class FactEngine:
 class ChronosEngine:
     """Quest & Progression Engine - The Dungeon Master Pillar"""
     
-    def __init__(self):
+    def __init__(self, config: Optional[ChronosConfig] = None):
+        self.config = config or ChronosConfig(seed="DEFAULT")
         self.quest_stack = QuestStack()
         self.character_stats = CharacterStats()
         self.fact_engine = FactEngine()
         
         # Persona Engine reference for NPC interactions
         self.persona_engine: Optional[PersonaEngine] = None
+        self.world_engine = None  # Will be set via dependency injection
         
         # Task generation settings
         self.task_spawn_chance = 0.05  # 5% chance per chunk
-        self.max_active_tasks = 5
+        self.max_active_tasks = self.config.max_active_quests
         
         # Quest generation
         self.quest_templates = self._initialize_quest_templates()
+        self.biome_quest_rules = self._initialize_biome_quest_rules()
         
         # Timing
         self.last_update_time = time.time()
+        self.last_quest_generation = time.time()
         
-        logger.info("⏳ Chronos Engine initialized - Quest & Progression ready")
+        # Seed-based random generator
+        self.random = random.Random(self.config.seed)
+        
+        logger.info(f"⏳ Chronos Engine initialized with seed: {self.config.seed}")
     
     # === FACADE INTERFACE ===
     
