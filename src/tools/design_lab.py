@@ -154,6 +154,69 @@ except ImportError:
         def get_registry_stats(self) -> Dict:
             return {'objects': 0, 'materials': 0, 'animations': 0, 'entities': 0, 'sprites': 0}
 
+class AssetDesignController:
+    """Controller for asset design operations"""
+    
+    def __init__(self, 
+                 dithering_engine: DitheringEngine,
+                 template_generator: TemplateGenerator,
+                 exporter: AssetExporter,
+                 validator: AssetValidator):
+        self.dithering_engine = dithering_engine
+        self.template_generator = template_generator
+        self.exporter = exporter
+        self.validator = validator
+        
+        # Design state
+        self.material_designs: Dict[str, AssetTemplate] = {}
+        self.template_designs: Dict[str, AssetTemplate] = {}
+        
+        logger.info("AssetDesignController initialized")
+    
+    def create_material_design(self, 
+                              name: str, 
+                              material: str, 
+                              color: str, 
+                              pattern: str, 
+                              intensity: float) -> Optional[AssetTemplate]:
+        """Create a new material design"""
+        try:
+            color_obj = Color(hex_value=color)
+            pattern_obj = DitherPattern(name=pattern, intensity=intensity, pattern_type=pattern)
+            
+            template = AssetTemplate(
+                name=name,
+                description=f"{material} material with {pattern} pattern",
+                base_color=color_obj,
+                pattern=pattern_obj,
+                animation_frames=1,
+                frame_duration=0,
+                use_case=[material],
+                sonic_field_compatible=material in ['organic', 'water']
+            )
+            
+            self.material_designs[name] = template
+            logger.info(f"Created material design: {name}")
+            return template
+            
+        except Exception as e:
+            logger.error(f"Failed to create material design: {e}")
+            return None
+    
+    def export_designs(self, export_path: Path) -> bool:
+        """Export all designs to file"""
+        export_data = {
+            'material_designs': [design.dict() for design in self.material_designs.values()],
+            'template_designs': [design.dict() for design in self.template_designs.values()],
+            'export_metadata': {
+                'total_materials': len(self.material_designs),
+                'total_templates': len(self.template_designs),
+                'exported_at': str(Path.cwd())
+            }
+        }
+        
+        return self.exporter.export(export_data, export_path)
+
 class DGTDesignLab:
     """DGT Design Lab - Asset Design & Pre-Bake Tool"""
     
@@ -162,9 +225,21 @@ class DGTDesignLab:
         self.root.title("🎨 DGT Design Lab - Asset Design & Pre-Bake Tool")
         self.root.geometry("1200x800")
         
-        # Initialize components
-        self.dithering_engine = DitheringEngine()
-        self.template_generator = TemplateGenerator(self.dithering_engine)
+        # Initialize components with dependency injection
+        self.dithering_engine = ConcreteDitheringEngine()
+        self.template_generator = ConcreteTemplateGenerator(self.dithering_engine)
+        self.exporter = YAMLExporter()
+        self.validator = AssetValidator()
+        
+        # Initialize controller
+        self.controller = AssetDesignController(
+            self.dithering_engine,
+            self.template_generator,
+            self.exporter,
+            self.validator
+        )
+        
+        # Legacy components for compatibility
         self.fabricator = AssetFabricator()
         self.registry = AssetRegistry()
         
@@ -174,17 +249,13 @@ class DGTDesignLab:
         self.current_color = '#8B5A2B'
         self.current_template = 'organic_sway'
         
-        # Design data
-        self.material_designs = {}
-        self.template_designs = {}
-        
         # Build UI
         self._build_ui()
         
         # Load existing assets
         self._load_existing_assets()
         
-        # Start the tool
+        logger.info("DGT Design Lab initialized")
         self.root.mainloop()
     
     def _build_ui(self) -> None:
