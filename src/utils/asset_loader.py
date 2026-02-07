@@ -290,15 +290,22 @@ class AssetLoader:
         """Create a procedural object sprite"""
         sprite = Image.new((16, 16), (255, 255, 255, 0), "RGBA")
         draw = ImageDraw.Draw(sprite)
-
+        
         if shape == 'diamond':
             # Crystal diamond
             draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=color)
             draw.polygon([(8, 4), (12, 8), (8, 12), (4, 8)], fill=(255, 255, 255, 128))
         elif shape == 'rectangle':
-            # Chest/door rectangle
+            # Chest/door/box rectangle
             draw.rectangle([2, 2, 14, 14], fill=color)
             draw.rectangle([4, 4, 12, 12], fill=(255, 255, 255, 64))
+        elif shape == 'box':
+            # Wooden box - smaller rectangle with darker border
+            draw.rectangle([3, 3, 13, 13], fill=color)
+            draw.rectangle([2, 2, 14, 14], outline=(100, 50, 0, 255))  # Dark border
+            # Add detail lines for box effect
+            draw.line([3, 7, 13, 7], fill=(120, 60, 0, 255))  # Horizontal line
+            draw.line([8, 3, 8, 13], fill=(120, 60, 0, 255))  # Vertical line
         elif shape == 'tree':
             # Tree shape
             draw.rectangle([6, 8, 10, 14], fill=(139, 69, 19, 255))  # Trunk
@@ -312,9 +319,9 @@ class AssetLoader:
             draw.ellipse([6, 6, 10, 10], fill=color)
             draw.ellipse([7, 7, 9, 9], fill=(255, 255, 200, 255))
             draw.rectangle([7, 10, 9, 12], fill=(0, 128, 0, 255))  # Stem
-
+        
         return sprite
-
+    
     def _generate_tile_sprites(self) -> None:
         """Generate procedural tile sprites"""
         for tile_type in TileType:
