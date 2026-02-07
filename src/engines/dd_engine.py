@@ -281,6 +281,10 @@ class DD_Engine:
         old_position = self.state.player_position
         self.state.player_position = intent.target_position
         
+        # Record world delta if World Engine available
+        if self.world_engine:
+            self._record_world_delta(old_position, intent.target_position)
+        
         # Check for environment changes
         self._check_environment_transition(old_position, intent.target_position)
         
@@ -291,6 +295,28 @@ class DD_Engine:
         self._update_effects()
         
         logger.info(f"🚶 Movement executed: {old_position} → {intent.target_position}")
+    
+    def _record_world_delta(self, old_pos: Tuple[int, int], new_pos: Tuple[int, int]) -> None:
+        """Record world state change delta"""
+        # Record position change as delta
+        self.state.world_deltas[new_pos] = {
+            "delta_type": "position_change",
+            "timestamp": time.time(),
+            "entity": "player",
+            "from_position": old_pos,
+            "to_position": new_pos
+        }
+        
+        logger.debug(f"🔄 Recorded world delta at {new_pos}")
+    
+    def get_world_deltas(self) -> Dict[Tuple[int, int], Dict[str, Any]]:
+        """Get all world state deltas"""
+        return self.state.world_deltas.copy()
+    
+    def apply_world_delta(self, position: Tuple[int, int], delta_data: Dict[str, Any]) -> None:
+        """Apply a world delta to the game state"""
+        self.state.world_deltas[position] = delta_data
+        logger.debug(f"🔄 Applied world delta at {position}")
     
     def _execute_interaction(self, intent: InteractionIntent) -> None:
         """Execute validated interaction"""
@@ -405,11 +431,11 @@ class DDEngineFactory:
     """Factory for creating D&D Engine instances"""
     
     @staticmethod
-    def create_engine(assets_path: str = "assets/") -> DD_Engine:
+    def create_engine(assets_path: str = "assets/", world_engine: Optional['WorldEngine'] = None) -> DD_Engine:
         """Create a D&D Engine with default configuration"""
-        return DD_Engine(assets_path)
+        return DD_Engine(assets_path, world_engine)
     
     @staticmethod
-    def create_test_engine() -> DD_Engine:
+    def create_test_engine(world_engine: Optional['WorldEngine'] = None) -> DD_Engine:
         """Create a D&D Engine for testing"""
-        return DD_Engine("test_assets/")
+        return DD_Engine("test_assets/", world_engine)

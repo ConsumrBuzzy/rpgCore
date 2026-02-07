@@ -20,6 +20,7 @@ from loguru import logger
 
 # Import the three pillars
 from engines.dd_engine import DD_Engine, MovementIntent, InteractionIntent
+from engines.world_engine import WorldEngineFactory
 from actors.voyager import Voyager
 from graphics.ppu import GraphicsEngine
 
@@ -29,10 +30,14 @@ class MainHeartbeat:
     
     def __init__(self, assets_path: str = "assets/"):
         """Initialize the three pillars"""
-        logger.info("🏗️ Initializing Main Heartbeat - Three Pillar Architecture")
+        logger.info("🏗️ Initializing Main Heartbeat - Four Pillar Architecture")
+        
+        # Initialize The World (World Engine)
+        self.world_engine = WorldEngineFactory.create_tavern_world()
+        logger.info("🌍 The World (World Engine) - Deterministic data provider ready")
         
         # Initialize The Mind (D&D Engine)
-        self.dd_engine = DD_Engine(assets_path)
+        self.dd_engine = DD_Engine(assets_path, self.world_engine)
         logger.info("🧠 The Mind (D&D Engine) - Single Source of Truth ready")
         
         # Initialize The Actor (Voyager)
@@ -60,7 +65,7 @@ class MainHeartbeat:
         ]
         self.current_goal_index = 0
         
-        logger.info("💗 Main Heartbeat initialized - Three Pillars ready")
+        logger.info("💗 Main Heartbeat initialized - Four Pillars ready")
     
     def run(self) -> None:
         """Main game loop - Heartbeat between pillars"""
