@@ -25,6 +25,7 @@ from core.constants import (
     PERMUTATION_TABLE_SIZE, NOISE_SCALE, NOISE_OCTAVES, NOISE_PERSISTENCE, NOISE_LACUNARITY,
     INTEREST_POINT_DENSITY, INTEREST_POINT_MIN_DISTANCE, INTEREST_POINT_MAX_PER_CHUNK
 )
+from utils.asset_loader import AssetLoader, ObjectRegistry
 
 
 @dataclass
@@ -94,22 +95,29 @@ class WorldEngine:
     
     def __init__(self, seed: str = "SEED_ZERO"):
         self.seed = seed
-        self.permutation_table = PermutationTable.from_seed(seed)
         
         # World storage
         self.chunks: Dict[Tuple[int, int], Chunk] = {}
         self.interest_points: List[InterestPoint] = []
         
+        # Asset management
+        self.asset_loader = AssetLoader()
+        self.object_registry = ObjectRegistry(self.asset_loader)
+        
         # Generation cache
         self._noise_cache: Dict[Tuple[int, int], float] = {}
         self._biome_cache: Dict[Tuple[int, int], BiomeType] = {}
         
-        # Chronos Engine reference for task spawning
-        self.chronos_engine: Optional[ChronosEngine] = None
-        
-        # Background generation
-        self._generation_queue: Set[Tuple[int, int]] = set()
+        # Generation state
         self._generation_lock = asyncio.Lock()
+        self._generation_queue: List[Tuple[int, int]] = []
+        self._generation_set: set = set()  # Track queued chunks
+        
+        # Permutation table for deterministic noise
+        self.permutation_table = PermutationTable.from_seed(seed)
+        
+        # Chronos Engine reference (to be injected)
+        self.chronos_engine = None
         
         logger.info(f"🌍 World Engine initialized with seed: {seed}")
     
@@ -178,7 +186,9 @@ class WorldEngine:
         for dx in range(-1, 2):
             for dy in range(-1, 2):
                 chunk_pos = (center_chunk[0] + dx, center_chunk[1] + dy)
-                self._generation_queue.add(chunk_pos)
+                if chunk_pos not in self.chunks and chunk_pos not in self._generation_set:
+                    self._generation_queue.append(chunk_pos)
+                    self._generation_set.add(chunk_pos)
         
         # Process generation queue
         await self._process_generation_queue()
@@ -223,6 +233,9 @@ class WorldEngine:
         
         # Store chunk
         self.chunks[chunk_pos] = chunk
+        
+        # Spawn procedural objects from asset registry
+        await self._spawn_objects_in_chunk(chunk_pos, chunk)
         
         # Spawn procedural tasks if Chronos Engine is available
         if self.chronos_engine:
@@ -417,54 +430,95 @@ class WorldEngine:
         
         return interest_points
     
-    async def _generate_interest_point_position(self, chunk_pos: Tuple[int, int], index: int) -> Tuple[int, int]:
-        """Generate position for interest point within chunk"""
-        # Use deterministic positioning based on seed and index
-        pos_seed = f"{self.seed}_pos_{chunk_pos[0]}_{chunk_pos[1]}_{index}"
+    async def _spawn_objects_in_chunk(self, chunk_pos: Tuple[int, int], chunk: Chunk) -> None:
+        """Spawn procedural objects in chunk based on asset registry"""
+        # Get spawnable objects from asset loader
+        spawnable_objects = self.asset_loader.get_spawnable_objects()
+        
+        if not spawnable_objects:
+            return
+        
+        # Calculate spawn chance for this chunk
+        chunk_seed = f"{self.seed}_objects_{chunk_pos[0]}_{chunk_pos[1]}"
+        chunk_hash = hashlib.md5(chunk_seed.encode()).hexdigest()
+        chunk_value = int(chunk_hash[:8], 16) / 0xFFFFFFFF
+        
+        # Determine number of objects to spawn (0-3 per chunk)
+        max_objects = 3
+        num_objects = int(chunk_value * max_objects)
+        
+        # Spawn objects
+        for i in range(num_objects):
+            # Select random object based on rarity
+            object_def = self._select_object_by_rarity(spawnable_objects, chunk_seed, i)
+            
+            if object_def:
+                # Generate position within chunk
+                world_pos = await self._generate_object_position(chunk_pos, i)
+                
+                # Spawn object in world
+                spawned_obj = self.object_registry.spawn_object(object_def.asset_id, world_pos)
+                
+                if spawned_obj:
+                    # Add interest point for object
+                    interest_point = InterestPoint(
+                        position=world_pos,
+                        interest_type=InterestType.STRUCTURE,
+                        seed_value=hash(f"{chunk_seed}_{i}") % 1000000,
+                        discovered=False
+                    )
+                    chunk.add_interest_point(interest_point)
+                    self.interest_points.append(interest_point)
+                    
+                    logger.debug(f"🏗️ Spawned {object_def.asset_id} at {world_pos}")
+    
+    def _select_object_by_rarity(self, spawnable_objects: List, chunk_seed: str, index: int) -> Optional:
+        """Select object based on rarity using deterministic random"""
+        import random
+        
+        # Create deterministic random generator
+        rand = random.Random(f"{chunk_seed}_{index}")
+        
+        # Weight objects by rarity (lower rarity = higher chance)
+        weighted_objects = []
+        for obj_def in spawnable_objects:
+            if obj_def.characteristics:
+                weight = 1.0 - obj_def.characteristics.rarity
+                weighted_objects.extend([obj_def] * int(weight * 10))
+        
+        if weighted_objects:
+            return rand.choice(weighted_objects)
+        
+        return None
+    
+    async def _generate_object_position(self, chunk_pos: Tuple[int, int], index: int) -> Tuple[int, int]:
+        """Generate deterministic position for object within chunk"""
+        # Use hash for deterministic positioning
+        pos_seed = f"{self.seed}_objpos_{chunk_pos[0]}_{chunk_pos[1]}_{index}"
         pos_hash = hashlib.md5(pos_seed.encode()).hexdigest()
         
-        # Convert hash to local coordinates
-        local_x = int(pos_hash[:2], 16) % CHUNK_SIZE
-        local_y = int(pos_hash[2:4], 16) % CHUNK_SIZE
+        # Extract coordinates from hash
+        x_offset = int(pos_hash[:4], 16) % CHUNK_SIZE
+        y_offset = int(pos_hash[4:8], 16) % CHUNK_SIZE
         
         # Convert to world coordinates
-        world_x = chunk_pos[0] * CHUNK_SIZE + local_x
-        world_y = chunk_pos[1] * CHUNK_SIZE + local_y
+        world_x = chunk_pos[0] * CHUNK_SIZE + x_offset
+        world_y = chunk_pos[1] * CHUNK_SIZE + y_offset
         
         return (world_x, world_y)
-    
-    async def _generate_interest_point_type(self, position: Tuple[int, int], index: int) -> InterestType:
-        """Generate interest point type"""
-        # Use position and index to determine type
-        type_seed = f"{self.seed}_type_{position[0]}_{position[1]}_{index}"
-        type_hash = hashlib.md5(type_seed.encode()).hexdigest()
-        type_value = int(type_hash[:2], 16) / 0xFF
-        
-        # Map to interest types
-        if type_value < 0.2:
-            return InterestType.STRUCTURE
-        elif type_value < 0.4:
-            return InterestType.NATURAL
-        elif type_value < 0.6:
-            return InterestType.MYSTERIOUS
-        elif type_value < 0.8:
-            return InterestType.RESOURCE
-        else:
-            return InterestType.STORY
-    
-    async def _process_generation_queue(self) -> None:
-        """Process background chunk generation queue"""
-        while self._generation_queue:
-            chunk_pos = self._generation_queue.pop()
-            
-            if chunk_pos not in self.chunks:
-                await self._generate_chunk(chunk_pos)
-    
+
     def _position_to_chunk(self, position: Tuple[int, int]) -> Tuple[int, int]:
         """Convert world position to chunk coordinates"""
         return (position[0] // CHUNK_SIZE, position[1] // CHUNK_SIZE)
     
-    # === PERSISTENCE SUPPORT ===
+    def add_chunks_to_generation_queue(self, center_chunk: Tuple[int, int], radius: int) -> None:
+        """Add chunks to generation queue"""
+        for chunk_x in range(center_chunk[0] - radius, center_chunk[0] + radius + 1):
+            for chunk_y in range(center_chunk[1] - radius, center_chunk[1] + radius + 1):
+                chunk_pos = (chunk_x, chunk_y)
+                if chunk_pos not in self.chunks and chunk_pos not in self._generation_set:
+                    self._generation_queue.append(chunk_pos)
+                    self._generation_set.add(chunk_pos)
     
     def get_world_deltas(self) -> Dict[Tuple[int, int], WorldDelta]:
         """Get world state changes (for persistence)"""

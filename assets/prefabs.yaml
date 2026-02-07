@@ -1,0 +1,420 @@
+# Prefabs Manifest - 8x8 Matrix Templates for Complex Objects
+# Pre-baked object patterns with internal deltas and logic beacons
+
+# Simple prefabs
+small_chest:
+  sprite_id: "small_chest"
+  collision: true
+  friction: 0.3
+  metadata:
+    size: [1, 1]  # 1x1 tiles
+    internal_deltas:
+      - position: [0, 0]
+        tile_type: "wood"
+        state: "closed"
+    logic_beacons:
+      - position: [0, 0]
+        trigger: "on_interact"
+        action: "d20_lockpick_check"
+        difficulty: 12
+
+campfire_prefab:
+  sprite_id: "campfire"
+  collision: false
+  friction: 0.2
+  metadata:
+    size: [1, 1]
+    internal_deltas:
+      - position: [0, 0]
+        tile_type: "fire"
+        intensity: "medium"
+    logic_beacons:
+      - position: [0, 0]
+        trigger: "on_touch"
+        action: "apply_burn"
+        damage: 2
+      - position: [0, 0]
+        trigger: "on_extinguish"
+        action: "create_ash"
+
+# Complex 2x2 prefabs
+altar:
+  sprite_id: "altar"
+  collision: true
+  friction: 0.1
+  metadata:
+    size: [2, 2]  # 2x2 tiles
+    internal_deltas:
+      - position: [0, 0]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [1, 0]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [0, 1]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [1, 1]
+        tile_type: "stone"
+        surface: "polished"
+        special: "rune_inscribed"
+    logic_beacons:
+      - position: [1, 1]
+        trigger: "on_use"
+        action: "cast_ritual"
+        power_bonus: 15
+      - position: [0, 0]
+        trigger: "on_examine"
+        action: "reveal_lore"
+        lore_type: "ancient"
+
+workbench:
+  sprite_id: "workbench"
+  collision: true
+  friction: 0.4
+  metadata:
+    size: [2, 1]
+    internal_deltas:
+      - position: [0, 0]
+        tile_type: "wood"
+        surface: "work_surface"
+      - position: [1, 0]
+        tile_type: "wood"
+        surface: "tool_storage"
+    logic_beacons:
+      - position: [0, 0]
+        trigger: "on_craft"
+        action: "check_materials"
+        skill_required: 8
+      - position: [1, 0]
+        trigger: "on_search"
+        action: "find_tools"
+        tool_chance: 0.6
+
+# 3x3 complex prefabs
+ritual_circle:
+  sprite_id: "ritual_circle"
+  collision: false
+  friction: 0.1
+  metadata:
+    size: [3, 3]
+    internal_deltas:
+      # Center circle
+      - position: [1, 1]
+        tile_type: "stone"
+        engraved: "true"
+        power_conduit: "center"
+      # Outer ring
+      - position: [0, 1]
+        tile_type: "stone"
+        engraved: "true"
+        rune_type: "fire"
+      - position: [2, 1]
+        tile_type: "stone"
+        engraved: "true"
+        rune_type: "water"
+      - position: [1, 0]
+        tile_type: "stone"
+        engraved: "true"
+        rune_type: "earth"
+      - position: [1, 2]
+        tile_type: "stone"
+        engraved: "true"
+        rune_type: "air"
+      # Corner stones
+      - position: [0, 0]
+        tile_type: "stone"
+        power_conduit: "corner"
+      - position: [2, 0]
+        tile_type: "stone"
+        power_conduit: "corner"
+      - position: [0, 2]
+        tile_type: "stone"
+        power_conduit: "corner"
+      - position: [2, 2]
+        tile_type: "stone"
+        power_conduit: "corner"
+    logic_beacons:
+      - position: [1, 1]
+        trigger: "on_cast_ritual"
+        action: "amplify_ritual"
+        multiplier: 2.0
+      - position: [0, 1]
+        trigger: "on_channel_fire"
+        action: "empower_fire"
+        bonus: 10
+      - position: [2, 1]
+        trigger: "on_channel_water"
+        action: "empower_water"
+        bonus: 10
+      - position: [1, 0]
+        trigger: "on_channel_earth"
+        action: "empower_earth"
+        bonus: 10
+      - position: [1, 2]
+        trigger: "on_channel_air"
+        action: "empower_air"
+        bonus: 10
+
+alchemy_lab:
+  sprite_id: "alchemy_lab"
+  collision: true
+  friction: 0.3
+  metadata:
+    size: [3, 2]
+    internal_deltas:
+      # Main work surface
+      - position: [1, 0]
+        tile_type: "stone"
+        surface: "alchemical"
+        heat_source: "false"
+      # Heat source
+      - position: [0, 0]
+        tile_type: "metal"
+        device: "burner"
+        heat_source: "true"
+      # Storage areas
+      - position: [2, 0]
+        tile_type: "wood"
+        container: "ingredient_storage"
+      - position: [0, 1]
+        tile_type: "glass"
+        container: "beaker_rack"
+      - position: [1, 1]
+        tile_type: "glass"
+        container: "mixing_area"
+      - position: [2, 1]
+        tile_type: "wood"
+        container: "finished_potions"
+    logic_beacons:
+      - position: [1, 0]
+        trigger: "on_brew_potion"
+        action: "check_ingredients"
+        complexity: "medium"
+      - position: [0, 0]
+        trigger: "on_heat"
+        action: "control_temperature"
+        precision: "high"
+      - position: [2, 0]
+        trigger: "on_store"
+        action: "organize_ingredients"
+        auto_sort: "true"
+
+# 4x4 mega prefabs
+throne_room:
+  sprite_id: "throne_room"
+  collision: true
+  friction: 0.2
+  metadata:
+    size: [4, 4]
+    internal_deltas:
+      # Throne
+      - position: [2, 1]
+        tile_type: "stone"
+        furniture: "throne"
+        material: "marble"
+      # Royal carpet
+      - position: [2, 2]
+        tile_type: "cloth"
+        pattern: "royal"
+      - position: [1, 2]
+        tile_type: "cloth"
+        pattern: "royal"
+      - position: [3, 2]
+        tile_type: "cloth"
+        pattern: "royal"
+      # Pillars
+      - position: [0, 0]
+        tile_type: "stone"
+        structure: "pillar"
+        material: "marble"
+      - position: [3, 0]
+        tile_type: "stone"
+        structure: "pillar"
+        material: "marble"
+      - position: [0, 3]
+        tile_type: "stone"
+        structure: "pillar"
+        material: "marble"
+      - position: [3, 3]
+        tile_type: "stone"
+        structure: "pillar"
+        material: "marble"
+      # Floor tiles
+      - position: [0, 1]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [1, 1]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [3, 1]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [0, 2]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [1, 0]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [2, 0]
+        tile_type: "stone"
+        surface: "polished"
+      - position: [3, 0]
+        tile_type: "stone"
+        surface: "polished"
+      # Entrance
+      - position: [1, 3]
+        tile_type: "stone"
+        doorway: "entrance"
+      - position: [2, 3]
+        tile_type: "stone"
+        doorway: "entrance"
+    logic_beacons:
+      - position: [2, 1]
+        trigger: "on_sit_throne"
+        action: "claim_authority"
+        authority_level: "high"
+      - position: [1, 3]
+        trigger: "on_enter"
+        action: "check_royalty"
+        access_required: "noble"
+
+library:
+  sprite_id: "library"
+  collision: true
+  friction: 0.4
+  metadata:
+    size: [4, 3]
+    internal_deltas:
+      # Reading tables
+      - position: [1, 1]
+        tile_type: "wood"
+        furniture: "reading_table"
+      - position: [2, 1]
+        tile_type: "wood"
+        furniture: "reading_table"
+      # Bookshelves
+      - position: [0, 0]
+        tile_type: "wood"
+        furniture: "bookshelf"
+        content: "history"
+      - position: [3, 0]
+        tile_type: "wood"
+        furniture: "bookshelf"
+        content: "magic"
+      - position: [0, 2]
+        tile_type: "wood"
+        furniture: "bookshelf"
+        content: "skills"
+      - position: [3, 2]
+        tile_type: "wood"
+        furniture: "bookshelf"
+        content: "lore"
+      # Study areas
+      - position: [0, 1]
+        tile_type: "wood"
+        furniture: "study_carrel"
+      - position: [3, 1]
+        tile_type: "wood"
+        furniture: "study_carrel"
+      # Entrance
+      - position: [1, 2]
+        tile_type: "wood"
+        doorway: "entrance"
+      - position: [2, 2]
+        tile_type: "wood"
+        doorway: "entrance"
+    logic_beacons:
+      - position: [1, 1]
+        trigger: "on_study"
+        action: "gain_knowledge"
+        subject: "general"
+        rate: "medium"
+      - position: [2, 1]
+        trigger: "on_study"
+        action: "gain_knowledge"
+        subject: "advanced"
+        rate: "slow"
+      - position: [0, 0]
+        trigger: "on_read"
+        action: "learn_history"
+        depth: "detailed"
+      - position: [3, 0]
+        trigger: "on_read"
+        action: "learn_magic"
+        complexity: "high"
+
+# Dynamic prefabs (change state)
+bridge:
+  sprite_id: "bridge"
+  collision: false
+  friction: 0.6
+  metadata:
+    size: [3, 1]
+    dynamic: true
+    states:
+      - name: "intact"
+        collision: false
+        internal_deltas:
+          - position: [0, 0]
+            tile_type: "wood"
+            structure: "plank"
+          - position: [1, 0]
+            tile_type: "wood"
+            structure: "plank"
+          - position: [2, 0]
+            tile_type: "wood"
+            structure: "plank"
+      - name: "broken"
+        collision: false
+        internal_deltas:
+          - position: [0, 0]
+            tile_type: "wood"
+            structure: "broken_plank"
+          - position: [1, 0]
+            tile_type: "water"
+            depth: "shallow"
+          - position: [2, 0]
+            tile_type: "wood"
+            structure: "broken_plank"
+    logic_beacons:
+      - position: [1, 0]
+        trigger: "on_cross"
+        action: "check_integrity"
+        collapse_chance: 0.3
+
+gate:
+  sprite_id: "gate"
+  collision: true
+  friction: 0.1
+  metadata:
+    size: [1, 2]
+    dynamic: true
+    states:
+      - name: "closed"
+        collision: true
+        internal_deltas:
+          - position: [0, 0]
+            tile_type: "iron"
+            structure: "gate_bar"
+          - position: [0, 1]
+            tile_type: "iron"
+            structure: "gate_bar"
+      - name: "open"
+        collision: false
+        internal_deltas:
+          - position: [0, 0]
+            tile_type: "air"
+            structure: "empty"
+          - position: [0, 1]
+            tile_type: "air"
+            structure: "empty"
+    logic_beacons:
+      - position: [0, 0]
+        trigger: "on_use"
+        action: "toggle_gate"
+        power_required: 15
+      - position: [0, 1]
+        trigger: "on_lock"
+        action: "secure_gate"
+        lock_strength: 20

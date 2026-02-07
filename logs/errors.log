@@ -5832,3 +5832,7 @@
 2026-02-07 09:34:29 | ERROR | engines.mind.dd_engine:_execute_command:224 | 💥 Command execution failed: asyncio.run() cannot be called from a running event loop
 2026-02-07 09:35:26 | ERROR | engines.mind.dd_engine:_execute_command:224 | 💥 Command execution failed: 'coroutine' object is not iterable
 2026-02-07 09:36:11 | ERROR | engines.mind.dd_engine:_execute_command:224 | 💥 Command execution failed: 'coroutine' object is not iterable
+2026-02-07 12:00:14 | ERROR | utils.asset_loader:_load_object_definitions:160 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 369, column 13
+2026-02-07 12:00:14 | ERROR | utils.asset_loader:_load_object_definitions:160 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 369, column 13

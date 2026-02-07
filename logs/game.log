@@ -6341,3 +6341,150 @@
 2026-02-07 09:46:30 | INFO | core.heartbeat:_background_performance_monitor:386 | 📊 Background performance monitoring stopped
 2026-02-07 09:46:30 | INFO | core.heartbeat:_background_chunk_generation:359 | 🌍 Background chunk generation stopped
 2026-02-07 09:46:30 | INFO | __main__:run_autonomous_mode:256 | 🎬 Autonomous mode ended
+2026-02-07 12:00:07 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:00:14 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:00:14 | ERROR | utils.asset_loader:_load_object_definitions:160 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 369, column 13
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 10 object sprites
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:00:14 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 10 assets loaded
+2026-02-07 12:00:14 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:00:14 | INFO | engines.world.world_engine:__init__:121 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:00:14 | ERROR | utils.asset_loader:_load_object_definitions:160 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 369, column 13
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 10 object sprites
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:00:14 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:00:14 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 10 assets loaded
+2026-02-07 12:01:32 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:01:32 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:01:32 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:01:32 | INFO | engines.world.world_engine:__init__:121 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:01:32 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:01:32 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:02:23 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:02:23 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:02:23 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:02:23 | INFO | engines.world.world_engine:__init__:122 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:02:23 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:02:23 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:02:39 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:02:39 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:02:39 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:02:39 | INFO | engines.world.world_engine:__init__:122 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:02:39 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:02:39 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:05 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:06 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:06 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:03:06 | INFO | engines.world.world_engine:__init__:122 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:06 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:06 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:18 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:18 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:18 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:03:18 | INFO | engines.world.world_engine:__init__:122 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:18 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:18 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:35 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:35 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:35 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:03:35 | INFO | engines.world.world_engine:__init__:122 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:35 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:35 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:49 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:03:49 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:49 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:49 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:49 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:49 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:49 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:49 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:03:49 | INFO | utils.asset_loader:__init__:452 | 🏗️ Object Registry initialized
+2026-02-07 12:03:49 | INFO | engines.world.world_engine:__init__:122 | 🌍 World Engine initialized with seed: FOREST_GATE_TEST
+2026-02-07 12:03:49 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:03:50 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:03:50 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:03:50 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:03:50 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:03:50 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:03:50 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
+2026-02-07 12:04:23 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 12:04:23 | INFO | utils.asset_loader:_load_object_definitions:157 | 📦 Loaded 29 object definitions
+2026-02-07 12:04:23 | INFO | utils.asset_loader:_load_prefab_definitions:186 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 12:04:23 | INFO | utils.asset_loader:_generate_tile_sprites:197 | 🎨 Generated 11 tile sprites
+2026-02-07 12:04:23 | INFO | utils.asset_loader:_generate_object_sprites:206 | 🎨 Generated 37 object sprites
+2026-02-07 12:04:23 | INFO | utils.asset_loader:_generate_actor_sprites:226 | 🎨 Generated actor sprites for multiple states
+2026-02-07 12:04:23 | INFO | utils.asset_loader:_generate_effect_sprites:236 | 🎨 Generated 5 effect sprites
+2026-02-07 12:04:23 | INFO | utils.asset_loader:__init__:94 | 🎨 Asset Loader initialized - 37 assets loaded
