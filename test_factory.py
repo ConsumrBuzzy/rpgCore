@@ -1,3 +1,5 @@
+import sys
+sys.path.append('src')
 from model_factory import get_model
 import os
 
