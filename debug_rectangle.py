@@ -8,7 +8,33 @@ from ui.pixel_renderer import PixelRenderer, Pixel
 renderer = PixelRenderer(20, 20)
 pixel = Pixel(r=1, g=1, b=1, intensity=1.0)
 
-# Draw outline
+print("Drawing rectangle at (2,2) with width=5, height=3")
+
+# Manually trace the rectangle drawing logic
+x, y, width, height = 2, 2, 5, 3
+
+print(f"Top edge: y={y}, x from {x} to {x + width - 1}")
+for px in range(x, x + width):
+    print(f"  Setting pixel ({px}, {y})")
+    renderer.set_pixel(px, y, pixel)
+
+print(f"Bottom edge: y={y + height - 1}, x from {x} to {x + width - 1}")
+for px in range(x, x + width):
+    print(f"  Setting pixel ({px}, {y + height - 1})")
+    renderer.set_pixel(px, y + height - 1, pixel)
+
+print(f"Left edge: x={x}, y from {y} to {y + height - 1}")
+for py in range(y, y + height):
+    print(f"  Setting pixel ({x}, {py})")
+    renderer.set_pixel(x, py, pixel)
+
+print(f"Right edge: x={x + width - 1}, y from {y} to {y + height - 1}")
+for py in range(y, y + height):
+    print(f"  Setting pixel ({x + width - 1}, {py})")
+    renderer.set_pixel(x + width - 1, py, pixel)
+
+# Draw outline using the actual method
+renderer.clear()
 renderer.draw_rectangle(2, 2, 5, 3, pixel, fill=False)
 
 # Check what was actually drawn
