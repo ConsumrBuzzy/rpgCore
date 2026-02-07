@@ -548,8 +548,9 @@ class EntityAI:
             # Count by faction
             stats["by_faction"][entity.faction] = stats["by_faction"].get(entity.faction, 0) + 1
             
-            # Count by state
-            stats["by_state"][entity.state.value] = stats["by_state"].get(entity.state.value, 0) + 1
+        for entity in self._entities.values():
+            state_value = entity.state.value if hasattr(entity.state, 'value') else str(entity.state)
+            stats["by_state"][state_value] = stats["by_state"].get(state_value, 0) + 1
             
             total_speed += entity.movement_speed
         

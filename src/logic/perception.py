@@ -497,7 +497,7 @@ class PerceptionSystem:
                                 "coordinate": (entity.current_pos.x, entity.current_pos.y),
                                 "distance": distance,
                                 "faction": entity.faction,
-                                "state": entity.state.value,
+                                "state": entity.state.value if hasattr(entity.state, 'value') else str(entity.state),
                                 "icon": "👤"
                             })
                     
