@@ -112,15 +112,28 @@ class TerminalView(Observer):
     
     def _display_welcome(self) -> None:
         """Display welcome message."""
-        self.console.print(
-            Panel(
-                "[bold cyan]Terminal View - Observer of Unified Simulator[/bold cyan]\n\n"
-                "Type natural language actions (e.g., 'I kick the table').\n"
-                "This terminal displays the console log of the 2D engine.\n"
-                "Commands: [yellow]save[/yellow], [yellow]quit[/yellow]",
-                border_style="cyan"
+        if hasattr(self.simulator, 'is_autonomous') and self.simulator.is_autonomous:
+            self.console.print(
+                Panel(
+                    "[bold cyan]Autonomous Movie Mode - Observer View[/bold cyan]\n\n"
+                    "🎬 D&D Movie is playing autonomously\n"
+                    "Director: LLM generating narrative beacons\n"
+                    "Voyager: Moving to AI-defined goals\n"
+                    "You are a pure observer - no interaction needed\n"
+                    "Commands: [yellow]quit[/yellow] to stop recording",
+                    border_style="cyan"
+                )
             )
-        )
+        else:
+            self.console.print(
+                Panel(
+                    "[bold cyan]Terminal View - Observer of Unified Simulator[/bold cyan]\n\n"
+                    "Type natural language actions (e.g., 'I kick the table').\n"
+                    "This terminal displays the console log of the 2D engine.\n"
+                    "Commands: [yellow]save[/yellow], [yellow]quit[/yellow]",
+                    border_style="cyan"
+                )
+            )
     
     async def _input_loop(self) -> None:
         """Async input loop for terminal commands."""
@@ -128,7 +141,13 @@ class TerminalView(Observer):
         
         while self.running and self.simulator.is_running():
             try:
-                # Get player input
+                # Check if in autonomous mode
+                if hasattr(self.simulator, 'is_autonomous') and self.simulator.is_autonomous:
+                    # Autonomous mode - just observe, no input prompt
+                    await asyncio.sleep(1.0)  # Wait 1 second before checking again
+                    continue
+                
+                # Manual mode - get player input
                 player_input = Prompt.ask(
                     "\n[bold green]What do you do?[/bold green]",
                     console=self.console

@@ -146,6 +146,9 @@ class CinematicSimulator:
         self.is_autonomous = True
         self.is_running = True
         
+        # Mark simulator as autonomous
+        self.simulator.is_autonomous = True
+        
         # Start the Director
         await self.director.start_autonomous_mode()
         

@@ -178,6 +178,9 @@ class SimulatorHost:
         # Action queue for processing
         self.action_queue: asyncio.Queue[str] = asyncio.Queue()
         
+        # Autonomous mode flag
+        self.is_autonomous = False
+        
         logger.info("🏛️ SimulatorHost initialized - Single Source of Truth")
     
     def add_observer(self, observer: Observer) -> None:
