@@ -183,7 +183,7 @@ class StaticCanvas:
         Args:
             game_state: New game state
         """
-        logger.info(f"Static Canvas update_game_state called: {game_state.position.x}, {game_state.position.y}")
+        print(f"STATIC CANVAS: update_game_state called: {game_state.position.x}, {game_state.position.y}")
         
         self.state.game_state = game_state
         self.state.viewport_state.player_position = (game_state.position.x, game_state.position.y)
@@ -207,7 +207,7 @@ class StaticCanvas:
         }
         
         # Update dashboard state as well
-        logger.info("Calling dashboard.update_game_state")
+        print("STATIC CANVAS: Calling dashboard.update_game_state")
         self.dashboard.update_game_state(game_state)
         
         # Mark as dirty for redraw

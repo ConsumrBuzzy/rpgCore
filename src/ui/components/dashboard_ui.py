@@ -153,7 +153,7 @@ class DashboardUI:
         
         # Update the game state in dashboard state
         self.state.game_state = game_state
-        logger.info(f"Dashboard game_state updated: {game_state.position.x}, {game_state.position.y}")
+        print(f"DASHBOARD: game_state updated: {game_state.position.x}, {game_state.position.y}")
         
         # Update vital status
         self.state.vital_status = VitalStatus(
