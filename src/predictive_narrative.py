@@ -356,6 +356,11 @@ class PredictiveNarrativeEngine:
         self._precache_task: Optional[asyncio.Task] = None
         self._running = False
         
+        # Orientation integration
+        self._orientation_manager: Optional[OrientationManager] = None
+        self._last_position: Optional[Tuple[float, float]] = None
+        self._last_heading: Optional[float] = None
+        
         # Pre-caching configuration
         self.precache_distances = {
             PreCachePriority.CRITICAL: 3.0,
@@ -365,6 +370,16 @@ class PredictiveNarrativeEngine:
         }
         
         logger.info("🧠 Predictive Narrative Engine initialized")
+    
+    def set_orientation_manager(self, orientation_manager: OrientationManager) -> None:
+        """
+        Set the orientation manager for trajectory tracking.
+        
+        Args:
+            orientation_manager: The game's orientation manager
+        """
+        self._orientation_manager = orientation_manager
+        logger.info("🧭 Orientation manager integrated for trajectory-aware caching")
     
     async def start(self) -> None:
         """Start the pre-caching background task."""
@@ -445,7 +460,22 @@ class PredictiveNarrativeEngine:
         if not self._running:
             return
         
-        player_pos = game_state.player.position
+        # Get current position and heading from orientation manager
+        current_pos = game_state.player.position
+        current_heading = 0.0
+        
+        if self._orientation_manager:
+            orientation = self._orientation_manager.get_orientation()
+            current_pos = (orientation.position_x, orientation.position_y)
+            current_heading = orientation.angle
+        
+        # Update trajectory and invalidate cache if necessary
+        cache_invalidated = self.buffer.update_trajectory(current_pos, current_heading)
+        
+        if cache_invalidated:
+            logger.info("🔄 Cache invalidated due to trajectory change, re-queuing...")
+        
+        player_pos = current_pos
         current_room = game_state.current_room
         
         # Get NPCs in current room
@@ -458,6 +488,11 @@ class PredictiveNarrativeEngine:
             
             # Determine priority based on distance
             priority = self._get_priority_by_distance(distance)
+            
+            # Check if NPC is in front of player (within 90° cone)
+            if self._orientation_manager:
+                if not self._is_npc_in_front(npc_pos, player_pos, current_heading):
+                    priority = PreCachePriority.LOW  # Deprioritize NPCs behind player
             
             # Queue common intents for this NPC
             for intent_id in self.buffer._common_intents:
@@ -474,6 +509,35 @@ class PredictiveNarrativeEngine:
                     )
                     
                     self.buffer.queue_request(request)
+    
+    def _is_npc_in_front(self, npc_pos: Tuple[float, float], player_pos: Tuple[float, float], player_heading: float) -> bool:
+        """
+        Check if NPC is in front of player (within 90° cone).
+        
+        Args:
+            npc_pos: NPC position
+            player_pos: Player position
+            player_heading: Player heading in degrees
+            
+        Returns:
+            True if NPC is in front of player
+        """
+        # Calculate angle to NPC
+        dx = npc_pos[0] - player_pos[0]
+        dy = npc_pos[1] - player_pos[1]
+        angle_to_npc = math.degrees(math.atan2(dy, dx))
+        
+        # Normalize angles
+        angle_to_npc = angle_to_npc % 360
+        player_heading = player_heading % 360
+        
+        # Calculate angle difference
+        angle_diff = abs(angle_to_npc - player_heading)
+        if angle_diff > 180:
+            angle_diff = 360 - angle_diff
+        
+        # Check if within 90° cone (45° on each side)
+        return angle_diff <= 45.0
     
     def _get_priority_by_distance(self, distance: float) -> PreCachePriority:
         """Convert distance to pre-cache priority."""
