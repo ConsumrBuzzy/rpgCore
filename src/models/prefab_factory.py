@@ -105,7 +105,7 @@ class PrefabFactory:
             self._mmap_handle = mmap.mmap(self._file_handle.fileno(), 0, access=mmap.ACCESS_READ)
             
             # Read and validate header
-            header_data = self._mmap_handle[:32]
+            header_data = self._mmap_handle[:40]  # Read full header
             magic = header_data[:4]
             version = struct.unpack('<I', header_data[4:8])[0]
             build_time = struct.unpack('<d', header_data[8:16])[0]
