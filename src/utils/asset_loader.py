@@ -51,6 +51,8 @@ class ObjectCharacteristics:
     interaction_hooks: List[str] = field(default_factory=list)
     d20_checks: Dict[str, Dict[str, Any]] = field(default_factory=dict)
     combat_stats: Dict[str, Any] = field(default_factory=dict)
+    resistances: List[str] = field(default_factory=list)
+    weaknesses: List[str] = field(default_factory=list)
     
     def has_tag(self, tag: str) -> bool:
         """Check if object has specific tag"""
@@ -63,6 +65,14 @@ class ObjectCharacteristics:
     def get_combat_stat(self, stat: str, default: Any = 0) -> Any:
         """Get combat stat with default fallback"""
         return self.combat_stats.get(stat, default)
+    
+    def has_resistance(self, damage_type: str) -> bool:
+        """Check if object has resistance to damage type"""
+        return damage_type in self.resistances
+    
+    def has_weakness(self, damage_type: str) -> bool:
+        """Check if object has weakness to damage type"""
+        return damage_type in self.weaknesses
 
 
 @dataclass
@@ -146,7 +156,9 @@ class AssetLoader:
                         tags=char_data.get('tags', []),
                         interaction_hooks=char_data.get('interaction_hooks', []),
                         d20_checks=char_data.get('d20_checks', {}),
-                        combat_stats=char_data.get('combat_stats', {})
+                        combat_stats=char_data.get('combat_stats', {}),
+                        resistances=char_data.get('resistances', []),
+                        weaknesses=char_data.get('weaknesses', [])
                     )
                 
                 # Create asset definition

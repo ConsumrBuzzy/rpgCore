@@ -6029,3 +6029,7 @@
 2026-02-07 13:16:51 | ERROR | engines.mind.dd_engine:_execute_command:242 | 💥 Command execution failed: WorldDelta.__init__() missing 1 required positional argument: 'timestamp'
 2026-02-07 13:16:51 | ERROR | engines.mind.dd_engine:_execute_command:242 | 💥 Command execution failed: WorldDelta.__init__() missing 1 required positional argument: 'timestamp'
 2026-02-07 13:16:52 | ERROR | engines.mind.dd_engine:_execute_command:242 | 💥 Command execution failed: WorldDelta.__init__() missing 1 required positional argument: 'timestamp'
+2026-02-07 13:20:31 | ERROR | utils.asset_loader:_load_object_definitions:168 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 638, column 35
+2026-02-07 13:20:31 | ERROR | utils.asset_loader:_load_object_definitions:168 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 638, column 35

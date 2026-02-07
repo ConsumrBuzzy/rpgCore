@@ -7439,3 +7439,66 @@
 2026-02-07 13:17:09 | INFO | actors.voyager:_generate_idle_intent:468 | 🎯 Object-Aware Voyager: Found interactable object at (9, 10)
 2026-02-07 13:17:09 | INFO | engines.mind.dd_engine:_execute_interaction_command:346 | 🎲 Voyager encountered [crystal] at (9, 10). Attempting [examine] (DC 10)...
 2026-02-07 13:17:09 | INFO | engines.mind.dd_engine:_execute_interaction_command:348 | 🎯 Roll: 8 + 0 = 8 vs DC 10 -> FAILURE
+2026-02-07 13:20:31 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 13:20:31 | ERROR | utils.asset_loader:_load_object_definitions:168 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 638, column 35
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_load_prefab_definitions:194 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_tile_sprites:205 | 🎨 Generated 11 tile sprites
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_object_sprites:214 | 🎨 Generated 10 object sprites
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_actor_sprites:234 | 🎨 Generated actor sprites for multiple states
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_effect_sprites:244 | 🎨 Generated 5 effect sprites
+2026-02-07 13:20:31 | INFO | utils.asset_loader:__init__:100 | 🎨 Asset Loader initialized - 10 assets loaded
+2026-02-07 13:20:31 | INFO | utils.asset_loader:__init__:460 | 🏗️ Object Registry initialized
+2026-02-07 13:20:31 | INFO | engines.mind.combat_resolver:__init__:128 | ⚔️ Combat Resolver initialized
+2026-02-07 13:20:31 | INFO | engines.mind.dd_engine:__init__:104 | 🧠 D&D Engine initialized with seed: FOREST_GATE_COMBAT
+2026-02-07 13:20:31 | INFO | engines.mind.dd_engine:__init__:109 | 🧠 D&D Engine initialized - Command Pattern ready
+2026-02-07 13:20:31 | ERROR | utils.asset_loader:_load_object_definitions:168 | 💥 Failed to load objects.yaml: mapping values are not allowed here
+  in "assets\objects.yaml", line 638, column 35
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_load_prefab_definitions:194 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_tile_sprites:205 | 🎨 Generated 11 tile sprites
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_object_sprites:214 | 🎨 Generated 10 object sprites
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_actor_sprites:234 | 🎨 Generated actor sprites for multiple states
+2026-02-07 13:20:31 | INFO | utils.asset_loader:_generate_effect_sprites:244 | 🎨 Generated 5 effect sprites
+2026-02-07 13:20:31 | INFO | utils.asset_loader:__init__:100 | 🎨 Asset Loader initialized - 10 assets loaded
+2026-02-07 13:20:39 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_load_object_definitions:165 | 📦 Loaded 30 object definitions
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_load_prefab_definitions:194 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_tile_sprites:205 | 🎨 Generated 11 tile sprites
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_object_sprites:214 | 🎨 Generated 38 object sprites
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_actor_sprites:234 | 🎨 Generated actor sprites for multiple states
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_effect_sprites:244 | 🎨 Generated 5 effect sprites
+2026-02-07 13:20:40 | INFO | utils.asset_loader:__init__:100 | 🎨 Asset Loader initialized - 38 assets loaded
+2026-02-07 13:20:40 | INFO | utils.asset_loader:__init__:460 | 🏗️ Object Registry initialized
+2026-02-07 13:20:40 | INFO | engines.mind.combat_resolver:__init__:128 | ⚔️ Combat Resolver initialized
+2026-02-07 13:20:40 | INFO | engines.mind.dd_engine:__init__:104 | 🧠 D&D Engine initialized with seed: FOREST_GATE_COMBAT
+2026-02-07 13:20:40 | INFO | engines.mind.dd_engine:__init__:109 | 🧠 D&D Engine initialized - Command Pattern ready
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_load_object_definitions:165 | 📦 Loaded 30 object definitions
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_load_prefab_definitions:194 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_tile_sprites:205 | 🎨 Generated 11 tile sprites
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_object_sprites:214 | 🎨 Generated 38 object sprites
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_actor_sprites:234 | 🎨 Generated actor sprites for multiple states
+2026-02-07 13:20:40 | INFO | utils.asset_loader:_generate_effect_sprites:244 | 🎨 Generated 5 effect sprites
+2026-02-07 13:20:40 | INFO | utils.asset_loader:__init__:100 | 🎨 Asset Loader initialized - 38 assets loaded
+2026-02-07 13:20:57 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_load_object_definitions:177 | 📦 Loaded 30 object definitions
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_load_prefab_definitions:206 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_tile_sprites:217 | 🎨 Generated 11 tile sprites
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_object_sprites:226 | 🎨 Generated 38 object sprites
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_actor_sprites:246 | 🎨 Generated actor sprites for multiple states
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_effect_sprites:256 | 🎨 Generated 5 effect sprites
+2026-02-07 13:20:57 | INFO | utils.asset_loader:__init__:110 | 🎨 Asset Loader initialized - 38 assets loaded
+2026-02-07 13:20:57 | INFO | utils.asset_loader:__init__:472 | 🏗️ Object Registry initialized
+2026-02-07 13:20:57 | INFO | engines.mind.combat_resolver:__init__:128 | ⚔️ Combat Resolver initialized
+2026-02-07 13:20:57 | INFO | engines.mind.dd_engine:__init__:104 | 🧠 D&D Engine initialized with seed: FOREST_GATE_COMBAT
+2026-02-07 13:20:57 | INFO | engines.mind.dd_engine:__init__:109 | 🧠 D&D Engine initialized - Command Pattern ready
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_load_object_definitions:177 | 📦 Loaded 30 object definitions
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_load_prefab_definitions:206 | 🏗️ Loaded 10 prefab definitions
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_tile_sprites:217 | 🎨 Generated 11 tile sprites
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_object_sprites:226 | 🎨 Generated 38 object sprites
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_actor_sprites:246 | 🎨 Generated actor sprites for multiple states
+2026-02-07 13:20:57 | INFO | utils.asset_loader:_generate_effect_sprites:256 | 🎨 Generated 5 effect sprites
+2026-02-07 13:20:57 | INFO | utils.asset_loader:__init__:110 | 🎨 Asset Loader initialized - 38 assets loaded
+2026-02-07 13:20:57 | INFO | engines.mind.combat_resolver:__init__:128 | ⚔️ Combat Resolver initialized
+2026-02-07 13:20:57 | INFO | engines.mind.combat_resolver:start_combat:142 | ⚔️ Combat started: Voyager (HP: 30) vs Guardian (HP: 50)
+2026-02-07 13:20:57 | INFO | engines.mind.combat_resolver:resolve_combat:161 | ⚔️ Initiative: Voyager (22) vs Guardian (22)
+2026-02-07 13:20:57 | INFO | engines.mind.combat_resolver:resolve_combat:182 | ⚔️ Voyager wins the combat!

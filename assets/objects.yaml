@@ -635,7 +635,7 @@ forest_guardian:
     armor_class: 16
     weapon_damage: "2d6+3"
     special_attack: "shield_bash"
-    gate_access: "requires_defeat": true
+    gate_access: "requires_defeat"
 
 fountain:
   characteristics:
