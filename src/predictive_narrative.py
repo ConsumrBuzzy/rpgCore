@@ -69,6 +69,26 @@ class CachedNarrative:
         return time.time() - self.last_accessed > max_staleness
 
 
+@dataclass
+class TrajectoryVector:
+    """Represents player's current trajectory for cache validation."""
+    position: Tuple[float, float]
+    heading: float  # Angle in degrees
+    timestamp: float = field(default_factory=time.time)
+    
+    def angle_to(self, other: 'TrajectoryVector') -> float:
+        """Calculate angle difference between two trajectories."""
+        angle_diff = abs(self.heading - other.heading)
+        # Normalize to 0-180 range
+        if angle_diff > 180:
+            angle_diff = 360 - angle_diff
+        return angle_diff
+    
+    def distance_to(self, other: 'TrajectoryVector') -> float:
+        """Calculate Manhattan distance to another trajectory."""
+        return abs(self.position[0] - other.position[0]) + abs(self.position[1] - other.position[1])
+
+
 class NarrativeBuffer:
     """
     Priority queue for narrative pre-caching.
@@ -90,6 +110,12 @@ class NarrativeBuffer:
         self._processing: Set[str] = set()  # Currently being processed
         self._hit_count = 0
         self._miss_count = 0
+        
+        # Trajectory tracking for cache invalidation
+        self._current_trajectory: Optional[TrajectoryVector] = None
+        self._cache_valid_trajectory: Optional[TrajectoryVector] = None
+        self._trajectory_threshold_angle = 45.0  # Degrees
+        self._trajectory_threshold_distance = 3.0  # Tiles
         
         # Common intents for pre-caching (most likely interactions)
         self._common_intents = ["talk", "attack", "distract", "examine", "trade"]
