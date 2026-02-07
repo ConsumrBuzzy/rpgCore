@@ -193,6 +193,12 @@ class GameREPL:
         # Step 2.5: Quartermaster calculates final outcome
         self.console.print("[dim]🎲 Quartermaster rolling dice...[/dim]")
         
+        # TRANSITION LOGIC: If Arbiter signals Path Clear, inject it into room tags
+        if "Path Clear" in arbiter_result.narrative_seed:
+            if "Path Clear" not in room_tags:
+                self.console.print("[yellow]🔓 Path Clear: New exit accessible![/yellow]")
+                room_tags.append("Path Clear")
+        
         # Calculate outcome
         outcome = self.quartermaster.calculate_outcome(
             intent_id=intent_match.intent_id,
