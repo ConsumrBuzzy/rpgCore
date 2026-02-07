@@ -7,6 +7,7 @@ Main game loop (REPL) for the Semantic RPG Core.
 
 import argparse
 import os
+import asyncio
 from pathlib import Path
 
 from loguru import logger
@@ -14,6 +15,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
+from rich.live import Live
 
 from game_state import GameState, create_tavern_scenario
 from semantic_engine import SemanticResolver, create_default_intent_library
