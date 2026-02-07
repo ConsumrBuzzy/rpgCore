@@ -234,13 +234,15 @@ class GameState(BaseModel):
         
         This is what the Narrative Engine sees when generating outcomes.
         """
-        room = self.rooms.get(self.current_room)
+        # Use current_location from LocationResolver if available
+        location_name = self.current_location
         
-        if not room:
-            return "You are in an undefined location."
+        # Fallback to room-based location if current_location is default
+        if location_name == "Unknown Location":
+            room = self.rooms.get(self.current_room)
+            if room:
+                location_name = room.name
         
-        # Get location name from coordinates if possible
-        location_name = room.name
         if not location_name or location_name == "Unknown Area":
             # Try to get location from coordinates
             try:
@@ -254,7 +256,11 @@ class GameState(BaseModel):
                 pass
         
         context = f"📍 Location: {location_name}\n"
-        context += f"Description: {room.description}\n\n"
+        
+        # Add description if available
+        room = self.rooms.get(self.current_room)
+        if room:
+            context += f"Description: {room.description}\n\n"
         
         # Add local relationships
         local_rels = self.social_graph.get(self.current_room, {})
@@ -268,10 +274,10 @@ class GameState(BaseModel):
                 elif rel.disposition != 0:
                     context += f"  - {npc_id}: Disposition {rel.disposition:+d}\n"
         
-        if room.tags:
+        if room and room.tags:
             context += f"\nEnvironment: {', '.join(room.tags)}\n"
         
-        if room.items:
+        if room and room.items:
             context += f"\nItems: {', '.join(room.items)}\n"
         
         context += self.get_local_context()
