@@ -114,6 +114,102 @@ class AutonomousDirector:
         
         logger.info("🎬 Autonomous Director initialized")
     
+    def _initialize_golden_path(self) -> None:
+        """Initialize the Golden Path Beacon Queue for Volume 1."""
+        self.golden_path_queue = [
+            # Scene 1: Forest Path to City Gates
+            {
+                'beacon_id': 'forest_to_city',
+                'target_coords': (10, 20),  # Town Square South Gate
+                'description': 'Travel to the City Gates',
+                'priority': 1,
+                'intent_type': 'travel',
+                'reasoning': 'Leave the forest and approach the city walls',
+                'scene_name': 'The Trek',
+                'cinematic_header': '--- CHAPTER 1: THE FOREST PATH ---'
+            },
+            # Scene 2: City Gates to Tavern Door
+            {
+                'beacon_id': 'city_to_tavern',
+                'target_coords': (20, 10),  # Tavern Door
+                'description': 'Walk to the Tavern Door',
+                'priority': 1,
+                'intent_type': 'explore',
+                'reasoning': 'Navigate through the town square to the tavern',
+                'scene_name': 'The City',
+                'cinematic_header': '--- CHAPTER 2: THE CITY OF STONE ---'
+            },
+            # Scene 3: Tavern Door to Interior (Portal Jump)
+            {
+                'beacon_id': 'enter_tavern',
+                'target_coords': (20, 10),  # Tavern Door (for interaction)
+                'description': 'Enter the Tavern',
+                'priority': 1,
+                'intent_type': 'interact',
+                'reasoning': 'Push open the heavy oak door and enter the tavern',
+                'scene_name': 'The Threshold',
+                'cinematic_header': '--- CHAPTER 3: THE TAVERN ENTRANCE ---',
+                'portal_jump': True,
+                'portal_target': (25, 30)  # Inside tavern
+            },
+            # Scene 4: Interior to Iron Chest
+            {
+                'beacon_id': 'tavern_to_chest',
+                'target_coords': (32, 32),  # Iron Chest
+                'description': 'Approach the Iron Chest',
+                'priority': 1,
+                'intent_type': 'explore',
+                'reasoning': 'Walk across the tavern to the iron chest by the hearth',
+                'scene_name': 'The Prize',
+                'cinematic_header': '--- CHAPTER 4: THE TAVERN INTERIOR ---'
+            },
+            # Scene 5: Final Interaction
+            {
+                'beacon_id': 'open_chest',
+                'target_coords': (32, 32),  # Iron Chest (for interaction)
+                'description': 'Open the Iron Chest',
+                'priority': 1,
+                'intent_type': 'interact',
+                'reasoning': 'Examine the ancient iron chest and discover its contents',
+                'scene_name': 'The Treasure',
+                'cinematic_header': '--- CHAPTER 5: THE REVELATION ---'
+            }
+        ]
+        
+        logger.info(f"🎭 Golden Path initialized with {len(self.golden_path_queue)} scenes")
+        for i, beacon in enumerate(self.golden_path_queue):
+            logger.info(f"  Scene {i+1}: {beacon['scene_name']} -> {beacon['target_coords']}")
+    
+    def _get_next_golden_path_beacon(self) -> Optional[Dict[str, Any]]:
+        """Get the next beacon from the Golden Path queue."""
+        if not self.golden_path_enabled or self.golden_path_index >= len(self.golden_path_queue):
+            return None
+        
+        beacon = self.golden_path_queue[self.golden_path_index]
+        logger.info(f"🎭 Golden Path Scene {self.golden_path_index + 1}: {beacon['scene_name']}")
+        
+        # Display cinematic header
+        if 'cinematic_header' in beacon:
+            logger.info(f"🎬 {beacon['cinematic_header']}")
+            # Notify views for cinematic display
+            if self.simulator:
+                self.simulator._notify_observers("scene_transition", {
+                    "message": beacon['cinematic_header'],
+                    "duration": 1.0,
+                    "location": beacon.get('scene_name', 'Unknown')
+                })
+        
+        return beacon
+    
+    def _advance_golden_path(self) -> None:
+        """Advance to the next scene in the Golden Path."""
+        self.golden_path_index += 1
+        logger.info(f"🎭 Advancing to Golden Path Scene {self.golden_path_index + 1}")
+        
+        if self.golden_path_index >= len(self.golden_path_queue):
+            logger.info("🏆 Golden Path Complete - Volume 1 Finished!")
+            self.golden_path_enabled = False
+    
     async def start_autonomous_mode(self) -> None:
         """
         Start the autonomous director mode.
@@ -205,10 +301,37 @@ class AutonomousDirector:
             logger.info("🎬 Director loop stopped")
     
     async def _planning_phase(self) -> None:
-        """Planning phase: Generate narrative beacons."""
+        """
+        Planning phase: Generate narrative beacons.
+        
+        Enhanced to use Golden Path for linear narrative control.
+        """
         logger.debug("📋 Planning phase: Generating narrative beacons")
         
-        # Generate new beacons periodically
+        # Priority 1: Use Golden Path if enabled
+        if self.golden_path_enabled and not self.current_beacon:
+            golden_beacon = self._get_next_golden_path_beacon()
+            if golden_beacon:
+                # Create NarrativeBeacon from Golden Path data
+                beacon = NarrativeBeacon(
+                    beacon_id=golden_beacon['beacon_id'],
+                    target_coords=golden_beacon['target_coords'],
+                    description=golden_beacon['description'],
+                    priority=golden_beacon['priority'],
+                    intent_type=golden_beacon['intent_type']
+                )
+                
+                self.current_beacon = beacon
+                self.beacon_history.append(beacon)
+                
+                if self.on_beacon_generated:
+                    self.on_beacon_generated(beacon)
+                
+                self.mode = DirectorMode.EXECUTING
+                logger.info(f"🎯 Golden Path beacon: {beacon.description} at {beacon.target_coords}")
+                return
+        
+        # Priority 2: Generate new beacons periodically (fallback)
         if len(self.beacon_history) == 0 or self.turn_count % self.beacon_generation_interval == 0:
             # Get current context from simulator
             state = self.simulator.get_state()
@@ -290,6 +413,25 @@ class AutonomousDirector:
                 self.current_beacon.achieved = True
                 self.beacon_history.append(self.current_beacon)
                 logger.info(f"✅ Beacon achieved: {self.current_beacon.description}")
+                
+                # Handle portal jump if specified
+                if hasattr(self.current_beacon, 'beacon_id'):
+                    golden_beacon = None
+                    if self.golden_path_enabled and self.golden_path_index < len(self.golden_path_queue):
+                        golden_beacon = self.golden_path_queue[self.golden_path_index]
+                    
+                    if golden_beacon and golden_beacon.get('portal_jump'):
+                        portal_target = golden_beacon.get('portal_target')
+                        if portal_target:
+                            logger.info(f"🚪 Portal Jump triggered: {current_pos} -> {portal_target}")
+                            # Force position update for portal jump
+                            if self.simulator and self.simulator.state:
+                                self.simulator.state.position.x, self.simulator.state.position.y = portal_target
+                                logger.info(f"📍 Voyager teleported to {portal_target}")
+                
+                # Advance Golden Path if enabled
+                if self.golden_path_enabled:
+                    self._advance_golden_path()
                 
                 if self.on_beacon_achieved:
                     self.on_beacon_achieved(self.current_beacon)
