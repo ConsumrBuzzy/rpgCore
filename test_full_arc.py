@@ -12,6 +12,8 @@ import random
 import time
 from pathlib import Path
 
+from loguru import logger
+
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
@@ -132,12 +134,12 @@ class AutomatedVoyager:
         
         # Create world seed
         seed = WorldSeed(
-            name="Full Arc Test World",
-            description="A world with ancient conflicts and rising tensions",
-            epochs=10,
-            conflict_intensity=0.7,
-            mystery_level=0.5,
-            prosperity_cycles=3
+            founding_vector={"resource": "mixed", "climate": "temperate", "terrain": "varied"},
+            starting_population=1000,
+            initial_factions=list(self.factions.values()),
+            location_name="Full Arc Test World",
+            coordinates=(0, 0),
+            radius=10
         )
         
         # Simulate history
