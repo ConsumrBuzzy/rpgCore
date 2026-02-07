@@ -77,6 +77,24 @@ class ObserverView:
         print(f"🎨 Graphics: {'Enabled' if self.enable_graphics else 'Disabled'}")
         print(f"🧠 Mind Engine: Object-Aware D20 System Ready")
     
+    def _initialize_systems(self) -> None:
+        """Initialize all system components"""
+        try:
+            # Initialize asset loader
+            self.asset_loader = AssetLoader()
+            
+            # Initialize intent engine after asset loader
+            self.intent_engine = IntentEngine(self.world_engine.object_registry)
+            
+            # Initialize graphics if enabled
+            if self.enable_graphics:
+                self._init_graphics()
+            else:
+                self.log_event("⚠️ Graphics disabled")
+        except Exception as e:
+            self.log_event(f"💥 System initialization failed: {e}")
+            self.enable_graphics = False
+    
     def _init_graphics(self) -> None:
         """Initialize Tkinter graphics window"""
         try:
