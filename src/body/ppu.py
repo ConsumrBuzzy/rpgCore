@@ -76,7 +76,7 @@ class PPUBody(DisplayBody):
         """Setup PPU rendering system"""
         if not PPU_AVAILABLE:
             logger.error("❌ PPU components not available")
-            return
+            return False
         
         # Create main window
         self.root = tk.Tk()
@@ -88,7 +88,20 @@ class PPUBody(DisplayBody):
         main_frame.pack()
         
         # Create PPU display
-        self.ppu = NativeTkinterPPU(self.root)
+        try:
+            # Create a mock asset loader for PPU
+            class MockAssetLoader:
+                def get_asset_definition(self, asset_id):
+                    return None
+                def get_spawnable_objects(self):
+                    return []
+            
+            mock_asset_loader = MockAssetLoader()
+            self.ppu = NativeTkinterPPU(self.root, mock_asset_loader)
+        except Exception as e:
+            logger.error(f"❌ Failed to create PPU: {e}")
+            self.ppu = None
+            return False
         
         # Create dithering engine
         self.dither_engine = DitheringEngine()
@@ -101,6 +114,7 @@ class PPUBody(DisplayBody):
         self._load_default_sprites()
         
         logger.info("🎮 PPU body setup complete")
+        return True
     
     def _create_hud_overlay(self, parent: ttk.Frame):
         """Create HUD overlay canvas"""
