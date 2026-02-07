@@ -14,9 +14,10 @@ Design:
 import os
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
 from loguru import logger
 from voyager_logic import STANDARD_ACTIONS
+from model_factory import get_model
+
 
 class VoyagerDecision(BaseModel):
     """Single action decision from the Voyager."""
@@ -104,11 +105,9 @@ class VoyagerAgent:
         )
         
         # Initialize Pydantic AI agent
-        # Use OpenAIModel with env vars for local Ollama
-        os.environ["OPENAI_BASE_URL"] = f"{os.environ['OLLAMA_BASE_URL']}/v1"
-        os.environ["OPENAI_API_KEY"] = "ollama"
-        
-        model = OpenAIModel(model_name)
+        # Use factory to get shared model connection
+        model = get_model(model_name, temperature=0.1)
+
         
         self.agent = Agent(
             model=model,
@@ -142,7 +141,8 @@ class VoyagerAgent:
             "1. Analyze your stats and the context.\n"
             "2. Choose the BEST Action ID from the list above.\n"
             "3. Write a short 'custom_flair' sentence to describe doing it.\n"
-            "4. Explain your reasoning.\n\n"
+            "4. Explain your reasoning.\n"
+            "5. OUTPUT PURE JSON ONLY. NO MARKDOWN. NO COMMENTS.\n\n"
             "Make your decision now."
         )
         
