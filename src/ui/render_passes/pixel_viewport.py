@@ -143,6 +143,7 @@ class PixelViewportPass(BaseRenderPass):
         self.entity_sprites = {}
         self.item_sprites = {}
         self._viewport = None
+        self.world_ledger = None
     
     def _create_pixel_viewport(self, world_ledger: Optional[WorldLedger] = None) -> _InternalPixelViewport:
         """Create a PixelViewport instance for internal use."""

@@ -157,10 +157,12 @@ class TestPixelViewportPass:
         """Test pixel viewport rendering."""
         pass_obj = PixelViewportPass()
         
-        # Create mock context
+        # Create mock context with proper position attribute
         mock_game_state = Mock(spec=GameState)
-        mock_game_state.position.x = 10.0
-        mock_game_state.position.y = 15.0
+        mock_position = Mock()
+        mock_position.x = 10.0
+        mock_position.y = 15.0
+        mock_game_state.position = mock_position
         
         mock_ledger = Mock(spec=WorldLedger)
         pass_obj.set_world_ledger(mock_ledger)
