@@ -1,9 +1,7 @@
-"""
-Asset Manifest Schema - Human-Readable Pre-Fab Definitions
+# Asset Manifest Schema - Human-Readable Pre-Fab Definitions
 
-This YAML file defines all characters, objects, and environments for the DGT Perfect Simulator.
-Characters are defined by layers of 8x8 tiles with palettes.
-"""
+# This YAML file defines all characters, objects, and environments for the DGT Perfect Simulator.
+# Characters are defined by layers of 8x8 tiles with palettes.
 
 # Character Definitions
 characters:
