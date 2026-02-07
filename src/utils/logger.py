@@ -325,7 +325,13 @@ def log_performance_metrics(metric_name: str):
 def auto_initialize() -> None:
     """Auto-initialize logging system"""
     try:
-        initialize_logging()
+        # Check if we're in development environment
+        try:
+            dev_mode = is_development()
+        except NameError:
+            dev_mode = True  # Default to development if function not available
+        
+        initialize_logging(enable_rich=dev_mode)
     except Exception as e:
         # Fallback to basic logging
         logger.add(sys.stderr, level="INFO")

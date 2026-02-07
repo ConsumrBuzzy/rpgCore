@@ -48,9 +48,34 @@ class InterestType(Enum):
 
 VIEWPORT_WIDTH = 160
 VIEWPORT_HEIGHT = 144
+VIEWPORT_WIDTH_PIXELS = 160
+VIEWPORT_HEIGHT_PIXELS = 144
+TILE_SIZE_PIXELS = 8
+VIEWPORT_TILES_X = 20
+VIEWPORT_TILES_Y = 18
+
+# === RENDERING CONSTANTS ===
+
+class RenderLayer(Enum):
+    """Rendering layers for composition"""
+    BACKGROUND = 0
+    TERRAIN = 1
+    ENTITIES = 2
+    EFFECTS = 3
+    UI = 4
+    SUBTITLES = 5
+
+# === COLOR PALETTE ===
+
+COLOR_PALETTE = {
+    "lightest": (255, 255, 255),
+    "light": (170, 170, 170),
+    "dark": (85, 85, 85),
+    "darkest": (0, 0, 0)
+}
+
+RENDER_LAYERS = list(RenderLayer)
 TILE_SIZE = 8
-VIEWPORT_TILES_X = VIEWPORT_WIDTH // TILE_SIZE  # 20 tiles
-VIEWPORT_TILES_Y = VIEWPORT_HEIGHT // TILE_SIZE  # 18 tiles
 
 # === WORLD GENERATION CONSTANTS ===
 

@@ -11,7 +11,7 @@ The Body Pillar transforms the Mind's state into visual representation.
 import time
 import asyncio
 from typing import Dict, List, Tuple, Optional, Any
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 import numpy as np
 
