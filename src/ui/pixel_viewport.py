@@ -352,7 +352,7 @@ class PixelViewport:
             "player_angle": self.state.player_angle,
             "sprite_count": len(self.entity_sprites) + len(self.item_sprites),
             "available_sprites": len(self.sprite_registry.list_templates()),
-            "render_mode": self.state.render_mode
+            "view_mode": self.state.view_mode
         }
     
     def create_demo_scene(self) -> str:
