@@ -13,7 +13,7 @@ from enum import Enum
 
 from loguru import logger
 
-from .. import BaseRenderPass, RenderContext, RenderResult, RenderPassType
+from . import BaseRenderPass, RenderContext, RenderResult, RenderPassType
 from world_ledger import WorldLedger, Coordinate, WorldChunk
 
 

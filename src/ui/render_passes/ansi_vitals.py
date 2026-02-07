@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 from loguru import logger
 
-from .. import BaseRenderPass, RenderContext, RenderResult, RenderPassType
+from . import BaseRenderPass, RenderContext, RenderResult, RenderPassType
 
 
 @dataclass
