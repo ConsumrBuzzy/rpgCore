@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from enum import Enum
 import random
 
-from ..dgt_state import Tile, TileType, Voyager
+from dgt_state import Tile, TileType, Voyager
 
 
 class TerrainType(Enum):
