@@ -11,6 +11,7 @@ import yaml
 from pathlib import Path
 from loguru import logger
 from typing import Optional, Tuple, List, Dict, Set
+from rust_sprite_scanner import RustSpriteScanner
 
 
 class DGTSheetCutter:
@@ -22,8 +23,8 @@ class DGTSheetCutter:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.root.title("DGT Sovereign Sheet-Cutter")
-        self.root.geometry("1000x700")
-        self.root.configure(bg="#2e2e2e")
+        self.root.geometry("1200x800")
+        self.root.configure(bg='#2a2a2a')
         
         # State
         self.raw_image: Optional[Image.Image] = None
@@ -33,14 +34,26 @@ class DGTSheetCutter:
         self.offset_x = 0
         self.offset_y = 0
         self.zoom = 1.0
+        
+        # Initialize Rust-powered scanner for instant performance
+        self.rust_scanner = RustSpriteScanner(
+            chest_threshold=0.3,
+            green_threshold=0.2,
+            gray_threshold=0.3,
+            diversity_threshold=0.05
+        )
+        
+        # Selection state
         self.selected_coords: Optional[Tuple[int, int]] = None
         self.batch_mode = False
+        
+        # Cut sprites storage
         self.cut_sprites: List[Dict] = []
         
         self._setup_ui()
         self._setup_bindings()
         
-        logger.info("🔪 DGT Sheet-Cutter Online.")
+        logger.info(" DGT Sheet-Cutter Online.")
     
     def _setup_ui(self) -> None:
         """Setup the user interface"""
@@ -514,13 +527,42 @@ class DGTSheetCutter:
             return True
     
     def _detect_object_type(self, sprite: Image.Image) -> str:
-        """Intelligently detect object type from sprite characteristics"""
+        """Intelligently detect object type using Rust-powered analysis"""
+        # Convert sprite to RGBA bytes for Rust analysis
         if sprite.mode != 'RGBA':
             sprite = sprite.convert('RGBA')
         
-        # Analyze sprite characteristics
         width, height = sprite.size
-        pixels = list(sprite.get_flattened_data())
+        pixels = sprite.tobytes()
+        
+        # Use Rust scanner for instant analysis
+        try:
+            analysis = self.rust_scanner.analyze_sprite(pixels, width, height)
+            
+            # Use Rust results for classification
+            if analysis['is_chest']:
+                return "entity"  # Chests are entities (interactive)
+            elif analysis['is_character']:
+                return "entity"  # Characters are entities
+            elif analysis['is_decoration']:
+                return "decoration"
+            elif analysis['is_material']:
+                return "material"
+            else:
+                return "entity"  # Default to entity for complex objects
+                
+        except Exception as e:
+            logger.error(f"⚠️ Rust analysis failed: {e}, using Python fallback")
+            # Fallback to Python analysis
+            return self._detect_object_type_python(sprite)
+    
+    def _detect_object_type_python(self, sprite: Image.Image) -> str:
+        """Python fallback object detection"""
+        if sprite.mode != 'RGBA':
+            sprite = sprite.convert('RGBA')
+        
+        width, height = sprite.size
+        pixels = list(sprite.getdata())
         
         # Count non-transparent pixels
         non_transparent = [p for p in pixels if p[3] > 0]
