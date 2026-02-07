@@ -306,10 +306,21 @@ class UnifiedDashboard:
         )
         
         # Create monitor panel
+        from d20_core import D20Result
+        
+        # Create a dummy D20Result for the monitor
+        dummy_result = D20Result(
+            success=True,
+            roll=10,
+            total_score=15,
+            difficulty_class=12
+        )
+        
         monitor_content = self.monitor.update_monitor(
-            game_state,
-            legacy_context=None,
-            faction_context=None
+            dummy_result,
+            active_goals=game_state.goal_stack,
+            completed_goals=game_state.completed_goals,
+            legacy_context=None
         )
         
         monitor_panel = Panel(
