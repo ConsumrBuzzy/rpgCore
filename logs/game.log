@@ -8856,3 +8856,6 @@ expected alphabetic or numeric character, but found '.'
 2026-02-07 13:53:33 | WARNING | utils.asset_loader:_validate_registry:330 | ⚠️ Missing critical objects: ['wooden_door', 'crystal', 'sonic_flower', 'animated_flower']
 2026-02-07 13:53:33 | INFO | utils.asset_loader:__init__:110 | 🎨 Asset Loader initialized - 0 assets loaded
 2026-02-07 13:53:33 | INFO | graphics.ppu_tk_native:__init__:428 | 🎨 Native Tkinter PPU initialized with multi-mode support
+2026-02-07 13:56:14 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 13:56:26 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 13:56:27 | ERROR | __main__:_initialize_deconstructed_systems:85 | 💥 System initialization failed: 'SystemConfig' object has no attribute 'assets_path'
