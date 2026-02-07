@@ -44,25 +44,29 @@ class Quartermaster:
         self,
         intent_id: str,
         room_tags: List[str],
-        base_difficulty: int = 10,
-        arbiter_mod: int = 0,
+        base_difficulty: int = 10, # Ignored in Iron Frame
+        arbiter_mod: int = 0,      # Kept for flavor/vibe compatibility
 
         player_stats: Dict[str, int] | None = None,
         inventory_items: List[Item] | None = None
     ) -> QuartermasterOutcome:
         """
-        Resolve the final outcome of an action.
+        Resolve outcome using Deterministic 'Iron Frame' Logic.
         
         Formula:
-        Roll (d20) + Player Bonus + Tag Modifiers >= Base DC + Arbiter Mod
+        Roll (d20) + Stats + Items >= Base DC (from Table) + Tag Mods (from Table)
         """
         
-        # 1. Calculate Target Number (DC)
-        # Arbiter mod: Positive = Harder, Negative = Easier
-        target_dc = base_difficulty + arbiter_mod
+        # 1. Calculate Target Number (DC) Deterministically
+        target_dc, dc_reasons = self.calculate_dc(intent_id, room_tags)
         
-        # 2. Calculate Modifiers from Tags
-        tag_mod, tag_reason = self._calculate_tag_modifiers(intent_id, room_tags)
+        # 2. Get Attribute Bonus
+        
+        # 2. Calculate Modifiers (Already in DC, but we need log)
+        # In Iron Frame, tags modify the DC, not the roll. 
+        # So we don't return a 'tag_mod' for the roll side.
+        tag_mod = 0 
+        tag_reason = dc_reasons
         
         # 2b. Calculate Attribute Bonus
         attr_bonus = 0
@@ -160,6 +164,34 @@ class Quartermaster:
         
         attr_name = mapping.get(intent, "luck") # Default to luck (0) if unknown
         return attr_name, stats.get(attr_name, 0)
+
+    def calculate_dc(self, intent_id: str, room_tags: List[str]) -> tuple[int, str]:
+        """
+        Calculate Difficulty Class based on Intent and Room Tags (Table Lookup).
+        
+        Returns: (Final DC, Reason String)
+        """
+        intent = intent_id.lower()
+        
+        # Base DC
+        base = DC_TABLE.get(intent, DC_TABLE["default"])
+        reasons = [f"Base DC {base}"]
+        
+        # Tag Modifiers
+        tag_delta = 0
+        modifiers = DC_TABLE.get("modifiers", {})
+        
+        for tag in room_tags:
+            norm_tag = tag.lower().replace(" ", "_")
+            if norm_tag in modifiers:
+                intent_mods = modifiers[norm_tag]
+                if intent in intent_mods:
+                    mod = intent_mods[intent]
+                    tag_delta += mod
+                    reasons.append(f"{tag.replace('_', ' ').title()} ({'+' if mod > 0 else ''}{mod} DC)")
+        
+        final_dc = base + tag_delta
+        return final_dc, ", ".join(reasons)
 
     def _calculate_tag_modifiers(self, intent_id: str, tags: List[str]) -> tuple[int, str]:
         """
