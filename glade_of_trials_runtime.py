@@ -257,23 +257,37 @@ class GladeOfTrialsRuntime:
             self._move_voyager(dx, dy)
     
     def _move_voyager(self, dx: int, dy: int) -> None:
-        """Move voyager with physics and narrative feedback"""
+        """Move voyager with physics, animation, and narrative feedback"""
         old_x, old_y = self.state.voyager.get_position()
         new_x, new_y = old_x + dx, old_y + dy
         
         if can_move_to(self.state, new_x, new_y):
             self.state.voyager.set_position(new_x, new_y)
             
-            # Movement narrative
+            # Set character to walking animation
+            character = self.ppu.character_sprites.get("voyager")
+            if character:
+                character.set_state(AnimationState.WALKING)
+            
+            # Movement narrative with tactical feedback
             direction = self._get_direction_name(dx, dy)
             self.narrative_scroll.add_movement_message(f"moved {direction}")
             
             # Check for special terrain
             self._check_terrain_effects(new_x, new_y)
             
+            # Return to idle after movement
+            self.root.after(200, self._return_character_to_idle)
+            
         else:
-            # Blocked narrative
+            # Blocked narrative with tactile feedback
             self.narrative_scroll.add_movement_message("blocked by barrier")
+            
+            # Bump animation
+            character = self.ppu.character_sprites.get("voyager")
+            if character:
+                character.set_state(AnimationState.INTERACTING)  # Use interact for bump
+                self.root.after(300, self._return_character_to_idle)
     
     def _get_direction_name(self, dx: int, dy: int) -> str:
         """Get direction name from movement delta"""
@@ -309,41 +323,99 @@ class GladeOfTrialsRuntime:
             self.narrative_scroll.add_discovery_message("You examine the iron lockbox")
     
     def _handle_interaction(self) -> None:
-        """Handle interaction key press"""
+        """Handle interaction key press with enhanced D20 mechanics"""
         voyager_x, voyager_y = self.state.voyager.get_position()
         interactable = self.state.get_interactable_at(voyager_x, voyager_y)
         
         if interactable and interactable.interaction_id:
+            # Set character to interacting animation
+            character = self.ppu.character_sprites.get("voyager")
+            if character:
+                character.set_state(AnimationState.INTERACTING)
+            
+            # Perform skill check with narrative integration
             self._perform_skill_check(interactable.interaction_id)
         else:
             self.narrative_scroll.add_interaction_message("Nothing to interact with nearby", False)
     
     def _perform_skill_check(self, check_id: str) -> None:
-        """Perform D20 skill check with full integration"""
+        """Perform D20 skill check with full tactical integration"""
         try:
             # Perform the check
             roll = self.ppu.perform_d20_check(check_id)
             
-            # Handle specific outcomes
-            if check_id == "ancient_stone" and roll.result.value >= 3:  # Success or better
-                self.narrative_scroll.add_discovery_message("The ancient secrets are revealed to you!")
-                self._handle_stone_success()
-            elif check_id == "iron_lockbox" and roll.result.value >= 3:  # Success or better
-                self.narrative_scroll.add_discovery_message("The lockbox opens, revealing its contents!")
-                self._handle_lockbox_success()
+            # Enhanced narrative feedback based on result
+            if check_id == "ancient_stone":
+                self._handle_stone_interaction(roll)
+            elif check_id == "iron_lockbox":
+                self._handle_lockbox_interaction(roll)
+            elif check_id == "void_patch":
+                self._handle_void_interaction(roll)
+            
+            # Return character to idle after interaction
+            self.root.after(1000, self._return_character_to_idle)
             
         except Exception as e:
             self.narrative_scroll.add_system_message(f"Error during skill check: {e}")
     
-    def _handle_stone_success(self) -> None:
-        """Handle successful ancient stone interaction"""
-        # Could add game state changes here
-        pass
+    def _handle_stone_interaction(self, roll: D20Roll) -> None:
+        """Handle ancient stone interaction with tactical depth"""
+        if roll.result.value >= 4:  # Critical Success
+            self.narrative_scroll.add_story_message(
+                "✨ The runes glow with ancient power! Visions of forgotten knowledge fill your mind.",
+                critical=True
+            )
+            # Could unlock new abilities here
+        elif roll.result.value >= 3:  # Success
+            self.narrative_scroll.add_discovery_message(
+                "🔍 You decipher the ancient runes. They speak of a guardian who watches over the glade."
+            )
+        elif roll.result.value == 2:  # Failure
+            self.narrative_scroll.add_interaction_message(
+                "🔍 The runes remain mysterious, their secrets hidden from you."
+            )
+        else:  # Critical Failure
+            self.narrative_scroll.add_interaction_message(
+                "💥 The stone's energy repels you! Your mind reels from the ancient magic.",
+                False
+            )
     
-    def _handle_lockbox_success(self) -> None:
-        """Handle successful lockbox interaction"""
-        # Could add inventory changes here
-        pass
+    def _handle_lockbox_interaction(self, roll: D20Roll) -> None:
+        """Handle iron lockbox interaction with tactical consequences"""
+        if roll.result.value >= 4:  # Critical Success
+            self.narrative_scroll.add_story_message(
+                "💎 With expert precision, the lock opens! Inside, you find a rare crystal that hums with energy.",
+                critical=True
+            )
+            # Could add item to inventory here
+        elif roll.result.value >= 3:  # Success
+            self.narrative_scroll.add_discovery_message(
+                "🔓 After careful work, the lock opens! You find some old coins and a mysterious key."
+            )
+        elif roll.result.value == 2:  # Failure
+            self.narrative_scroll.add_interaction_message(
+                "🔒 The lock resists your attempts. Your tools aren't quite enough for this mechanism."
+            )
+        else:  # Critical Failure
+            self.narrative_scroll.add_interaction_message(
+                "⚠️ Your lockpick snaps in half! The lock seems even more secure now.",
+                False
+            )
+            # Could increase difficulty for future attempts
+    
+    def _handle_void_interaction(self, roll: D20Roll) -> None:
+        """Handle void patch interaction (goal/ending)"""
+        self.narrative_scroll.add_story_message(
+            "🌌 The void patch welcomes you. Colors swirl and reality bends as you step through...",
+            critical=True
+        )
+        self._handle_victory()
+    
+    def _return_character_to_idle(self) -> None:
+        """Return character to idle animation after interaction"""
+        character = self.ppu.character_sprites.get("voyager")
+        if character:
+            character.set_state(AnimationState.IDLE)
     
     def _handle_victory(self) -> None:
         """Handle reaching the goal (void patch)"""
@@ -470,18 +542,26 @@ class GladeOfTrialsRuntime:
 
 
 def main():
-    """Main entry point for Glade of Trials"""
-    print("🏆 The Glade of Trials - DGT Engine Showcase")
+    """Main entry point for Glade of Trials - Final Vertical Slice"""
+    print("🏆 The Glade of Trials - DGT Engine Vertical Slice")
     print("=" * 60)
-    print("🎮 ADR 106: The Jewel-Box Demo")
-    print("✅ 16x16 Character Sprites with Animations")
-    print("✅ D20-Based Interaction Mechanics")
-    print("✅ Dual-Layer Rendering (Game + HUD)")
-    print("✅ Environmental Polish & Procedural Clutter")
-    print("✅ Narrative Scroll Storytelling")
-    print("✅ The Glade of Trials 20x15 Map")
+    print("🎮 ADR 106: The Jewel-Box Demo - FINAL VERSION")
+    print("✅ Visual Soul: 16x16 Sprites, Procedural Clutter, Game Boy Palette")
+    print("✅ Tactical Mechanics: D20 Resolution, Critical Success/Failure")
+    print("✅ Character Agency: WASD Movement, E Interaction, Animation States")
+    print("✅ Environmental Polish: 2Hz Wind Sway, Bayer Dithering, Drop Shadows")
+    print("✅ Narrative HUD: Voyager's Chronicle with Storytelling")
+    print("✅ Complete Game Loop: Exploration → Interaction → Resolution")
     print("")
-    print("🎯 This is the First Playable Slice - 100% stable, no LLM crutches!")
+    print("🎯 Sovereign Upgrades Applied:")
+    print("  🌸 Procedural clutter with 2Hz wind animation")
+    print("  🎮 4-color Game Boy palette limitation")
+    print("  🌑 Enhanced drop shadows for grounding")
+    print("  🎲 Tactical D20 mechanics with visual feedback")
+    print("  📜 Narrative Chronicle replacing coordinate logs")
+    print("  🚶‍♂️ Living character with idle breathing and walk cycles")
+    print("")
+    print("🌟 This is the complete Vertical Slice - From blocks to immersive world!")
     print("")
     
     # Create and run runtime
