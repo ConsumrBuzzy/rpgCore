@@ -393,21 +393,39 @@ class DGTDesignLab:
         """Draw template pattern on canvas"""
         self.preview_canvas.delete("all")
         
+        if not pattern or not pattern[0]:
+            return
+        
         cell_size = min(400 // len(pattern[0]), 400 // len(pattern))
         
         for y, row in enumerate(pattern):
             for x, color in enumerate(row):
+                # Convert RGB tuple to hex if needed
+                if isinstance(color, tuple):
+                    color = f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}"
+                elif isinstance(color, list):
+                    color = f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}"
+                
                 x1 = x * cell_size
                 y1 = y * cell_size
                 x2 = x1 + cell_size
                 y2 = y1 + cell_size
                 
-                self.preview_canvas.create_rectangle(
-                    x1, y1, x2, y2,
-                    fill=color,
-                    outline='gray',
-                    width=1
-                )
+                try:
+                    self.preview_canvas.create_rectangle(
+                        x1, y1, x2, y2,
+                        fill=color,
+                        outline='gray',
+                        width=1
+                    )
+                except tk.TclError:
+                    # Fallback to a safe color if the color format is invalid
+                    self.preview_canvas.create_rectangle(
+                        x1, y1, x2, y2,
+                        fill="#808080",
+                        outline='gray',
+                        width=1
+                    )
     
     def _apply_sonic_preset(self, preset_type: str) -> None:
         """Apply Sonic Field preset"""
