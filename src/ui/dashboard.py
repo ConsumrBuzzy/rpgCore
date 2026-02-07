@@ -78,8 +78,9 @@ class ConversationEngine:
             Mood string (hostile, unfriendly, neutral, friendly, helpful)
         """
         # Get faction at coordinate
+        from world_ledger import Coordinate
         faction = self.faction_system.get_faction_at_coordinate(
-            type('Coordinate', (coordinate[0], coordinate[1], 0))
+            Coordinate(coordinate[0], coordinate[1], 0)
         )
         
         # Calculate mood components
