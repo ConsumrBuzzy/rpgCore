@@ -476,6 +476,11 @@ class ChronosEngine:
         
         return quest
     
+    def set_persona_engine(self, persona_engine: PersonaEngine) -> None:
+        """Inject Persona Engine dependency for NPC interactions"""
+        self.persona_engine = persona_engine
+        logger.info("⏳ Persona Engine dependency injected for NPC quests")
+    
     def _initialize_quest_templates(self) -> Dict[str, List[Dict[str, str]]]:
         """Initialize quest templates for procedural generation"""
         return {
@@ -499,6 +504,28 @@ class ChronosEngine:
                 {
                     "title": "Ancient Relic",
                     "description": "Rumors of an ancient relic hidden nearby."
+                }
+            ],
+            "npc_quests": [
+                {
+                    "title": "Cellar Cleanup",
+                    "description": "{name} needs help clearing out rats from the cellar.",
+                    "experience": 30
+                },
+                {
+                    "title": "Delivery Service",
+                    "description": "{name} needs a package delivered to the town square.",
+                    "experience": 25
+                },
+                {
+                    "title": "Information Gathering",
+                    "description": "{name} wants to know what's happening outside town.",
+                    "experience": 20
+                },
+                {
+                    "title": "Guard Duty",
+                    "description": "{name} needs someone to watch the entrance for a while.",
+                    "experience": 35
                 }
             ]
         }

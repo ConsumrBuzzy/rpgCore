@@ -168,6 +168,7 @@ class DGTSystem:
             
             # Connect pillars with dependency injection
             self.world_engine.set_chronos_engine(self.chronos_engine)
+            self.chronos_engine.set_persona_engine(self.persona_engine)
             logger.info("🔗 Pillar dependencies connected")
             
             # Initialize Heartbeat Controller
