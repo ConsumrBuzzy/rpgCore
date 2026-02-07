@@ -233,6 +233,7 @@ class GameState(BaseModel):
         Generate a text description of current context for LLM prompting.
         
         This is what the Narrative Engine sees when generating outcomes.
+        Enhanced with Scenic Anchor pre-baked metadata.
         """
         # Use current_location from LocationResolver if available
         location_name = self.current_location
@@ -242,6 +243,11 @@ class GameState(BaseModel):
             room = self.rooms.get(self.current_room)
             if room:
                 location_name = room.name
+        
+        # Check for Scenic Anchor context first
+        scenic_context = self._get_scenic_context(location_name)
+        if scenic_context:
+            return scenic_context
         
         if not location_name or location_name == "Unknown Area":
             # Try to get location from coordinates
@@ -283,6 +289,34 @@ class GameState(BaseModel):
         context += self.get_local_context()
         
         return context
+    
+    def _get_scenic_context(self, location_name: str) -> Optional[str]:
+        """Get pre-baked scenic context if available."""
+        try:
+            # Check if we have scenic context stored
+            if hasattr(self, '_scenic_context'):
+                # Try to find context by location name
+                for location_id, context in self._scenic_context.items():
+                    if location_id.lower() in location_name.lower() or location_name.lower() in location_id.lower():
+                        return context
+                
+                # Try to find by exact match
+                if location_name.lower() in self._scenic_context:
+                    return self._scenic_context[location_name.lower()]
+            
+            # If not found, try to get from Scenic Anchor directly
+            from logic.scenic_anchor import get_scenic_anchor
+            scenic_anchor = get_scenic_anchor()
+            
+            # Try to find by name
+            metadata = scenic_anchor.get_location_by_name(location_name)
+            if metadata:
+                return scenic_anchor.build_narrative_context(metadata.location_id)
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to get scenic context: {e}")
+        
+        return None
     
     def update_relationship(
         self,

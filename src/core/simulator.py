@@ -723,22 +723,27 @@ class SimulatorHost:
             logger.error(f"❌ Failed to execute portal transition: {e}")
     
     def _inject_interior_context(self, zone) -> None:
-        """Inject interior context for the Chronicler."""
+        """Inject interior context for the Chronicler using Scenic Anchor."""
         try:
-            # Build interior context from zone data
-            interior_context = f"📍 Location: {zone.name}\n"
-            interior_context += f"Environment: {', '.join(zone.tags)}\n"
+            # Get pre-baked metadata from Scenic Anchor
+            location_id = zone.env_type.value
+            metadata = self.scenic_anchor.get_location_metadata(location_id)
             
-            # Add landmark descriptions
-            if zone.landmarks:
-                interior_context += "Notable features:\n"
-                for landmark in zone.landmarks:
-                    interior_context += f"- {landmark.name}: {landmark.description}\n"
-            
-            # Update GameState context temporarily
-            if hasattr(self.state, '_interior_context'):
-                self.state._interior_context = interior_context
-                logger.info(f"📖 Interior context injected: {zone.name}")
+            if metadata:
+                # Build enhanced context with pre-baked data
+                enhanced_context = self.scenic_anchor.build_narrative_context(location_id)
+                
+                # Store in GameState for Chronicler access
+                if not hasattr(self.state, '_scenic_context'):
+                    self.state._scenic_context = {}
+                
+                self.state._scenic_context[location_id] = enhanced_context
+                logger.info(f"📖 Scenic context injected: {zone.name} with {len(metadata.key_objects)} key objects")
+                
+                # Also store fallback for instant display
+                self.state._fallback_description = self.scenic_anchor.get_fallback_description(location_id)
+            else:
+                logger.warning(f"⚠️ No scenic metadata found for {location_id}")
             
         except Exception as e:
             logger.error(f"❌ Failed to inject interior context: {e}")
