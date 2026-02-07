@@ -313,7 +313,13 @@ class UnifiedDashboard:
             success=True,
             roll=10,
             total_score=15,
-            difficulty_class=12
+            difficulty_class=12,
+            hp_delta=0,
+            reputation_deltas={},
+            relationship_changes={},
+            npc_state_changes={},
+            goals_completed=[],
+            narrative_context="Test action"
         )
         
         monitor_content = self.monitor.update_monitor(
