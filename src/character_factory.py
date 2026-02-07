@@ -32,20 +32,21 @@ class Archetype(BaseModel):
 
 class CharacterFactory:
     """
-    Factory for creating D&D-style character archetypes.
+    Factory for creating D&D-style character archetypes with vector traits.
     
-    Generates characters with balanced stat arrays and appropriate skills
-    based on their personality archetype.
+    Generates characters with balanced stat arrays, appropriate skills,
+    and procedurally generated trait combinations based on personality.
     """
     
     def __init__(self):
-        """Initialize factory with archetype definitions."""
+        """Initialize factory with archetype definitions and trait library."""
         self.archetypes = self._load_archetypes()
         self.skill_items = self._load_skill_items()
-        logger.info("Character Factory initialized with archetypes")
+        self.trait_library = TraitLibrary()
+        logger.info("Character Factory initialized with vector traits support")
     
     def _load_archetypes(self) -> Dict[str, Archetype]:
-        """Load archetype definitions."""
+        """Load archetype definitions with vector trait support."""
         return {
             "curious": Archetype(
                 name="The Explorer",
@@ -53,12 +54,16 @@ class CharacterFactory:
                 stat_array={
                     "strength": 10,
                     "dexterity": 12,
+                    "constitution": 10,
                     "intelligence": 16,
-                    "charisma": 12
+                    "wisdom": 12,
+                    "charisma": 10
                 },
                 skill_proficiencies=["investigate", "perception", "search"],
                 starting_inventory=["magnifying glass", "journal", "quill pen"],
-                personality_traits=["inquisitive", "observant", "knowledge-seeking"]
+                personality_traits=["inquisitive", "observant", "knowledge-seeking"],
+                vector_tags=["curious", "observant"],
+                trait_categories=["personality", "behavior"]
             ),
             
             "aggressive": Archetype(
@@ -67,12 +72,16 @@ class CharacterFactory:
                 stat_array={
                     "strength": 18,
                     "dexterity": 12,
+                    "constitution": 14,
                     "intelligence": 10,
+                    "wisdom": 10,
                     "charisma": 10
                 },
                 skill_proficiencies=["combat", "athletics", "force"],
                 starting_inventory=["iron sword", "leather armor", "shield"],
-                personality_traits=["bold", "direct", "combat-ready"]
+                personality_traits=["bold", "direct", "combat-ready"],
+                vector_tags=["aggressive", "brave"],
+                trait_categories=["personality", "social"]
             ),
             
             "tactical": Archetype(
@@ -81,12 +90,16 @@ class CharacterFactory:
                 stat_array={
                     "strength": 12,
                     "dexterity": 14,
+                    "constitution": 12,
                     "intelligence": 14,
+                    "wisdom": 12,
                     "charisma": 12
                 },
                 skill_proficiencies=["finesse", "perception", "stealth"],
                 starting_inventory=["dagger", "leather armor", "tactical map"],
-                personality_traits=["analytical", "patient", "strategic"]
+                personality_traits=["analytical", "patient", "strategic"],
+                vector_tags=["cautious", "methodical", "observant"],
+                trait_categories=["personality", "behavior"]
             ),
             
             "chaotic": Archetype(
@@ -95,12 +108,16 @@ class CharacterFactory:
                 stat_array={
                     "strength": 14,
                     "dexterity": 16,
+                    "constitution": 10,
                     "intelligence": 10,
+                    "wisdom": 10,
                     "charisma": 12
                 },
                 skill_proficiencies=["distract", "acrobatics", "stealth"],
                 starting_inventory=["juggling balls", "disguise kit", "lockpicks"],
-                personality_traits=["impulsive", "adaptable", "unpredictable"]
+                personality_traits=["impulsive", "adaptable", "unpredictable"],
+                vector_tags=["impulsive", "deceptive"],
+                trait_categories=["personality", "behavior"]
             ),
             
             "cunning": Archetype(
@@ -109,12 +126,16 @@ class CharacterFactory:
                 stat_array={
                     "strength": 10,
                     "dexterity": 18,
+                    "constitution": 10,
                     "intelligence": 12,
+                    "wisdom": 10,
                     "charisma": 12
                 },
                 skill_proficiencies=["stealth", "finesse", "charm"],
                 starting_inventory=["lockpicks", "black hood", "dagger"],
-                personality_traits=["sly", "opportunistic", "deceptive"]
+                personality_traits=["sly", "opportunistic", "deceptive"],
+                vector_tags=["cunning", "deceptive", "quiet"],
+                trait_categories=["personality", "behavior", "social"]
             ),
             
             "diplomatic": Archetype(
@@ -123,12 +144,16 @@ class CharacterFactory:
                 stat_array={
                     "strength": 10,
                     "dexterity": 12,
+                    "constitution": 10,
                     "intelligence": 12,
+                    "wisdom": 10,
                     "charisma": 18
                 },
                 skill_proficiencies=["charm", "persuade", "social"],
                 starting_inventory=["formal clothes", "signet ring", "diplomatic papers"],
-                personality_traits=["charming", "persuasive", "diplomatic"]
+                personality_traits=["charming", "persuasive", "diplomatic"],
+                vector_tags=["charismatic", "diplomatic", "respectful"],
+                trait_categories=["personality", "social"]
             )
         }
     
