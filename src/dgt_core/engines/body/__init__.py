@@ -15,6 +15,11 @@ from .cockpit import CockpitBody, create_cockpit_body
 from .tri_modal_engine import TriModalEngine, BodyEngine, EngineConfig
 from .legacy_adapter import LegacyGraphicsEngineAdapter, create_legacy_engine
 
+# Factory functions
+def create_tri_modal_engine(config: Optional[EngineConfig] = None) -> TriModalEngine:
+    """Create Tri-Modal Engine with default configuration"""
+    return TriModalEngine(config)
+
 # Legacy Graphics Engine (frozen artifact)
 from .graphics_engine import GraphicsEngine, RenderFrame, TileBank, Viewport, RenderLayer
 
