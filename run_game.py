@@ -269,7 +269,9 @@ class SyntheticRealityDirector:
             # Isometric rendering
             try:
                 # Update static canvas with current game state
+                print(f"DEBUG: Updating static canvas with game state at ({self.game_state.position.x}, {self.game_state.position.y})")
                 self.static_canvas.update_game_state(self.game_state)
+                print("DEBUG: Static canvas updated")
                 
                 # Show detailed isometric view separately for clarity
                 frame = self.renderer.render_frame(self.game_state)
