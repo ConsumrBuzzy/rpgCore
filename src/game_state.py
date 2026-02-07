@@ -20,6 +20,14 @@ class PlayerStats(BaseModel):
     max_hp: int = 100
     gold: int = Field(default=50, ge=0)
     inventory: List[str] = Field(default_factory=list)
+    attributes: Dict[str, int] = Field(
+        default_factory=lambda: {
+            "strength": 0,
+            "dexterity": 0,
+            "intelligence": 0,
+            "charisma": 0
+        }
+    )
     
     def is_alive(self) -> bool:
         """Check if player is still alive."""

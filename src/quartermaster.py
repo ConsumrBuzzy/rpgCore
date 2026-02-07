@@ -45,7 +45,7 @@ class Quartermaster:
         room_tags: List[str],
         base_difficulty: int = 10,
         arbiter_mod: int = 0,
-        player_bonus: int = 0
+        player_stats: Dict[str, int] | None = None
     ) -> QuartermasterOutcome:
         """
         Resolve the final outcome of an action.
@@ -61,11 +61,20 @@ class Quartermaster:
         # 2. Calculate Modifiers from Tags
         tag_mod, tag_reason = self._calculate_tag_modifiers(intent_id, room_tags)
         
+        # 2b. Calculate Attribute Bonus
+        attr_bonus = 0
+        attr_reason = ""
+        if player_stats:
+            attr_name, attr_val = self._get_attribute_bonus(intent_id, player_stats)
+            if attr_val != 0:
+                attr_bonus = attr_val
+                attr_reason = f"{attr_name.title()} ({attr_val:+d})"
+        
         # 3. Roll the Die
         d20_roll = random.randint(1, 20)
         
         # 4. Total Score
-        total_score = d20_roll + player_bonus + tag_mod
+        total_score = d20_roll + attr_bonus + tag_mod
         
         # 5. Determine Success
         success = total_score >= target_dc
@@ -94,8 +103,48 @@ class Quartermaster:
             total_score=total_score,
             difficulty_class=target_dc,
             hp_delta=hp_delta,
-            narrative_context=f"{tag_reason} (Rolled {d20_roll})" if tag_reason else f"(Rolled {d20_roll})"
+        # Construct narrative context
+        context_parts = []
+        if tag_reason:
+            context_parts.append(tag_reason)
+        if attr_reason:
+            context_parts.append(attr_reason)
+        context_parts.append(f"Rolled {d20_roll}")
+        
+        return QuartermasterOutcome(
+            success=success,
+            total_score=total_score,
+            difficulty_class=target_dc,
+            hp_delta=hp_delta,
+            narrative_context=" | ".join(context_parts)
         )
+
+    def _get_attribute_bonus(self, intent_id: str, stats: Dict[str, int]) -> tuple[str, int]:
+        """Map intent to primary attribute."""
+        intent = intent_id.lower()
+        
+        # Mapping Logic
+        mapping = {
+            "force": "strength",
+            "combat": "strength",
+            "athletics": "strength",
+            
+            "finesse": "dexterity",
+            "stealth": "dexterity",
+            "acrobatics": "dexterity",
+            
+            "investigate": "intelligence",
+            "search": "intelligence",
+            "perception": "intelligence",
+            
+            "charm": "charisma",
+            "persuade": "charisma",
+            "social": "charisma",
+            "distract": "charisma"
+        }
+        
+        attr_name = mapping.get(intent, "luck") # Default to luck (0) if unknown
+        return attr_name, stats.get(attr_name, 0)
 
     def _calculate_tag_modifiers(self, intent_id: str, tags: List[str]) -> tuple[int, str]:
         """

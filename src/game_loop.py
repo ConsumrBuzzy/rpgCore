@@ -170,7 +170,8 @@ class GameREPL:
             intent_id=intent_match.intent_id,
             room_tags=room_tags,
             arbiter_mod=arbiter_result.difficulty_mod,
-            player_bonus=0 # TODO: Add stats from Player model
+            arbiter_mod=arbiter_result.difficulty_mod,
+            player_stats=self.state.player.attributes
         )
         
         logger.info(
