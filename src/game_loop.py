@@ -209,6 +209,11 @@ class GameREPL:
             inventory_items=self.state.player.inventory
         )
         
+        self.console.print(
+            f"[dim]🎲 Math: Total {outcome.total_score} vs DC {outcome.difficulty_class} "
+            f"({'SUCCESS' if outcome.success else 'FAILURE'})[/dim]"
+        )
+        
         logger.info(
             f"Quartermaster: success={outcome.success}, "
             f"roll={outcome.total_score} vs DC {outcome.difficulty_class}"
