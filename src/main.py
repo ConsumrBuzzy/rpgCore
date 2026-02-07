@@ -114,7 +114,11 @@ class DGTSystem:
             
             # Initialize logging
             if config.get("enable_logging", True):
-                initialize_logging()
+                try:
+                    initialize_logging()
+                except NameError:
+                    # Fallback if logging utilities not available
+                    logger.info("📝 Using fallback logging")
             
             # Initialize World Engine with scene-specific seed
             seed = config.get("seed", "TAVERN_SEED")
