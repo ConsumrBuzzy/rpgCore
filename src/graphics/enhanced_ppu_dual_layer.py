@@ -313,7 +313,15 @@ class EnhancedAssetLoader:
             "iron_lockbox": {"color": "#9e9e9e", "material": "metal"},
             "ancient_stone": {"color": "#8b7355", "material": "stone"},
             "void_patch": {"color": "#1a0033", "material": "void"},
-            "grass_tuft": {"color": "#3a6b35", "material": "organic"}
+            "grass_tuft": {"color": "#3a6b35", "material": "organic"},
+            # Add missing sprites from Glade of Trials
+            "swaying_oak": {"color": "#2d5a27", "material": "organic"},
+            "rock_formation": {"color": "#757575", "material": "stone"},
+            "bush_cluster": {"color": "#4b7845", "material": "organic"},
+            "mystic_flower": {"color": "#ff69b4", "material": "organic"},
+            "grass": {"color": "#3a6b35", "material": "organic"},
+            "dirt_path": {"color": "#8b7355", "material": "stone"},
+            "stone_ground": {"color": "#959595", "material": "stone"}
         }
         
         for sprite_id, config in sprite_configs.items():
