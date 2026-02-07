@@ -293,6 +293,7 @@ class DGTOptimizationIntegrator:
             step_descriptions = {
                 "memory_mapping": "Memory-Mapped Asset Loading",
                 "deterministic_validation": "D20 Core Deterministic Validation",
+                "turn_around_benchmark": "Turn-Around Latency Benchmark",
                 "performance_benchmark": "Performance Benchmarking",
                 "integration_report": "Integration Report Generation"
             }
@@ -308,6 +309,11 @@ class DGTOptimizationIntegrator:
                 elif step_key == "deterministic_validation":
                     score = step_data.get("consistency_score", 0)
                     f.write(f"- **Consistency Score:** {score:.1%}\n")
+                elif step_key == "turn_around_benchmark":
+                    success_rate = step_data.get("success_rate", 0)
+                    recovery_time = step_data.get("avg_recovery_time", 0)
+                    f.write(f"- **Success Rate:** {success_rate:.1%}\n")
+                    f.write(f"- **Avg Recovery Time:** {recovery_time:.3f}s\n")
                 elif step_key == "performance_benchmark":
                     boot_time = step_data.get("boot_time", 0)
                     narrative_latency = step_data.get("narrative_latency", 0)
