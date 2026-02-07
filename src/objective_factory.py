@@ -124,24 +124,41 @@ OBJECTIVE_TEMPLATES = {
     ]
 }
 
+def create_goal_from_blueprint(g_def: Dict) -> Goal:
+    """Creates a Goal object from a blueprint definition."""
+    return Goal(
+        id=g_def["id"],
+        description=g_def["desc"],
+        method_weights=g_def.get("methods", {}),
+        target_tags=g_def.get("targets", []),
+        required_intent=g_def.get("success_intent"),
+        target_npc_state=g_def.get("success_state"),
+        type="short"
+    )
+
 def generate_goals_for_location(loc_id: str, template_id: str) -> List[Goal]:
-    """Generates 1-2 goals for a specific location."""
+    """Generates goals for a specific location using templates or blueprints."""
     
     available = OBJECTIVE_TEMPLATES.get(template_id, OBJECTIVE_TEMPLATES["tavern"])
-    num_goals = random.randint(1, 1) # Stick to 1 primary goal for now
+    num_goals = random.randint(1, 1)
     
     selected = random.sample(available, num_goals)
     goals = []
     
     for g_def in selected:
+        # Map template list format to weights dictionary for backward compat
+        methods = g_def.get("methods", [])
+        weights = {m: 1.0 for m in methods} if isinstance(methods, list) else methods
+        
         goals.append(Goal(
             id=g_def["id"],
             description=g_def["desc"],
-            method_tags=g_def["methods"],
-            target_tags=g_def["targets"],
+            method_weights=weights,
+            target_tags=g_def.get("targets", []),
             required_intent=g_def.get("intent"),
             target_npc_state=g_def.get("state"),
             type="short"
         ))
         
     return goals
+

@@ -72,16 +72,17 @@ class GameREPL:
                 logger.error(f"Failed to load save: {e}. Starting fresh.")
                 from factories import CharacterFactory, ScenarioFactory
                 self.state = GameState(player=CharacterFactory.create(personality))
-                if personality.lower() == "cunning":
-                    self._initialize_story_frame(ScenarioFactory.get_heist_story())
+                # Auto-load heist for cunning/diplomatic archetypes
+                if personality.lower() in ["cunning", "diplomatic"]:
+                    self._initialize_story_frame(ScenarioFactory.load_act("heist"))
         else:
             from factories import CharacterFactory, ScenarioFactory
             self.state = GameState(player=CharacterFactory.create(personality))
             self.console.print(f"[cyan]Loaded {personality.title()} archetype...[/cyan]")
             
-            # Special Story Frame for Cunning archetype
-            if personality.lower() == "cunning":
-                self._initialize_story_frame(ScenarioFactory.get_heist_story())
+            # Special Story Frame for specialized archetypes
+            if personality.lower() in ["cunning", "diplomatic"]:
+                self._initialize_story_frame(ScenarioFactory.load_act("heist"))
             else:
                 self.state = self._initialize_fresh_state()
         
@@ -187,38 +188,49 @@ class GameREPL:
                 # Items could be dynamic, let's refresh them from props
                 existing.items = [p.name for p in loc.props]
     
-    def _initialize_story_frame(self, frame: list[dict]):
-        """Build the world map and goal stack from a story frame."""
+    def _initialize_story_frame(self, blueprint: dict):
+        """Build the world map and goal stack from a scenario blueprint."""
         from factories import Room, NPC, Goal
-        from objective_factory import generate_goals_for_location
+        from objective_factory import create_goal_from_blueprint
         
-        self.console.print(f"[bold yellow]📖 Weaving Story: {len(frame)} locations ahead...[/bold yellow]")
+        if not blueprint:
+            logger.error("Empty blueprint provided to _initialize_story_frame")
+            return
+
+        self.console.print(f"[bold yellow]📖 Weaving Story: {blueprint.get('act_name', 'Unnamed Act')}[/bold yellow]")
         
-        for i, entry in enumerate(frame):
+        sequence = blueprint.get("sequence", [])
+        for i, entry in enumerate(sequence):
             loc_id = entry["id"]
             
-            # Simple linear exits
+            # 1. Create Linear Exits
             exits = {}
-            if i < len(frame) - 1:
-                exits["forward"] = frame[i+1]["id"]
+            if i < len(sequence) - 1:
+                exits["forward"] = sequence[i+1]["id"]
             if i > 0:
-                exits["back"] = frame[i-1]["id"]
+                exits["back"] = sequence[i-1]["id"]
+                
+            # 2. Build Room and NPCs
+            npcs = []
+            for n_def in entry.get("npcs", []):
+                npcs.append(NPC(name=n_def["name"], description=n_def["description"]))
                 
             room = Room(
                 name=entry["name"],
                 description=entry["description"],
-                npcs=[NPC(name=name, description=f"A {name.lower()}") for name in entry["npcs"]],
+                npcs=npcs,
                 tags=entry["tags"],
                 exits=exits
             )
             self.state.rooms[loc_id] = room
             
-            # Generate Goals for the Stack
-            goals = generate_goals_for_location(loc_id, entry["goals_template"])
-            self.state.goal_stack.extend(goals)
+            # 3. Generate Goals from Blueprint
+            for g_def in entry.get("objectives", []):
+                goal = create_goal_from_blueprint(g_def)
+                self.state.goal_stack.append(goal)
             
-        if frame:
-            self.state.current_room = frame[0]["id"]
+        if sequence:
+            self.state.current_room = sequence[0]["id"]
 
     def warm_up(self):
         """
@@ -613,6 +625,8 @@ def main():
         default="curious",
         help="Voyager personality (default: curious)"
     )
+    # DEBUG: Force argparse to see the new choices if it's being stubborn
+    known_args, _ = parser.parse_known_args()
     args = parser.parse_args()
     
     # Configure logging

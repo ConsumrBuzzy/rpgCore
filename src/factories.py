@@ -37,36 +37,30 @@ class CharacterFactory:
             gold=config["gold"]
         )
 
+import json
+from pathlib import Path
+
 class ScenarioFactory:
-    """Generates a sequence of locations and goals (Story Frames)."""
-    
-    HEIST_FRAME = [
-        {
-            "id": "tavern",
-            "name": "The Rusty Flagon",
-            "description": "A dimly lit tavern where deals are made in shadows.",
-            "npcs": ["Bartender", "Informant"],
-            "tags": ["Low Light", "Noisy"],
-            "goals_template": "tavern"
-        },
-        {
-            "id": "market",
-            "name": "Silver Market",
-            "description": "A bustling plaza filled with merchants and guards.",
-            "npcs": ["Merchant", "Guard"],
-            "tags": ["Crowded", "High Alert"],
-            "goals_template": "plaza"
-        },
-        {
-            "id": "vault",
-            "name": "The Obsidian Vault Entrance",
-            "description": "A heavily guarded iron door leading deep underground.",
-            "npcs": ["Sentinel", "Captain"],
-            "tags": ["Anti-Magic", "Silent"],
-            "goals_template": "dungeon"
-        }
-    ]
+    """Generates a sequence of locations and goals (Story Frames) from JSON."""
     
     @classmethod
-    def get_heist_story(cls) -> List[Dict]:
-        return cls.HEIST_FRAME
+    def load_act(cls, act_id: str) -> Dict:
+        """Load a scenario blueprint from JSON."""
+        # Standardize path: scenario_{act_id}.json in root
+        blueprint_path = Path(f"scenario_{act_id}.json")
+        if not blueprint_path.exists():
+            logger.error(f"Blueprint not found: {blueprint_path}")
+            return {}
+            
+        try:
+            with open(blueprint_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error loading blueprint {act_id}: {e}")
+            return {}
+
+    @classmethod
+    def get_heist_story(cls) -> Dict:
+        """Legacy wrapper for heist blueprint."""
+        return cls.load_act("heist")
+

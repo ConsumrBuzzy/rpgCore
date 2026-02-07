@@ -1,0 +1,66 @@
+{
+    "act_name": "The Obsidian Heist",
+    "archetype_hooks": {
+        "cunning": "heist_v1",
+        "aggressive": "brawl_v1"
+    },
+    "sequence": [
+        {
+            "id": "tavern",
+            "name": "The Rusty Flagon",
+            "description": "A dimly lit tavern where deals are made in shadows.",
+            "npcs": [
+                {
+                    "name": "Bartender",
+                    "description": "A burly man who knows everything that happens in the docks."
+                }
+            ],
+            "tags": [
+                "Low Light",
+                "Noisy"
+            ],
+            "objectives": [
+                {
+                    "id": "get_ledger",
+                    "desc": "Acquire the merchant's ledger from the back room.",
+                    "methods": {
+                        "finesse": 1.5,
+                        "stealth": 2.0,
+                        "force": 0.5
+                    },
+                    "success_intent": "finesse",
+                    "success_state": "neutral"
+                }
+            ]
+        },
+        {
+            "id": "market",
+            "name": "Silver Market",
+            "description": "A bustling plaza filled with merchants and watchful guards.",
+            "npcs": [
+                {
+                    "name": "Guard",
+                    "description": "A stern soldier patrolling the high-end stalls."
+                }
+            ],
+            "tags": [
+                "Crowded",
+                "Sunlight",
+                "Wanted"
+            ],
+            "objectives": [
+                {
+                    "id": "bypass_gate",
+                    "desc": "Gain access to the inner vault entrance.",
+                    "methods": {
+                        "charm": 1.8,
+                        "stealth": 1.2,
+                        "combat": 0.2
+                    },
+                    "success_intent": "charm",
+                    "success_state": "charmed"
+                }
+            ]
+        }
+    ]
+}

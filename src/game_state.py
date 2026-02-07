@@ -18,7 +18,7 @@ class Goal(BaseModel):
     id: str
     description: str
     target_tags: List[str] = Field(default_factory=list) # Tags to look for to complete
-    method_tags: List[str] = Field(default_factory=list) # Intents that align with this goal
+    method_weights: Dict[str, float] = Field(default_factory=dict) # Weighting for intents
     is_completed: bool = False # Legacy, kept for compat
     status: Literal["active", "success", "failed"] = "active"
     required_intent: str | None = None # Intent that triggers completion

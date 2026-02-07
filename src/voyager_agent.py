@@ -168,17 +168,24 @@ class VoyagerAgent:
                 
                 for goal in goal_stack:
                     is_top_goal = (goal == current_goal)
-                    methods = getattr(goal, 'method_tags', []) if not isinstance(goal, dict) else goal.get('method_tags', [])
+                    weights = getattr(goal, 'method_weights', {}) if not isinstance(goal, dict) else goal.get('method_weights', {})
                     
-                    # Base method bonus
-                    if action_id in methods:
-                        goal_bonus += 500 if is_top_goal else 200
+                    # Base method bonus with multipliers
+                    if action_id in weights:
+                        weight = weights[action_id]
+                        goal_bonus += (500 * weight) if is_top_goal else (200 * weight)
                     
                     # Hard trigger bonus (required_intent)
                     req_intent = getattr(goal, 'required_intent', None) if not isinstance(goal, dict) else goal.get('required_intent')
                     if req_intent and action_id == req_intent:
                         goal_bonus += 1000 if is_top_goal else 400
             
+            # G. Turn-Tier Memory: Action Decay (Prevent loops)
+            if turn_history:
+                # We normalize action history to intent IDs if possible, or just literal match
+                if action_id in turn_history[-3:]:
+                    score -= 400
+
             score += goal_bonus
 
             scored_actions.append({

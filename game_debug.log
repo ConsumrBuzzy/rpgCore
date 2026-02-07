@@ -2519,3 +2519,81 @@
 22:12:26 | INFO | Loot generated: Skull Fragment
 22:12:26 | INFO | Loot added to inventory: Skull Fragment
 22:12:26 | DEBUG | Chronicler streaming: force
+22:18:11 | DEBUG | Added intent: distract with 5 exemplars
+22:18:11 | DEBUG | Added intent: force with 5 exemplars
+22:18:11 | DEBUG | Added intent: finesse with 5 exemplars
+22:18:11 | DEBUG | Added intent: charm with 5 exemplars
+22:18:11 | DEBUG | Added intent: intimidate with 5 exemplars
+22:18:11 | DEBUG | Added intent: deceive with 5 exemplars
+22:18:11 | DEBUG | Added intent: investigate with 5 exemplars
+22:18:11 | DEBUG | Added intent: use_item with 5 exemplars
+22:18:11 | DEBUG | Added intent: defend with 5 exemplars
+22:18:11 | DEBUG | Added intent: leave_area with 5 exemplars
+22:18:11 | DEBUG | Added intent: improvise with 5 exemplars
+22:18:11 | INFO | Loading embedding model: all-MiniLM-L6-v2
+22:18:17 | INFO | Precomputed embeddings for 11 intents (55 total exemplars)
+22:18:17 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+22:18:17 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+22:18:17 | INFO | Voyager initialized (Deterministic) with 'cunning' personality
+22:18:17 | INFO | Game initialized with Council of Three architecture
+22:18:17 | INFO | Voyager Heuristic: Selected finesse with score 193
+22:18:17 | INFO | Intent resolution: 'Eavesdrop on conversations' → investigate (confidence: 0.296, matched exemplar: 'Inspect the area for secret passages')
+22:18:17 | WARNING | Confidence 0.296 below threshold 0.35
+22:18:19 | INFO | Voyager Heuristic: Selected finesse with score 178
+22:18:19 | INFO | Intent resolution: 'I look around the room carefully' → investigate (confidence: 0.668, matched exemplar: 'Search the room carefully for hidden clues')
+22:18:19 | DEBUG | Action: investigate | Tags: ['Rowdy Crowd', 'Sticky Floors'] | Roll: 18 + Attr: 5 + Item: 0 + Tag: 0 = 23 vs DC: 20 (10 + 5) -> SUCCESS
+22:18:19 | INFO | Quartermaster: success=True, roll=23 vs DC 20
+22:18:19 | INFO | Loot generated: Iron Key
+22:18:19 | INFO | Loot added to inventory: Iron Key
+22:18:19 | INFO | Social consequences applied for None (success=True)
+22:18:19 | DEBUG | Chronicler streaming: investigate
+22:18:20 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:18:20 | INFO | Game saved to savegame.json
+22:18:22 | INFO | Voyager Heuristic: Selected finesse with score 164
+22:18:22 | INFO | Intent resolution: 'Eavesdrop on conversations' → investigate (confidence: 0.296, matched exemplar: 'Inspect the area for secret passages')
+22:18:22 | WARNING | Confidence 0.296 below threshold 0.35
+22:18:24 | INFO | Voyager Heuristic: Selected finesse with score 149
+22:18:24 | INFO | Intent resolution: 'I look around the room carefully' → investigate (confidence: 0.668, matched exemplar: 'Search the room carefully for hidden clues')
+22:18:24 | DEBUG | Action: investigate | Tags: ['Rowdy Crowd', 'Sticky Floors'] | Roll: 12 + Attr: 5 + Item: 0 + Tag: 0 = 17 vs DC: 20 (10 + 5) -> FAILURE
+22:18:24 | INFO | Quartermaster: success=False, roll=17 vs DC 20
+22:18:24 | INFO | Player took 4 damage. HP: 96/100
+22:18:24 | INFO | Social consequences applied for None (success=False)
+22:18:24 | DEBUG | Chronicler streaming: investigate
+22:18:24 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:18:24 | INFO | Game saved to savegame.json
+22:18:26 | INFO | Voyager Heuristic: Selected finesse with score 149
+22:18:26 | INFO | Intent resolution: 'Eavesdrop on conversations' → investigate (confidence: 0.296, matched exemplar: 'Inspect the area for secret passages')
+22:18:26 | WARNING | Confidence 0.296 below threshold 0.35
+22:18:29 | INFO | Voyager Heuristic: Selected finesse with score 149
+22:18:29 | INFO | Intent resolution: 'I look around the room carefully' → investigate (confidence: 0.668, matched exemplar: 'Search the room carefully for hidden clues')
+22:18:29 | DEBUG | Action: investigate | Tags: ['Rowdy Crowd', 'Sticky Floors'] | Roll: 13 + Attr: 5 + Item: 0 + Tag: 0 = 18 vs DC: 20 (10 + 5) -> FAILURE
+22:18:29 | INFO | Quartermaster: success=False, roll=18 vs DC 20
+22:18:29 | INFO | Player took 2 damage. HP: 94/100
+22:18:29 | INFO | Social consequences applied for None (success=False)
+22:18:29 | DEBUG | Chronicler streaming: investigate
+22:18:29 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:18:29 | INFO | Game saved to savegame.json
+22:18:31 | INFO | Voyager Heuristic: Selected finesse with score 149
+22:18:31 | INFO | Intent resolution: 'Eavesdrop on conversations' → investigate (confidence: 0.296, matched exemplar: 'Inspect the area for secret passages')
+22:18:31 | WARNING | Confidence 0.296 below threshold 0.35
+22:18:33 | INFO | Voyager Heuristic: Selected finesse with score 149
+22:18:33 | INFO | Intent resolution: 'I look around the room carefully' → investigate (confidence: 0.668, matched exemplar: 'Search the room carefully for hidden clues')
+22:18:33 | DEBUG | Action: investigate | Tags: ['Rowdy Crowd', 'Sticky Floors'] | Roll: 7 + Attr: 5 + Item: 0 + Tag: 0 = 12 vs DC: 20 (10 + 5) -> FAILURE
+22:18:33 | INFO | Quartermaster: success=False, roll=12 vs DC 20
+22:18:33 | INFO | Player took 9 damage. HP: 85/100
+22:18:33 | INFO | Social consequences applied for None (success=False)
+22:18:33 | DEBUG | Chronicler streaming: investigate
+22:18:34 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:18:34 | INFO | Game saved to savegame.json
+22:18:36 | INFO | Voyager Heuristic: Selected finesse with score 149
+22:18:36 | INFO | Intent resolution: 'Eavesdrop on conversations' → investigate (confidence: 0.296, matched exemplar: 'Inspect the area for secret passages')
+22:18:36 | WARNING | Confidence 0.296 below threshold 0.35
+22:18:38 | INFO | Voyager Heuristic: Selected finesse with score 149
+22:18:38 | INFO | Intent resolution: 'I look around the room carefully' → investigate (confidence: 0.668, matched exemplar: 'Search the room carefully for hidden clues')
+22:18:38 | DEBUG | Action: investigate | Tags: ['Rowdy Crowd', 'Sticky Floors'] | Roll: 3 + Attr: 5 + Item: 0 + Tag: 0 = 8 vs DC: 20 (10 + 5) -> FAILURE
+22:18:38 | INFO | Quartermaster: success=False, roll=8 vs DC 20
+22:18:38 | INFO | Player took 5 damage. HP: 80/100
+22:18:38 | INFO | Social consequences applied for None (success=False)
+22:18:38 | DEBUG | Chronicler streaming: investigate
+22:18:38 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:18:38 | INFO | Game saved to savegame.json
