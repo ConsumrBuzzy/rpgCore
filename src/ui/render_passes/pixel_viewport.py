@@ -13,11 +13,11 @@ from dataclasses import dataclass
 from loguru import logger
 
 from . import BaseRenderPass, RenderContext, RenderResult, RenderPassType
-from ...pixel_renderer import PixelRenderer, ColorPalette
-from ...sprite_registry import SpriteRegistry
-from ...tile_bank import TileBank, TileType
-from ...models.metasprite import Metasprite, MetaspriteConfig, CharacterRole
-from ...virtual_ppu import VirtualPPU
+from ui.pixel_renderer import PixelRenderer, ColorPalette
+from ui.sprite_registry import SpriteRegistry
+from ui.tile_bank import TileBank, TileType
+from models.metasprite import Metasprite, MetaspriteConfig, CharacterRole
+from ui.virtual_ppu import VirtualPPU
 
 
 class _InternalPixelViewport:
