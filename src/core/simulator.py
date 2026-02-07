@@ -336,16 +336,15 @@ class SimulatorHost:
                 success=outcome.success
             )
             
-            # Room transitions
-            room_changed = False
-            new_room = None
-            if outcome.success and llm_response.intent == "leave_area":
-                if room and room.exits:
-                    next_room_id = list(room.exits.values())[0]
-                    self.state.current_room = next_room_id
-                    room_changed = True
-                    new_room = next_room_id
-                    logger.info(f"🚙 Transitioned to {next_room_id}")
+            # Position changes (POSITIONAL AUTHORITY)
+            if llm_response.intent == "leave_area" and room_changed:
+                self.state.current_room = new_room
+                logger.info(f"🚙️ Transitioned to {new_room}")
+            elif llm_response.intent in ["move", "travel", "go", "walk"]:
+                # Extract direction from action input for position update
+                direction = self._extract_direction_from_input(player_input)
+                self._update_voyager_position(direction)
+                logger.info(f"�️ Voyager moved {direction}")
             
             # Loot generation
             loot_item = None
@@ -478,7 +477,66 @@ class SimulatorHost:
         asyncio.create_task(self.game_loop())
         logger.info("🚀 SimulatorHost started")
     
-    def stop(self) -> None:
+    def _extract_direction_from_input(self, player_input: str) -> str:
+        """Extract direction from player input string."""
+        player_input = player_input.lower()
+        
+        # Common direction patterns
+        if "north" in player_input:
+            return "north"
+        elif "south" in player_input:
+            return "south"
+        elif "east" in player_input:
+            return "east"
+        elif "west" in player_input:
+            return "west"
+        elif "northeast" in player_input:
+            return "northeast"
+        elif "northwest" in player_input:
+            return "northwest"
+        elif "southeast" in player_input:
+            return "southeast"
+        elif "southwest" in player_input:
+            return "southwest"
+        else:
+            return "here"
+    
+    def _update_voyager_position(self, direction: str) -> None:
+        """Update Voyager position based on direction."""
+        if not self.state:
+            return
+        
+        current_x, current_y = self.state.position.x, self.state.position.y
+        
+        # Calculate new position
+        new_x, new_y = current_x, current_y
+        
+        if direction == "north":
+            new_y = current_y - 1
+        elif direction == "south":
+            new_y = current_y + 1
+        elif direction == "east":
+            new_x = current_x + 1
+        elif direction == "west":
+            new_x = current_x - 1
+        elif direction == "northeast":
+            new_x = current_x + 1
+            new_y = current_y - 1
+        elif direction == "northwest":
+            new_x = current_x - 1
+            new_y = current_y - 1
+        elif direction == "southeast":
+            new_x = current_x + 1
+            new_y = current_y + 1
+        elif direction == "southwest":
+            new_x = current_x - 1
+            new_y = current_y + 1
+        
+        # Update position
+        self.state.position.x = new_x
+        self.state.position.y = new_y
+        
+        logger.debug(f"📍 Voyager position updated to ({new_x}, {new_y})")
         """Stop the simulator."""
         self.running = False
         self.executor.shutdown(wait=True)
