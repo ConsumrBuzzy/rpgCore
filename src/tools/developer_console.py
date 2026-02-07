@@ -179,7 +179,7 @@ class DeveloperConsole:
                     if validate_position((x, y)):
                         surface_state = SurfaceState[surface_str]
                         await self._apply_surface(world, x, y, surface_state, duration)
-                        self._output(f"✅ Applied {surface_str} to ({x}, {y})" + (f" for {duration}s" if duration else "")
+                        self._output(f"✅ Applied {surface_str} to ({x}, {y})" + (f" for {duration}s" if duration else ""))
                     else:
                         self._output("❌ Invalid position")
                 except (ValueError, KeyError):
