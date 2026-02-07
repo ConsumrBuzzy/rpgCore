@@ -18,15 +18,12 @@ from collections import deque
 from loguru import logger
 
 from core.state import (
-    GameState, MovementIntent, InteractionIntent, PonderIntent,
-    IntentValidation, ValidationResult, Command, CommandResult,
-    WorldDelta, Effect, Trigger, ValidationError, validate_intent
+    GameState, IntentType, Command, CommandResult, IntentValidation
 )
-from core.constants import (
-    MOVEMENT_RANGE_TILES, INTENT_COOLDOWN_MS, PERSISTENCE_INTERVAL_TURNS
-)
+from core.constants import INTENT_COOLDOWN_MS
 from core.system_config import MindConfig
 from utils.asset_loader import AssetLoader
+from .combat_resolver import CombatResolver
 
 
 class CommandStatus(Enum):
@@ -99,6 +96,10 @@ class DDEngine:
         self.asset_loader = AssetLoader()
         from utils.asset_loader import ObjectRegistry
         self.object_registry = ObjectRegistry(self.asset_loader)
+        
+        # Combat system
+        self.combat_resolver = CombatResolver(f"{self.seed}_combat")
+        self.in_combat = False
         
         logger.info(f"🧠 D&D Engine initialized with seed: {self.seed}")
         

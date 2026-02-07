@@ -124,10 +124,11 @@ class VoyagerState(Enum):
 # === INTENT SYSTEM ===
 
 class IntentType(Enum):
-    """Types of intents the system can process"""
+    """Types of intents for the D&D Engine"""
     MOVEMENT = "movement"
     INTERACTION = "interaction"
-    PONDER = "ponder"  # LLM query intent
+    PONDER = "ponder"
+    COMBAT = "combat"
     WAIT = "wait"
 
 class ValidationResult(Enum):
@@ -357,6 +358,16 @@ class InteractionIntent:
     intent_type: str = IntentType.INTERACTION.value
     target_entity: str = ""
     interaction_type: str = ""
+    target_position: Tuple[int, int] = (0, 0)
+    parameters: Dict[str, Any] = field(default_factory=dict)
+    timestamp: float = field(default_factory=time.time)
+
+@dataclass
+class CombatIntent:
+    """Combat intent for engaging hostile entities"""
+    intent_type: str = IntentType.COMBAT.value
+    target_entity: str = ""
+    combat_type: str = "engage"  # engage, flee, negotiate
     target_position: Tuple[int, int] = (0, 0)
     parameters: Dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
