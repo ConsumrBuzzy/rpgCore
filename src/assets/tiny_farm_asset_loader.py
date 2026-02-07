@@ -8,7 +8,7 @@ from typing import Dict, Optional, List
 from loguru import logger
 
 from .tiny_farm_bridge import create_tiny_farm_bridge, TinyFarmAssetType
-from .enhanced_ppu_dual_layer import EnhancedAssetLoader
+from ..graphics.enhanced_ppu_dual_layer import EnhancedAssetLoader
 from ..graphics.character_sprites import create_character_sprite
 
 
