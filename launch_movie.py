@@ -47,7 +47,7 @@ class ObserverView:
         self.voyager_shell = VoyagerShell(start_position=(25, 25))
         
         # Initialize core systems
-        self.config = create_default_config()
+        self.config = create_default_config(seed=self.seed)
         self.world_engine = WorldEngineFactory.create_engine(self.config)
         self.asset_loader = None
         self.ppu = None
@@ -56,33 +56,6 @@ class ObserverView:
         
         # Initialize systems
         self._initialize_systems()
-        
-        # Create configuration
-        self.config = create_default_config(seed)
-        
-        # Initialize engines
-        self.world_engine = WorldEngineFactory.create_world(self.config.world)
-        self.dd_engine = DDEngineFactory.create_engine(self.config.mind)
-        self.voyager = VoyagerFactory.create_voyager(self.config.voyager, self.dd_engine)
-        
-        # Inject dependencies
-        self.dd_engine.world_engine = self.world_engine
-        self.voyager.dd_engine = self.dd_engine
-        
-        # Asset system
-        self.asset_loader = AssetLoader()
-        
-        # Combat system
-        self.combat_resolver = CombatResolver(f"{self.seed}_combat")
-        
-        # Graphics (if enabled)
-        self.ppu: Optional[NativeTkinterPPU] = None
-        self.root = None
-        
-        if self.enable_graphics:
-            self._init_graphics()
-        
-        # Session state
         self.running = False
         self.current_mode = "OVERWORLD"
         self.session_log = []

@@ -67,7 +67,10 @@ def run_sonic_field_test():
     observer.spawn_forest_objects = spawn_sonic_field.__get__(observer, ObserverView)
     
     # Override Voyager position to start in the field
-    observer.voyager.current_position = (25, 25)
+    if hasattr(observer, 'voyager'):
+        observer.voyager.current_position = (25, 25)
+    elif hasattr(observer, 'voyager_shell'):
+        observer.voyager_shell.current_position = (25, 25)
     
     # Run the test
     observer.run()
