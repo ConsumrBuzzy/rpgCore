@@ -467,13 +467,19 @@ class ObjectRegistry:
     
     def get_object_at(self, position: Tuple[int, int]) -> Optional[AssetDefinition]:
         """Get object at specific position"""
+        # Check if position key exists directly (tuple key)
+        if position in self.world_objects:
+            return self.world_objects[position]
+        
+        # Legacy support for string keys
         for key, asset_def in self.world_objects.items():
             # Parse position from key
-            parts = key.split('_')
-            if len(parts) >= 3:
-                obj_pos = (int(parts[0]), int(parts[1]))
-                if obj_pos == position:
-                    return asset_def
+            if isinstance(key, str):
+                parts = key.split('_')
+                if len(parts) >= 3:
+                    obj_pos = (int(parts[0]), int(parts[1]))
+                    if obj_pos == position:
+                        return asset_def
         return None
     
     def get_objects_in_radius(self, center: Tuple[int, int], radius: int) -> List[Tuple[Tuple[int, int], AssetDefinition]]:
