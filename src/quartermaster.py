@@ -18,6 +18,47 @@ from pydantic import BaseModel, Field
 from loot_system import Item
 
 
+# Deterministic Difficulty Table (Iron Frame)
+DC_TABLE = {
+    # Default fallback
+    "default": 12,
+    
+    # Intent-based Base DCs
+    "force": 10,       # Easier to just smash things
+    "combat": 10,
+    "finesse": 12,     # Requires some skill
+    "investigate": 15, # Finding hidden things is hard
+    "charm": 12,       # Social interactions vary
+    "magic": 14,       # Magic is inherently difficult
+    "stealth": 13,     # Harder than average
+    
+    # Tag-based Modifiers (Impact on DC)
+    # Positive values make it HARDER (higher DC from base)
+    # Negative values make it EASIER (lower DC from base)
+    "modifiers": {
+        "sticky_floors": {
+            "finesse": 5,   # Hard to move gracefully
+            "stealth": 5,   # Hard to move quietly
+            "force": -2     # Easier to smash when planted?
+        },
+        "rowdy_crowd": {
+            "charm": -2,    # Easier to blend in/buy drinks
+            "stealth": 5,   # Hard to move unseen in a crowd
+            "investigate": 5 # Distractions
+        },
+        "dimly_lit": {
+            "investigate": 5, # Hard to see
+            "stealth": -5,    # Easier to hide
+            "finesse": 2      # Harder to aim/move precisely
+        },
+        "loud": {
+            "stealth": -5,  # Masked by noise
+            "charm": 2      # Hard to be heard
+        }
+    }
+}
+
+
 class QuartermasterOutcome(BaseModel):
     """Final calculated outcome of an action."""
     
@@ -75,7 +116,6 @@ class Quartermaster:
             attr_name, attr_val = self._get_attribute_bonus(intent_id, player_stats)
             if attr_val != 0:
                 attr_bonus = attr_val
-                attr_reason = f"{attr_name.title()} ({attr_val:+d})"
                 attr_reason = f"{attr_name.title()} ({attr_val:+d})"
         
         # 2c. Calculate Inventory Bonus
