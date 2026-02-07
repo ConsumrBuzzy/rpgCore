@@ -194,13 +194,46 @@ class WorldEngine:
                     await self._generate_chunk(chunk_pos)
     
     async def _generate_chunk(self, chunk_pos: Tuple[int, int]) -> None:
-        """Generate a single chunk"""
+        """Generate a single chunk with potential task spawning"""
         start_time = time.time()
         
         # Generate tiles
         tiles = []
         for local_y in range(CHUNK_SIZE):
             tile_row = []
+            for local_x in range(CHUNK_SIZE):
+                world_pos = (
+                    chunk_pos[0] * CHUNK_SIZE + local_x,
+                    chunk_pos[1] * CHUNK_SIZE + local_y
+                )
+                tile = await self._generate_tile(world_pos)
+                tile_row.append(tile)
+            tiles.append(tile_row)
+        
+        # Create chunk
+        chunk = Chunk(
+            position=chunk_pos,
+            tiles=tiles,
+            generated_time=time.time()
+        )
+        
+        # Store chunk
+        self.chunks[chunk_pos] = chunk
+        
+        # Spawn procedural tasks if Chronos Engine is available
+        if self.chronos_engine:
+            chunk_seed = f"{self.seed}_chunk_{chunk_pos[0]}_{chunk_pos[1]}"
+            world_center = (
+                chunk_pos[0] * CHUNK_SIZE + CHUNK_SIZE // 2,
+                chunk_pos[1] * CHUNK_SIZE + CHUNK_SIZE // 2
+            )
+            
+            task = await self.chronos_engine.add_procedural_task(world_center, chunk_seed)
+            if task:
+                logger.info(f"📋 Task spawned in chunk {chunk_pos}: {task.title}")
+        
+        generation_time = time.time() - start_time
+        logger.debug(f"🌍 Generated chunk {chunk_pos} in {generation_time:.3f}s")
             for local_x in range(CHUNK_SIZE):
                 world_x = chunk_pos[0] * CHUNK_SIZE + local_x
                 world_y = chunk_pos[1] * CHUNK_SIZE + local_y
