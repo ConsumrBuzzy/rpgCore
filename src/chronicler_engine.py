@@ -129,11 +129,54 @@ class ChroniclerEngine:
             logger.info(f"Chronicler generated: {prose.narrative[:50]}...")
             return prose
             
+            
         except Exception as e:
             logger.error(f"Chronicler failed: {e}")
             
             # Fallback narrative
             return self._fallback_prose(player_input, arbiter_result)
+
+    async def narrate_stream(
+        self,
+        player_input: str,
+        intent_id: str,
+        arbiter_result: dict,
+        context: str
+    ):
+        """
+        Stream narrative prose token by token.
+        Yields: str keywords/tokens
+        """
+        prompt = (
+            f"Context: {context}\n\n"
+            f"Player Action: \"{player_input}\"\n"
+            f"Intent: {intent_id}\n\n"
+            f"Arbiter Result:\n"
+            f"- Success: {arbiter_result.get('success')}\n"
+            f"- HP Change: {arbiter_result.get('hp_delta', 0)}\n"
+            f"- Gold Change: {arbiter_result.get('gold_delta', 0)}\n"
+            f"- NPC State: {arbiter_result.get('new_npc_state')}\n"
+            f"- Reasoning: {arbiter_result.get('reasoning')}\n"
+            f"- Narrative Seed: {arbiter_result.get('narrative_seed', 'N/A')}\n\n"
+            f"Write vivid D&D narration using the context and narrative seed:\n"
+        )
+        
+        logger.debug(f"Chronicler streaming: {intent_id}")
+        
+        try:
+            # We use result_type=str to get raw text streaming
+            # escaping the JSON structure for the sake of immediate user feedback
+            async with self.agent.run_stream(prompt, result_type=str) as result:
+                async for message in result.stream_text():
+                    yield message
+                    
+        except Exception as e:
+            logger.error(f"Chronicler stream failed: {e}")
+            yield f"You attempt {player_input}."
+            if arbiter_result.get('success'):
+                yield " It succeeds."
+            else:
+                yield " It fails."
     
     def _fallback_prose(self, player_input: str, arbiter_result: dict) -> ChroniclerProse:
         """Fallback narrative if LLM fails."""

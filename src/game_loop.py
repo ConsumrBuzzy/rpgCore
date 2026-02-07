@@ -275,29 +275,45 @@ class GameREPL:
                     npc.state = arbiter_result.new_npc_state
                     break
         
-        # Step 4: Chronicler generates narrative
+        # Step 4: Chronicler generates narrative (Streamed)
         self.console.print("[dim]📖 Chronicler narrating...[/dim]")
         
-        chronicler_result = self.chronicler.narrate_outcome_sync(
-            player_input=player_input,
-            intent_id=intent_match.intent_id,
-            arbiter_result={
-                'success': outcome.success,
-                'hp_delta': outcome.hp_delta,
-                'gold_delta': outcome.gold_delta,
-                'new_npc_state': arbiter_result.new_npc_state,
-                'reasoning': f"{arbiter_result.reasoning}. {outcome.narrative_context}",
-                'narrative_seed': arbiter_result.narrative_seed
-            },
-            context=context
-        )
-        
-        # Step 5: Display narrative
-        success_icon = "✅" if outcome.success else "❌"
         narrative_color = "green" if outcome.success else "yellow"
+        success_icon = "✅" if outcome.success else "❌"
         
-        # Build output with optional loot notification
-        output_text = chronicler_result.narrative
+        # Async streaming bridge
+        async def _stream_bridge():
+            narrative_text = ""
+            title_text = f"[bold {narrative_color}]{success_icon} Outcome[/bold {narrative_color}]"
+            
+            with Live(
+                Panel(narrative_text, title=title_text, border_style=narrative_color),
+                console=self.console,
+                refresh_per_second=12
+            ) as live:
+                async for token in self.chronicler.narrate_stream(
+                    player_input=player_input,
+                    intent_id=intent_match.intent_id,
+                    arbiter_result={
+                        'success': outcome.success,
+                        'hp_delta': outcome.hp_delta,
+                        'gold_delta': outcome.gold_delta,
+                        'new_npc_state': arbiter_result.new_npc_state,
+                        'reasoning': f"{arbiter_result.reasoning}. {outcome.narrative_context}",
+                        'narrative_seed': arbiter_result.narrative_seed
+                    },
+                    context=context
+                ):
+                    narrative_text += token
+                    live.update(Panel(narrative_text, title=title_text, border_style=narrative_color))
+            
+            return narrative_text
+
+        # Run the stream
+        final_narrative = asyncio.run(_stream_bridge())
+        
+        # Build output with optional loot notification (append to final string)
+        output_text = final_narrative
         if loot_item:
             output_text += f"\n\n💎 **Loot found**: {loot_item.name} ({loot_item.description})"
             if loot_item.stat_bonus:

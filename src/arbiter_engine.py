@@ -24,6 +24,10 @@ class ArbiterLogic(BaseModel):
         le=10,
         description="Difficulty modifier based on context (-10=Very Easy, 0=Standard, +10=Impossible)"
     )
+
+    internal_logic: str = Field(
+        description="Step-by-step reasoning for the DC and vibe (Hidden Chain-of-Thought)"
+    )
     
     target_npc_id: str | None = Field(
         default=None,
@@ -102,11 +106,14 @@ class ArbiterEngine:
             "- Provide a `narrative_seed` (1 phrase describing the vibe/mood)\n"
             "- IGNORE numerical stats like HP/Gold (Quartermaster handles them)\n"
             "- RESPECT relationship tags (e.g. 'ally' = easier check)\n\n"
+            "Process:\n"
+            "1. Write `internal_logic`: Analyze the situation step-by-step.\n"
+            "2. Decide `difficulty_mod` based on logic.\n"
+            "3. Set `narrative_seed` and other fields.\n\n"
             "Examples:\n"
             "- Action: 'I sneak past the guard' (Tag: Dimly Lit) -> Mod: -2 (Easier due to darkness)\n"
             "- Action: 'I attack the dragon' -> Mod: +5 (Hard target)\n"
             "- Action: 'I buy a drink' -> Mod: -10 (Trivial)\n\n"
-            "Provide a reasoning sentence explaining the modifier.\n"
         )
     
     async def resolve_action(

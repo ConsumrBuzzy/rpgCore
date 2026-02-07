@@ -93,14 +93,14 @@ class VoyagerAgent:
             "2. Analyze Room Tags (e.g., 'Sticky Floors' punishes Dexterity)\n"
             "3. Select an Intent that leverages your high stats and avoids penalties.\n\n"
             "Rules:\n"
-            "- Output `selected_intent` (e.g., 'force', 'charm')\n"
-            "- Output `action` in natural language (first person)\n"
-            "- Explain your `strategic_reasoning` (e.g., 'I have high Strength and sticky floors punish Dex, so I will Smash')\n"
-            "- Include `internal_monologue` reflecting your personality\n"
+            "- Output `selected_action_id` (MUST be one of the IDs provided in the menu)\n"
+            "- Output `custom_flair` (First-person action description, e.g. 'I smash the table')\n"
+            "- Output `strategic_reasoning` (Why you chose this based on stats/tags)\n"
+            "- Output `internal_monologue` (Your character's inner thoughts)\n"
             "- Consider Inventory bonuses (e.g., 'Iron Key' helps Lockpicking)\n\n"
             "Examples:\n"
-            "- Sticky Floor + High Str: Intent='force', Action='I smash the table', Reasoning='Avoiding Dex check due to floors'\n"
-            "- Rowdy Crowd + High Cha: Intent='charm', Action='I buy a round', Reasoning='Leveraging Cha to calm crowd'\n"
+            "- Sticky Floor + High Str: ActionID='force', Flair='I smash the table', Reasoning='Avoiding Dex check due to floors'\n"
+            "- Rowdy Crowd + High Cha: ActionID='charm', Flair='I buy a round', Reasoning='Leveraging Cha to calm crowd'\n"
         )
         
         # Initialize Pydantic AI agent
