@@ -676,6 +676,9 @@ class DGTSheetCutter:
             "collision": self.collision_var.get(),
             "auto_detected": self.auto_detect_var.get(),
             "auto_cleaned": self.auto_clean_var.get(),
+            "is_baked": True,
+            "source": "tiny_farm_sheet",
+            "adr_compliance": "ADR_111_semantic_triage",
             "grid_coords": {
                 "x": coords[0],
                 "y": coords[1],
@@ -690,8 +693,10 @@ class DGTSheetCutter:
             "detection_info": {
                 "detected_type": detected_type,
                 "is_chest": detected_type == "entity" and self._is_chest(sprite, {}, self.grid_size, self.grid_size),
-                "edge_threshold": self.threshold_var.get() if self.auto_clean_var.get() else None
-            }
+                "edge_threshold": self.threshold_var.get() if self.auto_clean_var.get() else None,
+                "content_bounds": self._get_content_bounds(sprite) if self.auto_clean_var.get() else None
+            },
+            "tags": self._generate_tags(detected_type, sprite)
         }
         
         # Save YAML
