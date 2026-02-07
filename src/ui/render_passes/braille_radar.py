@@ -206,7 +206,7 @@ class BrailleRadarPass(BaseRenderPass):
         ]
         
         for entity_x, entity_y, entity_type in guards:
-            self._render_entity(buffer, entity_x, entity_y, entity_type, scale_x, scale_y)
+            self._render_entity(buffer, context, entity_x, entity_y, entity_type, scale_x, scale_y)
     
     def _render_entity(self, buffer: List[List[int]], context: RenderContext, x: float, y: float, 
                       entity_type: str, scale_x: float, scale_y: float) -> None:
