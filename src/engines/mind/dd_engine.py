@@ -458,7 +458,7 @@ class DDEngine:
         
         # Check for interest point triggers
         if self.world_engine:
-            interest_points = asyncio.run(self.world_engine.get_nearby_interest_points(position, 1))
+            interest_points = self.world_engine.get_nearby_interest_points(position, 1)
             for ip in interest_points:
                 if ip.discovered and not ip.manifestation:
                     trigger = Trigger(
