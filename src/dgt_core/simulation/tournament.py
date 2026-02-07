@@ -504,4 +504,13 @@ class TournamentService:
 
 
 # Global tournament service instance
-tournament_service = TournamentService(roster_manager)
+# Note: This will be initialized when the module is imported
+tournament_service = None
+
+def get_tournament_service():
+    """Get or create tournament service instance"""
+    global tournament_service
+    if tournament_service is None:
+        from .roster import roster_manager
+        tournament_service = TournamentService(roster_manager)
+    return tournament_service
