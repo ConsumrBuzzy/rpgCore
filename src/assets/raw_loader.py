@@ -130,7 +130,7 @@ class SovereignRegistry:
             
             # Load files by category
             for category, files in discovered_files.items():
-                if category == 'unknown' or not files:
+                if not files:
                     continue
                 
                 for file_path in files:
