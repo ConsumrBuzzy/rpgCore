@@ -144,8 +144,8 @@ class BrailleRadarPass(BaseRenderPass):
         # Render entities
         self._render_entities(buffer, context, scale_x, scale_y)
         
-        # Render player (always visible)
-        self._render_player(buffer, player_x, player_y, scale_x, scale_y)
+        # Render player (Voyager)
+        self._render_player(buffer, context, player_x, player_y, scale_x, scale_y)
         
         return buffer
     
@@ -251,13 +251,14 @@ class BrailleRadarPass(BaseRenderPass):
                         "last_seen": context.current_time
                     }
     
-    def _render_player(self, buffer: List[List[int]], player_x: float, player_y: float,
+    def _render_player(self, buffer: List[List[int]], context: RenderContext, player_x: float, player_y: float,
                        scale_x: float, scale_y: float) -> None:
         """
         Render the player on the radar with blinking effect.
         
         Args:
             buffer: Radar buffer to modify
+            context: Rendering context
             player_x, player_y: Player world coordinates
             scale_x, scale_y: Scale factors
         """
