@@ -165,7 +165,8 @@ class PerceptionSystem:
         if tier == PerceptionTier.NEAR:
             # Full context - get complete chunk data
             chunk = self.world_ledger.get_chunk(coord, current_turn)
-            entities = self.entity_ai.get_entities_at(coord)
+            entity = self.entity_ai.get_entity_at(coord)
+            entities = [entity] if entity else []
             signatures = []
             terrain = None
             
