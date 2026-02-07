@@ -10,6 +10,7 @@ from pathlib import Path
 import time
 import sys
 import os
+from loguru import logger
 
 # Add src to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
@@ -37,7 +38,7 @@ def test_rust_performance():
     test_image_path = Path('assets/tiny_farm/Objects/chest.png')
     
     if not test_image_path.exists():
-        print(f"❌ Test image not found: {test_image_path}")
+        logger.error(f"❌ Test image not found: {test_image_path}")
         return
     
     try:
@@ -45,10 +46,6 @@ def test_rust_performance():
         print(f"📄 Loading test image: {test_image_path}")
         cutter.raw_image = Image.open(test_image_path)
         cutter.display_image = cutter.raw_image.copy()
-        cutter.photo = None
-        
-        # Update display
-        cutter._update_canvas()
         
         # Test Rust-powered analysis
         print("🔧 Testing Rust-powered sprite analysis...")
@@ -85,7 +82,6 @@ def test_rust_performance():
         
         # Select a tile
         cutter.selected_coords = (0, 0)
-        cutter._draw_selection()
         
         # Cut sprite with Rust analysis
         start_time = time.time()
