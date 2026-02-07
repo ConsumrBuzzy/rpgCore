@@ -518,31 +518,15 @@ class AutonomousDirector:
             return "northwest"
         else:
             return "here"
-                    'target_coords': (5, 5),
-                    'description': 'Investigate nearby points of interest',
-                    'priority': 4,
-                    'intent_type': 'investigate'
-                }
-            ])
-        
-        return beacons[:num_beacons]
+
+
+class NarrativeConsultation:
+    """Record of LLM consultation for beacon generation."""
     
-    async def _generate_emergency_beacon(self) -> None:
-        """Generate emergency beacon when no beacons are available."""
-        logger.warning("⚠️ Generating emergency beacon")
-        
-        emergency_beacon = NarrativeBeacon(
-            beacon_id="emergency_explore",
-            target_coords=(self.voyager_position[0] + 5, self.voyager_position[1] + 5),
-            description="Emergency exploration beacon",
-            priority=1,
-            intent_type="investigate"
-        )
-        
-        self.beacon_history.append(emergency_beacon)
-        self.current_beacon = emergency_beacon
-        
-        if self.on_beacon_generated:
+    def __init__(self, timestamp: str, context: str, beacons_generated: List[NarrativeBeacon]):
+        self.timestamp = timestamp
+        self.context = context
+        self.beacons_generated = beacons_generated
             self.on_beacon_generated(emergency_beacon)
     
     async def _llm_generate_beacons(self, context: str, num_beacons: int) -> List[Dict[str, Any]]:
