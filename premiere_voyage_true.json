@@ -20,7 +20,7 @@
     "trait_description": null
   },
   "position": {
-    "x": 18,
+    "x": 19,
     "y": 1,
     "t": 0
   },
@@ -60,7 +60,7 @@
       ]
     }
   },
-  "turn_count": 20,
+  "turn_count": 21,
   "current_location": "forest_path",
   "reputation": {
     "law": 0,
@@ -151,6 +151,10 @@
     ],
     [
       18,
+      1
+    ],
+    [
+      19,
       1
     ]
   ]

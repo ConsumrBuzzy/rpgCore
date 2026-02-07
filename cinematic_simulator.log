@@ -1482,3 +1482,1302 @@
 01:41:44 | INFO | 🛑 Stopping Cinematic Simulator
 01:41:44 | INFO | 🛑 SimulatorHost stopped
 01:41:44 | INFO | 🎬 Cinematic Simulator stopped
+01:42:14 | DEBUG | Added intent: distract with 5 exemplars
+01:42:14 | DEBUG | Added intent: force with 5 exemplars
+01:42:14 | DEBUG | Added intent: finesse with 5 exemplars
+01:42:14 | DEBUG | Added intent: charm with 5 exemplars
+01:42:14 | DEBUG | Added intent: intimidate with 5 exemplars
+01:42:14 | DEBUG | Added intent: deceive with 5 exemplars
+01:42:14 | DEBUG | Added intent: investigate with 5 exemplars
+01:42:14 | DEBUG | Added intent: use_item with 5 exemplars
+01:42:14 | DEBUG | Added intent: defend with 5 exemplars
+01:42:14 | DEBUG | Added intent: leave_area with 5 exemplars
+01:42:14 | DEBUG | Added intent: improvise with 5 exemplars
+01:42:14 | INFO | Semantic Baker initialized with model: all-MiniLM-L6-v2
+01:42:14 | INFO | Loaded 11 pre-baked intent embeddings (55 total examples)
+01:42:14 | INFO | ✅ Instant boot: Loaded pre-baked embeddings
+01:42:14 | INFO | 🏛️ SimulatorHost initialized - Single Source of Truth
+01:42:14 | INFO | 🎬 CinematicSimulator initialized
+01:42:14 | INFO | 🚀 Initializing Cinematic Simulator...
+01:42:14 | INFO | 🚀 Initializing SimulatorHost...
+01:42:14 | INFO | 🆕 Creating new game state
+01:42:14 | INFO | ⚖️ Loading Arbiter (Deterministic Logic Core)...
+01:42:14 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+01:42:14 | INFO | 📖 Loading Chronicler (Narrative Engine)...
+01:42:14 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+01:42:14 | INFO | 🎲 Loading Quartermaster...
+01:42:14 | INFO | 💎 Loading Loot System...
+01:42:14 | INFO | LootSystem initialized without artifact support
+01:42:14 | INFO | ✅ SimulatorHost initialization complete
+01:42:14 | INFO | 🎬 Autonomous Director initialized
+01:42:14 | DEBUG | 🗺️ Pathfinding grid initialized: 64x64
+01:42:14 | INFO | 🧭 Navigation system initialized
+01:42:14 | INFO | 🎥 Cinematic camera initialized
+01:42:14 | INFO | 🎬 Camera controller initialized
+01:42:14 | DEBUG | 💬 Dialogue box initialized
+01:42:14 | INFO | 🎬 Cinematic pauses system initialized
+01:42:14 | INFO | 🖥️ TerminalView initialized - Observer of SimulatorHost
+01:42:14 | INFO | 🖼️ GUIView initialized - Observer of SimulatorHost
+01:42:14 | DEBUG | 👁️ Added observer: TerminalView
+01:42:14 | DEBUG | 👁️ Added observer: GUIView
+01:42:14 | INFO | ✅ Cinematic Simulator initialized successfully
+01:42:14 | INFO | 🖥️ Starting terminal-only mode
+01:42:14 | INFO | 🎬 Starting autonomous cinematic mode
+01:42:14 | INFO | 🎬 Starting Autonomous Director Mode
+01:42:14 | INFO | 🎭 Generating initial narrative beacons
+01:42:14 | INFO | 🎯 New beacon: Explore the surrounding area
+01:42:14 | INFO | 🛤️ Path set: 10 steps to (10, 10)
+01:42:14 | INFO | 🎯 Generated beacon: Explore the surrounding area at (10, 10)
+01:42:14 | INFO | 🎯 New beacon: Investigate nearby points of interest
+01:42:14 | INFO | 🛤️ Path set: 5 steps to (5, 5)
+01:42:14 | INFO | 🎯 Generated beacon: Investigate nearby points of interest at (5, 5)
+01:42:14 | INFO | 🚀 Initializing SimulatorHost...
+01:42:14 | INFO | 🆕 Creating new game state
+01:42:14 | INFO | ⚖️ Loading Arbiter (Deterministic Logic Core)...
+01:42:14 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+01:42:14 | INFO | 📖 Loading Chronicler (Narrative Engine)...
+01:42:14 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+01:42:14 | INFO | 🎲 Loading Quartermaster...
+01:42:14 | INFO | 💎 Loading Loot System...
+01:42:14 | INFO | LootSystem initialized without artifact support
+01:42:14 | INFO | ✅ SimulatorHost initialization complete
+01:42:14 | INFO | 🚀 SimulatorHost started
+01:42:14 | INFO | 🎬 Director loop started
+01:42:14 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:42:14 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:42:14 | INFO | 🎮 Starting 30 FPS game loop
+01:42:14 | INFO | 🎬 Cinematic loop started
+01:42:15 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:42:15 | DEBUG | 📤 Action queued: I move here
+01:42:15 | DEBUG | 🔍 Parsing intent for: I move here
+01:42:15 | INFO | Loading embedding model on-demand: all-MiniLM-L6-v2
+01:42:20 | INFO | Intent resolution: 'I move here' → leave_area (confidence: 0.496, matched exemplar: 'Leave this place')
+01:42:20 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:42:20 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:42:20 | DEBUG | Action: leave_area | Tags: [] | Roll: 11 + Attr: 10 + Item: 0 + Tag: 0 = 21 vs DC: 10 (10 + 0) -> SUCCESS
+01:42:20 | DEBUG | 🔄 Applying state changes...
+01:42:20 | INFO | Social consequences applied for None (success=True)
+01:42:20 | DEBUG | 📖 Generating narrative...
+01:42:20 | DEBUG | Chronicler streaming: leave_area
+01:42:20 | DEBUG | 📤 Action queued: I move south
+01:42:20 | DEBUG | 📤 Action queued: I move east
+01:42:21 | DEBUG | 📤 Action queued: I move east
+01:42:21 | DEBUG | 📤 Action queued: I move east
+01:42:22 | DEBUG | 📤 Action queued: I move east
+01:42:23 | DEBUG | 📤 Action queued: I move east
+01:42:23 | DEBUG | 📤 Action queued: I move east
+01:42:24 | DEBUG | 📤 Action queued: I move east
+01:42:24 | DEBUG | 📤 Action queued: I move east
+01:42:25 | DEBUG | 📤 Action queued: I move east
+01:42:25 | DEBUG | 📤 Action queued: I move east
+01:42:26 | DEBUG | 📤 Action queued: I move east
+01:42:26 | DEBUG | 📤 Action queued: I move east
+01:42:27 | DEBUG | 📤 Action queued: I move east
+01:42:27 | DEBUG | 📤 Action queued: I move east
+01:42:28 | DEBUG | 📤 Action queued: I move east
+01:42:28 | DEBUG | 📤 Action queued: I move east
+01:42:29 | DEBUG | 📤 Action queued: I move east
+01:42:29 | DEBUG | 📤 Action queued: I move east
+01:42:30 | DEBUG | 📤 Action queued: I move east
+01:42:31 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:42:31 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:42:32 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:42:32 | DEBUG | 📤 Action queued: I move here
+01:42:33 | DEBUG | 📤 Action queued: I move south
+01:42:33 | DEBUG | 📤 Action queued: I move east
+01:42:34 | DEBUG | 📤 Action queued: I move east
+01:42:34 | DEBUG | 📤 Action queued: I move east
+01:42:35 | DEBUG | 📤 Action queued: I move east
+01:42:35 | DEBUG | 📤 Action queued: I move east
+01:42:36 | DEBUG | 📤 Action queued: I move east
+01:42:36 | DEBUG | 📤 Action queued: I move east
+01:42:37 | DEBUG | 📤 Action queued: I move east
+01:42:37 | DEBUG | 📤 Action queued: I move east
+01:42:38 | DEBUG | 📤 Action queued: I move east
+01:42:38 | DEBUG | 📤 Action queued: I move east
+01:42:39 | DEBUG | 📤 Action queued: I move east
+01:42:39 | DEBUG | 📤 Action queued: I move east
+01:42:40 | DEBUG | 📤 Action queued: I move east
+01:42:40 | DEBUG | 📤 Action queued: I move east
+01:42:41 | DEBUG | 📤 Action queued: I move east
+01:42:41 | DEBUG | 📤 Action queued: I move east
+01:42:42 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:42:42 | INFO | Game saved to premiere_voyage_true.json
+01:42:42 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:42:42 | DEBUG | 🔍 Parsing intent for: I move south
+01:42:42 | INFO | Intent resolution: 'I move south' → leave_area (confidence: 0.398, matched exemplar: 'Go to the next location')
+01:42:42 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:42:42 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:42:42 | DEBUG | Action: leave_area | Tags: [] | Roll: 10 + Attr: 10 + Item: 0 + Tag: 0 = 20 vs DC: 10 (10 + 0) -> SUCCESS
+01:42:42 | DEBUG | 🔄 Applying state changes...
+01:42:42 | INFO | Social consequences applied for None (success=True)
+01:42:42 | DEBUG | 📍 Voyager position updated to (0, 1)
+01:42:42 | INFO | 🚶️ Voyager moved south (leave_area intent)
+01:42:42 | INFO | 🗺️ Loaded 3 locations from manifest
+01:42:42 | INFO | 🗺️ Location Resolver initialized
+01:42:42 | INFO | 🗺️ Location updated: forest_path
+01:42:42 | DEBUG | 🗺️ Discovered new coordinate: (0, 1)
+01:42:42 | DEBUG | 📖 Generating narrative...
+01:42:42 | DEBUG | Chronicler streaming: leave_area
+01:42:42 | DEBUG | 📤 Action queued: I move east
+01:42:42 | DEBUG | 📤 Action queued: I move east
+01:42:44 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:42:44 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:42:45 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:42:45 | DEBUG | 📤 Action queued: I move here
+01:42:45 | DEBUG | 📤 Action queued: I move east
+01:42:46 | DEBUG | 📤 Action queued: I move east
+01:42:46 | DEBUG | 📤 Action queued: I move east
+01:42:47 | DEBUG | 📤 Action queued: I move east
+01:42:48 | DEBUG | 📤 Action queued: I move east
+01:42:48 | DEBUG | 📤 Action queued: I move east
+01:42:49 | DEBUG | 📤 Action queued: I move east
+01:42:49 | DEBUG | 📤 Action queued: I move east
+01:42:50 | DEBUG | 📤 Action queued: I move east
+01:42:50 | DEBUG | 📤 Action queued: I move east
+01:42:51 | DEBUG | 📤 Action queued: I move east
+01:42:51 | DEBUG | 📤 Action queued: I move east
+01:42:52 | DEBUG | 📤 Action queued: I move east
+01:42:52 | DEBUG | 📤 Action queued: I move east
+01:42:53 | DEBUG | 📤 Action queued: I move east
+01:42:53 | DEBUG | 📤 Action queued: I move east
+01:42:54 | DEBUG | 📤 Action queued: I move east
+01:42:54 | DEBUG | 📤 Action queued: I move east
+01:42:55 | DEBUG | 📤 Action queued: I move east
+01:42:56 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:42:56 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:42:57 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:42:57 | DEBUG | 📤 Action queued: I move here
+01:42:58 | DEBUG | 📤 Action queued: I move east
+01:42:58 | DEBUG | 📤 Action queued: I move east
+01:42:59 | DEBUG | 📤 Action queued: I move east
+01:42:59 | DEBUG | 📤 Action queued: I move east
+01:43:00 | DEBUG | 📤 Action queued: I move east
+01:43:00 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:43:00 | INFO | Game saved to premiere_voyage_true.json
+01:43:00 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:43:00 | DEBUG | 🔍 Parsing intent for: I move east
+01:43:00 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:43:00 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:43:00 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:43:00 | DEBUG | Action: leave_area | Tags: [] | Roll: 14 + Attr: 10 + Item: 0 + Tag: 0 = 24 vs DC: 10 (10 + 0) -> SUCCESS
+01:43:00 | DEBUG | 🔄 Applying state changes...
+01:43:00 | INFO | Social consequences applied for None (success=True)
+01:43:00 | DEBUG | 📍 Voyager position updated to (1, 1)
+01:43:00 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:43:00 | INFO | 🗺️ Loaded 3 locations from manifest
+01:43:00 | INFO | 🗺️ Location Resolver initialized
+01:43:00 | INFO | 🗺️ Location updated: forest_path
+01:43:00 | DEBUG | 🗺️ Discovered new coordinate: (1, 1)
+01:43:00 | DEBUG | 📖 Generating narrative...
+01:43:00 | DEBUG | Chronicler streaming: leave_area
+01:43:00 | DEBUG | 📤 Action queued: I move east
+01:43:01 | DEBUG | 📤 Action queued: I move east
+01:43:01 | DEBUG | 📤 Action queued: I move east
+01:43:02 | DEBUG | 📤 Action queued: I move east
+01:43:02 | DEBUG | 📤 Action queued: I move east
+01:43:03 | DEBUG | 📤 Action queued: I move east
+01:43:03 | DEBUG | 📤 Action queued: I move east
+01:43:04 | DEBUG | 📤 Action queued: I move east
+01:43:04 | DEBUG | 📤 Action queued: I move east
+01:43:05 | DEBUG | 📤 Action queued: I move east
+01:43:05 | DEBUG | 📤 Action queued: I move east
+01:43:06 | DEBUG | 📤 Action queued: I move east
+01:43:06 | DEBUG | 📤 Action queued: I move east
+01:43:07 | DEBUG | 📤 Action queued: I move east
+01:43:08 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:43:08 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:43:09 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:43:09 | DEBUG | 📤 Action queued: I move here
+01:43:10 | DEBUG | 📤 Action queued: I move south
+01:43:10 | DEBUG | 📤 Action queued: I move east
+01:43:11 | DEBUG | 📤 Action queued: I move east
+01:43:11 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:43:11 | INFO | Game saved to premiere_voyage_true.json
+01:43:11 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:43:11 | DEBUG | 🔍 Parsing intent for: I move east
+01:43:11 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:43:11 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:43:11 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:43:11 | DEBUG | Action: leave_area | Tags: [] | Roll: 16 + Attr: 10 + Item: 0 + Tag: 0 = 26 vs DC: 10 (10 + 0) -> SUCCESS
+01:43:11 | DEBUG | 🔄 Applying state changes...
+01:43:11 | INFO | Social consequences applied for None (success=True)
+01:43:11 | DEBUG | 📍 Voyager position updated to (2, 1)
+01:43:11 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:43:11 | INFO | 🗺️ Loaded 3 locations from manifest
+01:43:11 | INFO | 🗺️ Location Resolver initialized
+01:43:11 | INFO | 🗺️ Location updated: forest_path
+01:43:11 | DEBUG | 🗺️ Discovered new coordinate: (2, 1)
+01:43:11 | DEBUG | 📖 Generating narrative...
+01:43:11 | DEBUG | Chronicler streaming: leave_area
+01:43:11 | DEBUG | 📤 Action queued: I move east
+01:43:12 | DEBUG | 📤 Action queued: I move east
+01:43:13 | DEBUG | 📤 Action queued: I move east
+01:43:13 | DEBUG | 📤 Action queued: I move east
+01:43:14 | DEBUG | 📤 Action queued: I move east
+01:43:14 | DEBUG | 📤 Action queued: I move east
+01:43:15 | DEBUG | 📤 Action queued: I move east
+01:43:15 | DEBUG | 📤 Action queued: I move east
+01:43:16 | DEBUG | 📤 Action queued: I move east
+01:43:16 | DEBUG | 📤 Action queued: I move east
+01:43:17 | DEBUG | 📤 Action queued: I move east
+01:43:17 | DEBUG | 📤 Action queued: I move east
+01:43:18 | DEBUG | 📤 Action queued: I move east
+01:43:18 | DEBUG | 📤 Action queued: I move east
+01:43:19 | DEBUG | 📤 Action queued: I move east
+01:43:20 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:43:20 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:43:21 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:43:21 | DEBUG | 📤 Action queued: I move here
+01:43:22 | DEBUG | 📤 Action queued: I move south
+01:43:22 | DEBUG | 📤 Action queued: I move south
+01:43:23 | DEBUG | 📤 Action queued: I move east
+01:43:23 | DEBUG | 📤 Action queued: I move east
+01:43:24 | DEBUG | 📤 Action queued: I move east
+01:43:24 | DEBUG | 📤 Action queued: I move east
+01:43:25 | DEBUG | 📤 Action queued: I move east
+01:43:25 | DEBUG | 📤 Action queued: I move east
+01:43:26 | DEBUG | 📤 Action queued: I move east
+01:43:26 | DEBUG | 📤 Action queued: I move east
+01:43:26 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:43:26 | INFO | Game saved to premiere_voyage_true.json
+01:43:26 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:43:26 | DEBUG | 🔍 Parsing intent for: I move east
+01:43:26 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:43:26 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:43:26 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:43:26 | DEBUG | Action: leave_area | Tags: [] | Roll: 19 + Attr: 10 + Item: 0 + Tag: 0 = 29 vs DC: 10 (10 + 0) -> SUCCESS
+01:43:26 | DEBUG | 🔄 Applying state changes...
+01:43:26 | INFO | Social consequences applied for None (success=True)
+01:43:26 | DEBUG | 📍 Voyager position updated to (3, 1)
+01:43:26 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:43:27 | INFO | 🗺️ Loaded 3 locations from manifest
+01:43:27 | INFO | 🗺️ Location Resolver initialized
+01:43:27 | INFO | 🗺️ Location updated: forest_path
+01:43:27 | DEBUG | 🗺️ Discovered new coordinate: (3, 1)
+01:43:27 | DEBUG | 📖 Generating narrative...
+01:43:27 | DEBUG | Chronicler streaming: leave_area
+01:43:27 | DEBUG | 📤 Action queued: I move east
+01:43:27 | DEBUG | 📤 Action queued: I move east
+01:43:28 | DEBUG | 📤 Action queued: I move east
+01:43:28 | DEBUG | 📤 Action queued: I move east
+01:43:29 | DEBUG | 📤 Action queued: I move east
+01:43:29 | DEBUG | 📤 Action queued: I move east
+01:43:30 | DEBUG | 📤 Action queued: I move east
+01:43:31 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:43:31 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:43:32 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:43:32 | DEBUG | 📤 Action queued: I move here
+01:43:33 | DEBUG | 📤 Action queued: I move south
+01:43:33 | DEBUG | 📤 Action queued: I move south
+01:43:34 | DEBUG | 📤 Action queued: I move south
+01:43:34 | DEBUG | 📤 Action queued: I move east
+01:43:35 | DEBUG | 📤 Action queued: I move east
+01:43:35 | DEBUG | 📤 Action queued: I move east
+01:43:36 | DEBUG | 📤 Action queued: I move east
+01:43:36 | DEBUG | 📤 Action queued: I move east
+01:43:37 | DEBUG | 📤 Action queued: I move east
+01:43:37 | DEBUG | 📤 Action queued: I move east
+01:43:38 | DEBUG | 📤 Action queued: I move east
+01:43:39 | DEBUG | 📤 Action queued: I move east
+01:43:39 | DEBUG | 📤 Action queued: I move east
+01:43:40 | DEBUG | 📤 Action queued: I move east
+01:43:40 | DEBUG | 📤 Action queued: I move east
+01:43:41 | DEBUG | 📤 Action queued: I move east
+01:43:42 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:43:42 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:43:43 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:43:43 | DEBUG | 📤 Action queued: I move here
+01:43:44 | DEBUG | 📤 Action queued: I move south
+01:43:44 | DEBUG | 📤 Action queued: I move south
+01:43:45 | DEBUG | 📤 Action queued: I move south
+01:43:45 | DEBUG | 📤 Action queued: I move east
+01:43:46 | DEBUG | 📤 Action queued: I move east
+01:43:46 | DEBUG | 📤 Action queued: I move east
+01:43:47 | DEBUG | 📤 Action queued: I move east
+01:43:47 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:43:47 | INFO | Game saved to premiere_voyage_true.json
+01:43:47 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:43:47 | DEBUG | 🔍 Parsing intent for: I move east
+01:43:47 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:43:47 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:43:47 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:43:47 | DEBUG | Action: leave_area | Tags: [] | Roll: 5 + Attr: 10 + Item: 0 + Tag: 0 = 15 vs DC: 10 (10 + 0) -> SUCCESS
+01:43:47 | DEBUG | 🔄 Applying state changes...
+01:43:47 | INFO | Social consequences applied for None (success=True)
+01:43:47 | DEBUG | 📍 Voyager position updated to (4, 1)
+01:43:47 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:43:47 | INFO | 🗺️ Loaded 3 locations from manifest
+01:43:47 | INFO | 🗺️ Location Resolver initialized
+01:43:47 | INFO | 🗺️ Location updated: forest_path
+01:43:47 | DEBUG | 🗺️ Discovered new coordinate: (4, 1)
+01:43:47 | DEBUG | 📖 Generating narrative...
+01:43:47 | DEBUG | Chronicler streaming: leave_area
+01:43:47 | DEBUG | 📤 Action queued: I move east
+01:43:48 | DEBUG | 📤 Action queued: I move east
+01:43:48 | DEBUG | 📤 Action queued: I move east
+01:43:49 | DEBUG | 📤 Action queued: I move east
+01:43:49 | DEBUG | 📤 Action queued: I move east
+01:43:50 | DEBUG | 📤 Action queued: I move east
+01:43:50 | DEBUG | 📤 Action queued: I move east
+01:43:51 | DEBUG | 📤 Action queued: I move east
+01:43:51 | DEBUG | 📤 Action queued: I move east
+01:43:53 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:43:53 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:43:54 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:43:54 | DEBUG | 📤 Action queued: I move here
+01:43:54 | DEBUG | 📤 Action queued: I move south
+01:43:55 | DEBUG | 📤 Action queued: I move south
+01:43:55 | DEBUG | 📤 Action queued: I move south
+01:43:56 | DEBUG | 📤 Action queued: I move south
+01:43:56 | DEBUG | 📤 Action queued: I move east
+01:43:57 | DEBUG | 📤 Action queued: I move east
+01:43:57 | DEBUG | 📤 Action queued: I move east
+01:43:58 | DEBUG | 📤 Action queued: I move east
+01:43:58 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:43:58 | INFO | Game saved to premiere_voyage_true.json
+01:43:58 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:43:58 | DEBUG | 🔍 Parsing intent for: I move east
+01:43:58 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:43:58 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:43:58 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:43:58 | DEBUG | Action: leave_area | Tags: [] | Roll: 11 + Attr: 10 + Item: 0 + Tag: 0 = 21 vs DC: 10 (10 + 0) -> SUCCESS
+01:43:58 | DEBUG | 🔄 Applying state changes...
+01:43:58 | INFO | Social consequences applied for None (success=True)
+01:43:58 | DEBUG | 📍 Voyager position updated to (5, 1)
+01:43:58 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:43:58 | INFO | 🗺️ Loaded 3 locations from manifest
+01:43:58 | INFO | 🗺️ Location Resolver initialized
+01:43:58 | INFO | 🗺️ Location updated: forest_path
+01:43:58 | DEBUG | 🗺️ Discovered new coordinate: (5, 1)
+01:43:58 | DEBUG | 📖 Generating narrative...
+01:43:58 | DEBUG | Chronicler streaming: leave_area
+01:43:58 | DEBUG | 📤 Action queued: I move east
+01:43:59 | DEBUG | 📤 Action queued: I move east
+01:43:59 | DEBUG | 📤 Action queued: I move east
+01:44:00 | DEBUG | 📤 Action queued: I move east
+01:44:00 | DEBUG | 📤 Action queued: I move east
+01:44:01 | DEBUG | 📤 Action queued: I move east
+01:44:01 | DEBUG | 📤 Action queued: I move east
+01:44:03 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:44:03 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:44:04 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:44:04 | DEBUG | 📤 Action queued: I move here
+01:44:05 | DEBUG | 📤 Action queued: I move south
+01:44:05 | DEBUG | 📤 Action queued: I move south
+01:44:06 | DEBUG | 📤 Action queued: I move south
+01:44:06 | DEBUG | 📤 Action queued: I move south
+01:44:07 | DEBUG | 📤 Action queued: I move south
+01:44:07 | DEBUG | 📤 Action queued: I move east
+01:44:08 | DEBUG | 📤 Action queued: I move east
+01:44:08 | DEBUG | 📤 Action queued: I move east
+01:44:09 | DEBUG | 📤 Action queued: I move east
+01:44:09 | DEBUG | 📤 Action queued: I move east
+01:44:10 | DEBUG | 📤 Action queued: I move east
+01:44:10 | DEBUG | 📤 Action queued: I move east
+01:44:11 | DEBUG | 📤 Action queued: I move east
+01:44:11 | DEBUG | 📤 Action queued: I move east
+01:44:13 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:44:13 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:44:14 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:44:14 | DEBUG | 📤 Action queued: I move here
+01:44:14 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:44:14 | INFO | Game saved to premiere_voyage_true.json
+01:44:14 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:44:14 | DEBUG | 🔍 Parsing intent for: I move east
+01:44:14 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:44:14 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:44:14 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:44:14 | DEBUG | Action: leave_area | Tags: [] | Roll: 10 + Attr: 10 + Item: 0 + Tag: 0 = 20 vs DC: 10 (10 + 0) -> SUCCESS
+01:44:14 | DEBUG | 🔄 Applying state changes...
+01:44:14 | INFO | Social consequences applied for None (success=True)
+01:44:14 | DEBUG | 📍 Voyager position updated to (6, 1)
+01:44:14 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:44:14 | INFO | 🗺️ Loaded 3 locations from manifest
+01:44:14 | INFO | 🗺️ Location Resolver initialized
+01:44:14 | INFO | 🗺️ Location updated: forest_path
+01:44:14 | DEBUG | 🗺️ Discovered new coordinate: (6, 1)
+01:44:14 | DEBUG | 📖 Generating narrative...
+01:44:14 | DEBUG | Chronicler streaming: leave_area
+01:44:14 | DEBUG | 📤 Action queued: I move west
+01:44:15 | DEBUG | 📤 Action queued: I move west
+01:44:15 | DEBUG | 📤 Action queued: I move west
+01:44:16 | DEBUG | 📤 Action queued: I move west
+01:44:16 | DEBUG | 📤 Action queued: I move west
+01:44:17 | DEBUG | 📤 Action queued: I move south
+01:44:17 | DEBUG | 📤 Action queued: I move south
+01:44:18 | DEBUG | 📤 Action queued: I move east
+01:44:18 | DEBUG | 📤 Action queued: I move east
+01:44:19 | DEBUG | 📤 Action queued: I move east
+01:44:19 | DEBUG | 📤 Action queued: I move east
+01:44:20 | DEBUG | 📤 Action queued: I move east
+01:44:20 | DEBUG | 📤 Action queued: I move east
+01:44:21 | DEBUG | 📤 Action queued: I move east
+01:44:22 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:44:22 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:44:23 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:44:23 | DEBUG | 📤 Action queued: I move here
+01:44:24 | DEBUG | 📤 Action queued: I move south
+01:44:24 | DEBUG | 📤 Action queued: I move south
+01:44:25 | DEBUG | 📤 Action queued: I move south
+01:44:25 | DEBUG | 📤 Action queued: I move south
+01:44:26 | DEBUG | 📤 Action queued: I move south
+01:44:27 | DEBUG | 📤 Action queued: I move south
+01:44:27 | DEBUG | 📤 Action queued: I move east
+01:44:28 | DEBUG | 📤 Action queued: I move east
+01:44:28 | DEBUG | 📤 Action queued: I move east
+01:44:29 | DEBUG | 📤 Action queued: I move east
+01:44:29 | DEBUG | 📤 Action queued: I move east
+01:44:30 | DEBUG | 📤 Action queued: I move east
+01:44:30 | DEBUG | 📤 Action queued: I move east
+01:44:32 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:44:32 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:44:33 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:44:33 | DEBUG | 📤 Action queued: I move here
+01:44:33 | DEBUG | 📤 Action queued: I move south
+01:44:34 | DEBUG | 📤 Action queued: I move south
+01:44:34 | DEBUG | 📤 Action queued: I move south
+01:44:35 | DEBUG | 📤 Action queued: I move south
+01:44:35 | DEBUG | 📤 Action queued: I move south
+01:44:36 | DEBUG | 📤 Action queued: I move south
+01:44:36 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:44:36 | INFO | Game saved to premiere_voyage_true.json
+01:44:36 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:44:36 | DEBUG | 🔍 Parsing intent for: I move east
+01:44:36 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:44:36 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:44:36 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:44:36 | DEBUG | Action: leave_area | Tags: [] | Roll: 8 + Attr: 10 + Item: 0 + Tag: 0 = 18 vs DC: 10 (10 + 0) -> SUCCESS
+01:44:36 | DEBUG | 🔄 Applying state changes...
+01:44:36 | INFO | Social consequences applied for None (success=True)
+01:44:36 | DEBUG | 📍 Voyager position updated to (7, 1)
+01:44:36 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:44:36 | INFO | 🗺️ Loaded 3 locations from manifest
+01:44:36 | INFO | 🗺️ Location Resolver initialized
+01:44:36 | INFO | 🗺️ Location updated: forest_path
+01:44:36 | DEBUG | 🗺️ Discovered new coordinate: (7, 1)
+01:44:36 | DEBUG | 📖 Generating narrative...
+01:44:36 | DEBUG | Chronicler streaming: leave_area
+01:44:36 | DEBUG | 📤 Action queued: I move south
+01:44:37 | DEBUG | 📤 Action queued: I move south
+01:44:37 | DEBUG | 📤 Action queued: I move east
+01:44:38 | DEBUG | 📤 Action queued: I move east
+01:44:38 | DEBUG | 📤 Action queued: I move east
+01:44:39 | DEBUG | 📤 Action queued: I move east
+01:44:39 | DEBUG | 📤 Action queued: I move east
+01:44:41 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:44:41 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:44:42 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:44:42 | DEBUG | 📤 Action queued: I move here
+01:44:42 | DEBUG | 📤 Action queued: I move south
+01:44:43 | DEBUG | 📤 Action queued: I move south
+01:44:43 | DEBUG | 📤 Action queued: I move south
+01:44:44 | DEBUG | 📤 Action queued: I move south
+01:44:44 | DEBUG | 📤 Action queued: I move south
+01:44:45 | DEBUG | 📤 Action queued: I move south
+01:44:45 | DEBUG | 📤 Action queued: I move south
+01:44:46 | DEBUG | 📤 Action queued: I move east
+01:44:46 | DEBUG | 📤 Action queued: I move east
+01:44:47 | DEBUG | 📤 Action queued: I move east
+01:44:47 | DEBUG | 📤 Action queued: I move east
+01:44:48 | DEBUG | 📤 Action queued: I move east
+01:44:49 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:44:49 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:44:50 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:44:50 | DEBUG | 📤 Action queued: I move here
+01:44:51 | DEBUG | 📤 Action queued: I move south
+01:44:51 | DEBUG | 📤 Action queued: I move south
+01:44:52 | DEBUG | 📤 Action queued: I move south
+01:44:52 | DEBUG | 📤 Action queued: I move south
+01:44:53 | DEBUG | 📤 Action queued: I move south
+01:44:53 | DEBUG | 📤 Action queued: I move south
+01:44:54 | DEBUG | 📤 Action queued: I move south
+01:44:55 | DEBUG | 📤 Action queued: I move east
+01:44:55 | DEBUG | 📤 Action queued: I move east
+01:44:56 | DEBUG | 📤 Action queued: I move east
+01:44:56 | DEBUG | 📤 Action queued: I move east
+01:44:57 | DEBUG | 📤 Action queued: I move east
+01:44:58 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:44:58 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:44:59 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:44:59 | DEBUG | 📤 Action queued: I move here
+01:45:00 | DEBUG | 📤 Action queued: I move south
+01:45:00 | DEBUG | 📤 Action queued: I move south
+01:45:01 | DEBUG | 📤 Action queued: I move south
+01:45:01 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:45:01 | INFO | Game saved to premiere_voyage_true.json
+01:45:01 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:45:01 | DEBUG | 🔍 Parsing intent for: I move east
+01:45:01 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:45:01 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:45:01 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:45:01 | DEBUG | Action: leave_area | Tags: [] | Roll: 20 + Attr: 10 + Item: 0 + Tag: 0 = 30 vs DC: 10 (10 + 0) -> SUCCESS
+01:45:01 | DEBUG | 🔄 Applying state changes...
+01:45:01 | INFO | Social consequences applied for None (success=True)
+01:45:01 | DEBUG | 📍 Voyager position updated to (8, 1)
+01:45:01 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:45:01 | INFO | 🗺️ Loaded 3 locations from manifest
+01:45:01 | INFO | 🗺️ Location Resolver initialized
+01:45:01 | INFO | 🗺️ Location updated: forest_path
+01:45:01 | DEBUG | 🗺️ Discovered new coordinate: (8, 1)
+01:45:01 | DEBUG | 📖 Generating narrative...
+01:45:01 | DEBUG | Chronicler streaming: leave_area
+01:45:01 | DEBUG | 📤 Action queued: I move west
+01:45:02 | DEBUG | 📤 Action queued: I move west
+01:45:02 | DEBUG | 📤 Action queued: I move west
+01:45:03 | DEBUG | 📤 Action queued: I move west
+01:45:03 | DEBUG | 📤 Action queued: I move south
+01:45:04 | DEBUG | 📤 Action queued: I move south
+01:45:04 | DEBUG | 📤 Action queued: I move east
+01:45:05 | DEBUG | 📤 Action queued: I move east
+01:45:05 | DEBUG | 📤 Action queued: I move east
+01:45:07 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:07 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:45:08 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:45:08 | DEBUG | 📤 Action queued: I move here
+01:45:08 | DEBUG | 📤 Action queued: I move south
+01:45:09 | DEBUG | 📤 Action queued: I move south
+01:45:09 | DEBUG | 📤 Action queued: I move south
+01:45:10 | DEBUG | 📤 Action queued: I move south
+01:45:10 | DEBUG | 📤 Action queued: I move south
+01:45:11 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:45:11 | INFO | Game saved to premiere_voyage_true.json
+01:45:11 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:45:11 | DEBUG | 🔍 Parsing intent for: I move east
+01:45:11 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:45:11 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:45:11 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:45:11 | DEBUG | Action: leave_area | Tags: [] | Roll: 19 + Attr: 10 + Item: 0 + Tag: 0 = 29 vs DC: 10 (10 + 0) -> SUCCESS
+01:45:11 | DEBUG | 🔄 Applying state changes...
+01:45:11 | INFO | Social consequences applied for None (success=True)
+01:45:11 | DEBUG | 📍 Voyager position updated to (9, 1)
+01:45:11 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:45:11 | INFO | 🗺️ Loaded 3 locations from manifest
+01:45:11 | INFO | 🗺️ Location Resolver initialized
+01:45:11 | INFO | 🗺️ Location updated: forest_path
+01:45:11 | DEBUG | 🗺️ Discovered new coordinate: (9, 1)
+01:45:11 | DEBUG | 📖 Generating narrative...
+01:45:11 | DEBUG | Chronicler streaming: leave_area
+01:45:11 | DEBUG | 📤 Action queued: I move west
+01:45:11 | DEBUG | 📤 Action queued: I move west
+01:45:12 | DEBUG | 📤 Action queued: I move west
+01:45:12 | DEBUG | 📤 Action queued: I move south
+01:45:13 | DEBUG | 📤 Action queued: I move south
+01:45:13 | DEBUG | 📤 Action queued: I move east
+01:45:15 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:15 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:45:16 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:45:16 | DEBUG | 📤 Action queued: I move here
+01:45:16 | DEBUG | 📤 Action queued: I move south
+01:45:17 | DEBUG | 📤 Action queued: I move south
+01:45:17 | DEBUG | 📤 Action queued: I move south
+01:45:18 | DEBUG | 📤 Action queued: I move south
+01:45:18 | DEBUG | 📤 Action queued: I move south
+01:45:19 | DEBUG | 📤 Action queued: I move south
+01:45:19 | DEBUG | 📤 Action queued: I move south
+01:45:20 | DEBUG | 📤 Action queued: I move south
+01:45:20 | DEBUG | 📤 Action queued: I move south
+01:45:21 | DEBUG | 📤 Action queued: I move east
+01:45:23 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:23 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:45:23 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:45:23 | INFO | Game saved to premiere_voyage_true.json
+01:45:23 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:45:23 | DEBUG | 🔍 Parsing intent for: I move east
+01:45:23 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:45:23 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:45:23 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:45:23 | DEBUG | Action: leave_area | Tags: [] | Roll: 18 + Attr: 10 + Item: 0 + Tag: 0 = 28 vs DC: 10 (10 + 0) -> SUCCESS
+01:45:23 | DEBUG | 🔄 Applying state changes...
+01:45:23 | INFO | Social consequences applied for None (success=True)
+01:45:23 | DEBUG | 📍 Voyager position updated to (10, 1)
+01:45:23 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:45:23 | INFO | 🗺️ Loaded 3 locations from manifest
+01:45:23 | INFO | 🗺️ Location Resolver initialized
+01:45:23 | INFO | 🗺️ Location updated: forest_path
+01:45:23 | DEBUG | 🗺️ Discovered new coordinate: (10, 1)
+01:45:23 | DEBUG | 📖 Generating narrative...
+01:45:23 | DEBUG | Chronicler streaming: leave_area
+01:45:24 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:45:24 | DEBUG | 📤 Action queued: I move here
+01:45:24 | DEBUG | 📤 Action queued: I move south
+01:45:25 | DEBUG | 📤 Action queued: I move south
+01:45:25 | DEBUG | 📤 Action queued: I move south
+01:45:26 | DEBUG | 📤 Action queued: I move south
+01:45:26 | DEBUG | 📤 Action queued: I move south
+01:45:27 | DEBUG | 📤 Action queued: I move south
+01:45:27 | DEBUG | 📤 Action queued: I move south
+01:45:28 | DEBUG | 📤 Action queued: I move south
+01:45:28 | DEBUG | 📤 Action queued: I move south
+01:45:30 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:30 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:45:31 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:45:31 | DEBUG | 📤 Action queued: I move here
+01:45:31 | DEBUG | 📤 Action queued: I move south
+01:45:32 | DEBUG | 📤 Action queued: I move south
+01:45:32 | DEBUG | 📤 Action queued: I move south
+01:45:33 | DEBUG | 📤 Action queued: I move south
+01:45:33 | DEBUG | 📤 Action queued: I move south
+01:45:34 | DEBUG | 📤 Action queued: I move south
+01:45:34 | DEBUG | 📤 Action queued: I move south
+01:45:35 | DEBUG | 📤 Action queued: I move south
+01:45:35 | DEBUG | 📤 Action queued: I move south
+01:45:37 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:37 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:45:38 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:45:38 | DEBUG | 📤 Action queued: I move here
+01:45:38 | DEBUG | 📤 Action queued: I move south
+01:45:39 | DEBUG | 📤 Action queued: I move south
+01:45:39 | DEBUG | 📤 Action queued: I move south
+01:45:40 | DEBUG | 📤 Action queued: I move south
+01:45:40 | DEBUG | 📤 Action queued: I move south
+01:45:41 | DEBUG | 📤 Action queued: I move south
+01:45:41 | DEBUG | 📤 Action queued: I move south
+01:45:42 | DEBUG | 📤 Action queued: I move south
+01:45:42 | DEBUG | 📤 Action queued: I move south
+01:45:43 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:45:43 | INFO | Game saved to premiere_voyage_true.json
+01:45:43 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:45:43 | DEBUG | 🔍 Parsing intent for: I move east
+01:45:43 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:45:43 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:45:43 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:45:43 | DEBUG | Action: leave_area | Tags: [] | Roll: 7 + Attr: 10 + Item: 0 + Tag: 0 = 17 vs DC: 10 (10 + 0) -> SUCCESS
+01:45:43 | DEBUG | 🔄 Applying state changes...
+01:45:43 | INFO | Social consequences applied for None (success=True)
+01:45:43 | DEBUG | 📍 Voyager position updated to (11, 1)
+01:45:43 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:45:43 | INFO | 🗺️ Loaded 3 locations from manifest
+01:45:43 | INFO | 🗺️ Location Resolver initialized
+01:45:43 | INFO | 🗺️ Location updated: forest_path
+01:45:43 | DEBUG | 🗺️ Discovered new coordinate: (11, 1)
+01:45:43 | DEBUG | 📖 Generating narrative...
+01:45:43 | DEBUG | Chronicler streaming: leave_area
+01:45:44 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:44 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:45:45 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:45:45 | DEBUG | 📤 Action queued: I move here
+01:45:45 | DEBUG | 📤 Action queued: I move south
+01:45:46 | DEBUG | 📤 Action queued: I move south
+01:45:46 | DEBUG | 📤 Action queued: I move south
+01:45:47 | DEBUG | 📤 Action queued: I move south
+01:45:48 | DEBUG | 📤 Action queued: I move south
+01:45:48 | DEBUG | 📤 Action queued: I move south
+01:45:49 | DEBUG | 📤 Action queued: I move south
+01:45:49 | DEBUG | 📤 Action queued: I move south
+01:45:50 | DEBUG | 📤 Action queued: I move south
+01:45:50 | DEBUG | 📤 Action queued: I move west
+01:45:52 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:52 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:45:53 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:45:53 | DEBUG | 📤 Action queued: I move here
+01:45:53 | DEBUG | 📤 Action queued: I move south
+01:45:54 | DEBUG | 📤 Action queued: I move south
+01:45:54 | ERROR | Chronicler stream failed: stream_text() can only be used with text responses
+01:45:54 | INFO | Game saved to premiere_voyage_true.json
+01:45:54 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:45:54 | DEBUG | 🔍 Parsing intent for: I move east
+01:45:54 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:45:54 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:45:54 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:45:54 | DEBUG | Action: leave_area | Tags: [] | Roll: 18 + Attr: 10 + Item: 0 + Tag: 0 = 28 vs DC: 10 (10 + 0) -> SUCCESS
+01:45:54 | DEBUG | 🔄 Applying state changes...
+01:45:54 | INFO | Social consequences applied for None (success=True)
+01:45:54 | DEBUG | 📍 Voyager position updated to (12, 1)
+01:45:54 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:45:54 | INFO | 🗺️ Loaded 3 locations from manifest
+01:45:54 | INFO | 🗺️ Location Resolver initialized
+01:45:54 | INFO | 🗺️ Location updated: forest_path
+01:45:54 | DEBUG | 🗺️ Discovered new coordinate: (12, 1)
+01:45:54 | DEBUG | 📖 Generating narrative...
+01:45:54 | DEBUG | Chronicler streaming: leave_area
+01:45:54 | DEBUG | 📤 Action queued: I move west
+01:45:55 | DEBUG | 📤 Action queued: I move west
+01:45:55 | DEBUG | 📤 Action queued: I move west
+01:45:56 | DEBUG | 📤 Action queued: I move west
+01:45:56 | DEBUG | 📤 Action queued: I move west
+01:45:57 | DEBUG | 📤 Action queued: I move west
+01:45:57 | DEBUG | 📤 Action queued: I move west
+01:45:58 | DEBUG | 📤 Action queued: I move west
+01:45:59 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:45:59 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:46:00 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:46:00 | DEBUG | 📤 Action queued: I move here
+01:46:01 | DEBUG | 📤 Action queued: I move south
+01:46:01 | DEBUG | 📤 Action queued: I move south
+01:46:02 | DEBUG | 📤 Action queued: I move south
+01:46:02 | DEBUG | 📤 Action queued: I move south
+01:46:03 | DEBUG | 📤 Action queued: I move south
+01:46:03 | DEBUG | 📤 Action queued: I move south
+01:46:04 | DEBUG | 📤 Action queued: I move south
+01:46:04 | DEBUG | 📤 Action queued: I move south
+01:46:05 | DEBUG | 📤 Action queued: I move west
+01:46:05 | DEBUG | 📤 Action queued: I move west
+01:46:06 | DEBUG | 📤 Action queued: I move west
+01:46:07 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:46:07 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:46:08 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:46:08 | DEBUG | 📤 Action queued: I move here
+01:46:09 | DEBUG | 📤 Action queued: I move south
+01:46:09 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:46:09 | INFO | Game saved to premiere_voyage_true.json
+01:46:09 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:46:09 | DEBUG | 🔍 Parsing intent for: I move east
+01:46:09 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:46:09 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:46:09 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:46:09 | DEBUG | Action: leave_area | Tags: [] | Roll: 16 + Attr: 10 + Item: 0 + Tag: 0 = 26 vs DC: 10 (10 + 0) -> SUCCESS
+01:46:09 | DEBUG | 🔄 Applying state changes...
+01:46:09 | INFO | Social consequences applied for None (success=True)
+01:46:09 | DEBUG | 📍 Voyager position updated to (13, 1)
+01:46:09 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:46:09 | INFO | 🗺️ Loaded 3 locations from manifest
+01:46:09 | INFO | 🗺️ Location Resolver initialized
+01:46:09 | INFO | 🗺️ Location updated: forest_path
+01:46:09 | DEBUG | 🗺️ Discovered new coordinate: (13, 1)
+01:46:09 | DEBUG | 📖 Generating narrative...
+01:46:09 | DEBUG | Chronicler streaming: leave_area
+01:46:09 | DEBUG | 📤 Action queued: I move west
+01:46:10 | DEBUG | 📤 Action queued: I move west
+01:46:10 | DEBUG | 📤 Action queued: I move west
+01:46:11 | DEBUG | 📤 Action queued: I move west
+01:46:11 | DEBUG | 📤 Action queued: I move west
+01:46:12 | DEBUG | 📤 Action queued: I move west
+01:46:12 | DEBUG | 📤 Action queued: I move west
+01:46:13 | DEBUG | 📤 Action queued: I move west
+01:46:13 | DEBUG | 📤 Action queued: I move west
+01:46:14 | DEBUG | 📤 Action queued: I move west
+01:46:16 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:46:16 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:46:17 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:46:17 | DEBUG | 📤 Action queued: I move here
+01:46:17 | DEBUG | 📤 Action queued: I move south
+01:46:18 | DEBUG | 📤 Action queued: I move south
+01:46:18 | DEBUG | 📤 Action queued: I move south
+01:46:19 | DEBUG | 📤 Action queued: I move south
+01:46:19 | DEBUG | 📤 Action queued: I move south
+01:46:20 | DEBUG | 📤 Action queued: I move south
+01:46:20 | DEBUG | 📤 Action queued: I move south
+01:46:21 | DEBUG | 📤 Action queued: I move west
+01:46:21 | DEBUG | 📤 Action queued: I move west
+01:46:22 | DEBUG | 📤 Action queued: I move west
+01:46:22 | DEBUG | 📤 Action queued: I move west
+01:46:23 | DEBUG | 📤 Action queued: I move west
+01:46:24 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:46:24 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:46:25 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:46:25 | DEBUG | 📤 Action queued: I move here
+01:46:26 | DEBUG | 📤 Action queued: I move south
+01:46:26 | DEBUG | 📤 Action queued: I move south
+01:46:27 | DEBUG | 📤 Action queued: I move south
+01:46:27 | DEBUG | 📤 Action queued: I move south
+01:46:28 | DEBUG | 📤 Action queued: I move south
+01:46:28 | DEBUG | 📤 Action queued: I move south
+01:46:29 | DEBUG | 📤 Action queued: I move south
+01:46:29 | DEBUG | 📤 Action queued: I move west
+01:46:30 | DEBUG | 📤 Action queued: I move west
+01:46:30 | DEBUG | 📤 Action queued: I move west
+01:46:31 | DEBUG | 📤 Action queued: I move west
+01:46:31 | DEBUG | 📤 Action queued: I move west
+01:46:32 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:46:32 | INFO | Game saved to premiere_voyage_true.json
+01:46:32 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:46:32 | DEBUG | 🔍 Parsing intent for: I move east
+01:46:32 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:46:32 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:46:32 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:46:32 | DEBUG | Action: leave_area | Tags: [] | Roll: 18 + Attr: 10 + Item: 0 + Tag: 0 = 28 vs DC: 10 (10 + 0) -> SUCCESS
+01:46:32 | DEBUG | 🔄 Applying state changes...
+01:46:32 | INFO | Social consequences applied for None (success=True)
+01:46:32 | DEBUG | 📍 Voyager position updated to (14, 1)
+01:46:32 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:46:32 | INFO | 🗺️ Loaded 3 locations from manifest
+01:46:32 | INFO | 🗺️ Location Resolver initialized
+01:46:32 | INFO | 🗺️ Location updated: forest_path
+01:46:32 | DEBUG | 🗺️ Discovered new coordinate: (14, 1)
+01:46:32 | DEBUG | 📖 Generating narrative...
+01:46:32 | DEBUG | Chronicler streaming: leave_area
+01:46:33 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:46:33 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:46:34 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:46:34 | DEBUG | 📤 Action queued: I move here
+01:46:34 | DEBUG | 📤 Action queued: I move south
+01:46:35 | DEBUG | 📤 Action queued: I move south
+01:46:35 | DEBUG | 📤 Action queued: I move south
+01:46:36 | DEBUG | 📤 Action queued: I move south
+01:46:36 | DEBUG | 📤 Action queued: I move south
+01:46:37 | DEBUG | 📤 Action queued: I move south
+01:46:37 | DEBUG | 📤 Action queued: I move west
+01:46:38 | DEBUG | 📤 Action queued: I move west
+01:46:38 | DEBUG | 📤 Action queued: I move west
+01:46:39 | DEBUG | 📤 Action queued: I move west
+01:46:39 | DEBUG | 📤 Action queued: I move west
+01:46:40 | DEBUG | 📤 Action queued: I move west
+01:46:41 | DEBUG | 📤 Action queued: I move west
+01:46:42 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:46:42 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:46:43 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:46:43 | DEBUG | 📤 Action queued: I move here
+01:46:44 | DEBUG | 📤 Action queued: I move south
+01:46:44 | DEBUG | 📤 Action queued: I move south
+01:46:45 | DEBUG | 📤 Action queued: I move south
+01:46:45 | DEBUG | 📤 Action queued: I move south
+01:46:46 | DEBUG | 📤 Action queued: I move south
+01:46:46 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:46:46 | INFO | Game saved to premiere_voyage_true.json
+01:46:46 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:46:46 | DEBUG | 🔍 Parsing intent for: I move east
+01:46:46 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:46:46 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:46:46 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:46:46 | DEBUG | Action: leave_area | Tags: [] | Roll: 19 + Attr: 10 + Item: 0 + Tag: 0 = 29 vs DC: 10 (10 + 0) -> SUCCESS
+01:46:46 | DEBUG | 🔄 Applying state changes...
+01:46:46 | INFO | Social consequences applied for None (success=True)
+01:46:46 | DEBUG | 📍 Voyager position updated to (15, 1)
+01:46:46 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:46:46 | INFO | 🗺️ Loaded 3 locations from manifest
+01:46:46 | INFO | 🗺️ Location Resolver initialized
+01:46:46 | INFO | 🗺️ Location updated: forest_path
+01:46:46 | DEBUG | 🗺️ Discovered new coordinate: (15, 1)
+01:46:46 | DEBUG | 📖 Generating narrative...
+01:46:46 | DEBUG | Chronicler streaming: leave_area
+01:46:46 | DEBUG | 📤 Action queued: I move west
+01:46:47 | DEBUG | 📤 Action queued: I move west
+01:46:47 | DEBUG | 📤 Action queued: I move west
+01:46:48 | DEBUG | 📤 Action queued: I move west
+01:46:48 | DEBUG | 📤 Action queued: I move west
+01:46:49 | DEBUG | 📤 Action queued: I move west
+01:46:49 | DEBUG | 📤 Action queued: I move west
+01:46:50 | DEBUG | 📤 Action queued: I move west
+01:46:51 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:46:51 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:46:52 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:46:52 | DEBUG | 📤 Action queued: I move here
+01:46:53 | DEBUG | 📤 Action queued: I move south
+01:46:53 | DEBUG | 📤 Action queued: I move south
+01:46:54 | DEBUG | 📤 Action queued: I move south
+01:46:54 | DEBUG | 📤 Action queued: I move south
+01:46:55 | DEBUG | 📤 Action queued: I move south
+01:46:55 | DEBUG | 📤 Action queued: I move west
+01:46:56 | DEBUG | 📤 Action queued: I move west
+01:46:56 | DEBUG | 📤 Action queued: I move west
+01:46:57 | DEBUG | 📤 Action queued: I move west
+01:46:57 | DEBUG | 📤 Action queued: I move west
+01:46:58 | DEBUG | 📤 Action queued: I move west
+01:46:58 | DEBUG | 📤 Action queued: I move west
+01:46:59 | DEBUG | 📤 Action queued: I move west
+01:46:59 | DEBUG | 📤 Action queued: I move west
+01:47:01 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:47:01 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:47:02 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:47:02 | DEBUG | 📤 Action queued: I move here
+01:47:02 | DEBUG | 📤 Action queued: I move south
+01:47:03 | DEBUG | 📤 Action queued: I move south
+01:47:03 | DEBUG | 📤 Action queued: I move south
+01:47:04 | DEBUG | 📤 Action queued: I move south
+01:47:04 | DEBUG | 📤 Action queued: I move south
+01:47:05 | DEBUG | 📤 Action queued: I move west
+01:47:05 | DEBUG | 📤 Action queued: I move west
+01:47:06 | DEBUG | 📤 Action queued: I move west
+01:47:06 | DEBUG | 📤 Action queued: I move west
+01:47:07 | DEBUG | 📤 Action queued: I move west
+01:47:07 | DEBUG | 📤 Action queued: I move west
+01:47:08 | DEBUG | 📤 Action queued: I move west
+01:47:09 | DEBUG | 📤 Action queued: I move west
+01:47:09 | DEBUG | 📤 Action queued: I move west
+01:47:11 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:47:11 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:47:12 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:47:12 | DEBUG | 📤 Action queued: I move here
+01:47:12 | DEBUG | 📤 Action queued: I move south
+01:47:13 | DEBUG | 📤 Action queued: I move south
+01:47:13 | DEBUG | 📤 Action queued: I move south
+01:47:14 | DEBUG | 📤 Action queued: I move south
+01:47:14 | DEBUG | 📤 Action queued: I move south
+01:47:15 | DEBUG | 📤 Action queued: I move west
+01:47:15 | DEBUG | 📤 Action queued: I move west
+01:47:16 | DEBUG | 📤 Action queued: I move west
+01:47:16 | DEBUG | 📤 Action queued: I move west
+01:47:17 | DEBUG | 📤 Action queued: I move west
+01:47:17 | DEBUG | 📤 Action queued: I move west
+01:47:18 | DEBUG | 📤 Action queued: I move west
+01:47:18 | DEBUG | 📤 Action queued: I move west
+01:47:19 | DEBUG | 📤 Action queued: I move west
+01:47:20 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:47:20 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:47:21 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:47:21 | DEBUG | 📤 Action queued: I move here
+01:47:22 | DEBUG | 📤 Action queued: I move south
+01:47:22 | DEBUG | 📤 Action queued: I move south
+01:47:23 | DEBUG | 📤 Action queued: I move south
+01:47:23 | DEBUG | 📤 Action queued: I move south
+01:47:24 | DEBUG | 📤 Action queued: I move south
+01:47:24 | DEBUG | 📤 Action queued: I move west
+01:47:25 | DEBUG | 📤 Action queued: I move west
+01:47:25 | DEBUG | 📤 Action queued: I move west
+01:47:26 | DEBUG | 📤 Action queued: I move west
+01:47:26 | DEBUG | 📤 Action queued: I move west
+01:47:27 | DEBUG | 📤 Action queued: I move west
+01:47:27 | DEBUG | 📤 Action queued: I move west
+01:47:28 | DEBUG | 📤 Action queued: I move west
+01:47:28 | DEBUG | 📤 Action queued: I move west
+01:47:30 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:47:30 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:47:31 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:47:31 | DEBUG | 📤 Action queued: I move here
+01:47:31 | DEBUG | 📤 Action queued: I move south
+01:47:32 | DEBUG | 📤 Action queued: I move south
+01:47:32 | DEBUG | 📤 Action queued: I move south
+01:47:33 | DEBUG | 📤 Action queued: I move south
+01:47:33 | DEBUG | 📤 Action queued: I move south
+01:47:34 | DEBUG | 📤 Action queued: I move west
+01:47:34 | DEBUG | 📤 Action queued: I move west
+01:47:35 | DEBUG | 📤 Action queued: I move west
+01:47:35 | DEBUG | 📤 Action queued: I move west
+01:47:36 | DEBUG | 📤 Action queued: I move west
+01:47:36 | DEBUG | 📤 Action queued: I move west
+01:47:37 | DEBUG | 📤 Action queued: I move west
+01:47:37 | DEBUG | 📤 Action queued: I move west
+01:47:38 | DEBUG | 📤 Action queued: I move west
+01:47:38 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:47:38 | INFO | Game saved to premiere_voyage_true.json
+01:47:38 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:47:38 | DEBUG | 🔍 Parsing intent for: I move east
+01:47:38 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:47:38 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:47:38 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:47:38 | DEBUG | Action: leave_area | Tags: [] | Roll: 5 + Attr: 10 + Item: 0 + Tag: 0 = 15 vs DC: 10 (10 + 0) -> SUCCESS
+01:47:38 | DEBUG | 🔄 Applying state changes...
+01:47:38 | INFO | Social consequences applied for None (success=True)
+01:47:38 | DEBUG | 📍 Voyager position updated to (16, 1)
+01:47:38 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:47:38 | INFO | 🗺️ Loaded 3 locations from manifest
+01:47:38 | INFO | 🗺️ Location Resolver initialized
+01:47:38 | INFO | 🗺️ Location updated: forest_path
+01:47:38 | DEBUG | 🗺️ Discovered new coordinate: (16, 1)
+01:47:38 | DEBUG | 📖 Generating narrative...
+01:47:38 | DEBUG | Chronicler streaming: leave_area
+01:47:39 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:47:39 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:47:40 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:47:40 | DEBUG | 📤 Action queued: I move here
+01:47:41 | DEBUG | 📤 Action queued: I move south
+01:47:42 | DEBUG | 📤 Action queued: I move south
+01:47:42 | DEBUG | 📤 Action queued: I move south
+01:47:43 | DEBUG | 📤 Action queued: I move south
+01:47:43 | DEBUG | 📤 Action queued: I move west
+01:47:44 | DEBUG | 📤 Action queued: I move west
+01:47:44 | DEBUG | 📤 Action queued: I move west
+01:47:45 | DEBUG | 📤 Action queued: I move west
+01:47:45 | DEBUG | 📤 Action queued: I move west
+01:47:46 | DEBUG | 📤 Action queued: I move west
+01:47:46 | DEBUG | 📤 Action queued: I move west
+01:47:47 | DEBUG | 📤 Action queued: I move west
+01:47:47 | DEBUG | 📤 Action queued: I move west
+01:47:48 | DEBUG | 📤 Action queued: I move west
+01:47:48 | DEBUG | 📤 Action queued: I move west
+01:47:50 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:47:50 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:47:51 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:47:51 | DEBUG | 📤 Action queued: I move here
+01:47:51 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:47:51 | INFO | Game saved to premiere_voyage_true.json
+01:47:51 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:47:51 | DEBUG | 🔍 Parsing intent for: I move east
+01:47:51 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:47:51 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:47:51 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:47:51 | DEBUG | Action: leave_area | Tags: [] | Roll: 14 + Attr: 10 + Item: 0 + Tag: 0 = 24 vs DC: 10 (10 + 0) -> SUCCESS
+01:47:51 | DEBUG | 🔄 Applying state changes...
+01:47:51 | INFO | Social consequences applied for None (success=True)
+01:47:51 | DEBUG | 📍 Voyager position updated to (17, 1)
+01:47:51 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:47:51 | INFO | 🗺️ Loaded 3 locations from manifest
+01:47:51 | INFO | 🗺️ Location Resolver initialized
+01:47:51 | INFO | 🗺️ Location updated: forest_path
+01:47:51 | DEBUG | 🗺️ Discovered new coordinate: (17, 1)
+01:47:51 | DEBUG | 📖 Generating narrative...
+01:47:51 | DEBUG | Chronicler streaming: leave_area
+01:47:51 | DEBUG | 📤 Action queued: I move west
+01:47:52 | DEBUG | 📤 Action queued: I move west
+01:47:52 | DEBUG | 📤 Action queued: I move west
+01:47:53 | DEBUG | 📤 Action queued: I move west
+01:47:53 | DEBUG | 📤 Action queued: I move west
+01:47:54 | DEBUG | 📤 Action queued: I move west
+01:47:54 | DEBUG | 📤 Action queued: I move west
+01:47:55 | DEBUG | 📤 Action queued: I move west
+01:47:55 | DEBUG | 📤 Action queued: I move west
+01:47:56 | DEBUG | 📤 Action queued: I move west
+01:47:56 | DEBUG | 📤 Action queued: I move west
+01:47:57 | DEBUG | 📤 Action queued: I move west
+01:47:57 | DEBUG | 📤 Action queued: I move west
+01:47:58 | DEBUG | 📤 Action queued: I move west
+01:47:58 | DEBUG | 📤 Action queued: I move west
+01:48:00 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:48:00 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:48:01 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:48:01 | DEBUG | 📤 Action queued: I move here
+01:48:01 | DEBUG | 📤 Action queued: I move south
+01:48:02 | DEBUG | 📤 Action queued: I move south
+01:48:02 | DEBUG | 📤 Action queued: I move south
+01:48:03 | DEBUG | 📤 Action queued: I move west
+01:48:03 | DEBUG | 📤 Action queued: I move west
+01:48:04 | DEBUG | 📤 Action queued: I move west
+01:48:04 | DEBUG | 📤 Action queued: I move west
+01:48:05 | DEBUG | 📤 Action queued: I move west
+01:48:06 | DEBUG | 📤 Action queued: I move west
+01:48:06 | DEBUG | 📤 Action queued: I move west
+01:48:07 | DEBUG | 📤 Action queued: I move west
+01:48:07 | DEBUG | 📤 Action queued: I move west
+01:48:08 | DEBUG | 📤 Action queued: I move west
+01:48:08 | DEBUG | 📤 Action queued: I move west
+01:48:09 | DEBUG | 📤 Action queued: I move west
+01:48:09 | DEBUG | 📤 Action queued: I move west
+01:48:11 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:48:11 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:48:12 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:48:12 | DEBUG | 📤 Action queued: I move here
+01:48:12 | DEBUG | 📤 Action queued: I move south
+01:48:13 | DEBUG | 📤 Action queued: I move south
+01:48:13 | DEBUG | 📤 Action queued: I move south
+01:48:14 | DEBUG | 📤 Action queued: I move west
+01:48:14 | DEBUG | 📤 Action queued: I move west
+01:48:15 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:48:15 | INFO | Game saved to premiere_voyage_true.json
+01:48:15 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:48:15 | DEBUG | 🔍 Parsing intent for: I move east
+01:48:15 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:48:15 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:48:15 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:48:15 | DEBUG | Action: leave_area | Tags: [] | Roll: 10 + Attr: 10 + Item: 0 + Tag: 0 = 20 vs DC: 10 (10 + 0) -> SUCCESS
+01:48:15 | DEBUG | 🔄 Applying state changes...
+01:48:15 | INFO | Social consequences applied for None (success=True)
+01:48:15 | DEBUG | 📍 Voyager position updated to (18, 1)
+01:48:15 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:48:15 | INFO | 🗺️ Loaded 3 locations from manifest
+01:48:15 | INFO | 🗺️ Location Resolver initialized
+01:48:15 | INFO | 🗺️ Location updated: forest_path
+01:48:15 | DEBUG | 🗺️ Discovered new coordinate: (18, 1)
+01:48:15 | DEBUG | 📖 Generating narrative...
+01:48:15 | DEBUG | Chronicler streaming: leave_area
+01:48:15 | DEBUG | 📤 Action queued: I move west
+01:48:15 | DEBUG | 📤 Action queued: I move west
+01:48:16 | DEBUG | 📤 Action queued: I move west
+01:48:16 | DEBUG | 📤 Action queued: I move west
+01:48:17 | DEBUG | 📤 Action queued: I move west
+01:48:17 | DEBUG | 📤 Action queued: I move west
+01:48:18 | DEBUG | 📤 Action queued: I move west
+01:48:18 | DEBUG | 📤 Action queued: I move west
+01:48:19 | DEBUG | 📤 Action queued: I move west
+01:48:19 | DEBUG | 📤 Action queued: I move west
+01:48:20 | DEBUG | 📤 Action queued: I move west
+01:48:21 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:48:21 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:48:22 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:48:22 | DEBUG | 📤 Action queued: I move here
+01:48:23 | DEBUG | 📤 Action queued: I move south
+01:48:23 | DEBUG | 📤 Action queued: I move south
+01:48:24 | DEBUG | 📤 Action queued: I move west
+01:48:24 | DEBUG | 📤 Action queued: I move west
+01:48:25 | DEBUG | 📤 Action queued: I move west
+01:48:25 | DEBUG | 📤 Action queued: I move west
+01:48:26 | DEBUG | 📤 Action queued: I move west
+01:48:26 | DEBUG | 📤 Action queued: I move west
+01:48:27 | DEBUG | 📤 Action queued: I move west
+01:48:27 | DEBUG | 📤 Action queued: I move west
+01:48:28 | DEBUG | 📤 Action queued: I move west
+01:48:28 | DEBUG | 📤 Action queued: I move west
+01:48:29 | DEBUG | 📤 Action queued: I move west
+01:48:29 | DEBUG | 📤 Action queued: I move west
+01:48:30 | DEBUG | 📤 Action queued: I move west
+01:48:30 | DEBUG | 📤 Action queued: I move west
+01:48:31 | DEBUG | 📤 Action queued: I move west
+01:48:33 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:48:33 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:48:34 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:48:34 | DEBUG | 📤 Action queued: I move here
+01:48:34 | DEBUG | 📤 Action queued: I move south
+01:48:35 | DEBUG | 📤 Action queued: I move south
+01:48:35 | DEBUG | 📤 Action queued: I move west
+01:48:36 | DEBUG | 📤 Action queued: I move west
+01:48:36 | DEBUG | 📤 Action queued: I move west
+01:48:37 | DEBUG | 📤 Action queued: I move west
+01:48:37 | DEBUG | 📤 Action queued: I move west
+01:48:38 | DEBUG | 📤 Action queued: I move west
+01:48:38 | DEBUG | 📤 Action queued: I move west
+01:48:39 | DEBUG | 📤 Action queued: I move west
+01:48:39 | DEBUG | 📤 Action queued: I move west
+01:48:40 | DEBUG | 📤 Action queued: I move west
+01:48:40 | DEBUG | 📤 Action queued: I move west
+01:48:41 | DEBUG | 📤 Action queued: I move west
+01:48:41 | DEBUG | 📤 Action queued: I move west
+01:48:42 | DEBUG | 📤 Action queued: I move west
+01:48:42 | DEBUG | 📤 Action queued: I move west
+01:48:44 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:48:44 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:48:45 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:48:45 | DEBUG | 📤 Action queued: I move here
+01:48:45 | DEBUG | 📤 Action queued: I move south
+01:48:46 | DEBUG | 📤 Action queued: I move south
+01:48:46 | DEBUG | 📤 Action queued: I move west
+01:48:47 | DEBUG | 📤 Action queued: I move west
+01:48:47 | DEBUG | 📤 Action queued: I move west
+01:48:48 | DEBUG | 📤 Action queued: I move west
+01:48:48 | DEBUG | 📤 Action queued: I move west
+01:48:49 | DEBUG | 📤 Action queued: I move west
+01:48:49 | DEBUG | 📤 Action queued: I move west
+01:48:50 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:48:50 | INFO | Game saved to premiere_voyage_true.json
+01:48:50 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:48:50 | DEBUG | 🔍 Parsing intent for: I move east
+01:48:50 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:48:50 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:48:50 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:48:50 | DEBUG | Action: leave_area | Tags: [] | Roll: 4 + Attr: 10 + Item: 0 + Tag: 0 = 14 vs DC: 10 (10 + 0) -> SUCCESS
+01:48:50 | DEBUG | 🔄 Applying state changes...
+01:48:50 | INFO | Social consequences applied for None (success=True)
+01:48:50 | DEBUG | 📍 Voyager position updated to (19, 1)
+01:48:50 | INFO | 🚶️ Voyager moved east (leave_area intent)
+01:48:50 | INFO | 🗺️ Loaded 3 locations from manifest
+01:48:50 | INFO | 🗺️ Location Resolver initialized
+01:48:50 | INFO | 🗺️ Location updated: forest_path
+01:48:50 | DEBUG | 🗺️ Discovered new coordinate: (19, 1)
+01:48:50 | DEBUG | 📖 Generating narrative...
+01:48:50 | DEBUG | Chronicler streaming: leave_area
+01:48:50 | DEBUG | 📤 Action queued: I move west
+01:48:50 | DEBUG | 📤 Action queued: I move west
+01:48:51 | DEBUG | 📤 Action queued: I move west
+01:48:51 | DEBUG | 📤 Action queued: I move west
+01:48:52 | DEBUG | 📤 Action queued: I move west
+01:48:52 | DEBUG | 📤 Action queued: I move west
+01:48:53 | DEBUG | 📤 Action queued: I move west
+01:48:53 | DEBUG | 📤 Action queued: I move west
+01:48:55 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:48:55 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:48:56 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:48:56 | DEBUG | 📤 Action queued: I move here
+01:48:57 | DEBUG | 📤 Action queued: I move south
+01:48:57 | DEBUG | 📤 Action queued: I move west
+01:48:58 | DEBUG | 📤 Action queued: I move west
+01:48:58 | DEBUG | 📤 Action queued: I move west
+01:48:59 | DEBUG | 📤 Action queued: I move west
+01:48:59 | DEBUG | 📤 Action queued: I move west
+01:49:00 | DEBUG | 📤 Action queued: I move west
+01:49:00 | DEBUG | 📤 Action queued: I move west
+01:49:01 | DEBUG | 📤 Action queued: I move west
+01:49:01 | DEBUG | 📤 Action queued: I move west
+01:49:02 | DEBUG | 📤 Action queued: I move west
+01:49:02 | DEBUG | 📤 Action queued: I move west
+01:49:03 | DEBUG | 📤 Action queued: I move west
+01:49:03 | DEBUG | 📤 Action queued: I move west
+01:49:04 | DEBUG | 📤 Action queued: I move west
+01:49:04 | DEBUG | 📤 Action queued: I move west
+01:49:05 | DEBUG | 📤 Action queued: I move west
+01:49:05 | DEBUG | 📤 Action queued: I move west
+01:49:07 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:49:07 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:49:08 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:49:08 | DEBUG | 📤 Action queued: I move here
+01:49:08 | DEBUG | 📤 Action queued: I move south
+01:49:09 | DEBUG | 📤 Action queued: I move west
+01:49:09 | DEBUG | 📤 Action queued: I move west
+01:49:10 | DEBUG | 📤 Action queued: I move west
+01:49:10 | DEBUG | 📤 Action queued: I move west
+01:49:11 | DEBUG | 📤 Action queued: I move west
+01:49:11 | DEBUG | 📤 Action queued: I move west
+01:49:12 | DEBUG | 📤 Action queued: I move west
+01:49:12 | DEBUG | 📤 Action queued: I move west
+01:49:13 | DEBUG | 📤 Action queued: I move west
+01:49:13 | DEBUG | 📤 Action queued: I move west
+01:49:14 | DEBUG | 📤 Action queued: I move west
+01:49:14 | DEBUG | 📤 Action queued: I move west
+01:49:15 | DEBUG | 📤 Action queued: I move west
+01:49:15 | DEBUG | 📤 Action queued: I move west
+01:49:16 | DEBUG | 📤 Action queued: I move west
+01:49:16 | DEBUG | 📤 Action queued: I move west
+01:49:17 | DEBUG | 📤 Action queued: I move west
+01:49:18 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:49:18 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:49:19 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:49:19 | DEBUG | 📤 Action queued: I move here
+01:49:20 | DEBUG | 📤 Action queued: I move south
+01:49:21 | DEBUG | 📤 Action queued: I move west
+01:49:21 | DEBUG | 📤 Action queued: I move west
+01:49:22 | DEBUG | 📤 Action queued: I move west
+01:49:22 | DEBUG | 📤 Action queued: I move west
+01:49:23 | DEBUG | 📤 Action queued: I move west
+01:49:23 | DEBUG | 📤 Action queued: I move west
+01:49:24 | DEBUG | 📤 Action queued: I move west
+01:49:24 | DEBUG | 📤 Action queued: I move west
+01:49:25 | DEBUG | 📤 Action queued: I move west
+01:49:25 | DEBUG | 📤 Action queued: I move west
+01:49:26 | DEBUG | 📤 Action queued: I move west
+01:49:26 | DEBUG | 📤 Action queued: I move west
+01:49:27 | DEBUG | 📤 Action queued: I move west
+01:49:27 | DEBUG | 📤 Action queued: I move west
+01:49:28 | DEBUG | 📤 Action queued: I move west
+01:49:28 | DEBUG | 📤 Action queued: I move west
+01:49:29 | DEBUG | 📤 Action queued: I move west
+01:49:30 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:49:30 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:49:31 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:49:31 | DEBUG | 📤 Action queued: I move here
+01:49:32 | DEBUG | 📤 Action queued: I move south
+01:49:32 | DEBUG | 📤 Action queued: I move west
+01:49:33 | DEBUG | 📤 Action queued: I move west
+01:49:33 | DEBUG | 📤 Action queued: I move west
+01:49:34 | DEBUG | 📤 Action queued: I move west
+01:49:34 | DEBUG | 📤 Action queued: I move west
+01:49:35 | DEBUG | 📤 Action queued: I move west
+01:49:35 | DEBUG | 📤 Action queued: I move west
+01:49:36 | DEBUG | 📤 Action queued: I move west
+01:49:36 | DEBUG | 📤 Action queued: I move west
+01:49:37 | DEBUG | 📤 Action queued: I move west
+01:49:37 | DEBUG | 📤 Action queued: I move west
+01:49:38 | DEBUG | 📤 Action queued: I move west
+01:49:38 | DEBUG | 📤 Action queued: I move west
+01:49:39 | DEBUG | 📤 Action queued: I move west
+01:49:39 | DEBUG | 📤 Action queued: I move west
+01:49:40 | DEBUG | 📤 Action queued: I move west
+01:49:40 | DEBUG | 📤 Action queued: I move west
+01:49:42 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:49:42 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:49:43 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:49:43 | DEBUG | 📤 Action queued: I move here
+01:49:43 | DEBUG | 📤 Action queued: I move south
+01:49:44 | DEBUG | 📤 Action queued: I move west
+01:49:44 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:49:44 | INFO | Game saved to premiere_voyage_true.json
+01:49:44 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:49:44 | DEBUG | 🔍 Parsing intent for: I move here
+01:49:44 | INFO | Intent resolution: 'I move here' → leave_area (confidence: 0.496, matched exemplar: 'Leave this place')
+01:49:44 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:49:44 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:49:44 | DEBUG | Action: leave_area | Tags: [] | Roll: 18 + Attr: 10 + Item: 0 + Tag: 0 = 28 vs DC: 10 (10 + 0) -> SUCCESS
+01:49:44 | DEBUG | 🔄 Applying state changes...
+01:49:44 | INFO | Social consequences applied for None (success=True)
+01:49:44 | DEBUG | 📖 Generating narrative...
+01:49:44 | DEBUG | Chronicler streaming: leave_area
+01:49:45 | DEBUG | 📤 Action queued: I move west
+01:49:45 | DEBUG | 📤 Action queued: I move west
+01:49:46 | DEBUG | 📤 Action queued: I move west
+01:49:46 | DEBUG | 📤 Action queued: I move west
+01:49:47 | DEBUG | 📤 Action queued: I move west
+01:49:47 | DEBUG | 📤 Action queued: I move west
+01:49:48 | DEBUG | 📤 Action queued: I move west
+01:49:48 | DEBUG | 📤 Action queued: I move west
+01:49:49 | DEBUG | 📤 Action queued: I move west
+01:49:49 | DEBUG | 📤 Action queued: I move west
+01:49:50 | DEBUG | 📤 Action queued: I move west
+01:49:50 | DEBUG | 📤 Action queued: I move west
+01:49:51 | DEBUG | 📤 Action queued: I move west
+01:49:51 | DEBUG | 📤 Action queued: I move west
+01:49:52 | DEBUG | 📤 Action queued: I move west
+01:49:52 | DEBUG | 📤 Action queued: I move west
+01:49:53 | INFO | 🖥️ Terminal mode stopped by user
+01:49:53 | INFO | 🛑 Stopping Cinematic Simulator
+01:49:53 | INFO | 🛑 SimulatorHost stopped
+01:49:53 | INFO | 🎬 Cinematic Simulator stopped
+01:49:53 | INFO | 🛑 Stopping Cinematic Simulator
+01:49:53 | INFO | 🛑 SimulatorHost stopped
+01:49:53 | INFO | 🎬 Cinematic Simulator stopped
