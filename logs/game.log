@@ -8828,3 +8828,31 @@ expected alphabetic or numeric character, but found '.'
 2026-02-07 13:52:55 | INFO | utils.asset_loader:_generate_minimal_assets:180 | 🎨 Generated minimal fallback assets
 2026-02-07 13:52:55 | INFO | utils.asset_loader:__init__:110 | 🎨 Asset Loader initialized - 0 assets loaded
 2026-02-07 13:52:55 | INFO | graphics.ppu_tk_native:__init__:428 | 🎨 Native Tkinter PPU initialized with multi-mode support
+2026-02-07 13:53:33 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_assets:119 | 📁 Found 7 asset files: ['animations.yaml', 'ASSET_MANIFEST.yaml', 'entities.yaml', 'materials.yaml', 'objects.yaml', 'objects_obese.yaml', 'prefabs.yaml']
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_asset_file:209 | 📁 Loading animations from animations.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_assets:127 | ✅ Loaded animations.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_asset_file:209 | 📁 Loading ASSET_MANIFEST from ASSET_MANIFEST.yaml
+2026-02-07 13:53:33 | WARNING | utils.asset_loader:_load_asset_file:222 | ⚠️ Unknown asset file type: ASSET_MANIFEST
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_assets:127 | ✅ Loaded ASSET_MANIFEST.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_asset_file:209 | 📁 Loading entities from entities.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_assets:127 | ✅ Loaded entities.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_asset_file:209 | 📁 Loading materials from materials.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_assets:127 | ✅ Loaded materials.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_asset_file:209 | 📁 Loading objects from objects.yaml
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_assets:127 | ✅ Loaded objects.yaml
+2026-02-07 13:53:33 | ERROR | utils.asset_loader:_load_assets:129 | 💥 Failed to load objects_obese.yaml: mapping values are not allowed here
+  in "assets\objects_obese.yaml", line 686, column 35
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_asset_file:209 | 📁 Loading prefabs from prefabs.yaml
+2026-02-07 13:53:33 | ERROR | utils.asset_loader:_load_assets:129 | 💥 Failed to load prefabs.yaml: 'AssetLoader' object has no attribute '_load_prefabs'
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_load_assets:132 | 📁 Successfully loaded 5/7 asset files
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_generate_tile_sprites:482 | 🎨 Generated 11 tile sprites
+2026-02-07 13:53:33 | ERROR | utils.asset_loader:_generate_object_sprites:438 | 💥 Failed to generate object sprites: AssetLoader._create_object_sprite() takes 2 positional arguments but 4 were given
+2026-02-07 13:53:33 | ERROR | utils.asset_loader:_generate_actor_sprites:771 | 💥 Failed to generate actor sprites: Size must be a sequence of length 2
+2026-02-07 13:53:33 | ERROR | utils.asset_loader:_generate_fallback_sprites:799 | 💥 Failed to generate fallback sprites: Size must be a sequence of length 2
+2026-02-07 13:53:33 | ERROR | utils.asset_loader:_generate_effect_sprites:516 | 💥 Failed to generate effect sprites: Size must be a sequence of length 2
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_generate_all_sprites:311 | 🎨 Generated all sprites for 0 assets
+2026-02-07 13:53:33 | INFO | utils.asset_loader:_validate_registry:323 | 🔍 Registry validation: 0 total assets, 0 objects
+2026-02-07 13:53:33 | WARNING | utils.asset_loader:_validate_registry:330 | ⚠️ Missing critical objects: ['wooden_door', 'crystal', 'sonic_flower', 'animated_flower']
+2026-02-07 13:53:33 | INFO | utils.asset_loader:__init__:110 | 🎨 Asset Loader initialized - 0 assets loaded
+2026-02-07 13:53:33 | INFO | graphics.ppu_tk_native:__init__:428 | 🎨 Native Tkinter PPU initialized with multi-mode support
