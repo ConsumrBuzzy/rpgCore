@@ -220,8 +220,12 @@ class AutonomousDirector:
         
         logger.debug(f"🚶 Executing phase: Moving to {self.current_beacon.target_coords}")
         
-        # Calculate path to beacon
-        path = self._calculate_path_to_beacon(self.voyager_position, self.current_beacon.target_coords)
+        # Use navigation system to set path
+        voyager_pos = self.voyager_position
+        beacon_coords = self.current_beacon.target_coords
+        
+        # For now, use simple path calculation (would integrate with NavigationSystem)
+        path = self._calculate_path_to_beacon(voyager_pos, beacon_coords)
         
         if not path:
             logger.warning(f"❌ No path found to beacon {self.current_beacon.target_coords}")
@@ -236,15 +240,15 @@ class AutonomousDirector:
             if self.mode != DirectorMode.EXECUTING:
                 break
             
-            # Move Voyager to next position
-            self.voyager_position = next_pos
-            
-            # Submit move action to simulator
+            # Calculate direction from current position to next position
             direction = self._get_direction_from_movement(self.voyager_position, next_pos)
             action_input = f"I move {direction}"
             
             # Submit action through simulator
             self.simulator.submit_action(action_input)
+            
+            # Update Voyager position
+            self.voyager_position = next_pos
             
             # Wait for action processing
             await asyncio.sleep(0.5 / self.playback_speed)
