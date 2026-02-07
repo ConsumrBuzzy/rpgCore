@@ -105,8 +105,8 @@ class GraphicsEngine:
         self.viewport = Viewport(
             center_x=25,  # Center of 50x50 world
             center_y=25,
-            width_tiles=VIEWPORT_TILES_X,
-            height_tiles=VIEWPORT_TILES_Y
+            width_tiles=20,  # VIEWPORT_TILES_X
+            height_tiles=18  # VIEWPORT_TILES_Y
         )
         
         # Tile banks for different environments
