@@ -46,19 +46,32 @@ except ImportError:
 
 @dataclass
 class NavigationGoal:
-    """Navigation goal for the Voyager"""
+    """Navigation goal for Voyager"""
     target_position: Tuple[int, int]
     priority: int = 1
     timeout: float = 30.0
-    created_time: float = 0.0
-    
-    def __post_init__(self):
-        if self.created_time == 0.0:
-            self.created_time = time.time()
+    created_at: float = field(default_factory=time.time)
     
     def is_expired(self) -> bool:
         """Check if goal has expired"""
-        return time.time() - self.created_time > self.timeout
+        return time.time() - self.created_at > self.timeout
+
+
+class PathfindingNode:
+    """Node for A* pathfinding algorithm"""
+    
+    def __init__(self, position: Tuple[int, int], g_cost: float = 0, h_cost: float = 0, parent=None):
+        self.position = position
+        self.g_cost = g_cost  # Cost from start
+        self.h_cost = h_cost  # Heuristic cost to goal
+        self.f_cost = g_cost + h_cost  # Total cost
+        self.parent = parent
+    
+    def __lt__(self, other):
+        return self.f_cost < other.f_cost
+    
+    def __eq__(self, other):
+        return self.position == other.position
 
 
 class PathfindingNavigator:
@@ -71,14 +84,14 @@ class PathfindingNavigator:
         
         logger.info(f"🧭 Pathfinding Navigator initialized: {grid_width}x{grid_height}")
     
-    def find_path(self, start: Tuple[int, int], goal: Tuple[int, int], 
-                   collision_map: Optional[List[List[bool]]] = None) -> List[Tuple[int, int]]:
+    async def find_path(self, start: Tuple[int, int], goal: Tuple[int, int], 
+                        collision_map: Optional[List[List[bool]]] = None) -> List[Tuple[int, int]]:
         """Find path from start to goal using A* algorithm"""
         if collision_map:
             self.collision_map = collision_map
         
-        # Simple pathfinding implementation (placeholder for A*)
-        path = self._simple_pathfinding(start, goal)
+        # A* pathfinding
+        path = await self._astar_pathfinding(start, goal, self.collision_map)
         
         if path:
             logger.debug(f"🛤️ Path found: {len(path)} steps from {start} to {goal}")
@@ -87,51 +100,91 @@ class PathfindingNavigator:
         
         return path
     
-    def _simple_pathfinding(self, start: Tuple[int, int], goal: Tuple[int, int]) -> List[Tuple[int, int]]:
-        """Simple pathfinding implementation (straight line for now)"""
-        # Placeholder for actual A* implementation
-        # For now, return direct path if valid
+    async def _astar_pathfinding(self, start: Tuple[int, int], goal: Tuple[int, int], 
+                                collision_map: List[List[bool]]) -> List[Tuple[int, int]]:
+        """A* pathfinding implementation"""
+        # Initialize
+        open_set = []
+        closed_set = set()
+        start_node = PathfindingNode(start, 0, self._heuristic(start, goal))
+        heapq.heappush(open_set, start_node)
         
-        if not self._is_valid_position(goal):
-            return []
+        iterations = 0
         
-        # Simple straight-line path
+        while open_set and iterations < PATHFINDING_MAX_ITERATIONS:
+            iterations += 1
+            
+            # Get node with lowest f_cost
+            current_node = heapq.heappop(open_set)
+            closed_set.add(current_node.position)
+            
+            # Check if we reached goal
+            if current_node.position == goal:
+                return self._reconstruct_path(current_node)
+            
+            # Explore neighbors
+            for direction, (dx, dy) in DIRECTION_VECTORS.items():
+                neighbor_pos = (
+                    current_node.position[0] + dx,
+                    current_node.position[1] + dy
+                )
+                
+                # Skip if invalid or blocked
+                if not self._is_valid_position(neighbor_pos, collision_map):
+                    continue
+                
+                # Skip if already closed
+                if neighbor_pos in closed_set:
+                    continue
+                
+                # Calculate costs
+                g_cost = current_node.g_cost + 1  # Uniform cost
+                h_cost = self._heuristic(neighbor_pos, goal)
+                
+                neighbor_node = PathfindingNode(neighbor_pos, g_cost, h_cost, current_node)
+                
+                # Check if neighbor is already in open set with better cost
+                existing_node = None
+                for node in open_set:
+                    if node.position == neighbor_pos:
+                        existing_node = node
+                        break
+                
+                if existing_node and existing_node.g_cost <= g_cost:
+                    continue
+                
+                # Add to open set
+                heapq.heappush(open_set, neighbor_node)
+        
+        # No path found
+        return []
+    
+    def _heuristic(self, pos1: Tuple[int, int], pos2: Tuple[int, int]) -> float:
+        """Manhattan distance heuristic"""
+        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+    
+    def _reconstruct_path(self, end_node: PathfindingNode) -> List[Tuple[int, int]]:
+        """Reconstruct path from end node"""
         path = []
-        current = start
+        current = end_node
         
-        while current != goal:
-            # Move one step toward goal
-            dx = 1 if goal[0] > current[0] else -1 if goal[0] < current[0] else 0
-            dy = 1 if goal[1] > current[1] else -1 if goal[1] < current[1] else 0
-            
-            next_pos = (current[0] + dx, current[1] + dy)
-            
-            if self._is_valid_position(next_pos):
-                path.append(next_pos)
-                current = next_pos
-            else:
-                # Try alternative path
-                if dx != 0 and self._is_valid_position((current[0] + dx, current[1])):
-                    path.append((current[0] + dx, current[1]))
-                    current = (current[0] + dx, current[1])
-                elif dy != 0 and self._is_valid_position((current[0], current[1] + dy)):
-                    path.append((current[0], current[1] + dy))
-                    current = (current[0], current[1] + dy)
-                else:
-                    break  # No valid path
+        while current:
+            path.append(current.position)
+            current = current.parent
         
+        path.reverse()
         return path
     
-    def _is_valid_position(self, position: Tuple[int, int]) -> bool:
+    def _is_valid_position(self, position: Tuple[int, int], collision_map: List[List[bool]]) -> bool:
         """Check if position is valid within grid"""
         x, y = position
         
-        if y < 0 or y >= self.grid_height:
+        if y < 0 or y >= len(collision_map):
             return False
-        if x < 0 or x >= self.grid_width:
+        if x < 0 or x >= len(collision_map[0]):
             return False
         
-        return not self.collision_map[y][x]  # False = walkable, True = obstacle
+        return not collision_map[y][x]  # False = walkable, True = obstacle
     
     def update_collision_map(self, collision_map: List[List[bool]]) -> None:
         """Update collision map from D&D Engine"""
@@ -152,16 +205,16 @@ class IntentGenerator:
         self.current_goals.append(goal)
         logger.debug(f"📍 Goal added: {goal.target_position}")
     
-    def generate_movement_intent(self, current_position: Tuple[int, int], 
-                                target_position: Tuple[int, int],
-                                collision_map: Optional[List[List[bool]]] = None) -> MovementIntent:
+    async def generate_movement_intent(self, current_position: Tuple[int, int], 
+                                     target_position: Tuple[int, int],
+                                     collision_map: Optional[List[List[bool]]] = None) -> MovementIntent:
         """Generate movement intent for target position"""
         # Update collision map if provided
         if collision_map:
             self.navigator.update_collision_map(collision_map)
         
         # Calculate path
-        path = self.navigator.find_path(current_position, target_position)
+        path = await self.navigator.find_path(current_position, target_position)
         
         if not path:
             raise ValueError(f"No path found to {target_position}")
