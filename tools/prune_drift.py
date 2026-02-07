@@ -173,7 +173,7 @@ class DriftCodeAnalyzer:
         script.append('"""')
         script.append("Auto-generated drift code pruning script.")
         script.append("")
-        script.append("⚠️  WARNING: This will permanently delete files!")
+        script.append("WARNING: This will permanently delete files!")
         script.append("Review the output first before running.")
         script.append('"""')
         script.append("")
@@ -182,7 +182,7 @@ class DriftCodeAnalyzer:
         script.append("from pathlib import Path")
         script.append("")
         script.append("def main():")
-        script.append('    print("🗑️  Pruning drift code files...")')
+        script.append('    print("Pruning drift code files...")')
         script.append("")
         
         # Add prune candidates
@@ -198,7 +198,7 @@ class DriftCodeAnalyzer:
             script.append('        print(f"File not found: {file_path}")')
             script.append("")
         
-        script.append('    print("✅ Pruning complete")')
+        script.append('    print("Pruning complete")')
         script.append("")
         script.append("if __name__ == '__main__':")
         script.append("    main()")
@@ -219,7 +219,7 @@ def main():
     # Get root directory
     root_dir = Path(__file__).parent.parent
     
-    print("🔍 Drift Code Analysis Tool")
+    print("Drift Code Analysis Tool")
     print("=" * 40)
     
     # Analyze codebase
@@ -240,8 +240,8 @@ def main():
     with open(script_path, 'w') as f:
         f.write(prune_script)
     
-    print(f"📋 Report saved to: {report_path}")
-    print(f"🗑️  Prune script saved to: {script_path}")
+    print(f"Report saved to: {report_path}")
+    print(f"Prune script saved to: {script_path}")
     print("")
     
     # Show summary
@@ -249,18 +249,18 @@ def main():
     medium_severity = [v for v in violations if v["severity"] == "medium"]
     low_severity = [v for v in violations if v["severity"] == "low"]
     
-    print("📊 Summary:")
-    print(f"  🚨 High severity (prune): {len(high_severity)}")
-    print(f"  ⚠️  Medium severity: {len(medium_severity)}")
-    print(f"  ℹ️  Low severity: {len(low_severity)}")
+    print("Summary:")
+    print(f"  High severity (prune): {len(high_severity)}")
+    print(f"  Medium severity: {len(medium_severity)}")
+    print(f"  Low severity: {len(low_severity)}")
     print("")
     
     if high_severity:
-        print("🚨 Files to prune:")
+        print("Files to prune:")
         for violation in high_severity:
             print(f"  - {Path(violation['file']).name}")
         print("")
-        print("⚠️  Review the report and script before running prune!")
+        print("WARNING: Review the report and script before running prune!")
         print(f"   Report: {report_path}")
         print(f"   Script: {script_path}")
 
