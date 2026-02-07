@@ -26,7 +26,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 # Domain Models
 class Color(BaseModel):
     """Color representation with validation"""
-    hex_value: str = Field(regex=r'^#[0-9A-Fa-f]{6}$')
+    hex_value: str = Field(pattern=r'^#[0-9A-Fa-f]{6}$')
     
     @validator('hex_value')
     def validate_hex(cls, v):
