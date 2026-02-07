@@ -85,7 +85,7 @@ class DashboardUI:
                 max_hp=100,
                 fatigue=0,
                 max_fatigue=100,
-                attributes={"strength": 12, "dexterity": 14, "constitution": 13, "intelligence": 11, "width": 10, "charisma": 12},
+                attributes={"strength": 12, "dexterity": 14, "constitution": 13, "intelligence": 11, "wisdom": 10, "charisma": 12},
                 status_effects=[]
             ),
             inventory_items=[],
@@ -93,7 +93,10 @@ class DashboardUI:
                 active_goals=[],
                 completed_goals=[],
                 current_objective=None,
-                legacy_resonance=[]
+                legacy_resonance=[],
+                total_completed=0,
+                total_failed=0,
+                last_update=0.0
             ),
             conversation_messages=[],
             system_status={},
