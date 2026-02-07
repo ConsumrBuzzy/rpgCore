@@ -1,22 +1,26 @@
 """
-D&D Engine - The Mind Pillar
+Engines Module - The Three Pillars
 
-Deterministic D20 logic, state mutation, and rule enforcement.
-Single Source of Truth for all game state.
+Service-Oriented Architecture implementation of the Four-Pillar System:
+- World Engine: Deterministic world generation with Chaos-Seed Protocol
+- Mind Engine: D&D logic with Command Pattern
+- Body Engine: 160x144 PPU rendering
+
+Each engine implements the Facade pattern for clean interfaces and
+complete decoupling between pillars.
 """
 
-from .dd_engine import DD_Engine, GameState, MovementIntent, InteractionIntent, ValidationResult
-from .world_engine import WorldEngine, WorldEngineFactory, TileType, TileData, WorldDelta
+from .world import WorldEngine, WorldEngineFactory, WorldEngineSync
+from .mind import DDEngine, DDEngineFactory, DDEngineSync
+from .body import GraphicsEngine, GraphicsEngineFactory, GraphicsEngineSync
 
 __all__ = [
-    'DD_Engine',
-    'GameState', 
-    'MovementIntent',
-    'InteractionIntent',
-    'ValidationResult',
-    'WorldEngine',
-    'WorldEngineFactory',
-    'TileType',
-    'TileData',
-    'WorldDelta'
+    # World Engine
+    "WorldEngine", "WorldEngineFactory", "WorldEngineSync",
+    
+    # Mind Engine  
+    "DDEngine", "DDEngineFactory", "DDEngineSync",
+    
+    # Body Engine
+    "GraphicsEngine", "GraphicsEngineFactory", "GraphicsEngineSync"
 ]
