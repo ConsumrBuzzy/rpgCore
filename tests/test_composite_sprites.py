@@ -97,9 +97,9 @@ class TestSpriteFactory:
         
         # Test different head types
         configs = [
-            CompositeSpriteConfig(head_type="default"),
-            CompositeSpriteConfig(head_type="helmet"),
-            CompositeSpriteConfig(head_type="hood"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, head_type="default"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, head_type="helmet"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, head_type="hood"),
         ]
         
         sprites = [factory.create_composite_sprite(config) for config in configs]
@@ -110,12 +110,12 @@ class TestSpriteFactory:
         
         # Test different body types
         body_configs = [
-            CompositeSpriteConfig(body_type="default"),
-            CompositeSpriteConfig(body_type="armor"),
-            CompositeSpriteConfig(body_type="robe"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, body_type="default"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, body_type="armor"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, body_type="robe"),
         ]
         
-        body_sprites = [factory.create_composite_config(config) for config in body_configs]
+        body_sprites = [factory.create_composite_sprite(config) for config in body_configs]
         
         assert body_sprites[0] != body_sprites[1]  # default vs armor
         assert body_sprites[1] != body_sprites[2]  # armor vs robe
@@ -125,10 +125,10 @@ class TestSpriteFactory:
         factory = SpriteFactory()
         
         item_configs = [
-            CompositeSpriteConfig(held_item="none"),
-            CompositeSpriteConfig(held_item="sword"),
-            CompositeSpriteConfig(held_item="staff"),
-            CompositeSpriteConfig(held_item="bow"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, held_item="none"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, held_item="sword"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, held_item="staff"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, held_item="bow"),
         ]
         
         item_sprites = [factory.create_composite_sprite(config) for config in item_configs]
@@ -144,10 +144,10 @@ class TestSpriteFactory:
         
         # Test different character classes
         class_configs = [
-            CompositeSpriteConfig(character_class=CharacterClass.VOYAGER),
-            CompositeSpriteConfig(character_class=CharacterClass.ROGUE),
-            CompositeSpriteConfig(character_class=CharacterClass.WARRIOR),
-            CompositeSpriteConfig(character_class=CharacterClass.MAGE),
+            CompositeSpriteConfig(CharacterClass.VOYAGER),
+            CompositeSpriteConfig(CharacterClass.ROGUE),
+            CompositeSpriteConfig(CharacterClass.WARRIOR),
+            CompositeSpriteConfig(CharacterClass.MAGE),
         ]
         
         class_sprites = [factory.create_composite_sprite(config) for config in class_configs]
@@ -176,7 +176,6 @@ class TestSpriteFactory:
         factory = SpriteFactory()
         
         config = CompositeSpriteConfig(CharacterClass.VOYAGER, breathing_enabled=True)
-        config = CompositeSpriteConfig(breathing_enabled=True)
         animation_frames = factory.create_breathing_animation_frames(config, 2)
         
         assert len(animation_frames) == 2
@@ -191,10 +190,10 @@ class TestSpriteFactory:
         factory = SpriteFactory()
         
         stance_configs = [
-            CompositeSpriteConfig(stance="neutral"),
-            CompositeSpriteConfig(stance="combat"),
-            CompositeSpriteConfig(stance="stealth"),
-            CompositeSpriteConfig(stance="casting"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, stance="neutral"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, stance="combat"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, stance="stealth"),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, stance="casting"),
         ]
         
         stance_sprites = [factory.create_composite_sprite(config) for config in stance_configs]
@@ -472,6 +471,7 @@ class TestCompositeSpriteIntegration:
         registry.register_pass(GeometricProfilePass(ProfileConfig(
             render_mode="silhouette",
             show_composite_sprite=True,
+            character_class=CharacterClass.WARRIOR,
             breathing_enabled=True
         )))
         
@@ -590,8 +590,8 @@ class TestShadingAndAntiAliasing:
         
         # Create sprites with different shading patterns
         configs = [
-            CompositeSpriteConfig(shading_enabled=True),
-            CompositeSpriteConfig(shading_enabled=False),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, shading_enabled=True),
+            CompositeSpriteConfig(CharacterClass.VOYAGER, shading_enabled=False),
         ]
         
         sprites = [factory.create_composite_sprite(config) for config in configs]
