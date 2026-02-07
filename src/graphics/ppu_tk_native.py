@@ -658,6 +658,66 @@ class NativeTkinterPPU:
         except Exception as e:
             logger.error(f"⚠️ Animation update error: {e}")
     
+    def update_actor_animation(self, actor_state: str, is_idle: bool) -> None:
+        """Update actor animation based on state (ADR 084: Move animations to Body Pillar)"""
+        try:
+            if is_idle and actor_state == "IDLE":
+                # Handle neck-pivot animation when idle
+                if not hasattr(self, 'idle_animation_frame'):
+                    self.idle_animation_frame = 0
+                
+                # Cycle through idle frames
+                idle_frames = self.asset_loader.get_animated_sprites("voyager", "idle_look")
+                if idle_frames:
+                    current_frame = idle_frames[self.idle_animation_frame % len(idle_frames)]
+                    
+                    # Update Voyager sprite
+                    if hasattr(self, 'voyager_entity_id'):
+                        self.canvas.itemconfig(self.voyager_entity_id, image=current_frame)
+                    
+                    self.idle_animation_frame += 1
+            else:
+                # Use regular state-based sprites
+                sprite = self.asset_loader.get_actor_sprite("voyager", actor_state.lower())
+                if sprite and hasattr(self, 'voyager_entity_id'):
+                    self.canvas.itemconfig(self.voyager_entity_id, image=sprite)
+        except Exception as e:
+            logger.error(f"⚠️ Actor animation update error: {e}")
+    
+    def render_actor(self, position: Tuple[int, int], actor_state: str, is_idle: bool) -> None:
+        """Render actor with animation support"""
+        try:
+            x, y = position
+            scaled_x = x * DISPLAY_SCALE
+            scaled_y = y * DISPLAY_SCALE
+            
+            # Get appropriate sprite
+            if is_idle and actor_state == "IDLE":
+                # Use idle animation
+                idle_frames = self.asset_loader.get_animated_sprites("voyager", "idle_look")
+                if idle_frames:
+                    sprite = idle_frames[0]  # Start with first frame
+                else:
+                    sprite = self.asset_loader.get_actor_sprite("voyager", "idle")
+            else:
+                sprite = self.asset_loader.get_actor_sprite("voyager", actor_state.lower())
+            
+            if sprite:
+                # Create or update actor entity
+                if hasattr(self, 'voyager_entity_id'):
+                    self.canvas.coords(self.voyager_entity_id, scaled_x, scaled_y)
+                    self.canvas.itemconfig(self.voyager_entity_id, image=sprite)
+                else:
+                    self.voyager_entity_id = self.canvas.create_image(
+                        scaled_x, scaled_y,
+                        image=sprite,
+                        anchor="center",
+                        tags="voyager"
+                    )
+                    self._sprite_refs.append(sprite)
+        except Exception as e:
+            logger.error(f"⚠️ Actor render error: {e}")
+    
     def register_entity_animation(self, entity_id: str, position: Tuple[int, int], animation_type: str) -> None:
         """Register an entity for animation"""
         if animation_type == "wind_sway":

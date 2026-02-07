@@ -10,7 +10,10 @@ Usage:
 """
 
 import sys
-import os
+# Import modular components (ADR 084)
+from actors.navigator import PathfindingNavigator
+from actors.intent_engine import IntentEngine
+from actors.shell import VoyagerShell
 import argparse
 import asyncio
 import time
@@ -34,6 +37,24 @@ class ObserverView:
     def __init__(self, seed: str = "FOREST_GATE_001", enable_graphics: bool = True):
         self.seed = seed
         self.enable_graphics = enable_graphics
+        self.running = True
+        self.session_log = []
+        
+        # Initialize modular components (ADR 084)
+        self.navigator = PathfindingNavigator(world_size=(50, 50))
+        self.intent_engine = None  # Will be initialized after object registry
+        self.voyager_shell = VoyagerShell(start_position=(25, 25))
+        
+        # Initialize core systems
+        self.config = create_default_config()
+        self.world_engine = WorldEngineFactory.create_engine(self.config)
+        self.asset_loader = None
+        self.ppu = None
+        self.root = None
+        self.console_text = None
+        
+        # Initialize systems
+        self._initialize_systems()
         
         # Create configuration
         self.config = create_default_config(seed)

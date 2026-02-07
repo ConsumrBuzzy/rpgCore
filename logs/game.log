@@ -8580,3 +8580,5 @@ expected alphabetic or numeric character, but found '.'
 2026-02-07 13:42:22 | INFO | actors.voyager:_follow_legacy_script:756 | 🚶 Script position reached: (10, 20)
 2026-02-07 13:42:23 | INFO | actors.voyager:_follow_legacy_script:756 | 🚶 Script position reached: (10, 10)
 2026-02-07 13:42:24 | INFO | actors.voyager:_follow_legacy_script:756 | 🚶 Script position reached: (20, 10)
+2026-02-07 13:44:34 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 13:44:41 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
