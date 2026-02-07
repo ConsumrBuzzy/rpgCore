@@ -13,6 +13,17 @@ from pydantic import BaseModel, Field
 from loot_system import Item
 
 
+class Goal(BaseModel):
+    """A narrative objective for the player/agent."""
+    id: str
+    description: str
+    target_tags: List[str] = Field(default_factory=list) # Tags to look for to complete
+    method_tags: List[str] = Field(default_factory=list) # Intents that align with this goal
+    is_completed: bool = False
+    reward_gold: int = 0
+    type: Literal["short", "medium", "long"] = "short"
+
+
 class PlayerStats(BaseModel):
     """Player character statistics."""
     
@@ -122,6 +133,10 @@ class GameState(BaseModel):
             "clergy": 0
         }
     )
+
+    # Narrative Objectives
+    active_goals: List[Goal] = Field(default_factory=list)
+    completed_goals: List[str] = Field(default_factory=list)
     
     # DGT Social Graph: Location-scoped NPC relationships
     # Format: { "tavern": { "Bartender": Relationship(...), "Guard": Relationship(...) } }

@@ -25,6 +25,7 @@ from quartermaster import Quartermaster
 from deterministic_arbiter import DeterministicArbiter
 from world_map import Location, WorldObject
 from location_factory import create_dynamic_world
+from objective_factory import generate_goals_for_location
 
 
 class GameREPL:
@@ -149,6 +150,12 @@ class GameREPL:
                     room_data.npcs = [NPC(name=name) for name in loc.initial_npcs]
                 
                 self.state.rooms[loc_id] = room_data
+                
+                # Assign Goals for new rooms
+                new_goals = generate_goals_for_location(loc_id, loc_id) # Using loc_id as template_id for simplicity
+                self.state.active_goals.extend(new_goals)
+                for g in new_goals:
+                    self.console.print(f"[bold magenta]🎯 New Objective: {g.description}[/bold magenta]")
             else:
                 # Update metadata but keep NPCs/relationships
                 existing = self.state.rooms[loc_id]
@@ -311,7 +318,22 @@ class GameREPL:
             if delta != 0:
                 self.console.print(f"[bold yellow]⚖️ Reputation: {faction.replace('_', ' ').title()} {'increased' if delta > 0 else 'decreased'}! ({self.state.reputation[faction]})[/bold yellow]")
         
-        # TRANSITION: Handle leave_area
+        # Detect Goal Completion
+        if outcome.success:
+            completed = []
+            for goal in self.state.active_goals:
+                if intent_match.intent_id in goal.method_tags:
+                    # Check if any target is in input (loose check)
+                    target_hit = any(t.lower() in player_input.lower() for t in goal.target_tags)
+                    if target_hit or not goal.target_tags:
+                        self.console.print(f"[bold green]✨ Objective Complete: {goal.description}[/bold green]")
+                        completed.append(goal)
+            
+            for g in completed:
+                self.state.active_goals.remove(g)
+                self.state.completed_goals.append(g.id)
+        
+        self.state.turn_count += 1
         if outcome.success and intent_match.intent_id == "leave_area":
             if room and room.exits:
                 # Pick the first exit (usually north)
@@ -322,6 +344,10 @@ class GameREPL:
                 self._sync_location_to_state()
                 
                 self.console.print(f"\n[bold yellow]🚙 Transitioning to {self.state.rooms[next_room_id].name}...[/bold yellow]")
+                
+                # Clear scene-specific goals on transition
+                self.state.active_goals = [g for g in self.state.active_goals if g.type != "short"]
+                
                 # Clear stutter history on room change
                 self.turn_history = []
         
@@ -455,7 +481,8 @@ class GameREPL:
                     scene_context=scene_context,
                     player_stats=player_stats,
                     turn_history=self.turn_history,
-                    room_tags=room_tags
+                    room_tags=room_tags,
+                    active_goals=self.state.active_goals
                 )
                 
                 player_input = decision.action

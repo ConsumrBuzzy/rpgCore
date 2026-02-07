@@ -14,7 +14,8 @@ class SyncVoyagerAgent(VoyagerAgent):
         scene_context: str,
         player_stats: dict,
         turn_history: list[str] | None = None,
-        room_tags: list[str] | None = None
+        room_tags: list[str] | None = None,
+        active_goals: list | None = None
     ) -> VoyagerDecision:
         """
         Synchronous version of decide_action.
@@ -22,7 +23,7 @@ class SyncVoyagerAgent(VoyagerAgent):
         Wraps the async call in an event loop for use in synchronous code.
         """
         return self._run_async(
-            self.decide_action(scene_context, player_stats, turn_history, room_tags)
+            self.decide_action(scene_context, player_stats, turn_history, room_tags, active_goals)
         )
     
     def _run_async(self, coro):

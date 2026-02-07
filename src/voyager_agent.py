@@ -58,7 +58,8 @@ class VoyagerAgent:
         scene_context: str, # Kept for compat, mostly unused now
         player_stats: dict,
         turn_history: list[str] | None = None,
-        room_tags: list[str] | None = None
+        room_tags: list[str] | None = None,
+        active_goals: list = None
     ) -> VoyagerDecision:
         """Decide next action using heuristic scoring."""
         
@@ -139,20 +140,21 @@ class VoyagerAgent:
             
             score -= history_penalty
             
-            # E. Room Exit Priority & Cooldown
-            if action_id == "leave_area":
-                # If "Path Clear" is present, heavily prioritize
-                if room_tags and "Path Clear" in room_tags:
-                    score += 500
-                
-                # BOREDOM LOGIC: Strongly penalize leaving if we just arrived
-                if self.turns_in_room < 5:
-                    score -= 1000 # Massive penalty for trying to skip the scene
+            # F. Goal Alignment (The "Purpose" Fix)
+            goal_bonus = 0
+            if active_goals:
+                for goal in active_goals:
+                    # Check if action ID or its general intent matches goal methods
+                    # (In this simple framework, action_id IS the intent)
+                    if action_id in goal.method_tags:
+                        goal_bonus += 500
+            
+            score += goal_bonus
 
             scored_actions.append({
                 "action": action,
                 "score": score,
-                "reason": f"Stat({stat_val}) - DC({estimated_dc}) - Hist({history_penalty}) + Cooldown({self.turns_in_room})"
+                "reason": f"Stat({stat_val}) - DC({estimated_dc}) - Hist({history_penalty}) + Goal({goal_bonus})"
             })
             
         # 3. Pick Best Action
