@@ -36,7 +36,8 @@ class GameREPL:
         self,
         state: GameState | None = None,
         save_path: Path | None = None,
-        auto_mode: bool = False
+        auto_mode: bool = False,
+        personality: str = "curious"
     ):
         """
         Initialize the game REPL.
@@ -45,6 +46,7 @@ class GameREPL:
             state: Optional pre-configured GameState
             save_path: Path to save file
             auto_mode: If True, use Voyager agent for automated play
+            personality: Personality for Voyager agent (default: curious)
         """
         self.console = Console()
         self.save_path = save_path or Path("savegame.json")
@@ -87,7 +89,6 @@ class GameREPL:
         self.voyager = None
         if auto_mode:
             from voyager_sync import SyncVoyagerAgent
-            personality = "curious"  # Can be overridden via CLI arg
             self.console.print(f"[magenta]Loading Voyager (auto-play) with '{personality}' personality...[/magenta]")
             self.voyager = SyncVoyagerAgent(personality=personality)
         
@@ -426,7 +427,10 @@ def main():
     )
     
     # Start game
-    game = GameREPL(auto_mode=args.auto)
+    game = GameREPL(
+        auto_mode=args.auto,
+        personality=args.personality
+    )
     game.run()
 
 
