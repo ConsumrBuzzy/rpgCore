@@ -569,8 +569,8 @@ class Voyager:
     
     # === UTILITY METHODS ===
     
-    async def _get_collision_map(self) -> List[List[bool]]:
-        """Get collision map from D&D Engine"""
+    def _get_collision_map(self) -> List[List[bool]]:
+        """Get collision map from D&D Engine (synchronous fallback)"""
         # This would normally get from World Engine via D&D Engine
         # For now, return a simple map
         return [[False for _ in range(50)] for _ in range(50)]
