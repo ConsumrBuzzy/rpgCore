@@ -106,7 +106,12 @@ class PrefabFactory:
             
             # Read and validate header
             header_data = self._mmap_handle[:32]
-            magic, version, build_time, checksum, asset_count, data_offset = struct.unpack('<4sIdII16sI', header_data)
+            magic = header_data[:4]
+            version = struct.unpack('<I', header_data[4:8])[0]
+            build_time = struct.unpack('<d', header_data[8:16])[0]
+            checksum = header_data[16:32]
+            asset_count = struct.unpack('<I', header_data[32:36])[0]
+            data_offset = struct.unpack('<I', header_data[36:40])[0]
             
             if magic != b'DGT\x01':
                 raise ValueError(f"Invalid file format: {magic}")
