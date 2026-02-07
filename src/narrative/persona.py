@@ -91,6 +91,19 @@ class PersonalityProfile:
     talkativeness: float = 0.5  # 0.0 to 1.0
     generosity: float = 0.5  # 0.0 to 1.0
     courage: float = 0.5  # 0.0 to 1.0
+    tags: Set[str] = field(default_factory=set)  # Quest and behavior tags
+    
+    def add_tag(self, tag: str) -> None:
+        """Add tag to personality"""
+        self.tags.add(tag)
+    
+    def has_tag(self, tag: str) -> bool:
+        """Check if personality has tag"""
+        return tag in self.tags
+    
+    def remove_tag(self, tag: str) -> None:
+        """Remove tag from personality"""
+        self.tags.discard(tag)
     
     def get_trait_value(self, trait: PersonalityTrait) -> float:
         """Get numerical value for a trait"""
@@ -475,6 +488,34 @@ class PersonaEngine:
         generosity = random.random()
         courage = random.random()
         
+        # Generate tags based on type and traits
+        tags = set()
+        
+        # Type-based tags
+        if npc_type in ["innkeeper", "barkeep"]:
+            tags.add("local")
+            tags.add("service")
+        elif npc_type == "guard":
+            tags.add("authority")
+            tags.add("lawful")
+        elif npc_type == "merchant":
+            tags.add("trader")
+            tags.add("wealthy")
+        
+        # Trait-based tags
+        if PersonalityTrait.GREEDY in base_traits:
+            tags.add("greedy")
+        if PersonalityTrait.GENEROUS in base_traits:
+            tags.add("generous")
+        if PersonalityTrait.HONEST in base_traits:
+            tags.add("honest")
+        if PersonalityTrait.DECEITFUL in base_traits:
+            tags.add("deceitful")
+        if PersonalityTrait.BRAVE in base_traits:
+            tags.add("brave")
+        if PersonalityTrait.COWARDLY in base_traits:
+            tags.add("cowardly")
+        
         return PersonalityProfile(
             name=name,
             base_traits=base_traits,
@@ -482,7 +523,8 @@ class PersonaEngine:
             confidence=confidence,
             talkativeness=talkativeness,
             generosity=generosity,
-            courage=courage
+            courage=courage,
+            tags=tags
         )
     
     def _determine_sprite_type(self, faction: FactionType) -> str:

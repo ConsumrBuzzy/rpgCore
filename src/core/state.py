@@ -12,6 +12,23 @@ from enum import Enum
 
 # === TILE SYSTEM CONSTANTS ===
 
+class SurfaceState(Enum):
+    """Environmental surface states for BG3-style reactivity"""
+    NORMAL = "normal"
+    FIRE = "fire"
+    ICE = "ice"
+    WATER = "water"
+    GOO = "goo"
+    STEAM = "steam"
+    ELECTRIC = "electric"
+    POISON = "poison"
+    BLESSED = "blessed"
+    CURSED = "cursed"
+    BURNED = "burned"
+    FROZEN = "frozen"
+    WET = "wet"
+
+
 class TileType(Enum):
     """Core tile types for the deterministic world"""
     GRASS = 0
@@ -126,10 +143,64 @@ class ValidationResult(Enum):
 # === CORE DATA STRUCTURES ===
 
 @dataclass
+class Tile:
+    """Individual tile with surface state and tags"""
+    tile_type: TileType
+    walkable: bool = True
+    surface_state: SurfaceState = SurfaceState.NORMAL
+    overlay_state: Optional[SurfaceState] = None  # For temporary effects
+    tags: Set[str] = field(default_factory=set)  # For special properties
+    metadata: Dict[str, Any] = field(default_factory=dict)  # For custom data
+    
+    def apply_surface_state(self, new_state: SurfaceState, duration: Optional[float] = None) -> None:
+        """Apply surface state with optional duration"""
+        self.surface_state = new_state
+        if duration:
+            self.metadata["state_duration"] = duration
+            self.metadata["state_applied_time"] = time.time()
+    
+    def add_overlay(self, overlay: SurfaceState, duration: float) -> None:
+        """Add temporary overlay state"""
+        self.overlay_state = overlay
+        self.metadata["overlay_duration"] = duration
+        self.metadata["overlay_applied_time"] = time.time()
+    
+    def update_overlays(self) -> None:
+        """Update and expire overlay states"""
+        current_time = time.time()
+        
+        # Check surface state duration
+        if "state_duration" in self.metadata:
+            elapsed = current_time - self.metadata["state_applied_time"]
+            if elapsed > self.metadata["state_duration"]:
+                self.surface_state = SurfaceState.NORMAL
+                del self.metadata["state_duration"]
+                del self.metadata["state_applied_time"]
+        
+        # Check overlay duration
+        if self.overlay_state and "overlay_duration" in self.metadata:
+            elapsed = current_time - self.metadata["overlay_applied_time"]
+            if elapsed > self.metadata["overlay_duration"]:
+                self.overlay_state = None
+                del self.metadata["overlay_duration"]
+                del self.metadata["overlay_applied_time"]
+    
+    def has_tag(self, tag: str) -> bool:
+        """Check if tile has specific tag"""
+        return tag in self.tags
+    
+    def add_tag(self, tag: str) -> None:
+        """Add tag to tile"""
+        self.tags.add(tag)
+    
+    def remove_tag(self, tag: str) -> None:
+        """Remove tag from tile"""
+        self.tags.discard(tag)
+
+@dataclass
 class TileData:
     """Immutable tile data structure"""
-    tile_type: TileType
-    walkable: bool
+    tile: Tile
     biome: BiomeType
     metadata: Dict[str, Any] = field(default_factory=dict)
     
@@ -146,6 +217,15 @@ class InterestPoint:
     discovered: bool = False
     manifestation: Optional[str] = None  # LLM's interpretation
     manifestation_timestamp: Optional[float] = None
+    tags: Set[str] = field(default_factory=set)  # Tags for quest logic
+    
+    def add_tag(self, tag: str) -> None:
+        """Add tag to interest point"""
+        self.tags.add(tag)
+    
+    def has_tag(self, tag: str) -> bool:
+        """Check if interest point has tag"""
+        return tag in self.tags
 
 @dataclass
 class WorldDelta:
@@ -188,6 +268,23 @@ class GameState:
     active_effects: List['Effect'] = field(default_factory=list)
     active_triggers: List['Trigger'] = field(default_factory=list)
     
+    # Global state tags
+    tags: Set[str] = field(default_factory=set)
+    
+    def add_tag(self, tag: str) -> None:
+        """Add global tag"""
+        self.tags.add(tag)
+        self.timestamp = time.time()
+    
+    def remove_tag(self, tag: str) -> None:
+        """Remove global tag"""
+        self.tags.discard(tag)
+        self.timestamp = time.time()
+    
+    def has_tag(self, tag: str) -> bool:
+        """Check if global tag exists"""
+        return tag in self.tags
+    
     def copy(self) -> 'GameState':
         """Create an immutable deep copy"""
         return GameState(
@@ -205,7 +302,8 @@ class GameState:
                 seed_value=ip.seed_value,
                 discovered=ip.discovered,
                 manifestation=ip.manifestation,
-                manifestation_timestamp=ip.manifestation_timestamp
+                manifestation_timestamp=ip.manifestation_timestamp,
+                tags=set(ip.tags)
             ) for ip in self.interest_points],
             world_deltas={pos: WorldDelta(
                 position=delta.position,
@@ -215,9 +313,10 @@ class GameState:
             ) for pos, delta in self.world_deltas.items()},
             turn_count=self.turn_count,
             frame_count=self.frame_count,
-            performance_metrics=self.performance_metrics.copy(),
-            active_effects=self.active_effects.copy(),
-            active_triggers=self.active_triggers.copy()
+            performance_metrics=dict(self.performance_metrics),
+            active_effects=list(self.active_effects),
+            active_triggers=list(self.active_triggers),
+            tags=set(self.tags)
         )
 
 # === INTENT DATA STRUCTURES ===
