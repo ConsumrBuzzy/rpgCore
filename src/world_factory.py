@@ -8,12 +8,13 @@ ADR 020: The Historian Utility & Sedimentary World-Gen Implementation
 """
 
 import random
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path
 
 from loguru import logger
+from pydantic import BaseModel
 from world_ledger import WorldLedger, Coordinate, WorldChunk
-from utils.historian import Historian, WorldSeed
+from utils.historian import Historian, WorldSeed, Faction
 
 from game_state import Room, NPC, GameState
 
