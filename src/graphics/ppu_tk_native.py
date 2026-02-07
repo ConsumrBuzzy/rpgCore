@@ -381,11 +381,212 @@ class NativeTkinterPPU:
         self.frame_count = 0
         self.render_times = []
         
-        logger.info(" Native Tkinter PPU initialized with multi-mode support")
-        )
-        self.perf_label.place(x=10, y=10)
+        logger.info("🎨 Native Tkinter PPU initialized with multi-mode support")
+    
+    def set_mode(self, mode: PPUMode) -> None:
+        """Set PPU rendering mode"""
+        if self.current_mode == mode:
+            return
         
-        logger.info("🎮 Pure Tkinter Game Window initialized")
+        old_mode = self.current_mode
+        self.current_mode = mode
+        self.layout = PPULayouts.get_layout(mode)
+        
+        logger.info(f"🎨 PPU mode changed: {old_mode.value} → {mode.value}")
+        
+        # Trigger transition effect if needed
+        if PPUTransitionEffects.should_flash_for_transition(old_mode, mode):
+            self._start_transition_effect()
+    
+    def _start_transition_effect(self) -> None:
+        """Start screen flash transition effect"""
+        self.transition_frames = PPUTransitionEffects.get_screen_flash_frames()
+        self.transition_active = True
+        self.animation_frame = 0
+        
+        logger.info("🎬 Started screen flash transition")
+    
+    def render_combat_scene(self, voyager_pos: Tuple[int, int], guardian_pos: Tuple[int, int],
+                            voyager_hp: int, voyager_max_hp: int, guardian_hp: int, guardian_max_hp: int,
+                            current_roll: str = "") -> None:
+        """Render combat scene with side-view layout"""
+        if self.current_mode != PPUMode.COMBAT:
+            self.set_mode(PPUMode.COMBAT)
+        
+        # Clear canvas
+        self.canvas.delete("all")
+        
+        # Draw combat background
+        self._draw_combat_background()
+        
+        # Get combat positions
+        positions = CombatPositions.get_combat_positions()
+        
+        # Draw combatants with proper orientation
+        voyager_sprite = self.asset_loader.get_combat_sprite("voyager", "right")
+        guardian_sprite = self.asset_loader.get_combat_sprite("guardian", "left")
+        
+        if voyager_sprite:
+            self.canvas.create_image(
+                positions["voyager"][0] * DISPLAY_SCALE,
+                positions["voyager"][1] * DISPLAY_SCALE,
+                image=voyager_sprite,
+                anchor="center",
+                tags="voyager"
+            )
+        
+        if guardian_sprite:
+            self.canvas.create_image(
+                positions["guardian"][0] * DISPLAY_SCALE,
+                positions["guardian"][1] * DISPLAY_SCALE,
+                image=guardian_sprite,
+                anchor="center",
+                tags="guardian"
+            )
+        
+        # Draw combat HUD
+        self._draw_combat_hud(voyager_hp, voyager_max_hp, guardian_hp, guardian_max_hp, current_roll)
+        
+        # Handle transition effect
+        if self.transition_active:
+            self._render_transition_frame()
+    
+    def _draw_combat_background(self) -> None:
+        """Draw combat-specific background"""
+        # Darker background for combat
+        bg_color = "#2a2a2a"
+        self.canvas.configure(bg=bg_color)
+        
+        # Draw ground line
+        ground_y = 100
+        self.canvas.create_line(
+            0, ground_y, 
+            self.layout.canvas_width, ground_y,
+            fill="#4a4a4a",
+            width=2,
+            tags="ground"
+        )
+    
+    def _draw_combat_hud(self, voyager_hp: int, voyager_max_hp: int, 
+                       guardian_hp: int, guardian_max_hp: int, current_roll: str) -> None:
+        """Draw combat HUD with HP bars and roll display"""
+        hud_top = CombatPositions.HUD_TOP
+        
+        # Draw Voyager HP bar
+        self._draw_hp_bar(
+            CombatPositions.VOYAGER_HP_BAR[0], 
+            hud_top + 4,
+            voyager_hp, voyager_max_hp,
+            "Voyager",
+            "#0066cc"
+        )
+        
+        # Draw Guardian HP bar
+        self._draw_hp_bar(
+            CombatPositions.GUARDIAN_HP_BAR[0], 
+            hud_top + 4,
+            guardian_hp, guardian_max_hp,
+            "Guardian", 
+            "#cc6600"
+        )
+        
+        # Draw current roll if provided
+        if current_roll:
+            self.canvas.create_text(
+                CombatPositions.ROLL_DISPLAY[0],
+                hud_top + 20,
+                text=current_roll,
+                fill="#ffffff",
+                font=("Arial", 8),
+                tags="roll_display"
+            )
+    
+    def _draw_hp_bar(self, x: int, y: int, current_hp: int, max_hp: int, label: str, color: str) -> None:
+        """Draw HP bar with label"""
+        # Draw label
+        self.canvas.create_text(
+            x, y - 2,
+            text=label,
+            fill="#ffffff",
+            font=("Arial", 8),
+            anchor="w"
+        )
+        
+        # Draw HP bar background
+        bar_width = 40
+        bar_height = 6
+        self.canvas.create_rectangle(
+            x, y, x + bar_width, y + bar_height,
+            fill="#333333",
+            outline="#666666"
+        )
+        
+        # Draw HP bar fill
+        if max_hp > 0:
+            fill_width = int((current_hp / max_hp) * bar_width)
+            self.canvas.create_rectangle(
+                x, y, x + fill_width, y + bar_height,
+                fill=color,
+                outline=""
+            )
+        
+        # Draw HP text
+        self.canvas.create_text(
+            x + bar_width + 5, y + 3,
+            text=f"{current_hp}/{max_hp}",
+            fill="#ffffff",
+            font=("Arial", 8),
+            anchor="w"
+        )
+    
+    def _render_transition_frame(self) -> None:
+        """Render a single frame of transition effect"""
+        if self.animation_frame < len(self.transition_frames):
+            color = self.transition_frames[self.animation_frame]
+            self.canvas.configure(bg=color)
+            self.animation_frame += 1
+        else:
+            self.transition_active = False
+            self.canvas.configure(bg="#000000")
+            logger.info("� Transition effect completed")
+    
+    def start_lunge_animation(self, attacker: str, attacker_pos: Tuple[int, int], 
+                             defender: str, defender_pos: Tuple[int, int]) -> None:
+        """Start lunge animation for combat"""
+        self.lunge_positions = AnimationFrames.get_lunge_sequence(attacker_pos, defender_pos)
+        self.current_lunge_index = 0
+        self.animation_active = True
+        
+        logger.info(f"⚔️ Started lunge animation: {attacker} → {defender}")
+    
+    def update_animation(self) -> None:
+        """Update active animations"""
+        if not self.animation_active:
+            return
+        
+        # Update lunge animation
+        if self.lunge_positions:
+            if self.current_lunge_index < len(self.lunge_positions):
+                new_pos = self.lunge_positions[self.current_lunge_index]
+                
+                # Update attacker position
+                self.canvas.coords(
+                    attacker,
+                    new_pos[0] * DISPLAY_SCALE,
+                    new_pos[1] * DISPLAY_SCALE
+                )
+                
+                self.current_lunge_index += 1
+                
+                # Check if animation is complete
+                if self.current_lunge_index >= len(self.lunge_positions):
+                    self.animation_active = False
+                    self.lunge_positions = []
+                    logger.info("⚔️ Lunge animation completed")
+        
+        # Update transition effect
+        if self.transition_active:
+            self._render_transition_frame()
     
     def update(self) -> None:
         """Main update loop"""
