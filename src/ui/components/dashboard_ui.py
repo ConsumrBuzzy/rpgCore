@@ -300,7 +300,14 @@ class DashboardUI:
         """Render a specific component for its zone."""
         try:
             if zone_type == ZoneType.VIEWPORT:
-                return component.render_frame(self._get_mock_game_state())
+                # Check if we have a valid game state
+                if self.state.game_state is None:
+                    return Panel(
+                        "[yellow]No game state available[/yellow]",
+                        title="[yellow]VIEWPORT[/yellow]",
+                        border_style="yellow"
+                    )
+                return component.render_frame(self.state.game_state)
             elif zone_type == ZoneType.VITALS:
                 pulse = self.vitals.update_pulse()
                 return component.render_vitals(self.state.vital_status, pulse)

@@ -119,6 +119,14 @@ class ViewportComponent:
         Returns:
             Rich Panel containing the rendered frame
         """
+        # Check if game_state is None
+        if game_state is None:
+            return Panel(
+                "[yellow]No game state available[/yellow]",
+                title="[yellow]VIEWPORT[/yellow]",
+                border_style="yellow"
+            )
+        
         # Update state
         self.state.player_position = (game_state.position.x, game_state.position.y)
         self.state.player_angle = game_state.player_angle
