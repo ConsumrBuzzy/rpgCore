@@ -1,31 +1,46 @@
 """
 Voyager - The Actor Pillar
 
-Pathfinding, coordinate tracking, and intent generation.
-Autonomous navigation and decision making.
+Autonomous pathfinding and intent generation with STATE_PONDERING support.
+The Voyager navigates the world, discovers Interest Points, and enters
+STATE_PONDERING to allow the LLM Chronicler to manifest chaos into narrative.
+
+The Voyager is the bridge between the deterministic world and the chaotic narrative.
 """
 
+import asyncio
 import time
-import sys
-from pathlib import Path
-from typing import Tuple, List, Dict, Any, Union, Optional
-from dataclasses import dataclass
+from typing import Dict, List, Tuple, Optional, Any, Union
+from dataclasses import dataclass, field
+from enum import Enum
+import heapq
 
 from loguru import logger
 
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
-# Import from engines
+# Import from core
 try:
-    from ..engines.dd_engine import (
-        DD_Engine, GameState, MovementIntent, InteractionIntent, 
-        IntentValidation, ValidationResult
+    from ..core.state import (
+        GameState, VoyagerState, MovementIntent, InteractionIntent, PonderIntent,
+        InterestPoint, validate_position, DIRECTION_VECTORS
+    )
+    from ..core.constants import (
+        VOYAGER_SPEED_TILES_PER_SECOND, VOYAGER_INTERACTION_RANGE,
+        VOYAGER_DISCOVERY_RANGE, VOYAGER_PONDERING_TIMEOUT_SECONDS,
+        MOVEMENT_RANGE_TILES, PATHFINDING_MAX_ITERATIONS
     )
 except ImportError:
-    from engines.dd_engine import (
-        DD_Engine, GameState, MovementIntent, InteractionIntent, 
-        IntentValidation, ValidationResult
+    # Fallback for development
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    from core.state import (
+        GameState, VoyagerState, MovementIntent, InteractionIntent, PonderIntent,
+        InterestPoint, validate_position, DIRECTION_VECTORS
+    )
+    from core.constants import (
+        VOYAGER_SPEED_TILES_PER_SECOND, VOYAGER_INTERACTION_RANGE,
+        VOYAGER_DISCOVERY_RANGE, VOYAGER_PONDERING_TIMEOUT_SECONDS,
+        MOVEMENT_RANGE_TILES, PATHFINDING_MAX_ITERATIONS
     )
 
 
