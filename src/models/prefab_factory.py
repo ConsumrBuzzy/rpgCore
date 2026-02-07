@@ -121,7 +121,13 @@ class PrefabFactory:
             logger.info(f"🔤 Checksum: {checksum.hex()}")
             
             # Read compressed asset data
-            compressed_data = self._mmap_handle[data_offset:]
+            raw_data = self._mmap_handle[data_offset:]
+            # Find actual gzip start
+            gzip_start = raw_data.find(b'\x1f\x8b')
+            if gzip_start == -1:
+                raise ValueError("No gzip data found in file")
+            
+            compressed_data = raw_data[gzip_start:]
             asset_data = pickle.loads(gzip.decompress(compressed_data))
             
             # Load asset registries
