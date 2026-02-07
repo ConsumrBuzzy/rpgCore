@@ -170,24 +170,32 @@ class ArbiterEngine:
             "distract": ArbiterLogic(
                 difficulty_mod=0,
                 new_npc_state="distracted",
-                reasoning="Standard distraction attempt"
+                reasoning="Standard distraction attempt",
+                internal_logic="Fallback: Distraction is usually standard difficulty."
             ),
             "force": ArbiterLogic(
                 difficulty_mod=2, # Combat is slightly harder
                 new_npc_state="hostile",
-                reasoning="Combat action"
+                reasoning="Combat action",
+                internal_logic="Fallback: Combat is inherently risky and harder."
             ),
             "charm": ArbiterLogic(
                 difficulty_mod=0,
-                reasoning="Standard social interaction"
+                reasoning="Standard social interaction",
+                internal_logic="Fallback: Social interaction is standard."
             ),
             "finesse": ArbiterLogic(
                 difficulty_mod=0,
-                reasoning="Standard stealth action"
+                reasoning="Standard stealth action",
+                internal_logic="Fallback: Stealth is standard."
             )
         }
         
         return fallbacks.get(
             intent_id,
-            ArbiterLogic(difficulty_mod=0, reasoning="Standard action")
+            ArbiterLogic(
+                difficulty_mod=0, 
+                reasoning="Standard action",
+                internal_logic="Fallback: Unknown intent, defaulting to standard."
+            )
         )

@@ -385,7 +385,7 @@ class GameREPL:
                     player_input = "I look around the room carefully"
                 
                 # QA Trace
-                self.console.print(f"\n[bold green]🗣️  VOYAGER ({decision.selected_intent})[/bold green]: \"{player_input}\"")
+                self.console.print(f"\n[bold green]🗣️  VOYAGER ({decision.selected_action_id})[/bold green]: \"{player_input}\"")
                 self.console.print(f"[dim]💭 Thought: {decision.internal_monologue}[/dim]")
                 self.console.print(f"[dim]🧠 Strategy: {decision.strategic_reasoning}[/dim]")
                 

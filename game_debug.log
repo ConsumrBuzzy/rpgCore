@@ -728,3 +728,70 @@
 21:27:57 | INFO | Voyager initialized with 'aggressive' personality
 21:27:57 | INFO | Game initialized with Council of Three architecture
 21:27:57 | DEBUG | Voyager deciding from menu...
+21:31:47 | DEBUG | Added intent: distract with 5 exemplars
+21:31:47 | DEBUG | Added intent: force with 5 exemplars
+21:31:47 | DEBUG | Added intent: finesse with 5 exemplars
+21:31:47 | DEBUG | Added intent: charm with 5 exemplars
+21:31:47 | DEBUG | Added intent: intimidate with 5 exemplars
+21:31:47 | DEBUG | Added intent: deceive with 5 exemplars
+21:31:47 | DEBUG | Added intent: investigate with 5 exemplars
+21:31:47 | DEBUG | Added intent: use_item with 5 exemplars
+21:31:47 | DEBUG | Added intent: defend with 5 exemplars
+21:31:47 | DEBUG | Added intent: improvise with 5 exemplars
+21:31:47 | INFO | Loading embedding model: all-MiniLM-L6-v2
+21:31:51 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
+21:31:52 | INFO | Initializing Arbiter with ollama:llama3.2:1b
+21:31:52 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+21:31:52 | INFO | Voyager initialized (Deterministic) with 'aggressive' personality
+21:31:52 | INFO | Game initialized with Council of Three architecture
+21:31:52 | INFO | Voyager Heuristic: Selected force with score -8
+21:32:25 | DEBUG | Added intent: distract with 5 exemplars
+21:32:25 | DEBUG | Added intent: force with 5 exemplars
+21:32:25 | DEBUG | Added intent: finesse with 5 exemplars
+21:32:25 | DEBUG | Added intent: charm with 5 exemplars
+21:32:25 | DEBUG | Added intent: intimidate with 5 exemplars
+21:32:25 | DEBUG | Added intent: deceive with 5 exemplars
+21:32:25 | DEBUG | Added intent: investigate with 5 exemplars
+21:32:25 | DEBUG | Added intent: use_item with 5 exemplars
+21:32:25 | DEBUG | Added intent: defend with 5 exemplars
+21:32:25 | DEBUG | Added intent: improvise with 5 exemplars
+21:32:25 | INFO | Loading embedding model: all-MiniLM-L6-v2
+21:32:29 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
+21:32:30 | INFO | Initializing Arbiter with ollama:llama3.2:1b
+21:32:30 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+21:32:30 | INFO | Voyager initialized (Deterministic) with 'aggressive' personality
+21:32:30 | INFO | Game initialized with Council of Three architecture
+21:32:30 | INFO | Voyager Heuristic: Selected force with score -8
+21:32:30 | INFO | Intent resolution: 'I intimidate the guard.' → charm (confidence: 0.621, matched exemplar: 'Convince the guard to let me pass with words')
+21:32:30 | DEBUG | Arbiter assessing intent 'charm'
+21:32:30 | ERROR | Arbiter failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+21:32:30 | WARNING | Using fallback arbiter logic
+21:33:01 | DEBUG | Added intent: distract with 5 exemplars
+21:33:01 | DEBUG | Added intent: force with 5 exemplars
+21:33:01 | DEBUG | Added intent: finesse with 5 exemplars
+21:33:01 | DEBUG | Added intent: charm with 5 exemplars
+21:33:01 | DEBUG | Added intent: intimidate with 5 exemplars
+21:33:01 | DEBUG | Added intent: deceive with 5 exemplars
+21:33:01 | DEBUG | Added intent: investigate with 5 exemplars
+21:33:01 | DEBUG | Added intent: use_item with 5 exemplars
+21:33:01 | DEBUG | Added intent: defend with 5 exemplars
+21:33:01 | DEBUG | Added intent: improvise with 5 exemplars
+21:33:01 | INFO | Loading embedding model: all-MiniLM-L6-v2
+21:33:03 | INFO | Precomputed embeddings for 10 intents (50 total exemplars)
+21:33:03 | INFO | Initializing Arbiter with ollama:llama3.2:1b
+21:33:03 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+21:33:03 | INFO | Voyager initialized (Deterministic) with 'aggressive' personality
+21:33:03 | INFO | Game initialized with Council of Three architecture
+21:33:03 | INFO | Voyager Heuristic: Selected force with score -8
+21:33:03 | INFO | Intent resolution: 'I intimidate the guard.' → charm (confidence: 0.621, matched exemplar: 'Convince the guard to let me pass with words')
+21:33:03 | DEBUG | Arbiter assessing intent 'charm'
+21:33:03 | ERROR | Arbiter failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+21:33:03 | WARNING | Using fallback arbiter logic
+21:33:03 | DEBUG | Action: charm | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit'] | Roll: 9 + Attr: 0 + Item: 0 + Tag: 0 = 9 vs DC: 10 (10 + 0) -> FAILURE
+21:33:03 | INFO | Quartermaster: success=False, roll=9 vs DC 10
+21:33:03 | DEBUG | Chronicler streaming: charm
+21:33:03 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:33:03 | INFO | Game saved to savegame.json
+21:33:05 | INFO | Voyager Heuristic: Selected force with score -8
+21:33:05 | INFO | Intent resolution: 'I look around the room carefully' → investigate (confidence: 0.668, matched exemplar: 'Search the room carefully for hidden clues')
+21:33:05 | DEBUG | Arbiter assessing intent 'investigate'
