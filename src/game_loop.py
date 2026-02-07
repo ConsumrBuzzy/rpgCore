@@ -79,9 +79,9 @@ class GameREPL:
         self.console.print("[cyan]Loading Arbiter (logic engine - 1B)...[/cyan]")
         self.arbiter = ArbiterEngine(model_name='ollama:llama3.2:1b')
         
-        self.console.print("[cyan]Loading Chronicler (narrative engine - 1B)...[/cyan]")
-        # Downgrade to 1B for memory safety
-        self.chronicler = ChroniclerEngine(model_name='ollama:llama3.2:1b', tone='humorous')
+        self.console.print("[cyan]Loading Chronicler (narrative engine - 0.5B)...[/cyan]")
+        # Downgrade to 0.5B for ultra-light narrative
+        self.chronicler = ChroniclerEngine(model_name='ollama:qwen2.5:0.5b', tone='humorous')
         
         # Initialize Quartermaster (loot system)
         from loot_system import LootSystem
@@ -120,7 +120,7 @@ class GameREPL:
         ]
         
         # Models to keep (keep_alive=-1)
-        keep_models = ['llama3.2:1b']
+        keep_models = ['llama3.2:1b', 'qwen2.5:0.5b']
         
         base_url = "http://localhost:11434/api/generate"
         
@@ -138,7 +138,7 @@ class GameREPL:
             except Exception:
                 pass # Ignore if not found
                 
-        # 2. Warm up active model
+        # 2. Warm up active models
         for model in keep_models:
             try:
                 data = {
