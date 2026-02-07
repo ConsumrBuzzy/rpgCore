@@ -157,7 +157,7 @@ def test_dynamic_entities():
     
     # Show some evolution events
     for event in evolution_events[:3]:
-        print(f"      Turn {event['turn']}: {event['description']}")
+        print(f"      Turn {event.turn}: {event.description}")
     
     # Test entity state changes
     print(f"\n   Final entity states after 50 turns:")
