@@ -65,19 +65,30 @@ class ASCIIDoomRenderer:
         # Initialize sprite billboard system
         self.sprite_billboard = SpriteBillboardSystem(world_ledger, faction_system)
         
+        # Initialize SOLID components
+        self.ray_caster = RayCaster(world_ledger, max_distance=20)
+        render_config = RenderConfig(
+            wall_chars=['#', '#', '=', '=', '+', '-', '|', '/', '\\'],
+            floor_chars=['.', ',', '-', '_', '~', '^'],
+            entity_chars=['@', '&', '%', '*', '!'],
+            item_chars=['$', '%', '^', '+', '?'],
+            threat_chars=['!', '?', 'X', '@', '#']
+        )
+        self.character_renderer = CharacterRenderer(render_config)
+        
         # Raycasting parameters
         self.fov = math.radians(60)  # Field of view
         self.max_distance = 20
         self.wall_height = 10
         
         # Rendering buffers
-        self.buffer = [[" " " for _ in range(width)] for _ in range(height)]
+        self.buffer = [[' ' for _ in range(width)] for _ in range(height)]
         self.depth_buffer = [[self.max_distance for _ in range(width)] for _ in range(height)]
         
         # Viewport calculations
         self.half_height = height // 2
         
-        # Color scheme
+        # Color scheme (legacy compatibility)
         self.colors = {
             "wall": "#",
             "floor": ".",
@@ -88,20 +99,18 @@ class ASCIIDoomRenderer:
         
         logger.info(f"ASCII-Doom Renderer initialized: {width}x{height} viewport, {math.degrees(self.fov):.0f} FoV")
         
-        # Visual elements mapping
-        self.wall_chars = ['#', '#', '=', '=', '+', '-', '|', '/', '\\']
-        self.floor_chars = ['.', ',', '-', '_', '~', '^']
-        self.entity_chars = ['@', '&', '%', '*', '!']
-        self.item_chars = ['$', '%', '^', '+', '?']
-        
-        # Threat indicator characters
-        self.threat_chars = ['!', '?', 'X', '@', '#']
-        self.threat_mode = False  # Whether to show threat indicators
-        logger.info(f"ASCII-Doom Renderer initialized: {width}x{height} viewport, {self.fov}° FoV")
+        # Legacy character mappings (kept for compatibility)
+        self.wall_chars = self.character_renderer.config.wall_chars
+        self.floor_chars = self.character_renderer.config.floor_chars
+        self.entity_chars = self.character_renderer.config.entity_chars
+        self.item_chars = self.character_renderer.config.item_chars
+        self.threat_chars = self.character_renderer.config.threat_chars
+        self.threat_mode = False
     
     def set_threat_mode(self, enabled: bool):
         """Enable or disable threat indicator mode."""
         self.threat_mode = enabled
+        self.character_renderer.set_threat_mode(enabled)
         logger.info(f"Threat mode {'enabled' if enabled else 'disabled'}")
     
     def render_frame(
@@ -150,12 +159,19 @@ class ASCIIDoomRenderer:
                 length=self.max_distance
             )
             
-            # Cast ray and get hit result
-            hit_result = self._cast_ray(ray, game_state)
+            # Cast ray and get hit result using new RayCaster
+            hit_result = self.ray_caster.cast_ray(ray, game_state)
             
-            # Apply threat indicators if active
-            if threat_active and hit_result.hit:
-                hit_result.content = self._apply_threat_indicator(hit_result.content, hit_result.distance)
+            # Get character using new CharacterRenderer
+            char = self.character_renderer.get_character(hit_result)
+            if char != ' ':
+                hit_result.content = char
+            
+            # Apply distance-based shading if needed
+            if hit_result.hit and hit_result.distance > 10:
+                hit_result.content = self.character_renderer.apply_distance_shading(
+                    hit_result.content, hit_result.distance
+                )
             
             # Render column based on hit result
             self._render_column(x, hit_result)
