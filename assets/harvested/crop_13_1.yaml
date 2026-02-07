@@ -1,0 +1,33 @@
+object_id: crop_13_1
+object_type: material
+material_id: organic
+sprite_path: assets/harvested/crop_13_1.png
+collision: false
+auto_detected: true
+auto_cleaned: true
+is_baked: true
+source: tiny_farm_sheet
+adr_compliance: ADR_111_semantic_triage
+grid_coords:
+  x: 208
+  y: 16
+  grid_size: 16
+  offset_x: 0
+  offset_y: 0
+dimensions:
+  width: 16
+  height: 16
+detection_info:
+  detected_type: material
+  is_chest: false
+  edge_threshold: 2
+  content_bounds: !!python/tuple
+  - 2
+  - 0
+  - 14
+  - 15
+tags:
+- building
+- surface
+- edge_cleaned
+- auto_detected
