@@ -2457,3 +2457,65 @@
 22:12:09 | DEBUG | Chronicler streaming: charm
 22:12:09 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
 22:12:09 | INFO | Game saved to savegame.json
+22:12:11 | INFO | Voyager Heuristic: Selected combat with score 275
+22:12:11 | INFO | Intent resolution: 'Start a brawl' → force (confidence: 0.543, matched exemplar: 'Punch someone in the face aggressively')
+22:12:11 | DEBUG | Action: force | Tags: ['Dimly Lit', 'Loud', 'Wanted'] | Roll: 20 + Attr: 0 + Item: 0 + Tag: 0 = 20 vs DC: 10 (10 + 0) -> SUCCESS
+22:12:11 | INFO | Quartermaster: success=True, roll=20 vs DC 10
+22:12:11 | DEBUG | No loot found
+22:12:11 | DEBUG | Chronicler streaming: force
+22:12:12 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:12:12 | INFO | Game saved to savegame.json
+22:12:14 | INFO | Voyager Heuristic: Selected force with score 275
+22:12:14 | INFO | Intent resolution: 'Intimidate the guard' → charm (confidence: 0.653, matched exemplar: 'Convince the guard to let me pass with words')
+22:12:14 | DEBUG | Action: charm | Tags: ['Dimly Lit', 'Loud', 'Wanted'] | Roll: 8 + Attr: 0 + Item: 0 + Tag: 0 = 8 vs DC: 14 (10 + 4) -> FAILURE
+22:12:14 | INFO | Quartermaster: success=False, roll=8 vs DC 14
+22:12:14 | INFO | Player took 7 damage. HP: 55/100
+22:12:14 | INFO | Guard: hostile → hostile
+22:12:14 | INFO | Relationship updated: Guard @ tavern (disp: -80, tags: [])
+22:12:14 | DEBUG | Chronicler streaming: charm
+22:12:14 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:12:14 | INFO | Game saved to savegame.json
+22:12:16 | INFO | Voyager Heuristic: Selected combat with score 275
+22:12:16 | INFO | Intent resolution: 'Start a brawl' → force (confidence: 0.543, matched exemplar: 'Punch someone in the face aggressively')
+22:12:16 | DEBUG | Action: force | Tags: ['Dimly Lit', 'Loud', 'Wanted'] | Roll: 11 + Attr: 0 + Item: 0 + Tag: 0 = 11 vs DC: 10 (10 + 0) -> SUCCESS
+22:12:16 | INFO | Quartermaster: success=True, roll=11 vs DC 10
+22:12:16 | DEBUG | No loot found
+22:12:16 | DEBUG | Chronicler streaming: force
+22:12:17 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:12:17 | INFO | Game saved to savegame.json
+22:12:19 | INFO | Voyager Heuristic: Selected force with score 275
+22:12:19 | INFO | Intent resolution: 'Intimidate the guard' → charm (confidence: 0.653, matched exemplar: 'Convince the guard to let me pass with words')
+22:12:19 | DEBUG | Action: charm | Tags: ['Dimly Lit', 'Loud', 'Wanted'] | Roll: 5 + Attr: 0 + Item: 0 + Tag: 0 = 5 vs DC: 14 (10 + 4) -> FAILURE
+22:12:19 | INFO | Quartermaster: success=False, roll=5 vs DC 14
+22:12:19 | INFO | Player took 9 damage. HP: 46/100
+22:12:19 | INFO | Guard: hostile → hostile
+22:12:19 | INFO | Relationship updated: Guard @ tavern (disp: -90, tags: [])
+22:12:19 | DEBUG | Chronicler streaming: charm
+22:12:19 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:12:19 | INFO | Game saved to savegame.json
+22:12:21 | INFO | Voyager Heuristic: Selected combat with score 275
+22:12:21 | INFO | Intent resolution: 'Start a brawl' → force (confidence: 0.543, matched exemplar: 'Punch someone in the face aggressively')
+22:12:21 | DEBUG | Action: force | Tags: ['Dimly Lit', 'Loud', 'Wanted'] | Roll: 18 + Attr: 0 + Item: 0 + Tag: 0 = 18 vs DC: 10 (10 + 0) -> SUCCESS
+22:12:21 | INFO | Quartermaster: success=True, roll=18 vs DC 10
+22:12:21 | INFO | Loot generated: Iron Key
+22:12:21 | INFO | Loot added to inventory: Iron Key
+22:12:21 | DEBUG | Chronicler streaming: force
+22:12:22 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:12:22 | INFO | Game saved to savegame.json
+22:12:24 | INFO | Voyager Heuristic: Selected force with score 275
+22:12:24 | INFO | Intent resolution: 'Intimidate the guard' → charm (confidence: 0.653, matched exemplar: 'Convince the guard to let me pass with words')
+22:12:24 | DEBUG | Action: charm | Tags: ['Dimly Lit', 'Loud', 'Wanted'] | Roll: 8 + Attr: 0 + Item: 0 + Tag: 0 = 8 vs DC: 14 (10 + 4) -> FAILURE
+22:12:24 | INFO | Quartermaster: success=False, roll=8 vs DC 14
+22:12:24 | INFO | Player took 10 damage. HP: 36/100
+22:12:24 | INFO | Guard: hostile → hostile
+22:12:24 | INFO | Relationship updated: Guard @ tavern (disp: -100, tags: [])
+22:12:24 | DEBUG | Chronicler streaming: charm
+22:12:24 | ERROR | Chronicler stream failed: status_code: 400, model_name: ollama:llama3.2:1b, body: {'message': 'model is required', 'type': 'api_error', 'param': None, 'code': None}
+22:12:24 | INFO | Game saved to savegame.json
+22:12:26 | INFO | Voyager Heuristic: Selected combat with score 275
+22:12:26 | INFO | Intent resolution: 'Start a brawl' → force (confidence: 0.543, matched exemplar: 'Punch someone in the face aggressively')
+22:12:26 | DEBUG | Action: force | Tags: ['Dimly Lit', 'Loud', 'Wanted'] | Roll: 13 + Attr: 0 + Item: 0 + Tag: 0 = 13 vs DC: 10 (10 + 0) -> SUCCESS
+22:12:26 | INFO | Quartermaster: success=True, roll=13 vs DC 10
+22:12:26 | INFO | Loot generated: Skull Fragment
+22:12:26 | INFO | Loot added to inventory: Skull Fragment
+22:12:26 | DEBUG | Chronicler streaming: force

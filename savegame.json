@@ -1,10 +1,18 @@
 {
   "player": {
     "name": "Adventurer",
-    "hp": 62,
+    "hp": 36,
     "max_hp": 100,
     "gold": 50,
     "inventory": [
+      {
+        "name": "Iron Key",
+        "description": "Rusty but functional",
+        "stat_bonus": "+1 Dex (Lockpicking)",
+        "target_stat": "dexterity",
+        "modifier_value": 1,
+        "value": 5
+      },
       {
         "name": "Iron Key",
         "description": "Rusty but functional",
@@ -63,9 +71,9 @@
       ]
     }
   },
-  "turn_count": 14,
+  "turn_count": 19,
   "reputation": {
-    "law": -21,
+    "law": -30,
     "underworld": 0,
     "clergy": 0
   },
@@ -93,9 +101,9 @@
   "social_graph": {
     "tavern": {
       "Guard": {
-        "disposition": -70,
+        "disposition": -100,
         "tags": [],
-        "last_interaction_turn": 12
+        "last_interaction_turn": 18
       }
     }
   }

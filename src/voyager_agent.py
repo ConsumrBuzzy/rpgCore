@@ -59,7 +59,7 @@ class VoyagerAgent:
         player_stats: dict,
         turn_history: list[str] | None = None,
         room_tags: list[str] | None = None,
-        active_goals: list = None
+        goal_stack: list | None = None
     ) -> VoyagerDecision:
         """Decide next action using heuristic scoring."""
         
@@ -150,8 +150,8 @@ class VoyagerAgent:
                 if self.turns_in_room < 5:
                     score -= 1000 # Massive penalty for trying to skip the scene
                     
-                # GOAL MALUS: Penalize leaving if there are still active goals in this room
-                if active_goals and len(active_goals) > 0:
+                # GOAL MALUS: Penalize leaving if there are still active goals in this stack
+                if goal_stack and len(goal_stack) > 0:
                     score -= 500 # Don't leave till the work is done
                     
                 # RETREAT LOGIC: If HP is low, ignore other penalties and RUN
@@ -162,17 +162,22 @@ class VoyagerAgent:
             
             # F. Goal Alignment (The "Purpose" Fix)
             goal_bonus = 0
-            if active_goals:
-                for goal in active_goals:
+            if goal_stack:
+                # Prioritize the CURRENT (top) goal
+                current_goal = goal_stack[-1]
+                
+                for goal in goal_stack:
+                    is_top_goal = (goal == current_goal)
                     methods = getattr(goal, 'method_tags', []) if not isinstance(goal, dict) else goal.get('method_tags', [])
+                    
                     # Base method bonus
                     if action_id in methods:
-                        goal_bonus += 300
+                        goal_bonus += 500 if is_top_goal else 200
                     
                     # Hard trigger bonus (required_intent)
                     req_intent = getattr(goal, 'required_intent', None) if not isinstance(goal, dict) else goal.get('required_intent')
                     if req_intent and action_id == req_intent:
-                        goal_bonus += 500
+                        goal_bonus += 1000 if is_top_goal else 400
             
             score += goal_bonus
 

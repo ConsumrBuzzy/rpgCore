@@ -70,10 +70,20 @@ class GameREPL:
                 self.state = GameState.load_from_file(self.save_path)
             except Exception as e:
                 logger.error(f"Failed to load save: {e}. Starting fresh.")
-                self.state = self._initialize_fresh_state()
+                from factories import CharacterFactory, ScenarioFactory
+                self.state = GameState(player=CharacterFactory.create(personality))
+                if personality.lower() == "cunning":
+                    self._initialize_story_frame(ScenarioFactory.get_heist_story())
         else:
-            self.state = self._initialize_fresh_state()
-            self.console.print("[cyan]World Map loaded: Tavern -> Plaza -> Dungeon Entrance[/cyan]")
+            from factories import CharacterFactory, ScenarioFactory
+            self.state = GameState(player=CharacterFactory.create(personality))
+            self.console.print(f"[cyan]Loaded {personality.title()} archetype...[/cyan]")
+            
+            # Special Story Frame for Cunning archetype
+            if personality.lower() == "cunning":
+                self._initialize_story_frame(ScenarioFactory.get_heist_story())
+            else:
+                self.state = self._initialize_fresh_state()
         
         # Ensure current location is in state.rooms
         self._sync_location_to_state()
@@ -168,14 +178,47 @@ class GameREPL:
                 existing.tags = list(set(loc.environment_tags + dynamic))
                 
                 # Assign Goals if none exist
-                if not self.state.active_goals:
+                if not self.state.goal_stack:
                     new_goals = generate_goals_for_location(loc_id, loc_id)
-                    self.state.active_goals.extend(new_goals)
+                    self.state.goal_stack.extend(new_goals)
                     for g in new_goals:
                         self.console.print(f"[bold magenta]🎯 New Objective: {g.description}[/bold magenta]")
                 
                 # Items could be dynamic, let's refresh them from props
                 existing.items = [p.name for p in loc.props]
+    
+    def _initialize_story_frame(self, frame: list[dict]):
+        """Build the world map and goal stack from a story frame."""
+        from factories import Room, NPC, Goal
+        from objective_factory import generate_goals_for_location
+        
+        self.console.print(f"[bold yellow]📖 Weaving Story: {len(frame)} locations ahead...[/bold yellow]")
+        
+        for i, entry in enumerate(frame):
+            loc_id = entry["id"]
+            
+            # Simple linear exits
+            exits = {}
+            if i < len(frame) - 1:
+                exits["forward"] = frame[i+1]["id"]
+            if i > 0:
+                exits["back"] = frame[i-1]["id"]
+                
+            room = Room(
+                name=entry["name"],
+                description=entry["description"],
+                npcs=[NPC(name=name, description=f"A {name.lower()}") for name in entry["npcs"]],
+                tags=entry["tags"],
+                exits=exits
+            )
+            self.state.rooms[loc_id] = room
+            
+            # Generate Goals for the Stack
+            goals = generate_goals_for_location(loc_id, entry["goals_template"])
+            self.state.goal_stack.extend(goals)
+            
+        if frame:
+            self.state.current_room = frame[0]["id"]
 
     def warm_up(self):
         """
@@ -317,32 +360,22 @@ class GameREPL:
         if outcome.hp_delta != 0:
              self.state.player.take_damage(abs(outcome.hp_delta)) if outcome.hp_delta < 0 else self.state.player.heal(outcome.hp_delta)
         
-        # Update NPC state if needed
-        if target_npc and room:
-            for npc in room.npcs:
-                if npc.name.lower() == target_npc.lower():
-                    npc.update_state(arbiter_result.new_npc_state)
-                    # Update social graph if delta or tags provided
-                    if arbiter_result.rep_delta != 0 or arbiter_result.rep_tags:
-                        self.state.update_relationship(
-                            self.state.current_room,
-                            npc.name,
-                            delta_disposition=arbiter_result.rep_delta,
-                            new_tags=arbiter_result.rep_tags,
-                        )
-                    break
+        # Step 4: Apply social consequences (Reputation & Relationships)
+        self.arbiter.apply_social_consequences(
+            self.state, 
+            arbiter_result, 
+            success=outcome.success
+        )
         
-        # Update Global Reputation
+        # Display reputation change if any
         for faction, delta in arbiter_result.reputation_deltas.items():
-            old_val = self.state.reputation.get(faction, 0)
-            self.state.reputation[faction] = old_val + delta
             if delta != 0:
                 self.console.print(f"[bold yellow]⚖️ Reputation: {faction.replace('_', ' ').title()} {'increased' if delta > 0 else 'decreased'}! ({self.state.reputation[faction]})[/bold yellow]")
         
         # Detect Goal Completion (Harden Lifecycle)
         if outcome.success:
             completed = []
-            for goal in self.state.active_goals:
+            for goal in self.state.goal_stack:
                 # 1. Intent-based completion
                 is_intent_match = (goal.required_intent == intent_match.intent_id)
                 # 2. State-based completion (Check all NPCs in room)
@@ -365,12 +398,12 @@ class GameREPL:
                         completed.append(goal)
             
             for g in completed:
-                self.state.active_goals.remove(g)
+                self.state.goal_stack.remove(g)
                 self.state.completed_goals.append(g.id)
         
         # Failure Check (Death)
         if not self.state.player.is_alive():
-            for goal in self.state.active_goals:
+            for goal in self.state.goal_stack:
                 goal.status = "failed"
         
         self.state.turn_count += 1
@@ -527,7 +560,7 @@ class GameREPL:
                     player_stats=player_stats,
                     turn_history=self.turn_history,
                     room_tags=room_tags,
-                    active_goals=self.state.active_goals
+                    goal_stack=self.state.goal_stack
                 )
                 
                 player_input = decision.action

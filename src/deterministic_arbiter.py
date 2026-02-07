@@ -178,6 +178,35 @@ class DeterministicArbiter:
             rep_tags=rep_tags
         )
 
+    def apply_social_consequences(self, state, arbiter_logic: ArbiterLogic, success: bool):
+        """
+        Apply reputation and social graph changes based on resolution outcome.
+        This centralizes 'consequence memory' logic for ADR-010.
+        """
+        # 1. Update Global Reputation
+        for faction, delta in arbiter_logic.reputation_deltas.items():
+            state.reputation[faction] = state.reputation.get(faction, 0) + delta
+            
+        # 2. Update Local NPC Relationships (Social Graph)
+        if arbiter_logic.target_npc:
+            # Update disposition and relationship tags
+            state.update_relationship(
+                state.current_room,
+                arbiter_logic.target_npc,
+                delta_disposition=arbiter_logic.rep_delta,
+                new_tags=arbiter_logic.rep_tags
+            )
+            
+            # Update physical NPC state in the current room
+            if state.current_room in state.rooms:
+                room = state.rooms[state.current_room]
+                for npc in room.npcs:
+                    if npc.name.lower() == arbiter_logic.target_npc.lower():
+                        npc.update_state(arbiter_logic.new_npc_state)
+                        break
+            
+        logger.info(f"Social consequences applied for {arbiter_logic.target_npc} (success={success})")
+
     def resolve_action_sync(self, *args, **kwargs) -> ArbiterLogic:
         """Sync compat wrapper."""
         return self.resolve_action(*args, **kwargs)

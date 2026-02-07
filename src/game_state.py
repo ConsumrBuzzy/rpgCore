@@ -137,9 +137,14 @@ class GameState(BaseModel):
         }
     )
 
-    # Narrative Objectives
-    active_goals: List[Goal] = Field(default_factory=list)
+    # Narrative Objectives (The Goal Stack)
+    goal_stack: List[Goal] = Field(default_factory=list)
     completed_goals: List[str] = Field(default_factory=list)
+    
+    @property
+    def current_goal(self) -> Goal | None:
+        """Return the top (most recent) goal in the stack."""
+        return self.goal_stack[-1] if self.goal_stack else None
     
     # DGT Social Graph: Location-scoped NPC relationships
     # Format: { "tavern": { "Bartender": Relationship(...), "Guard": Relationship(...) } }
