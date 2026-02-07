@@ -280,7 +280,7 @@ class TheaterDirector:
         """Reset the entire performance."""
         self.playbook.reset_performance()
         self.current_state = DirectorState.WAITING_FOR_ACTOR
-        self.current_act = self.playbook.get_current_act()
+        self.current_act = None  # Clear current act reference
         self.last_known_position = None
         self.last_cue_executed = None
         self.performance_start_time = None
