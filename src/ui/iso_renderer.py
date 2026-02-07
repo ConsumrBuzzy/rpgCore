@@ -230,9 +230,9 @@ class IsometricRenderer:
         # Check for legacy props (wells, statues, etc.)
         historical_tags = self.world_ledger.get_historical_tags(coordinate)
         if historical_tags:
-            if any("well" in tag.lower() for tag in historical_tags):
+            if any("well" in str(tag).lower() for tag in historical_tags):
                 return self.entity_chars["well"], self.entity_colors["well"], "item"
-            elif any("statue" in tag.lower() for tag in historical_tags):
+            elif any("statue" in str(tag).lower() for tag in historical_tags):
                 return self.entity_chars["statue"], self.entity_colors["statue"], "item"
         
         return None
