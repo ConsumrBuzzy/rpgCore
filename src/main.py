@@ -49,6 +49,17 @@ except ImportError:
     from engines.mind import DDEngine, DDEngineFactory
     from engines.body import GraphicsEngine, GraphicsEngineFactory
 
+# Import narrative engines
+try:
+    from narrative import (
+        ChronosEngine, ChronosEngineFactory,
+        PersonaEngine, PersonaEngineFactory
+    )
+except ImportError:
+    # Fallback for development
+    from narrative.chronos import ChronosEngine, ChronosEngineFactory
+    from narrative.persona import PersonaEngine, PersonaEngineFactory
+
 # Import actor
 try:
     from actors import Voyager, VoyagerFactory
@@ -76,6 +87,10 @@ class DGTSystem:
         self.dd_engine: Optional[DDEngine] = None
         self.graphics_engine: Optional[GraphicsEngine] = None
         self.voyager: Optional[Voyager] = None
+        
+        # Narrative pillars
+        self.chronos_engine: Optional[ChronosEngine] = None
+        self.persona_engine: Optional[PersonaEngine] = None
         
         # Configuration
         self.config = self._load_config()
