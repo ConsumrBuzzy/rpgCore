@@ -543,7 +543,7 @@ class TestShadingAndAntiAliasing:
         """Test drop shadow creation."""
         factory = SpriteFactory()
         
-        config = CompositeSpriteConfig(shading_enabled=True)
+        config = CompositeSpriteConfig(CharacterClass.VOYAGER, shading_enabled=True)
         composite = factory.create_composite_sprite(config)
         
         # Check for shadow pixels (should have lower intensity)
@@ -562,8 +562,8 @@ class TestShadingAndAntiAliasing:
         """Test stealth state dithering."""
         factory = SpriteFactory()
         
-        normal_config = CompositeSpriteConfig(stance="neutral")
-        stealth_config = CompositeSpriteConfig(stance="stealth")
+        normal_config = CompositeSpriteConfig(CharacterClass.VOYAGER, stance="neutral")
+        stealth_config = CompositeSpriteConfig(CharacterClass.VOYAGER, stance="stealth")
         
         normal_sprite = factory.create_composite_sprite(normal_config)
         stealth_sprite = factory.create_composite_sprite(stealth_config)
