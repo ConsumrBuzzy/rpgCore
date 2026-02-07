@@ -238,20 +238,34 @@ class GameState(BaseModel):
         if not room:
             return "You are in an undefined location."
         
-        context = f"Location: {room.name}\n{room.description}\n\n"
+        # Get location name from coordinates if possible
+        location_name = room.name
+        if not location_name or location_name == "Unknown Area":
+            # Try to get location from coordinates
+            try:
+                from logic.location_resolver import LocationResolverFactory
+                resolver = LocationResolverFactory.create_location_resolver()
+                location_name = resolver.get_location_at(self.position.x, self.position.y)
+                if location_name:
+                    location_data = resolver.get_location_data(location_name)
+                    location_name = location_data.name if location_data else location_name
+            except Exception:
+                pass
         
-        if room.npcs:
-            context += "NPCs present:\n"
-            for npc in room.npcs:
-                state_emoji = {
-                    "neutral": "😐",
-                    "hostile": "⚔️",
-                    "distracted": "👀",
-                    "charmed": "😍",
-                    "dead": "💀"
-                }
-                emoji = state_emoji.get(npc.state, "")
-                context += f"  - {npc.name} {emoji} ({npc.state}): {npc.description}\n"
+        context = f"📍 Location: {location_name}\n"
+        context += f"Description: {room.description}\n\n"
+        
+        # Add local relationships
+        local_rels = self.social_graph.get(self.current_room, {})
+        
+        if local_rels:
+            context += "Local Relationships:\n"
+            for npc_id, rel in local_rels.items():
+                if rel.tags:
+                    tags_str = ", ".join(rel.tags)
+                    context += f"  - {npc_id}: [{tags_str}] (Disposition: {rel.disposition:+d})\n"
+                elif rel.disposition != 0:
+                    context += f"  - {npc_id}: Disposition {rel.disposition:+d}\n"
         
         if room.tags:
             context += f"\nEnvironment: {', '.join(room.tags)}\n"
@@ -259,7 +273,6 @@ class GameState(BaseModel):
         if room.items:
             context += f"\nItems: {', '.join(room.items)}\n"
         
-        # Append scoped social graph data
         context += self.get_local_context()
         
         return context
