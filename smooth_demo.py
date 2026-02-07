@@ -407,6 +407,29 @@ class SmoothDemo:
         
         logger.info("🎨 Procedural assets placed in background")
     
+    def _setup_voyager_sprite(self) -> None:
+        """Setup Voyager sprite with Tiny Farm integration"""
+        try:
+            # Try to load Tiny Farm Voyager sprite
+            from src.assets.tiny_farm_sheet_loader import create_tiny_farm_sheet_loader
+            
+            tiny_farm_loader = create_tiny_farm_sheet_loader()
+            voyager_sprite = tiny_farm_loader.get_single_sprite("voyager_idle")
+            
+            if voyager_sprite:
+                # Use Tiny Farm Voyager sprite
+                self.window_handler.raster_cache.cache_sprite("voyager", voyager_sprite)
+                logger.info("🚶‍♂️ Using Tiny Farm Voyager sprite")
+            else:
+                # Fallback to procedural Voyager sprite
+                self.window_handler.raster_cache.cache_sprite("voyager", self.voyager_sprite)
+                logger.info("🚶‍♂️ Using procedural Voyager sprite")
+                
+        except Exception as e:
+            # Fallback to procedural Voyager sprite
+            self.window_handler.raster_cache.cache_sprite("voyager", self.voyager_sprite)
+            logger.warning(f"⚠️ Could not load Tiny Farm Voyager: {e}, using procedural")
+    
     def _draw_tree(self, sprite: tk.PhotoImage) -> None:
         """Draw simple tree sprite"""
         # Tree trunk (brown)
