@@ -1,0 +1,401 @@
+"""
+Asset Manifest Schema - Human-Readable Pre-Fab Definitions
+
+This YAML file defines all characters, objects, and environments for the DGT Perfect Simulator.
+Characters are defined by layers of 8x8 tiles with palettes.
+"""
+
+# Character Definitions
+characters:
+  warrior_novice:
+    description: "A novice warrior starting their journey"
+    layers:
+      - head_helmet
+      - body_plate
+      - item_sword
+    palette: legion_red
+    tags: ["player", "warrior", "novice"]
+    
+  warrior_veteran:
+    description: "An experienced warrior with battle scars"
+    layers:
+      - head_helmet_damaged
+      - body_plate_damaged
+      - item_sword_enchanted
+    palette: legion_red
+    tags: ["player", "warrior", "veteran"]
+    
+  mage_apprentice:
+    description: "A young mage learning the arcane arts"
+    layers:
+      - head_hat_pointed
+      - body_robes_simple
+      - item_staff_basic
+    palette: arcane_blue
+    tags: ["player", "mage", "apprentice"]
+    
+  mage_archmage:
+    description: "A master of the arcane with powerful spells"
+    layers:
+      - head_hat_wide
+      - body_robes_ornate
+      - item_staff_crystal
+    palette: arcane_blue
+    tags: ["player", "mage", "archmage"]
+    
+  rogue_trainee:
+    description: "A stealthy rogue learning the shadows"
+    layers:
+      - head_hood
+      - body_leather_light
+      - item_dagger_basic
+    palette: shadow_gray
+    tags: ["player", "rogue", "trainee"]
+    
+  rogue_assassin:
+    description: "A deadly rogue who moves unseen"
+    layers:
+      - head_hood_cowl
+      - body_leather_dark
+      - item_dagger_poisoned
+    palette: shadow_gray
+    tags: ["player", "rogue", "assassin"]
+
+# Object Definitions
+objects:
+  chest_wooden:
+    description: "A simple wooden chest for storing items"
+    layers:
+      - chest_closed
+    interaction: "LootTable_T1"
+    tags: ["container", "chest", "wooden"]
+    
+  chest_iron:
+    description: "A sturdy iron chest with better loot"
+    layers:
+      - chest_closed
+    interaction: "LootTable_T2"
+    tags: ["container", "chest", "iron"]
+    
+  chest_gold:
+    description: "A golden chest with rare treasures"
+    layers:
+      - chest_closed
+    - interaction: "LootTable_T3"
+    tags: ["container", "chest", "gold"]
+    
+  door_wooden:
+    description: "A simple wooden door"
+    layers:
+      - door_closed
+    interaction: "Door_Exit"
+    tags: ["exit", "door", "wooden"]
+    
+  door_stone:
+    description: "A heavy stone door"
+    layers:
+      - door_closed
+    interaction: "Door_Exit"
+    tags: ["exit", "door", "stone"]
+    
+  sign_tavern:
+    description: "A wooden sign with tavern information"
+    layers:
+      - sign_board
+    interaction: "Dialogue_Tavern"
+    tags: ["sign", "tavern", "information"]
+    
+  sign_shop:
+    description: "A sign indicating a shop"
+    layers:
+      - sign_board
+    interaction: "Dialogue_Shop"
+    tags: ["sign", "shop", "information"]
+
+# Environment Definitions
+environments:
+  tavern_interior:
+    description: "Cozy tavern interior with patrons"
+    dimensions: [20, 18]  # 20x18 tiles (160x144 pixels)
+    tile_map:
+      # RLE-encoded tile map (run-length encoding)
+      # Format: [tile_id, count, tile_id, count, ...]
+      [1, 40, 2, 10, 1, 20, 3, 5, 4, 8, 1, 30, 2, 15]
+    objects:
+      - type: chest_wooden
+        position: [10, 9]
+      - type: sign_tavern
+        position: [5, 5]
+      - type: door_wooden
+        position: [18, 8]
+    npcs:
+      - type: guard
+        position: [12, 10]
+        dialogue_set: "tavern_guard"
+      - type: bartender
+        position: [8, 8]
+        dialogue_set: "tavern_bartender"
+    tags: ["interior", "tavern", "social"]
+    
+  town_square:
+    description: "Central town square with shops and NPCs"
+    dimensions: [30, 25]  # 30x25 tiles (240x200 pixels)
+    tile_map:
+      [1, 200, 2, 50, 3, 30, 4, 20, 1, 100, 2, 80, 3, 40]
+    objects:
+      - type: chest_iron
+        position: [15, 12]
+      - type: chest_gold
+        position: [25, 15]
+      - type: sign_shop
+        position: [10, 5]
+      - type: sign_shop
+        position: [20, 5]
+    npcs:
+      - type: merchant
+        position: [15, 10]
+        dialogue_set: "town_merchant"
+      - type: guard_captain
+        position: [5, 12]
+        dialogue_set: "town_guard_captain"
+    tags: ["exterior", "town", "commercial"]
+    
+  forest_path:
+    description: "Dense forest path with dangers"
+    dimensions: [40, 30]  # 40x30 tiles (320x240 pixels)
+    tile_map:
+      [4, 100, 1, 50, 2, 80, 3, 120, 4, 50, 1, 60, 2, 40]
+    objects:
+      - type: chest_wooden
+        position: [20, 15]
+    npcs:
+      - type: bandit
+        position: [30, 20]
+        dialogue_set: "forest_bandit"
+    tags: ["exterior", "forest", "dangerous"]
+
+# Palette Definitions
+palettes:
+  legion_red:
+    description: "Red palette for legion warriors"
+    colors:
+      - 0: "transparent"
+      - 1: "dark_red"
+      - 2: "red"
+      - 3: "light_red"
+      - 4: "silver"
+      - 5: "wheat"
+      - 6: "gray60"
+      7: "gray40"
+    
+  arcane_blue:
+    description: "Blue palette for arcane mages"
+    colors:
+      - 0: "transparent"
+      - 1: "dark_blue"
+      - 2: "blue"
+      - 3: "light_blue"
+      - 4: "purple"
+      - 5: "wheat"
+      - 6: "tan"
+      - 7: "gray40"
+    
+  shadow_gray:
+    description: "Gray palette for stealthy rogues"
+    colors:
+      - 0: "transparent"
+      - 1: "black"
+      - 2: "gray40"
+      - 3: "gray60"
+      - 4: "tan"
+      - 5: "silver"
+      - 6: "wheat"
+      - 7: "gray30"
+    
+  natural_green:
+    description: "Green palette for environments"
+    colors:
+      - 0: "transparent"
+      - 1: "dark_green"
+      - 2: "green"
+      - 3: "light_green"
+      - 4: "brown"
+      - 5: "tan"
+      - 6: "yellow"
+      - 7: "gray30"
+
+# Interaction Logic Definitions
+interactions:
+  LootTable_T1:
+    description: "Basic loot table for wooden chests"
+    loot:
+      - gold: [5, 15]
+      - health_potion: [1, 3]
+      - iron_sword: [0.1, 0.3]
+      - leather_armor: [0.05, 0.15]
+    
+  LootTable_T2:
+    description: "Enhanced loot table for iron chests"
+    loot:
+      - gold: [20, 50]
+      - health_potion: [2, 5]
+      - steel_sword: [0.2, 0.5]
+      - chain_mail: [0.1, 0.3]
+      - magic_scroll: [0.05, 0.2]
+    
+  LootTable_T3:
+    description: "Premium loot table for golden chests"
+    loot:
+      - gold: [50, 100]
+      - health_potion: [3, 8]
+      - enchanted_sword: [0.3, 0.7]
+      - plate_armor: [0.2, 0.5]
+      - rare_gem: [0.1, 0.4]
+      - legendary_artifact: [0.01, 0.05]
+    
+  Door_Exit:
+    description: "Door that leads to another area"
+    target_map: "overworld"
+    target_position: [0, 0]
+    
+  Dialogue_Tavern:
+    description: "Tavern dialogue interactions"
+    dialogue_set: "tavern_default"
+    
+  Dialogue_Shop:
+    description: "Shop dialogue interactions"
+    dialogue_set: "shop_default"
+
+# Dialogue Set Definitions
+dialogue_sets:
+  tavern_default:
+    greetings:
+      - "Welcome to the tavern, traveler!"
+      - "What can I get for you today?"
+      - "The ale is flowing and the stories are fresh."
+    responses:
+      - "I'll take a room for the night."
+      - "Let me see what you have to trade."
+      - "I'm just passing through."
+    
+  tavern_guard:
+    warnings:
+      - "No weapons allowed in the tavern!"
+      - "Keep the peace or face the consequences."
+      - "The bartender doesn't tolerate troublemakers."
+    responses:
+      - "I understand. I'll behave."
+      - "I'm just looking around."
+      - "I'll take my business elsewhere."
+    
+  tavern_bartender:
+    offers:
+      - "Ale or mead?"
+      - "Need a room for the night?"
+      - "Looking for work perhaps?"
+    responses:
+      - "I'll have an ale."
+      - "Yes, I need a room."
+      - "Actually, I'm looking for work."
+    
+  town_merchant:
+    greetings:
+      - "Welcome to my shop!"
+      - "I have the finest wares in town."
+      - "What catches your eye?"
+    responses:
+      - "Let me see your inventory."
+      - "I'm just browsing."
+      - "I'm looking for something specific."
+    
+  town_guard_captain:
+    warnings:
+      - "No weapons drawn in the town square!"
+      - "Report any suspicious activity immediately."
+      - "The safety of our town is paramount."
+    responses:
+      - "I understand the rules."
+      - "I'll keep my weapon sheathed."
+      - "I'm just passing through."
+    
+  forest_bandit:
+    threats:
+      - "Your money or your life!"
+      - "This is my territory now!"
+      - "One move and I'll strike!"
+    responses:
+      - "Take my money, just let me pass."
+      - "I'll give you what I have."
+      - "I'm not looking for trouble."
+
+# Tile Definitions
+tiles:
+  # Grass tiles
+  grass_basic:
+    description: "Basic grass tile"
+    pattern: "solid"
+    color_id: 1
+  grass_variant:
+    description: "Grass with texture variation"
+    pattern: "textured"
+    color_id: 1
+    
+  # Stone tiles
+  stone_path:
+    description: "Stone path tile"
+    pattern: "solid"
+    color_id: 2
+  stone_cobblestone:
+    description: "Cobblestone path"
+    pattern: "textured"
+    color_id: 2
+    
+  # Water tiles
+  water_basic:
+    description: "Basic water tile"
+    pattern: "animated"
+    color_id: 3
+  water_deep:
+    description: "Deep water tile"
+    pattern: "animated"
+    color_id: 3
+    
+  # Tree tiles
+  tree_basic:
+    description: "Basic tree tile"
+    pattern: "solid"
+    color_id: 4
+  tree_dense:
+    description: "Dense tree tile"
+    pattern: "solid"
+    color_id: 4
+    
+  # Object tiles
+  chest_closed:
+    description: "Closed chest"
+    pattern: "solid"
+    color_id: 5
+    
+  door_closed:
+    description: "Closed door"
+    pattern: "solid"
+    color_id: 6
+    
+  sign_board:
+    description: "Information sign"
+    pattern: "solid"
+    color_id: 7
+
+# Animation Frames
+animations:
+  chest_opening:
+    frames: [chest_closed, chest_open]
+    frame_duration_ms: 200
+    
+  door_opening:
+    frames: [door_closed, door_open]
+    frame_duration_ms: 300
+    
+  water_flow:
+    frames: [water_basic, water_deep]
+    frame_duration_ms: 500
