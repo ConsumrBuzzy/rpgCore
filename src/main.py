@@ -131,8 +131,8 @@ class DGTSystem:
             logger.info("🧠 D&D Engine initialized")
             
             # Initialize Graphics Engine (Body Pillar)
-            if config.get("enable_graphics", True):
-                self.graphics_engine = GraphicsEngineFactory.create_engine()
+            if config.get("enable_graphics", False):
+                self.graphics_engine = GraphicsEngineFactory.create_engine("assets/")
                 logger.info("🎨 Graphics Engine initialized")
             
             # Initialize Voyager (Actor Pillar)
