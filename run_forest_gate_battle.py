@@ -69,19 +69,28 @@ class ForestGateBattleSession:
         """Spawn the Forest Guardian at the gate"""
         gate_position = (15, 10)  # Forest Gate location
         
+        # Get guardian definition directly from asset loader
         guardian_def = self.asset_loader.get_asset_definition('forest_guardian')
         if not guardian_def:
             print("❌ Forest Guardian not found in asset definitions")
             return
         
-        # Register guardian in both registries
-        spawned_obj = self.dd_engine.object_registry.spawn_object('forest_guardian', gate_position)
-        if spawned_obj:
-            self.dd_engine.object_registry.world_objects[gate_position] = spawned_obj
-            print(f"🛡️ Forest Guardian spawned at {gate_position}")
-            print(f"💪 Guardian Stats: HP={spawned_obj.characteristics.combat_stats.get('hp', 'N/A')}, STR={spawned_obj.characteristics.combat_stats.get('str', 'N/A')}")
+        # Create a simple object registry entry for the guardian
+        guardian_obj = type('GuardianObject', (), {
+            'asset_id': 'forest_guardian',
+            'position': gate_position,
+            'characteristics': guardian_def.characteristics
+        })()
+        
+        # Register guardian in DDEngine's object registry
+        self.dd_engine.object_registry.world_objects[gate_position] = guardian_obj
+        
+        print(f"🛡️ Forest Guardian spawned at {gate_position}")
+        if guardian_def.characteristics:
+            combat_stats = guardian_def.characteristics.combat_stats
+            print(f"💪 Guardian Stats: HP={combat_stats.get('hp', 'N/A')}, STR={combat_stats.get('str', 'N/A')}")
         else:
-            print(f"❌ Failed to spawn Forest Guardian")
+            print("❌ Guardian has no characteristics")
     
     async def walk_to_gate(self) -> None:
         """Walk Voyager to the Forest Gate"""
