@@ -284,6 +284,216 @@ class ExpandedBaker:
         logger.info(f"Successfully baked {len(vector_map)} lore vectors to {output_path}")
         return bundle
     
+    def bake_dialogue(self, output_path: Path) -> AssetBundle:
+        """Bake dialogue vectors for NPC conversations."""
+        self._ensure_model_loaded()
+        
+        # Define dialogue templates by mood and situation
+        dialogue_templates = {
+            "hostile": {
+                "greeting": [
+                    "Get out of my sight before I lose my temper.",
+                    "I don't have time for your games.",
+                    "Leave now or face the consequences.",
+                    "This is your final warning."
+                ],
+                "question": [
+                    "Why should I answer you?",
+                    "I don't trust strangers.",
+                    "Mind your own business.",
+                    "Go away before things get ugly."
+                ],
+                "trade": [
+                    "I don't deal with your kind.",
+                    "Take your business elsewhere.",
+                    "I don't want what you're selling.",
+                    "My prices are not for you."
+                ],
+                "help": [
+                    "I don't help enemies.",
+                    "You're on your own.",
+                    "Figure it out yourself.",
+                    "Don't expect my assistance."
+                ],
+                "goodbye": [
+                    "Good riddance.",
+                    "Don't come back.",
+                    "Finally, some peace and quiet.",
+                    "I hope I never see you again."
+                ]
+            },
+            "unfriendly": {
+                "greeting": [
+                    "What do you want?",
+                    "State your business quickly.",
+                    "I'm busy, make it brief.",
+                    "Don't waste my time."
+                ],
+                "question": [
+                    "That's not your concern.",
+                    "I don't owe you answers.",
+                    "Mind your own business.",
+                    "Find someone else to bother."
+                ],
+                "trade": [
+                    "Your offer is insultingly low.",
+                    "I'm not interested.",
+                    "Try somewhere else.",
+                    "I don't deal with strangers."
+                ],
+                "help": [
+                    "I don't help strangers.",
+                    "Solve your own problems.",
+                    "Figure it out yourself.",
+                    "I'm not your assistant."
+                ],
+                "goodbye": [
+                    "Fine, leave then.",
+                    "Don't come back.",
+                    "I have better things to do.",
+                    "Finally, some quiet."
+                ]
+            },
+            "neutral": {
+                "greeting": [
+                    "Hello there.",
+                    "Greetings, traveler.",
+                    "Welcome to our establishment.",
+                    "How can I help you today?"
+                ],
+                "question": [
+                    "I'm not sure.",
+                    "That's a good question.",
+                    "Let me think about that.",
+                    "I don't have an answer right now."
+                ],
+                "trade": [
+                    "What are you offering?",
+                    "Let's see your wares.",
+                    "Show me what you have.",
+                    "I might be interested."
+                ],
+                "help": [
+                    "I can try to help.",
+                    "What do you need?",
+                    "Let me see what I can do.",
+                    "I'll do my best to assist."
+                ],
+                "goodbye": [
+                    "Farewell.",
+                    "Safe travels.",
+                    "Good luck on your journey.",
+                    "Come back if you need anything."
+                ]
+            },
+            "friendly": {
+                "greeting": [
+                    "Welcome, friend!",
+                    "It's good to see you!",
+                    "I'm so glad you're here!",
+                    "What brings you to our humble establishment?"
+                ],
+                "question": [
+                    "That's an interesting question!",
+                    "Let me think about that for you.",
+                    "I'd be happy to help you understand.",
+                    "That's worth considering."
+                ],
+                "trade": [
+                    "Excellent choice!",
+                    "You have a good eye for quality.",
+                    "That's a fair price.",
+                    "I'd be happy to trade with you."
+                ],
+                "help": [
+                    "Of course, I'll help!",
+                    "I'm at your service.",
+                    "Consider it done!",
+                    "I'm happy to assist you."
+                ],
+                "goodbye": [
+                    "Come back anytime!",
+                    "We'll be here for you.",
+                    "Safe travels, my friend.",
+                    "May fortune favor you!"
+                ]
+            },
+            "helpful": {
+                "greeting": [
+                    "Greetings, noble traveler!",
+                    "Welcome to our sanctuary!",
+                    "It's an honor to have you here!",
+                    "How may I be of service?"
+                ],
+                "question": [
+                    "Allow me to enlighten you.",
+                    "That is a profound inquiry.",
+                    "Let me share my wisdom with you.",
+                    "I have much to teach on this matter."
+                ],
+                "trade": [
+                    "Your generosity is appreciated!",
+                    "This is a most generous offer!",
+                    "I accept your kind donation.",
+                    "May the gods bless you for your charity."
+                ],
+                "help": [
+                    "It would be my honor to assist!",
+                    "I am at your complete disposal.",
+                    "Allow me to aid your noble quest.",
+                    "I shall do everything in my power."
+                ],
+                "goodbye": [
+                    "May the gods watch over you!",
+                    "Go with our blessing!",
+                    "May your path be illuminated!",
+                    "We shall pray for your success!"
+                ]
+            }
+        }
+        
+        # Collect all texts to embed
+        texts_to_embed = []
+        embedding_keys = []
+        
+        for mood, templates in dialogue_templates.items():
+            for category, responses in templates.items():
+                for i, response in enumerate(responses):
+                    texts_to_embed.append(response)
+                    embedding_keys.append(f"{mood}_{category}_{i}")
+        
+        logger.info(f"Baking {len(texts_to_embed)} dialogue vectors...")
+        
+        # Batch compute embeddings
+        embeddings = self.model.encode(
+            texts_to_embed,
+            batch_size=32,
+            show_progress_bar=True,
+            convert_to_numpy=True
+        )
+        
+        # Create mapping dictionary
+        vector_map = dict(zip(embedding_keys, embeddings))
+        
+        # Create asset bundle
+        bundle = AssetBundle(
+            asset_type=AssetType.DIALOGUE,
+            vectors=vector_map,
+            metadata={
+                "total_vectors": len(vector_map),
+                "model_name": self.model_name,
+                "moods": list(dialogue_templates.keys()),
+                "categories": {mood: len(responses) for mood, responses in dialogue_templates.items()},
+                "description": "NPC dialogue templates for different moods and situations"
+            }
+        )
+        
+        # Save to file
+        self._save_asset_bundle(bundle, output_path)
+        
+        logger.info(f"Successfully baked {len(vector_map)} dialogue vectors to {output_path}")
+        return bundle
+    
     def bake_all_assets(self, output_dir: Path) -> Dict[AssetType, AssetBundle]:
         """Bake all asset types."""
         bundles = {}
@@ -296,7 +506,8 @@ class ExpandedBaker:
             AssetType.INTENTS: self.bake_intents,
             AssetType.TRAITS: self.bake_traits,
             AssetType.INTERACTIONS: self.bake_interactions,
-            AssetType.LORE: self.bake_lore
+            AssetType.LORE: self.bake_lore,
+            AssetType.DIALOGUE: self.bake_dialogue
         }
         
         for asset_type, method in asset_methods.items():
@@ -407,7 +618,7 @@ def main():
     parser.add_argument(
         "--assets",
         nargs="+",
-        choices=["intents", "traits", "interactions", "lore", "all"],
+        choices=["intents", "traits", "interactions", "lore", "dialogue", "all"],
         default=["intents", "traits"],
         help="Asset types to bake (default: intents traits)"
     )
@@ -445,7 +656,8 @@ def main():
             "intents": baker.bake_intents,
             "traits": baker.bake_traits,
             "interactions": baker.bake_interactions,
-            "lore": baker.bake_lore
+            "lore": baker.bake_lore,
+            "dialogue": baker.bake_dialogue
         }
         
         for asset_type in args.assets:
