@@ -301,9 +301,10 @@ class GameREPL:
                 logger.info(f"Loot added to inventory: {loot_item.name}")
         
         # Step 3: Update game state BEFORE narration
-        # Infer target NPC
-        target_npc = arbiter_result.target_npc_id
+        # Use target NPC from Arbiter if detected
+        target_npc = arbiter_result.target_npc
         if not target_npc and room and room.npcs:
+            # Fallback to name search
             for npc in room.npcs:
                 if npc.name.lower() in player_input.lower():
                     target_npc = npc.name
@@ -319,8 +320,16 @@ class GameREPL:
         # Update NPC state if needed
         if target_npc and room:
             for npc in room.npcs:
-                if npc.name == target_npc:
-                    npc.state = arbiter_result.new_npc_state
+                if npc.name.lower() == target_npc.lower():
+                    npc.update_state(arbiter_result.new_npc_state)
+                    # Update social graph if delta or tags provided
+                    if arbiter_result.rep_delta != 0 or arbiter_result.rep_tags:
+                        self.state.update_relationship(
+                            self.state.current_room,
+                            npc.name,
+                            delta_disposition=arbiter_result.rep_delta,
+                            new_tags=arbiter_result.rep_tags,
+                        )
                     break
         
         # Update Global Reputation
@@ -330,20 +339,39 @@ class GameREPL:
             if delta != 0:
                 self.console.print(f"[bold yellow]⚖️ Reputation: {faction.replace('_', ' ').title()} {'increased' if delta > 0 else 'decreased'}! ({self.state.reputation[faction]})[/bold yellow]")
         
-        # Detect Goal Completion
+        # Detect Goal Completion (Harden Lifecycle)
         if outcome.success:
             completed = []
             for goal in self.state.active_goals:
-                if intent_match.intent_id in goal.method_tags:
-                    # Check if any target is in input (loose check)
+                # 1. Intent-based completion
+                is_intent_match = (goal.required_intent == intent_match.intent_id)
+                # 2. State-based completion (Check all NPCs in room)
+                is_state_match = False
+                if goal.target_npc_state:
+                    for npc in room.npcs:
+                        if npc.state == goal.target_npc_state:
+                            # NPC must be one of the targets if specified
+                            if not goal.target_tags or any(t.lower() in npc.name.lower() for t in goal.target_tags):
+                                is_state_match = True
+                                break
+                
+                # Check if this action fulfilled the goal
+                if is_intent_match or is_state_match:
+                    # Optional: Check target tags for objects/NPCs in input
                     target_hit = any(t.lower() in player_input.lower() for t in goal.target_tags)
                     if target_hit or not goal.target_tags:
                         self.console.print(f"[bold green]✨ Objective Complete: {goal.description}[/bold green]")
+                        goal.status = "success"
                         completed.append(goal)
             
             for g in completed:
                 self.state.active_goals.remove(g)
                 self.state.completed_goals.append(g.id)
+        
+        # Failure Check (Death)
+        if not self.state.player.is_alive():
+            for goal in self.state.active_goals:
+                goal.status = "failed"
         
         self.state.turn_count += 1
         if outcome.success and intent_match.intent_id == "leave_area":

@@ -164,10 +164,14 @@ class VoyagerAgent:
             goal_bonus = 0
             if active_goals:
                 for goal in active_goals:
-                    # Check if action ID or its general intent matches goal methods
-                    # Using hasattr for flexibility (Goal objects or dicts)
                     methods = getattr(goal, 'method_tags', []) if not isinstance(goal, dict) else goal.get('method_tags', [])
+                    # Base method bonus
                     if action_id in methods:
+                        goal_bonus += 300
+                    
+                    # Hard trigger bonus (required_intent)
+                    req_intent = getattr(goal, 'required_intent', None) if not isinstance(goal, dict) else goal.get('required_intent')
+                    if req_intent and action_id == req_intent:
                         goal_bonus += 500
             
             score += goal_bonus
