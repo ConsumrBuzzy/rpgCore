@@ -186,9 +186,9 @@ class PathfindingGrid:
         
         goal_node.h_score = 0
         
-        # Open and closed sets
-        open_set = {start_node}
-        closed_set = set()
+        # Open and closed sets for A*
+        open_set = {}
+        closed_set = {}
         
         while open_set:
             # Get node with lowest f_score
