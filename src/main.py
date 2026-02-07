@@ -141,7 +141,7 @@ class DGTSystem:
             
             # Initialize Heartbeat Controller
             try:
-                self.heartbeat = initialize_heartbeat()
+                self.heartbeat = await initialize_heartbeat()
             except Exception as e:
                 logger.warning(f"⚠️ Heartbeat initialization failed: {e}")
                 # Create a simple fallback heartbeat
@@ -166,11 +166,15 @@ class DGTSystem:
             logger.debug("⚠️ No heartbeat available for service registration")
             return
         
-        # Register pillar services
-        self.heartbeat.register_service("world_engine", self.world_engine)
-        self.heartbeat.register_service("dd_engine", self.dd_engine)
-        self.heartbeat.register_service("graphics_engine", self.graphics_engine)
-        self.heartbeat.register_service("voyager", self.voyager)
+        # Register all services with heartbeat
+        self.heartbeat.register_services(
+            world_engine=self.world_engine,
+            dd_engine=self.dd_engine,
+            voyager=self.voyager,
+            graphics_engine=self.graphics_engine,
+            chronicler=None,  # Not implemented yet
+            persistence_manager=None  # Not implemented yet
+        )
         
         logger.debug("📋 All services registered with heartbeat")
     
