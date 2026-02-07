@@ -158,6 +158,7 @@ class GameState(BaseModel):
     world_time: int = 0  # Global world clock (turns since epoch)
     rooms: Dict[str, Room] = Field(default_factory=dict)  # Legacy compatibility
     turn_count: int = 0
+    current_location: str = "Unknown Location"  # Current location name from LocationResolver
     
     # Global standing with world powers
     reputation: Dict[str, int] = Field(

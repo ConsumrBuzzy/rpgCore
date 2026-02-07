@@ -559,6 +559,37 @@ class SimulatorHost:
         
         logger.debug(f"📍 Voyager position updated to ({new_x}, {new_y})")
     
+    def _update_location_context(self) -> None:
+        """Update location context based on current position."""
+        if not self.state:
+            return
+        
+        try:
+            from logic.location_resolver import LocationResolverFactory
+            resolver = LocationResolverFactory.create_location_resolver()
+            
+            # Get current location
+            location_id = resolver.get_location_at(self.state.position.x, self.state.position.y)
+            if location_id:
+                location_data = resolver.get_location_data(location_id)
+                if location_data:
+                    # Update state with location information
+                    self.state.current_location = location_data.name
+                    logger.info(f"🗺️ Location updated: {location_data.name}")
+                    
+                    # Add discovered coordinate
+                    coord = (self.state.position.x, self.state.position.y)
+                    if coord not in self.state.discovered_coordinates:
+                        self.state.discovered_coordinates.append(coord)
+                        logger.debug(f"🗺️ Discovered new coordinate: {coord}")
+                else:
+                    logger.debug(f"🗺️ No location data found for {location_id}")
+            else:
+                logger.debug(f"🗺️ No location found at ({self.state.position.x}, {self.state.position.y})")
+                
+        except Exception as e:
+            logger.error(f"❌ Failed to update location context: {e}")
+    
     def stop(self) -> None:
         """Stop the simulator."""
         self.running = False
