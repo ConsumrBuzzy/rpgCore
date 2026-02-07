@@ -41,6 +41,12 @@ except ImportError:
     create_cockpit_body = None
     create_ppu_body = None
 
+# Unified Tri-Modal Engine
+from .tri_modal_engine import (
+    TriModalEngine, BodyEngine, EngineConfig,
+    create_tri_modal_engine, create_legacy_engine
+)
+
 __all__ = [
     # Legacy Graphics Engine
     "GraphicsEngine", "RenderFrame", "TileBank", "Viewport", "RenderLayer",
@@ -50,5 +56,11 @@ __all__ = [
     "DisplayDispatcher", "DisplayMode", "RenderPacket",
     "TerminalBody", "CockpitBody", "PPUBody",
     "create_terminal_body", "create_cockpit_body", "create_ppu_body",
+    
+    # Unified Engine
+    "TriModalEngine", "BodyEngine", "EngineConfig",
+    "create_tri_modal_engine", "create_legacy_engine",
+    
+    # Availability flags
     "TRI_MODAL_AVAILABLE"
 ]

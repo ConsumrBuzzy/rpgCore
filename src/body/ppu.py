@@ -147,7 +147,7 @@ class PPUBody(DisplayBody):
             'water': SpriteConfig('water', 16, 16, '#0064C8', 'noise'),
         }
         
-        for sprite_name, config in default_sprites:
+        for sprite_name, config in default_sprites.items():
             self._create_dithered_sprite(config)
     
     def _create_dithered_sprite(self, config: SpriteConfig):
