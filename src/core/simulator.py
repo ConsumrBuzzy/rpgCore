@@ -180,6 +180,11 @@ class SimulatorHost:
         self.running = False
         self.last_frame_time = 0
         
+        # Scene-Lock Protocol for cinematic transitions
+        self.scene_locked: bool = False
+        self.scene_lock_duration: float = 2.0  # 2 seconds for biome transitions
+        self.scene_lock_start_time: float = 0.0
+        
         # Thread pool for async operations
         self.executor = ThreadPoolExecutor(max_workers=2)
         
@@ -627,8 +632,48 @@ class SimulatorHost:
                 if current_env:
                     logger.info(f"🗺️ Boundary hit in {current_env.value}")
                     
+                    # Trigger Scene-Lock for biome transitions
+                    self._trigger_scene_lock(f"--- ENTERING {current_env.value.upper()} ---")
+                    
         except Exception as e:
             logger.error(f"❌ Failed to check spatial transitions: {e}")
+    
+    def _trigger_scene_lock(self, transition_message: str) -> None:
+        """Trigger a scene lock for cinematic transitions."""
+        try:
+            self.scene_locked = True
+            self.scene_lock_start_time = time.time()
+            
+            logger.info(f"🎬 Scene-Lock engaged: {transition_message}")
+            
+            # Notify views for cinematic transition display
+            self._notify_observers("scene_transition", {
+                "message": transition_message,
+                "duration": self.scene_lock_duration,
+                "location": self.state.current_location if self.state else "Unknown"
+            })
+            
+            # Schedule scene lock release
+            def release_scene_lock():
+                time.sleep(self.scene_lock_duration)
+                self.scene_locked = False
+                logger.info("🎬 Scene-Lock released - Movement resumed")
+                
+                # Notify views that scene lock is released
+                self._notify_observers("scene_lock_released", {
+                    "location": self.state.current_location if self.state else "Unknown"
+                })
+            
+            # Run in background thread
+            self.executor.submit(release_scene_lock)
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to trigger scene lock: {e}")
+            self.scene_locked = False  # Ensure we don't get stuck
+    
+    def is_scene_locked(self) -> bool:
+        """Check if the scene is currently locked for transitions."""
+        return self.scene_locked
     
     def _execute_portal_transition(self, target_env: EnvironmentType, target_coords: Tuple[int, int]) -> None:
         """Execute a portal transition to a new environment."""
