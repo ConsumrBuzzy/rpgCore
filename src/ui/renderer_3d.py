@@ -178,144 +178,6 @@ class ASCIIDoomRenderer:
         
         return self.buffer
     
-    def _apply_threat_indicator(self, char: str, distance: float) -> str:
-        """Apply threat indicator to character based on distance."""
-        if distance < 3:
-            return self.threat_chars[0]  # ! - immediate threat
-        elif distance < 6:
-            return self.threat_chars[1]  # ? - potential threat
-        elif distance < 10:
-            return self.threat_chars[2]  # X - distant threat
-        elif distance < 15:
-            return self.threat_chars[3]  # @ - warning
-        else:
-            return self.threat_chars[4]  # # - distant warning
-    
-    def _cast_ray(self, ray: Ray3D, game_state: GameState) -> HitResult:
-        """
-        Cast a single ray and return hit information.
-        
-        Args:
-            ray: The ray to cast
-            game_state: Current game state
-            
-        Returns:
-            HitResult with distance and content
-        """
-        direction = ray.get_direction()
-        
-        # Step through the ray
-        for distance in range(1, int(ray.length)):
-            # Calculate position along ray
-            check_x = ray.origin_x + direction[0] * distance
-            check_y = ray.origin_y + direction[1] * distance
-            
-            # Get coordinate
-            coord = Coordinate(int(check_x), int(check_y), 0)
-            
-            # Check for chunk at this coordinate
-            chunk = self.world_ledger.get_chunk(coord, 0)
-            
-            # Check if this is a wall
-            if self._is_wall(chunk, check_x, check_y):
-                return HitResult(
-                    hit=True,
-                    distance=distance,
-                    height=1.0,
-                    content=self._get_wall_char(chunk, distance),
-                    coordinate=coord,
-                    entity_id=None
-                )
-            
-            # Check for entities
-            entity = self._get_entity_at(coord, game_state)
-            if entity:
-                return HitResult(
-                    hit=True,
-                    distance=distance,
-                    height=1.0,
-                    content=self._get_entity_char(entity, distance),
-                    coordinate=coord,
-                    entity_id=entity.id
-                )
-            
-            # Check for items
-            item = self._get_item_at(coord, game_state)
-            if item:
-                return HitResult(
-                    hit=True,
-                    distance=distance,
-                    height=0.5,
-                    content=self._get_item_char(item, distance),
-                    coordinate=coord,
-                    entity_id=None
-                )
-        
-        # No hit
-        return HitResult(
-            hit=False,
-            distance=ray.length,
-            height=0.0,
-            content='',
-            coordinate=None,
-            entity_id=None
-        )
-    
-    def _is_wall(self, chunk: WorldChunk, x: float, y: float) -> bool:
-        """Check if a position is a wall."""
-        # Check if coordinate is outside chunk boundaries
-        chunk_x, chunk_y, chunk_t = chunk.coordinate
-        
-        # Simple boundary check
-        if x < chunk_x or x >= chunk_x + 1 or y < chunk_y or y >= chunk_y + 1:
-            return True
-        
-        # Check for wall-like tags
-        wall_tags = ["wall", "stone", "barrier", "obstacle", "blocked"]
-        return any(tag in chunk.tags for tag in wall_tags)
-    
-    def _get_wall_char(self, chunk: WorldChunk, distance: float) -> str:
-        """Get wall character based on distance."""
-        # Distance-based wall rendering
-        if distance < 2:
-            return self.wall_chars[0]  # Closest wall
-        elif distance < 5:
-            return self.wall_chars[1]  # Mid-range wall
-        elif distance < 10:
-            return self.wall_chars[2]  # Far wall
-        else:
-            return self.wall_chars[3]  # Distant wall
-    
-    def _get_entity_at(self, coord: Coordinate, game_state: GameState) -> Optional[Any]:
-        """Get entity at a coordinate."""
-        # This would integrate with the EntityAI system
-        # For now, return None
-        return None
-    
-    def _get_entity_char(self, entity: Any, distance: float) -> str:
-        """Get entity character based on distance."""
-        if distance < 3:
-            return self.entity_chars[0]  # Close entity
-        elif distance < 6:
-            return self.entity_chars[1]  # Mid-range entity
-        else:
-            return self.entity_chars[2]  # Distant entity
-    
-    def _get_item_at(self, coord: Coordinate, game_state: GameState) -> Optional[Any]:
-        """Get item at a coordinate."""
-        # This would integrate with the loot system
-        # For now, return None
-        return None
-    
-    def _get_item_char(self, item: Any, distance: float) -> str:
-        """Get item character based on distance."""
-        if distance < 2:
-            return self.item_chars[0]  # Close item
-        elif distance < 4:
-            return self.item_chars[1]  # Mid-range item
-        else:
-            return self.item_chars[2]  # Distant item
-    
     def _render_column(self, x: int, hit_result: HitResult):
         """Render a single column of the 3D view."""
         if not hit_result.hit:
@@ -331,9 +193,8 @@ class ASCIIDoomRenderer:
         # Render the hit
         char = hit_result.content
         
-        # Add distance-based shading
-        if hit_result.distance > 10:
-            char = self._apply_distance_shading(char, hit_result.distance)
+        # Add distance-based shading (now handled by CharacterRenderer)
+        # This section is kept for compatibility but functionality moved
         
         # Render from bottom to top
         start_y = self.half_height - column_height // 2
@@ -342,18 +203,6 @@ class ASCIIDoomRenderer:
         for y in range(start_y, end_y):
             if 0 <= y < self.height and 0 <= x < self.width:
                 self.buffer[y][x] = char
-    
-    def _apply_distance_shading(self, char: str, distance: float) -> str:
-        """Apply distance-based shading to a character."""
-        # Darker characters for distant objects
-        if distance > 15:
-            return '░'
-        elif distance > 10:
-            return '▒'
-        elif distance > 5:
-            return '▓'
-        else:
-            return char
     
     def get_frame_as_string(self, buffer: List[List[str]]) -> str:
         """Convert the render buffer to a string."""
