@@ -79,7 +79,7 @@ objects:
     description: "A golden chest with rare treasures"
     layers:
       - chest_closed
-    - interaction: "LootTable_T3"
+    interaction: "LootTable_T3"
     tags: ["container", "chest", "gold"]
     
   door_wooden:
