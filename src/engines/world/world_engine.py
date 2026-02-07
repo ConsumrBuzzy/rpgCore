@@ -105,6 +105,9 @@ class WorldEngine:
         self._noise_cache: Dict[Tuple[int, int], float] = {}
         self._biome_cache: Dict[Tuple[int, int], BiomeType] = {}
         
+        # Chronos Engine reference for task spawning
+        self.chronos_engine: Optional[ChronosEngine] = None
+        
         # Background generation
         self._generation_queue: Set[Tuple[int, int]] = set()
         self._generation_lock = asyncio.Lock()
@@ -113,6 +116,7 @@ class WorldEngine:
     
     # === FACADE INTERFACE ===
     
+    async def get_tile_at(self, position: Tuple[int, int]) -> Tile:
     async def get_tile_at(self, position: Tuple[int, int]) -> TileData:
         """Get tile data at position (Facade method)"""
         if not validate_position(position):
