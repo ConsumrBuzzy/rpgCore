@@ -282,16 +282,17 @@ class TestBrailleRadarPass:
     def test_blinking_animation(self):
         """Test player blinking animation."""
         pass_obj = BrailleRadarPass(RadarConfig(player_blink=True))
+
+        # Initialize with a time that will trigger blinking
+        initial_time = time.time()
+        pass_obj.last_blink_time = initial_time - 1.0  # Force immediate blink
+        pass_obj.blink_state = True  # Set initial state
         
-        # Test blinking state changes
-        initial_state = pass_obj.blink_state
-        pass_obj._update_blinking(time.time())
+        # Update blinking - should toggle state
+        pass_obj._update_blinking(initial_time)
         
-        # Should toggle after 0.5 seconds
-        pass_obj.last_blink_time = time.time() - 1.0  # Force blink
-        pass_obj._update_blinking(time.time())
-        
-        assert pass_obj.blink_state != initial_state
+        # The blink state should have changed
+        assert pass_obj.blink_state == False
 
     def test_entity_tracking(self):
         """Test entity tracking functionality."""
@@ -437,10 +438,10 @@ class TestGeometricProfilePass:
         pass_obj._draw_line(buffer, (0, 0), (0, 9))
         
         # Should have line characters
-        assert buffer[0][0] != " "
-        assert buffer[0][9] != " "
-        assert buffer[9][0] != " "
-        assert buffer[9][9] != " "
+        assert buffer[0][0] != " "  # Start point
+        assert buffer[0][9] != " "  # End point of horizontal line
+        assert buffer[9][0] != " "  # End point of vertical line
+        # Note: buffer[9][9] should be empty since we only drew to (9,0) and (0,9)
     
     def test_rotation_animation(self):
         """Test rotation animation."""
