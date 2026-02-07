@@ -162,8 +162,6 @@ class AutonomousDirector:
         """Main director loop for autonomous operation."""
         logger.info("🎬 Director loop started")
         
-        turn_count = 0
-        
         try:
             while self.mode != DirectorMode.IDLE:
                 if self.is_paused:
@@ -179,7 +177,7 @@ class AutonomousDirector:
                     await self._cinematic_phase()
                 
                 # Increment turn counter
-                turn_count += 1
+                self.turn_count += 1
                 
                 # Control loop speed based on playback speed
                 sleep_time = 1.0 / self.playback_speed
