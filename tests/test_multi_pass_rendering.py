@@ -360,10 +360,12 @@ class TestANSIVitalsPass:
         """Test ANSI vitals rendering."""
         pass_obj = ANSIVitalsPass()
         
-        # Create mock context
+        # Create mock context with proper player attribute
         mock_game_state = Mock(spec=GameState)
-        mock_game_state.player.hp = 75
-        mock_game_state.player.max_hp = 100
+        mock_player = Mock()
+        mock_player.hp = 75
+        mock_player.max_hp = 100
+        mock_game_state.player = mock_player
         
         mock_ledger = Mock(spec=WorldLedger)
         
