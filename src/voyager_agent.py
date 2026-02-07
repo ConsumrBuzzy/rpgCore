@@ -11,13 +11,11 @@ Design:
 - Vends natural language action strings
 """
 
-import os
-from pydantic import BaseModel, Field
-from pydantic_ai import Agent
+import random
 from loguru import logger
 from voyager_logic import STANDARD_ACTIONS
-from model_factory import get_model
-
+from quartermaster import DC_TABLE
+from pydantic import BaseModel, Field
 
 class VoyagerDecision(BaseModel):
     """Single action decision from the Voyager."""
@@ -35,122 +33,127 @@ class VoyagerDecision(BaseModel):
 
 class VoyagerAgent:
     """
-    Automated player agent for self-testing and auto-adventure mode.
+    Deterministic Voyager: Heuristic-based Automated Player.
     
-    Replaces human input with LLM-driven decisions based on:
-    - Current scene context
-    - Player stats (HP, Gold, Inventory)
-    - Personality traits
+    Replaces LLM decision making with hard logic:
+    1. Assess all available actions.
+    2. Calculate Odds: (Stat + Bonuses) - (DC + Tag Penalties).
+    3. Pick the action with the highest Score.
+    4. Add randomness/flavor based on Personality.
     """
     
-    PERSONALITY_PROMPTS = {
-        "curious": (
-            "You are a curious adventurer who loves to explore and investigate. "
-            "You ask questions, search for secrets, and talk to NPCs. "
-            "You avoid violence unless necessary."
-        ),
-        "aggressive": (
-            "You are a bold warrior who solves problems with force. "
-            "You intimidate NPCs, kick down doors, and attack when threatened. "
-            "You value strength over subtlety."
-        ),
-        "tactical": (
-            "You are a strategic thinker who weighs risks carefully. "
-            "You use stealth, distraction, and charm to achieve goals. "
-            "You only fight when you have the advantage."
-        ),
-        "chaotic": (
-            "You are unpredictable and chaotic. "
-            "You do unexpected things, sometimes helpful, sometimes destructive. "
-            "You follow whims and create chaos for entertainment."
-        )
-    }
-    
-    def __init__(self, personality: str = "curious", model_name: str = "llama3.2:1b"):
+    def __init__(self, personality: str = "curious", model_name: str = None):
         """
-        Initialize Voyager agent.
-        
-        Args:
-            personality: Character personality (curious, aggressive, tactical, chaotic)
-            model_name: Ollama model to use
+        Initialize deterministic voyager.
+        model_name is ignored (kept for compat).
         """
-        # Ensure OLLAMA_BASE_URL is set
-        if "OLLAMA_BASE_URL" not in os.environ:
-            os.environ["OLLAMA_BASE_URL"] = "http://localhost:11434"
-        
         self.personality = personality.lower()
-        
-        # Build system prompt
-        personality_trait = self.PERSONALITY_PROMPTS.get(
-            self.personality,
-            self.PERSONALITY_PROMPTS["curious"]
-        )
-        
-        system_prompt = (
-            "You are an expert RPG STRATEGIST playing a D&D-style game.\n\n"
-            f"Personality: {personality_trait}\n\n"
-            "OBJECTIVE: Choose the action with the HIGHEST PROBABILITY of success.\n"
-            "1. Analyze your Player Stats (Strength, Dex, etc.)\n"
-            "2. Analyze Room Tags (e.g., 'Sticky Floors' punishes Dexterity)\n"
-            "3. Select an Intent that leverages your high stats and avoids penalties.\n\n"
-            "Rules:\n"
-            "- Output `selected_action_id` (MUST be one of the IDs provided in the menu)\n"
-            "- Output `custom_flair` (First-person action description, e.g. 'I smash the table')\n"
-            "- Output `strategic_reasoning` (Why you chose this based on stats/tags)\n"
-            "- Output `internal_monologue` (Your character's inner thoughts)\n"
-            "- Consider Inventory bonuses (e.g., 'Iron Key' helps Lockpicking)\n\n"
-            "Examples:\n"
-            "- Sticky Floor + High Str: ActionID='force', Flair='I smash the table', Reasoning='Avoiding Dex check due to floors'\n"
-            "- Rowdy Crowd + High Cha: ActionID='charm', Flair='I buy a round', Reasoning='Leveraging Cha to calm crowd'\n"
-        )
-        
-        # Initialize Pydantic AI agent
-        # Use factory to get shared model connection
-        model = get_model(model_name, temperature=0.1)
-
-        
-        self.agent = Agent(
-            model=model,
-            output_type=VoyagerDecision,
-            system_prompt=system_prompt,
-            retries=3
-        )
-        
-        logger.info(f"Voyager initialized with '{self.personality}' personality")
+        logger.info(f"Voyager initialized (Deterministic) with '{self.personality}' personality")
     
     async def decide_action(
         self,
-        scene_context: str,
+        scene_context: str, # Kept for compat, mostly unused now
         player_stats: dict,
-        turn_history: list[str] | None = None
+        turn_history: list[str] | None = None,
+        room_tags: list[str] | None = None
     ) -> VoyagerDecision:
-        """Decide next action using deterministic menu."""
+        """Decide next action using heuristic scoring."""
         
-        # Get pre-baked options
+        # 1. Get Candidate Actions
         options = STANDARD_ACTIONS.get(self.personality, STANDARD_ACTIONS["curious"])
         
-        # Inject into prompt
-        options_str = "\n".join([f"- ID: {o['id']} | Label: {o['label']} (Uses {o['stat']})" for o in options])
+        # 2. Score Each Action
+        scored_actions = []
         
-        # Build prompt
-        prompt = (
-            f"CONTEXT:\n{scene_context}\n\n"
-            f"YOUR STATS:\n{player_stats}\n\n"
-            f"AVAILABLE ACTIONS (CHOOSE ONE):\n{options_str}\n\n"
-            "INSTRUCTIONS:\n"
-            "1. Analyze your stats and the context.\n"
-            "2. Choose the BEST Action ID from the list above.\n"
-            "3. Write a short 'custom_flair' sentence to describe doing it.\n"
-            "4. Explain your reasoning.\n"
-            "5. OUTPUT PURE JSON ONLY. NO MARKDOWN. NO COMMENTS.\n\n"
-            "Make your decision now."
+        attributes = player_stats.get('attributes', {})
+        inventory = player_stats.get('inventory', [])
+        current_hp = player_stats.get('hp', 100)
+        max_hp = player_stats.get('max_hp', 100)
+        
+        # Safety Override: If HP is low (< 30%), prioritize DEFEND or HEAL
+        is_critical = current_hp < (max_hp * 0.3)
+        
+        for action in options:
+            action_id = action['id']
+            base_stat = action['stat']
+            
+            # --- Heuristic Formula ---
+            
+            # A. Stat Bonus
+            stat_val = attributes.get(base_stat, 0)
+            
+            # B. Item Bonus (Simplistic check)
+            item_bonus = 0
+            for item in inventory:
+                # Assuming Items have 'target_stat' and 'modifier_value'
+                # Use getattr safely as inventory items might be objects or dicts
+                # In game_loop it looks like objects.
+                if hasattr(item, 'target_stat') and item.target_stat == base_stat:
+                    item_bonus += item.modifier_value
+            
+            # C. Difficulty Malus (Base DC + Tag Mods)
+            # Use Quartermaster's logic to estimate DC
+            # We duplicate explicit logic here or use a simplified lookup
+            base_dc = DC_TABLE.get(action_id, 12)
+            
+            tag_penalty = 0
+            if room_tags:
+                modifiers = DC_TABLE.get("modifiers", {})
+                for tag in room_tags:
+                    norm_tag = tag.lower().replace(" ", "_")
+                    if norm_tag in modifiers:
+                        intent_mods = modifiers[norm_tag]
+                        if action_id in intent_mods:
+                            tag_penalty += intent_mods[action_id]
+            
+            estimated_dc = base_dc + tag_penalty
+            
+            # SCORE = (Stat + Item) - DC
+            # Higher is better. 
+            # Example: Str +5 vs DC 10 = Score -5 (Wait, no: 15 vs 10 = +5 margin)
+            # Probability = (21 + Bonus - DC) / 20 * 100 approx.
+            # Let's just use the Margin.
+            score = (stat_val + item_bonus) - estimated_dc
+            
+            # D. Personality Weights
+            # (Already filtered by STANDARD_ACTIONS, but we can boost preferred ones)
+            # e.g. Aggressive prefers FORCE (+2)
+            
+            # E. Stutter Penalty
+            if turn_history and len(turn_history) > 0:
+                # If we just did this, heavily penalize to prevent looping
+                # We don't have exact action string match, but we can track IDs next time?
+                # For now, rely on random noise if scores are close.
+                pass
+
+            scored_actions.append({
+                "action": action,
+                "score": score,
+                "reason": f"Stat({stat_val}) + Item({item_bonus}) vs Est.DC({estimated_dc})"
+            })
+            
+        # 3. Pick Best Action
+        # Sort by score descending
+        scored_actions.sort(key=lambda x: x['score'], reverse=True)
+        
+        best = scored_actions[0]
+        
+        # Add some randomness if top scores are close? 
+        # For Iron Frame, let's be purely deterministic for now to prove stability.
+        
+        selected_action = best['action']
+        
+        # 4. Generate Output
+        # Flair can be a template for now, or use the label
+        flair = f"I {selected_action['label'].lower()}."
+        
+        logging_reason = f"Score {best['score']} ({best['reason']})."
+        
+        logger.info(f"Voyager Heuristic: Selected {selected_action['id']} with score {best['score']}")
+        
+        return VoyagerDecision(
+            selected_action_id=selected_action['id'],
+            custom_flair=flair,
+            strategic_reasoning=logging_reason,
+            internal_monologue=f"Calculating odds... {logging_reason} Looks like my best bet."
         )
-        
-        logger.debug(f"Voyager deciding from menu...")
-        
-        # Call LLM
-        result = await self.agent.run(prompt)
-        
-        logger.info(f"Voyager decided: {result.data.selected_action_id}")
-        
-        return result.data

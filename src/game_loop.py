@@ -97,7 +97,8 @@ class GameREPL:
         self.voyager = None
         if auto_mode:
             from voyager_sync import SyncVoyagerAgent
-            self.console.print(f"[magenta]Loading Voyager (auto-play) with '{personality}' personality...[/magenta]")
+            self.console.print(f"[magenta]Loading Voyager (Deterministic Auto-Play) with '{personality}' personality...[/magenta]")
+            # Model name is ignored by Deterministic Voyager
             self.voyager = SyncVoyagerAgent(personality=personality, model_name="llama3.2:1b")
         
         # Turn history for stutter check (last 5 actions)
@@ -364,11 +365,16 @@ class GameREPL:
                     'attributes': self.state.player.attributes
                 }
                 
-                self.console.print("\n[bold blue]⚙️ Voyager thinking...[/bold blue]")
+                # Get room tags for context-aware decision making
+                room = self.state.rooms.get(self.state.current_room)
+                room_tags = room.tags if room else []
+                
+                self.console.print("\n[bold blue]⚙️ Voyager thinking (Deterministic)...[/bold blue]")
                 decision = self.voyager.decide_action_sync(
                     scene_context=scene_context,
                     player_stats=player_stats,
-                    turn_history=self.turn_history
+                    turn_history=self.turn_history,
+                    room_tags=room_tags
                 )
                 
                 player_input = decision.action
