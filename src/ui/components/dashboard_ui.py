@@ -186,15 +186,100 @@ class DashboardUI:
     
     def _render_dashboard(self) -> Panel:
         """Render the complete dashboard layout."""
-        # Create layout
+        # Create a simple layout for now
         layout = Layout()
         
-        # Add zones in order of priority
-        for zone_type, config in sorted(self.zones.items(), key=lambda x: x[1]["priority"]):
-            component = self._get_component_for_zone(zone_type)
-            if component:
-                panel = self._render_component(component, zone_type)
-                layout[config["position"][0]:config["position"][1]] = panel
+        # Split into main sections
+        layout.split_column(
+            Layout(name="header", size=3),
+            Layout(name="main"),
+            Layout(name="footer", size=5)
+        )
+        
+        # Split main into viewport and side panels
+        layout["main"].split_row(
+            Layout(name="viewport", ratio=2),
+            Layout(name="sidebar", ratio=1)
+        )
+        
+        # Split sidebar into vitals and inventory
+        layout["sidebar"].split_column(
+            Layout(name="vitals", ratio=1),
+            Layout(name="inventory", ratio=1)
+        )
+        
+        # Split footer into goals and conversation
+        layout["footer"].split_row(
+            Layout(name="goals", ratio=2),
+            Layout(name="conversation", ratio=1)
+        )
+        
+        # Add content to each section
+        layout["header"].update(Panel(
+            "[bold blue]DIRECTOR'S CONSOLE[/bold blue] - Fixed-Grid Component Architecture",
+            border_style="blue"
+        ))
+        
+        # Render viewport
+        try:
+            viewport_panel = self._render_component(self.viewport, ZoneType.VIEWPORT)
+            layout["viewport"].update(viewport_panel)
+        except Exception as e:
+            logger.error(f"Error rendering viewport: {e}")
+            layout["viewport"].update(Panel(
+                f"[red]Viewport Error[/red]\n{str(e)}",
+                title="[red]VIEWPORT ERROR[/red]",
+                border_style="red"
+            ))
+        
+        # Render vitals
+        try:
+            vitals_panel = self._render_component(self.vitals, ZoneType.VITALS)
+            layout["vitals"].update(vitals_panel)
+        except Exception as e:
+            logger.error(f"Error rendering vitals: {e}")
+            layout["vitals"].update(Panel(
+                f"[red]Vitals Error[/red]\n{str(e)}",
+                title="[red]VITALS ERROR[/red]",
+                border_style="red"
+            ))
+        
+        # Render inventory
+        try:
+            inventory_panel = self._render_component(self.inventory, ZoneType.INVENTORY)
+            layout["inventory"].update(inventory_panel)
+        except Exception as e:
+            logger.error(f"Error rendering inventory: {e}")
+            layout["inventory"].update(Panel(
+                f"[red]Inventory Error[/red]\n{str(e)}",
+                title="[red]INVENTORY ERROR[/red]",
+                border_style="red"
+            ))
+        
+        # Render goals
+        try:
+            goals_panel = self._render_component(self.goals, ZoneType.GOALS)
+            layout["goals"].update(goals_panel)
+        except Exception as e:
+            logger.error(f"Error rendering goals: {e}")
+            layout["goals"].update(Panel(
+                f"[red]Goals Error[/red]\n{str(e)}",
+                title="[red]GOALS ERROR[/red]",
+                border_style="red"
+            ))
+        
+        # Add conversation placeholder
+        layout["conversation"].update(Panel(
+            "[dim]Conversation Feed[/dim]\n[dim]Ready for dialogue...[/dim]",
+            title="[dim]DIALOGUE[/dim]",
+            border_style="dim"
+        ))
+        
+        # Add status footer
+        layout["footer"].update(Panel(
+            f"[dim]Turn: {self.state.system_status.get('turn', 0)} | Position: {self.state.system_status.get('position', (0, 0))} | Active: {self.state.is_active}[/dim]",
+            border_style="dim"
+        ))
         
         # Create main panel
         main_panel = Panel(
