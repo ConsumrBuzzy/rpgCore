@@ -149,6 +149,9 @@ class DashboardUI:
         
         current_time = time.time()
         
+        # Update the game state in dashboard state
+        self.state.game_state = game_state
+        
         # Update vital status
         self.state.vital_status = VitalStatus(
             hp=game_state.player.hp,
@@ -156,7 +159,7 @@ class DashboardUI:
             fatigue=0,  # TODO: Add fatigue tracking
             max_fatigue=100,
             attributes=game_state.player.attributes,
-            status_effects=[]  # TODO: Add status effects
+            status_effects=[]
         )
         
         # Update viewport state
