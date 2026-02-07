@@ -12,7 +12,7 @@ from enum import Enum
 import tkinter as tk
 from loguru import logger
 
-from tools.asset_models import AssetType, MaterialType
+from src.tools.asset_models import AssetType, MaterialType
 from ..graphics.ppu_tk_native_enhanced import DitherPresets
 
 
