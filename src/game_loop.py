@@ -609,7 +609,7 @@ def main():
     )
     parser.add_argument(
         "--personality",
-        choices=["curious", "aggressive", "tactical", "chaotic"],
+        choices=["curious", "aggressive", "tactical", "chaotic", "cunning", "diplomatic"],
         default="curious",
         help="Voyager personality (default: curious)"
     )
