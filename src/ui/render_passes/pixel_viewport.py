@@ -13,8 +13,8 @@ from unittest.mock import Mock
 from loguru import logger
 
 from . import BaseRenderPass, RenderContext, RenderResult, RenderPassType
-from ...pixel_renderer import PixelRenderer, ColorPalette
-from ...sprite_registry import SpriteRegistry
+from ui.pixel_renderer import PixelRenderer, ColorPalette
+from ui.sprite_registry import SpriteRegistry
 
 
 class _InternalPixelViewport:
