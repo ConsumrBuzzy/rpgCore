@@ -13,6 +13,7 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 import random
 from pathlib import Path
+import json
 
 from loguru import logger
 from world_ledger import WorldLedger, Coordinate
@@ -30,6 +31,7 @@ class EntityState(Enum):
     TRAVELING = "traveling"
     RESTING = "resting"
     WORKING = "working"
+    SOCIALIZE = "socialize"  # Added for noble entities
 
 
 class EntityGoal(Enum):
