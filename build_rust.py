@@ -2,6 +2,7 @@
 """
 Rust Build Script for DGT Harvest Core
 Python 3.12 compatible build system for high-performance image processing
+Based on PhantomArbiter's proven Rust build system
 """
 
 import subprocess
@@ -10,6 +11,10 @@ import os
 from pathlib import Path
 import shutil
 from loguru import logger
+
+# Ensure stdout uses UTF-8 on Windows
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 
 def check_rust_toolchain():
@@ -45,35 +50,47 @@ def check_maturin():
 
 
 def build_rust_module():
-    """Build the Rust module using maturin"""
+    """Build the Rust module using maturin develop mode"""
     rust_dir = Path('dgt_harvest_rust')
     
     if not rust_dir.exists():
         logger.error(f"❌ Rust directory not found: {rust_dir}")
         return False
     
-    # Change to Rust directory
-    original_cwd = Path.cwd()
+    # Set environment variables for proper Python detection
+    env = os.environ.copy()
+    
+    # CRITICAL: Force PyO3 to use the current Python executable
+    env["PYO3_PYTHON"] = sys.executable
+    
+    # Use develop mode for faster iteration (like PhantomArbiter)
+    logger.info("🔨 Building Rust harvest core in develop mode...")
     
     try:
-        # Build with maturin
-        logger.info("🔨 Building Rust harvest core...")
+        # Use maturin develop for faster iteration
+        command = ['maturin', 'develop', '--release']
         
-        # Use development mode for faster iteration
-        result = subprocess.run([
-            'maturin', 'build', '--release', '--target-dir', '..'
-        ], cwd=rust_dir, capture_output=True, text=True, encoding='utf-8', errors='replace')
+        logger.info(f"Running: {' '.join(command)}")
+        result = subprocess.run(command, cwd=rust_dir, capture_output=True, text=True, 
+                              encoding='utf-8', errors='replace', env=env)
         
         if result.returncode == 0:
             logger.success("✅ Rust module built successfully")
+            logger.info(result.stdout)
             
-            # Copy the built module to the parent directory
-            target_dir = Path('..')
-            wheel_files = list(target_dir.glob('dgt_harvest_rust*.whl'))
+            # Verify the module can be imported
+            logger.info("� Verifying Rust module import...")
+            verify = subprocess.run([
+                sys.executable, '-c', 
+                'import dgt_harvest_rust; print("SUCCESS: dgt_harvest_rust loaded successfully")'
+            ], capture_output=True, text=True)
             
-            if wheel_files:
-                for wheel_file in wheel_files:
-                    logger.info(f"📦 Found wheel: {wheel_file.name}")
+            if verify.returncode == 0:
+                logger.success("✅ Rust module verified successfully!")
+                logger.info(verify.stdout.strip())
+            else:
+                logger.error(f"❌ Verification failed: {verify.stderr}")
+                return False
             
             return True
         else:
@@ -83,43 +100,11 @@ def build_rust_module():
     except subprocess.CalledProcessError as e:
         logger.error(f"❌ Build error: {e}")
         return False
-    finally:
-        # Change back to original directory
-        os.chdir(original_cwd)
-
-
-def install_rust_module():
-    """Install the built Rust module"""
-    target_dir = Path('..')
-    wheel_files = list(target_dir.glob('dgt_harvest_rust*.whl'))
-    
-    if not wheel_files:
-        logger.error("❌ No built wheel files found")
-        return False
-    
-    try:
-        # Install the wheel
-        for wheel_file in wheel_files:
-            logger.info(f"📦 Installing: {wheel_file.name}")
-            result = subprocess.run([
-                sys.executable, '-m', 'pip', 'install', str(wheel_file), '--force-reinstall'
-            ], capture_output=True, text=True)
-            
-            if result.returncode == 0:
-                logger.success(f"✅ Installed: {wheel_file.name}")
-            else:
-                logger.error(f"❌ Failed to install: {wheel_file.name}")
-        
-        return True
-        
-    except subprocess.CalledProcessError as e:
-        logger.error(f"❌ Installation error: {e}")
-        return False
 
 
 def main():
     """Main build function"""
-    logger.info("🦀 DGT Rust Build System")
+    logger.info("🦀 DGT Rust Build System (PhantomArbiter-style)")
     logger.info("=" * 50)
     
     # Check prerequisites
@@ -134,12 +119,9 @@ def main():
     if not build_rust_module():
         return 1
     
-    # Install the module
-    if not install_rust_module():
-        return 1
-    
     logger.success("🚀 Rust module ready for use!")
     logger.info("🎯 The DGT Sheet-Cutter now has instant sub-millisecond sprite analysis!")
+    logger.info("📦 Module installed in develop mode for rapid iteration")
     
     return 0
 
