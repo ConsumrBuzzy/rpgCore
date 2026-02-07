@@ -195,7 +195,10 @@ class AutonomousDirector:
         
         # Generate new beacons periodically
         if len(self.beacon_history) == 0 or self.turn_count % self.beacon_generation_interval == 0:
-            await self._generate_narrative_beacons()
+            # Get current context from simulator
+            state = self.simulator.get_state()
+            context = state.get_context_str() if state else ""
+            await self._generate_narrative_beacons(context)
         
         # Select highest priority beacon
         if self.beacon_history:
