@@ -348,8 +348,8 @@ class Voyager:
             logger.warning(f"🚶 Invalid target position: {target_position}")
             return None
         
-        # Get collision map
-        collision_map = await self._get_collision_map()
+        # Get collision map (synchronous fallback)
+        collision_map = self._get_collision_map()
         
         # Generate path
         path = await self.navigator.find_path(self.current_position, target_position, collision_map)
