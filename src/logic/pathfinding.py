@@ -15,6 +15,13 @@ import math
 
 from loguru import logger
 
+# Import SimulatorHost for type annotation - use forward reference to avoid circular imports
+try:
+    from core.simulator import SimulatorHost
+except ImportError:
+    # Fallback for when this module is imported before simulator
+    SimulatorHost = None
+
 
 class TileType(Enum):
     """Tile types for pathfinding."""
@@ -325,7 +332,7 @@ class MovementController:
     Converts path coordinates to game actions and manages movement state.
     """
     
-    def __init__(self, simulator: SimulatorHost):
+    def __init__(self, simulator: 'SimulatorHost'):
         self.simulator = simulator
         self.is_moving = False
         self.movement_queue: List[str] = []
@@ -403,6 +410,6 @@ class NavigationFactory:
         return NavigationSystem(grid)
     
     @staticmethod
-    def create_movement_controller(simulator: SimulatorHost) -> MovementController:
+    def create_movement_controller(simulator: 'SimulatorHost') -> MovementController:
         """Create movement controller for Voyager."""
         return MovementController(simulator)
