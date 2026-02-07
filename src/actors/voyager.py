@@ -327,10 +327,16 @@ class Voyager:
         self.pathfinding_times: List[float] = []
         self.intent_generation_times: List[float] = []
         
+        # Idle state tracking for animations
+        self.idle_timer = 0
+        self.idle_threshold = 5  # Number of turns before idle animation
+        self.is_idle = False
+
         # Timing
-        self.last_intent_time: float = 0.0
-        self.intent_cooldown: float = 0.01  # 10ms for movie mode
+        self.last_intent_time: float = 0.01  # 10ms for movie mode
         
+        self.is_idle = False
+
         logger.info("🚶 Voyager initialized - STATE_PONDERING support ready")
 
     # === FACADE INTERFACE ===

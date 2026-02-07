@@ -355,6 +355,45 @@ class NativeTkinterPPU:
         """Get a native PhotoImage sprite by ID"""
         return self.sprites.get(sprite_id)
 
+class AnimationManager:
+    """Simple animation manager for sprite cycling"""
+    
+    def __init__(self):
+        self.animations = {}  # entity_id -> animation_data
+        self.current_frames = {}  # entity_id -> current_frame_index
+        
+    def register_animation(self, entity_id: str, frames: List, duration_ms: int = 500):
+        """Register an animation for an entity"""
+        self.animations[entity_id] = {
+            'frames': frames,
+            'duration': duration_ms,
+            'frame_count': len(frames)
+        }
+        self.current_frames[entity_id] = 0
+        
+    def update_animation(self, entity_id: str) -> Optional:
+        """Update animation frame and return current sprite"""
+        if entity_id not in self.animations:
+            return None
+        
+        anim_data = self.animations[entity_id]
+        current_frame = self.current_frames[entity_id]
+        
+        # Get current sprite
+        if current_frame < len(anim_data['frames']):
+            sprite = anim_data['frames'][current_frame]
+        else:
+            sprite = anim_data['frames'][0]  # Loop back to first frame
+        
+        # Advance frame
+        self.current_frames[entity_id] = (current_frame + 1) % anim_data['frame_count']
+        
+        return sprite
+    
+    def has_animation(self, entity_id: str) -> bool:
+        """Check if entity has registered animation"""
+        return entity_id in self.animations
+
 class NativeTkinterPPU:
     """Pure Tkinter PPU with Multi-Mode Support"""
     
@@ -375,6 +414,9 @@ class NativeTkinterPPU:
         # Transition effects
         self.transition_frames = []
         self.transition_active = False
+        
+        # Animation manager for sprite cycling
+        self.animation_manager = AnimationManager()
         
         # Sprite references to prevent garbage collection
         self._sprite_refs = []
@@ -589,6 +631,57 @@ class NativeTkinterPPU:
         # Update transition effect
         if self.transition_active:
             self._render_transition_frame()
+        
+        # Update sprite animations
+        self._update_sprite_animations()
+    
+    def _update_sprite_animations(self) -> None:
+        """Update sprite animations for all animated entities"""
+        try:
+            # Update flower animations
+            flower_frames = self.asset_loader.get_animated_sprites("flower", "wind_sway")
+            if flower_frames:
+                self.animation_manager.register_animation("flower_field", flower_frames, 500)
+            
+            # Update Voyager idle animation
+            if self.asset_loader.has_animation("voyager", "idle_look"):
+                idle_frames = self.asset_loader.get_animated_sprites("voyager", "idle_look")
+                if idle_frames:
+                    self.animation_manager.register_animation("voyager_idle", idle_frames, 1000)
+            
+            # Update all registered animations
+            for entity_id in list(self.animation_manager.animations.keys()):
+                sprite = self.animation_manager.update_animation(entity_id)
+                if sprite:
+                    # Update canvas with new sprite
+                    self.canvas.itemconfig(entity_id, image=sprite)
+        except Exception as e:
+            logger.error(f"⚠️ Animation update error: {e}")
+    
+    def register_entity_animation(self, entity_id: str, position: Tuple[int, int], animation_type: str) -> None:
+        """Register an entity for animation"""
+        if animation_type == "wind_sway":
+            # Create animated flower at position
+            flower_frames = self.asset_loader.get_animated_sprites("flower", "wind_sway")
+            if flower_frames:
+                self.animation_manager.register_animation(entity_id, flower_frames, 500)
+                
+                # Create flower on canvas
+                sprite = flower_frames[0] if flower_frames else None
+                if sprite:
+                    canvas_id = self.canvas.create_image(
+                        position[0] * DISPLAY_SCALE,
+                        position[1] * DISPLAY_SCALE,
+                        image=sprite,
+                        anchor="center",
+                        tags=entity_id
+                    )
+                    self._sprite_refs.append(sprite)
+        elif animation_type == "idle_look":
+            # Register Voyager idle animation
+            idle_frames = self.asset_loader.get_animated_sprites("voyager", "idle_look")
+            if idle_frames:
+                self.animation_manager.register_animation(entity_id, idle_frames, 1000)
     
     def update(self) -> None:
         """Main update loop"""
