@@ -7,7 +7,7 @@ All data structures and constants that define the system's behavior.
 
 import time
 from dataclasses import dataclass, field
-from typing import Tuple, List, Dict, Any, Optional, Union
+from typing import Tuple, List, Dict, Any, Optional, Union, Set
 from enum import Enum
 
 # === TILE SYSTEM CONSTANTS ===
