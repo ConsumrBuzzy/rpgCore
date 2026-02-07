@@ -1,0 +1,83 @@
+{
+  "player": {
+    "name": "Adventurer",
+    "hp": 86,
+    "max_hp": 100,
+    "gold": 50,
+    "inventory": [],
+    "attributes": {
+      "strength": 0,
+      "dexterity": 0,
+      "intelligence": 0,
+      "charisma": 0
+    }
+  },
+  "current_room": "tavern",
+  "rooms": {
+    "tavern": {
+      "name": "The Rusty Flagon",
+      "description": "A dimly lit tavern filled with the smell of ale and roasted meat. Rowdy patrons fill the wooden tables.",
+      "npcs": [
+        {
+          "name": "Guard",
+          "state": "charmed",
+          "hp": 80,
+          "description": "A stern-looking town guard watching the entrance"
+        },
+        {
+          "name": "Bartender",
+          "state": "neutral",
+          "hp": 30,
+          "description": "A burly man wiping mugs behind the bar"
+        }
+      ],
+      "items": [
+        "Beer Mug",
+        "Wooden Table"
+      ],
+      "exits": {
+        "north": "plaza"
+      },
+      "tags": [
+        "Sticky Floors",
+        "Rowdy Crowd",
+        "Dimly Lit",
+        "Path Clear"
+      ]
+    },
+    "plaza": {
+      "name": "Emerald City Plaza",
+      "description": "A gleaming plaza paved with green marble. Fountains sparkle in the sunlight, and well-dressed citizens hurry past.",
+      "npcs": [
+        {
+          "name": "Street Urchin",
+          "state": "neutral",
+          "hp": 50,
+          "description": "An ordinary person"
+        },
+        {
+          "name": "Merchant",
+          "state": "neutral",
+          "hp": 50,
+          "description": "An ordinary person"
+        }
+      ],
+      "items": [
+        "Great Fountain",
+        "Hero Statue"
+      ],
+      "exits": {
+        "south": "tavern",
+        "north": "dungeon_gate"
+      },
+      "tags": [
+        "Rainy",
+        "Crowded",
+        "Marble Floors",
+        "Path Clear"
+      ]
+    }
+  },
+  "turn_count": 0,
+  "social_graph": {}
+}

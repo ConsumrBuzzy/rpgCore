@@ -1061,3 +1061,136 @@
 21:43:56 | INFO | Game loaded from savegame.json
 21:44:13 | INFO | Game loaded from savegame.json
 21:44:47 | INFO | Game loaded from savegame.json
+21:46:29 | DEBUG | Added intent: distract with 5 exemplars
+21:46:29 | DEBUG | Added intent: force with 5 exemplars
+21:46:29 | DEBUG | Added intent: finesse with 5 exemplars
+21:46:29 | DEBUG | Added intent: charm with 5 exemplars
+21:46:29 | DEBUG | Added intent: intimidate with 5 exemplars
+21:46:29 | DEBUG | Added intent: deceive with 5 exemplars
+21:46:29 | DEBUG | Added intent: investigate with 5 exemplars
+21:46:29 | DEBUG | Added intent: use_item with 5 exemplars
+21:46:29 | DEBUG | Added intent: defend with 5 exemplars
+21:46:29 | DEBUG | Added intent: leave_area with 5 exemplars
+21:46:29 | DEBUG | Added intent: improvise with 5 exemplars
+21:46:29 | INFO | Loading embedding model: all-MiniLM-L6-v2
+21:46:34 | INFO | Precomputed embeddings for 11 intents (55 total exemplars)
+21:46:34 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+21:46:34 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+21:46:34 | INFO | Voyager initialized (Deterministic) with 'aggressive' personality
+21:46:34 | INFO | Game initialized with Council of Three architecture
+21:46:34 | INFO | Voyager Heuristic: Selected force with score -8
+21:46:34 | INFO | Intent resolution: 'Intimidate the guard' → charm (confidence: 0.653, matched exemplar: 'Convince the guard to let me pass with words')
+21:46:34 | DEBUG | Action: charm | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit', 'Path Clear'] | Roll: 18 + Attr: 0 + Item: 0 + Tag: 0 = 18 vs DC: 10 (10 + -2) -> SUCCESS
+21:46:34 | INFO | Quartermaster: success=True, roll=18 vs DC 10
+21:46:34 | DEBUG | Chronicler streaming: charm
+21:46:34 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:34 | INFO | Game saved to savegame.json
+21:46:36 | INFO | Voyager Heuristic: Selected leave_area with score 505
+21:46:36 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:46:36 | DEBUG | Action: leave_area | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit', 'Path Clear'] | Roll: 14 + Attr: 0 + Item: 0 + Tag: 0 = 14 vs DC: -5 (10 + -15) -> SUCCESS
+21:46:36 | INFO | Quartermaster: success=True, roll=14 vs DC -5
+21:46:36 | DEBUG | Chronicler streaming: leave_area
+21:46:36 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:36 | INFO | Game saved to savegame.json
+21:46:38 | INFO | Voyager Heuristic: Selected combat with score -10
+21:46:38 | INFO | Intent resolution: 'Start a brawl' → force (confidence: 0.543, matched exemplar: 'Punch someone in the face aggressively')
+21:46:38 | DEBUG | Action: force | Tags: ['Rainy', 'Crowded', 'Marble Floors'] | Roll: 14 + Attr: 0 + Item: 0 + Tag: 0 = 14 vs DC: 10 (10 + 0) -> SUCCESS
+21:46:38 | INFO | Quartermaster: success=True, roll=14 vs DC 10
+21:46:38 | DEBUG | No loot found
+21:46:38 | DEBUG | Chronicler streaming: force
+21:46:38 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:38 | INFO | Game saved to savegame.json
+21:46:40 | INFO | Voyager Heuristic: Selected investigate with score -15
+21:46:40 | INFO | Intent resolution: 'Search for weapons' → use_item (confidence: 0.398, matched exemplar: 'Equip my sword and shield for combat')
+21:46:40 | DEBUG | Action: use_item | Tags: ['Rainy', 'Crowded', 'Marble Floors'] | Roll: 4 + Attr: 0 + Item: 0 + Tag: 0 = 4 vs DC: 12 (10 + 0) -> FAILURE
+21:46:40 | INFO | Quartermaster: success=False, roll=4 vs DC 12
+21:46:40 | INFO | Player took 10 damage. HP: 90/100
+21:46:40 | DEBUG | Chronicler streaming: use_item
+21:46:40 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:40 | INFO | Game saved to savegame.json
+21:46:42 | INFO | Voyager Heuristic: Selected force with score -10
+21:46:42 | INFO | Intent resolution: 'Intimidate the guard' → charm (confidence: 0.653, matched exemplar: 'Convince the guard to let me pass with words')
+21:46:42 | DEBUG | Action: charm | Tags: ['Rainy', 'Crowded', 'Marble Floors', 'Path Clear'] | Roll: 14 + Attr: 0 + Item: 0 + Tag: 0 = 14 vs DC: 12 (10 + 0) -> SUCCESS
+21:46:42 | INFO | Quartermaster: success=True, roll=14 vs DC 12
+21:46:42 | DEBUG | Chronicler streaming: charm
+21:46:42 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:42 | INFO | Game saved to savegame.json
+21:46:44 | INFO | Voyager Heuristic: Selected leave_area with score 505
+21:46:44 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:46:44 | DEBUG | Action: leave_area | Tags: ['Rainy', 'Crowded', 'Marble Floors', 'Path Clear'] | Roll: 9 + Attr: 0 + Item: 0 + Tag: 0 = 9 vs DC: -5 (10 + -15) -> SUCCESS
+21:46:44 | INFO | Quartermaster: success=True, roll=9 vs DC -5
+21:46:44 | DEBUG | Chronicler streaming: leave_area
+21:46:44 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:44 | INFO | Game saved to savegame.json
+21:46:46 | INFO | Voyager Heuristic: Selected combat with score -10
+21:46:46 | INFO | Intent resolution: 'Start a brawl' → force (confidence: 0.543, matched exemplar: 'Punch someone in the face aggressively')
+21:46:46 | DEBUG | Action: force | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit', 'Path Clear'] | Roll: 14 + Attr: 0 + Item: 0 + Tag: 0 = 14 vs DC: 8 (10 + -2) -> SUCCESS
+21:46:46 | INFO | Quartermaster: success=True, roll=14 vs DC 8
+21:46:46 | DEBUG | No loot found
+21:46:46 | DEBUG | Chronicler streaming: force
+21:46:46 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:46 | INFO | Game saved to savegame.json
+21:46:48 | INFO | Voyager Heuristic: Selected leave_area with score 490
+21:46:48 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:46:48 | DEBUG | Action: leave_area | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit', 'Path Clear'] | Roll: 19 + Attr: 0 + Item: 0 + Tag: 0 = 19 vs DC: -5 (10 + -15) -> SUCCESS
+21:46:48 | INFO | Quartermaster: success=True, roll=19 vs DC -5
+21:46:48 | DEBUG | Chronicler streaming: leave_area
+21:46:48 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:48 | INFO | Game saved to savegame.json
+21:46:50 | INFO | Voyager Heuristic: Selected force with score -10
+21:46:50 | INFO | Intent resolution: 'Intimidate the guard' → charm (confidence: 0.653, matched exemplar: 'Convince the guard to let me pass with words')
+21:46:50 | DEBUG | Action: charm | Tags: ['Rainy', 'Crowded', 'Marble Floors', 'Path Clear'] | Roll: 8 + Attr: 0 + Item: 0 + Tag: 0 = 8 vs DC: 12 (10 + 0) -> FAILURE
+21:46:50 | INFO | Quartermaster: success=False, roll=8 vs DC 12
+21:46:50 | INFO | Player took 4 damage. HP: 86/100
+21:46:50 | DEBUG | Chronicler streaming: charm
+21:46:50 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:50 | INFO | Game saved to savegame.json
+21:46:52 | INFO | Voyager Heuristic: Selected leave_area with score 490
+21:46:52 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:46:52 | DEBUG | Action: leave_area | Tags: ['Rainy', 'Crowded', 'Marble Floors', 'Path Clear'] | Roll: 11 + Attr: 0 + Item: 0 + Tag: 0 = 11 vs DC: -5 (10 + -15) -> SUCCESS
+21:46:52 | INFO | Quartermaster: success=True, roll=11 vs DC -5
+21:46:52 | DEBUG | Chronicler streaming: leave_area
+21:46:52 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:52 | INFO | Game saved to savegame.json
+21:46:54 | INFO | Voyager Heuristic: Selected leave_area with score 475
+21:46:54 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:46:54 | DEBUG | Action: leave_area | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit', 'Path Clear'] | Roll: 7 + Attr: 0 + Item: 0 + Tag: 0 = 7 vs DC: -5 (10 + -15) -> SUCCESS
+21:46:54 | INFO | Quartermaster: success=True, roll=7 vs DC -5
+21:46:54 | DEBUG | Chronicler streaming: leave_area
+21:46:54 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:54 | INFO | Game saved to savegame.json
+21:46:56 | INFO | Voyager Heuristic: Selected leave_area with score 475
+21:46:56 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:46:56 | DEBUG | Action: leave_area | Tags: ['Rainy', 'Crowded', 'Marble Floors', 'Path Clear'] | Roll: 13 + Attr: 0 + Item: 0 + Tag: 0 = 13 vs DC: -5 (10 + -15) -> SUCCESS
+21:46:56 | INFO | Quartermaster: success=True, roll=13 vs DC -5
+21:46:56 | DEBUG | Chronicler streaming: leave_area
+21:46:56 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:56 | INFO | Game saved to savegame.json
+21:46:58 | INFO | Voyager Heuristic: Selected leave_area with score 460
+21:46:58 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:46:58 | DEBUG | Action: leave_area | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit', 'Path Clear'] | Roll: 9 + Attr: 0 + Item: 0 + Tag: 0 = 9 vs DC: -5 (10 + -15) -> SUCCESS
+21:46:58 | INFO | Quartermaster: success=True, roll=9 vs DC -5
+21:46:58 | DEBUG | Chronicler streaming: leave_area
+21:46:58 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:46:58 | INFO | Game saved to savegame.json
+21:47:00 | INFO | Voyager Heuristic: Selected leave_area with score 460
+21:47:00 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:47:00 | DEBUG | Action: leave_area | Tags: ['Rainy', 'Crowded', 'Marble Floors', 'Path Clear'] | Roll: 10 + Attr: 0 + Item: 0 + Tag: 0 = 10 vs DC: -5 (10 + -15) -> SUCCESS
+21:47:00 | INFO | Quartermaster: success=True, roll=10 vs DC -5
+21:47:00 | DEBUG | Chronicler streaming: leave_area
+21:47:00 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:47:00 | INFO | Game saved to savegame.json
+21:47:02 | INFO | Voyager Heuristic: Selected leave_area with score 460
+21:47:02 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:47:02 | DEBUG | Action: leave_area | Tags: ['Sticky Floors', 'Rowdy Crowd', 'Dimly Lit', 'Path Clear'] | Roll: 19 + Attr: 0 + Item: 0 + Tag: 0 = 19 vs DC: -5 (10 + -15) -> SUCCESS
+21:47:02 | INFO | Quartermaster: success=True, roll=19 vs DC -5
+21:47:02 | DEBUG | Chronicler streaming: leave_area
+21:47:02 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:47:02 | INFO | Game saved to savegame.json
+21:47:04 | INFO | Voyager Heuristic: Selected leave_area with score 460
+21:47:04 | INFO | Intent resolution: 'Leave this place' → leave_area (confidence: 1.000, matched exemplar: 'Leave this place')
+21:47:04 | DEBUG | Action: leave_area | Tags: ['Rainy', 'Crowded', 'Marble Floors', 'Path Clear'] | Roll: 2 + Attr: 0 + Item: 0 + Tag: 0 = 2 vs DC: -5 (10 + -15) -> SUCCESS
+21:47:04 | INFO | Quartermaster: success=True, roll=2 vs DC -5
+21:47:04 | DEBUG | Chronicler streaming: leave_area
+21:47:04 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:47:04 | INFO | Game saved to savegame.json
