@@ -17,13 +17,13 @@ import numpy as np
 
 from loguru import logger
 
-from ...core.state import (
+from core.state import (
     GameState, TileType, BiomeType, SubtitleEvent,
     VIEWPORT_WIDTH_PIXELS, VIEWPORT_HEIGHT_PIXELS,
     TILE_SIZE_PIXELS, VIEWPORT_TILES_X, VIEWPORT_TILES_Y,
     RENDER_LAYERS, COLOR_PALETTE
 )
-from ...core.constants import TARGET_FPS, FRAME_DELAY_MS
+from core.constants import TARGET_FPS, FRAME_DELAY_MS
 
 
 class RenderLayer(Enum):

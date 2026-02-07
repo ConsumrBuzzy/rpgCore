@@ -1,330 +1,525 @@
 """
-Main Heartbeat - Autonomous Movie System
+Main Heartbeat Controller - The DGT Autonomous Movie System
 
-The central nervous system connecting the four pillars:
-World Engine (World) -> D&D Engine (Mind) -> Voyager (Actor) -> Graphics Engine (Body)
+Production-ready Service-Oriented Architecture implementation.
+The Heartbeat coordinates all pillars and services at 60 FPS.
 
-Autonomous D&D Movie with 60 FPS rendering, persistent world, and LLM-generated subtitles.
+Key Features:
+- SOA architecture with clean pillar separation
+- Autonomous movie mode with configurable scenes
+- 60 FPS asynchronous heartbeat loop
+- Deterministic Chaos Protocol integration
+- Production-grade error handling and monitoring
 """
 
-import time
+import asyncio
+import argparse
+import signal
 import sys
-import json
-from typing import Union, Optional
+import time
 from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent))
+from typing import Dict, Any, Optional
 
 from loguru import logger
 
-# Import the four pillars
-from engines.dd_engine import DD_Engine, MovementIntent, InteractionIntent
-from engines.world_engine import WorldEngineFactory
-from actors.voyager import Voyager
-from graphics.ppu import GraphicsEngine
-from chronicler import ChroniclerFactory
+# Import core components
+try:
+    from core import (
+        HeartbeatController, get_heartbeat, initialize_heartbeat,
+        get_environment, is_development, is_production
+    )
+except ImportError:
+    # Fallback for development
+    sys.path.append(str(Path(__file__).parent))
+    from core import (
+        HeartbeatController, get_heartbeat, initialize_heartbeat,
+        get_environment, is_development, is_production
+    )
+
+# Import pillar engines
+try:
+    from engines import (
+        WorldEngine, WorldEngineFactory,
+        DDEngine, DDEngineFactory,
+        GraphicsEngine, GraphicsEngineFactory
+    )
+except ImportError:
+    # Fallback for development
+    from engines.world import WorldEngine, WorldEngineFactory
+    from engines.mind import DDEngine, DDEngineFactory
+    from engines.body import GraphicsEngine, GraphicsEngineFactory
+
+# Import actor
+try:
+    from actors import Voyager, VoyagerFactory
+except ImportError:
+    # Fallback for development
+    from actors.voyager import Voyager, VoyagerFactory
+
+# Import utilities
+try:
+    from utils import initialize_logging, get_logger_manager
+except ImportError:
+    # Fallback for development
+    from utils.logger import initialize_logging, get_logger_manager
 
 
-class MainHeartbeat:
-    """Central coordination for Autonomous Movie System"""
+class DGTSystem:
+    """Main DGT Autonomous Movie System"""
     
-    def __init__(self, assets_path: str = "assets/"):
-        """Initialize the four pillars for autonomous movie"""
-        logger.info("� Initializing Main Heartbeat - Autonomous Movie System")
+    def __init__(self):
+        self.heartbeat: Optional[HeartbeatController] = None
+        self.running = False
         
-        # Initialize The World (World Engine)
-        self.world_engine = WorldEngineFactory.create_tavern_world()
-        logger.info("🌍 The World (World Engine) - Deterministic data provider ready")
+        # Pillar instances
+        self.world_engine: Optional[WorldEngine] = None
+        self.dd_engine: Optional[DDEngine] = None
+        self.graphics_engine: Optional[GraphicsEngine] = None
+        self.voyager: Optional[Voyager] = None
         
-        # Initialize The Mind (D&D Engine)
-        self.dd_engine = DD_Engine(assets_path, self.world_engine)
-        logger.info("🧠 The Mind (D&D Engine) - Single Source of Truth ready")
+        # Configuration
+        self.config = self._load_config()
         
-        # Initialize The Actor (Voyager)
-        self.voyager = Voyager(self.dd_engine)
-        logger.info("🚶 The Actor (Voyager) - Pathfinding and Intent Generation ready")
+        # Setup signal handlers
+        self._setup_signal_handlers()
         
-        # Initialize The Body (Graphics Engine)
-        self.graphics = GraphicsEngine(assets_path)
-        logger.info("🎨 The Body (Graphics Engine) - 160x144 PPU Rendering ready")
+        logger.info("🏰 DGT System initialized - Production SOA Architecture")
+    
+    def _load_config(self) -> Dict[str, Any]:
+        """Load system configuration"""
+        return {
+            "mode": "autonomous",
+            "scene": "tavern",
+            "seed": "TAVERN_SEED",
+            "target_fps": 60,
+            "enable_graphics": True,
+            "enable_persistence": True,
+            "enable_logging": True
+        }
+    
+    def _setup_signal_handlers(self) -> None:
+        """Setup signal handlers for graceful shutdown"""
+        def signal_handler(signum, frame):
+            logger.info(f"🛑 Received signal {signum}, shutting down...")
+            self.shutdown()
+            sys.exit(0)
         
-        # Initialize The Chronicler (LLM Subtitles)
-        self.chronicler = ChroniclerFactory.create_movie_chronicler()
-        logger.info("📝 The Chronicler (LLM Subtitles) - Movie dialogue generator ready")
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+    
+    async def initialize(self, config: Dict[str, Any]) -> bool:
+        """Initialize all system components"""
+        try:
+            logger.info("🚀 Initializing DGT System components...")
+            
+            # Initialize logging
+            if config.get("enable_logging", True):
+                initialize_logging()
+            
+            # Initialize World Engine with scene-specific seed
+            seed = config.get("seed", "TAVERN_SEED")
+            self.world_engine = WorldEngineFactory.create_world(seed)
+            logger.info(f"🌍 World Engine initialized with seed: {seed}")
+            
+            # Initialize D&D Engine (Mind Pillar)
+            self.dd_engine = DDEngineFactory.create_engine()
+            self.dd_engine.set_world_engine(self.world_engine)
+            logger.info("🧠 D&D Engine initialized")
+            
+            # Initialize Graphics Engine (Body Pillar)
+            if config.get("enable_graphics", True):
+                self.graphics_engine = GraphicsEngineFactory.create_engine()
+                logger.info("🎨 Graphics Engine initialized")
+            
+            # Initialize Voyager (Actor Pillar)
+            self.voyager = VoyagerFactory.create_voyager(self.dd_engine)
+            logger.info("🚶 Voyager initialized")
+            
+            # Initialize Heartbeat Controller
+            self.heartbeat = initialize_heartbeat()
+            
+            # Register all services with heartbeat
+            await self._register_services()
+            
+            # Set scene-specific configuration
+            await self._configure_scene(config.get("scene", "tavern"))
+            
+            logger.info("✅ DGT System initialization complete")
+            return True
+            
+        except Exception as e:
+            logger.error(f"💥 System initialization failed: {e}")
+            return False
+    
+    async def _register_services(self) -> None:
+        """Register all services with heartbeat controller"""
+        if not self.heartbeat:
+            return
         
-        # Heartbeat state
-        self.running = True
-        self.frame_count = 0
-        self.start_time = time.time()
-        self.target_fps = 60
-        self.frame_delay = 1.0 / self.target_fps
+        # Register pillar services
+        self.heartbeat.register_service("world_engine", self.world_engine)
+        self.heartbeat.register_service("dd_engine", self.dd_engine)
+        self.heartbeat.register_service("graphics_engine", self.graphics_engine)
+        self.heartbeat.register_service("voyager", self.voyager)
         
-        # Movie script (beacons for autonomous navigation)
-        self.movie_script = [
+        logger.debug("📋 All services registered with heartbeat")
+    
+    async def _configure_scene(self, scene: str) -> None:
+        """Configure scene-specific settings"""
+        if scene == "tavern":
+            await self._configure_tavern_scene()
+        elif scene == "forest":
+            await self._configure_forest_scene()
+        else:
+            logger.warning(f"Unknown scene: {scene}")
+    
+    async def _configure_tavern_scene(self) -> None:
+        """Configure tavern scene with autonomous navigation"""
+        if not self.voyager:
+            return
+        
+        # Set tavern-specific movie script
+        tavern_script = [
             (10, 25),  # Forest edge
-            (10, 20),  # Town gate
+            (10, 20),  # Town gate  
             (10, 10),  # Town square
             (20, 10),  # Tavern entrance
             (25, 30),  # Tavern interior
+            (32, 32),  # Iron Chest (target)
         ]
-        self.current_script_index = 0
         
-        # Persistence state
-        self.persistence_interval = 10  # Save every 10 turns
-        self.last_persistence_turn = 0
+        # Update Voyager's movie script
+        self.voyager.movie_script = tavern_script
+        self.voyager.current_script_index = 0
         
-        # Previous state for change detection
-        self.previous_state = None
+        # Set initial position
+        await self.voyager.update_position((10, 25))
         
-        # Movie mode optimization
-        self.movie_mode = True  # Enable movie mode optimizations
-        
-        logger.info("🎬 Main Heartbeat initialized - Autonomous Movie System ready")
+        logger.info("🍺 Tavern scene configured - Iron Chest at (32, 32)")
     
-    def run(self) -> None:
-        """Main autonomous movie loop - 60 FPS heartbeat"""
-        logger.info("� Starting Autonomous Movie - 60 FPS Heartbeat")
+    async def _configure_forest_scene(self) -> None:
+        """Configure forest scene"""
+        if not self.voyager:
+            return
         
-        # Add movie intro subtitle
-        self.chronicler.add_subtitle("Our story begins in the realm of adventure.", 4.0)
+        # Set forest-specific navigation
+        forest_script = [
+            (10, 25),  # Starting position
+            (15, 30),  # Forest clearing
+            (20, 35),  # Ancient tree
+            (25, 25),  # Hidden path
+        ]
         
-        last_frame_time = time.time()
+        self.voyager.movie_script = forest_script
+        self.voyager.current_script_index = 0
         
-        while self.running:
-            current_time = time.time()
-            
-            # 1. Generate intent from movie script
-            intent = self._get_next_scripted_intent()
-            
-            if intent:
-                # 2. Submit intent to D&D Engine via Voyager
-                success = self.voyager.submit_intent(intent)
-                
-                if success:
-                    logger.debug(f"✅ Intent executed: {intent.intent_type}")
-                    
-                    # 3. Get current state from D&D Engine (Single Source of Truth)
-                    current_state = self.dd_engine.get_current_state()
-                    
-                    # 4. Generate subtitle for state change
-                    if self.previous_state:
-                        subtitle = self.chronicler.observe_state_change(
-                            self.previous_state, 
-                            self._state_to_dict(current_state)
-                        )
-                        if subtitle:
-                            logger.info(f"📝 Subtitle: {subtitle}")
-                    
-                    self.previous_state = self._state_to_dict(current_state)
-                    
-                    # 5. Check for persistence
-                    self._check_persistence(current_state)
-                    
-                    # 6. Render frame via Graphics Engine
-                    frame = self.graphics.render_state(current_state)
-                    self.graphics.display_frame(frame)
-                    
-                    # 7. Update Voyager position from state
-                    self.voyager.update_position(current_state.player_position)
-                else:
-                    logger.warning(f"❌ Intent failed: {intent.intent_type}")
-            
-            # 8. Heartbeat bookkeeping
-            self.frame_count += 1
-            last_frame_time = current_time
-            
-            # 9. Frame rate limiting (60 FPS)
-            elapsed = time.time() - current_time
-            if elapsed < self.frame_delay:
-                time.sleep(self.frame_delay - elapsed)
-            
-            # 10. Check for movie completion
-            if self._is_movie_complete():
-                logger.info("🏁 Movie complete - adding outro subtitle")
-                self.chronicler.add_subtitle("And so the tale continues...", 4.0)
-                time.sleep(4.0)  # Let outro subtitle display
-                self.running = False
+        await self.voyager.update_position((10, 25))
         
-        # Final summary
-        self._print_movie_summary()
+        logger.info("🌲 Forest scene configured")
     
-    def _get_next_scripted_intent(self) -> Optional[Union[MovementIntent, InteractionIntent]]:
-        """Generate intent from movie script (autonomous navigation)"""
-        current_state = self.dd_engine.get_current_state()
-        current_pos = current_state.player_position
+    async def run_autonomous_mode(self) -> None:
+        """Run autonomous movie mode"""
+        if not self.heartbeat:
+            logger.error("💥 Heartbeat not initialized")
+            return
         
-        # Check if we've reached current script position
-        if self.current_script_index < len(self.movie_script):
-            target_position = self.movie_script[self.current_script_index]
-            
-            # Check if close enough to target (within 1 tile)
-            distance = abs(current_pos[0] - target_position[0]) + abs(current_pos[1] - target_position[1])
-            
-            if distance <= 1:
-                # Reached target, move to next script position
-                logger.info(f"🎯 Script position reached: {target_position}")
-                self.current_script_index += 1
-                
-                # Generate interaction intent if this is a special location
-                if self.current_script_index <= len(self.movie_script):
-                    return self._generate_interaction_intent(target_position)
-                
-                return None
-            
-            # Generate movement intent toward current script position
-            try:
-                return self.voyager.generate_movement_intent(target_position)
-            except Exception as e:
-                logger.error(f"💥 Failed to generate movement intent: {e}")
-                return None
-        
-        return None
-    
-    def _generate_interaction_intent(self, position: Tuple[int, int]) -> Optional[InteractionIntent]:
-        """Generate interaction intent for special movie locations"""
-        # Define interactions for specific positions
-        interactions = {
-            (10, 25): "forest_gate",
-            (10, 20): "town_gate", 
-            (20, 10): "tavern_entrance",
-            (25, 30): "tavern_complete"
-        }
-        
-        interaction_type = interactions.get(position)
-        if interaction_type:
-            return self.voyager.generate_interaction_intent(
-                f"location_{position[0]}_{position[1]}",
-                interaction_type
-            )
-        
-        return None
-    
-    def _is_movie_complete(self) -> bool:
-        """Check if movie script is complete"""
-        return self.current_script_index >= len(self.movie_script)
-    
-    def _state_to_dict(self, state) -> Dict[str, Any]:
-        """Convert GameState to dictionary for Chronicler"""
-        return {
-            "player_position": state.player_position,
-            "turn_count": state.turn_count,
-            "current_environment": state.current_environment,
-            "player_health": state.player_health,
-            "world_deltas": state.world_deltas
-        }
-    
-    def _check_persistence(self, current_state) -> None:
-        """Check if world state should be persisted"""
-        if current_state.turn_count > self.last_persistence_turn + self.persistence_interval:
-            self._persist_world_state(current_state)
-            self.last_persistence_turn = current_state.turn_count
-    
-    def _persist_world_state(self, current_state) -> None:
-        """Persist world state to file"""
-        persistence_data = {
-            "timestamp": time.time(),
-            "turn_count": current_state.turn_count,
-            "player_position": current_state.player_position,
-            "world_deltas": current_state.world_deltas,
-            "world_engine_seed": self.world_engine.seed_zero
-        }
+        logger.info("🎬 Starting autonomous movie mode...")
+        self.running = True
         
         try:
-            with open("persistence.json", "w") as f:
-                json.dump(persistence_data, f, indent=2)
-            logger.info(f"💾 World state persisted at turn {current_state.turn_count}")
+            # Start the heartbeat loop
+            await self.heartbeat.run()
+            
+        except KeyboardInterrupt:
+            logger.info("🛑 Autonomous mode interrupted")
         except Exception as e:
-            logger.error(f"❌ Failed to persist world state: {e}")
+            logger.error(f"💥 Autonomous mode error: {e}")
+        finally:
+            self.running = False
+            logger.info("🎬 Autonomous mode ended")
     
-    def _print_movie_summary(self) -> None:
-        """Print movie performance summary"""
-        total_time = time.time() - self.start_time
-        avg_fps = self.frame_count / total_time if total_time > 0 else 0
+    async def run_interactive_mode(self) -> None:
+        """Run interactive mode (for development)"""
+        logger.info("🎮 Starting interactive mode...")
         
-        logger.info("🎬 ============== MOVIE SUMMARY ================")
-        logger.info(f"� Total Frames: {self.frame_count}")
-        logger.info(f"⏱️ Total Time: {total_time:.2f}s")
-        logger.info(f"🎯 Average FPS: {avg_fps:.1f}")
-        logger.info(f"� Target FPS: {self.target_fps}")
+        # Interactive loop for testing
+        while True:
+            try:
+                # Get current state
+                if self.dd_engine:
+                    state = self.dd_engine.get_current_state()
+                    logger.info(f"📍 Position: {state.player_position}, Turn: {state.turn_count}")
+                
+                # Wait for user input
+                await asyncio.sleep(1)
+                
+            except KeyboardInterrupt:
+                break
         
-        # Get final states
-        final_state = self.dd_engine.get_current_state()
-        voyager_status = self.voyager.get_status()
-        graphics_status = self.graphics.get_status()
-        chronicler_stats = self.chronicler.get_statistics()
-        
-        logger.info(f"🧠 D&D Engine: Turn {final_state.turn_count}, Position {final_state.player_position}")
-        logger.info(f"🚶 Voyager: Health {voyager_status['health']}, Environment {voyager_status['environment']}")
-        logger.info(f"🎨 Graphics: {graphics_status['ppu_resolution']}, Tile Bank {graphics_status['current_tile_bank']}")
-        logger.info(f"📝 Chronicler: {chronicler_stats['total_subtitles']} subtitles generated")
-        logger.info(f"💾 World Deltas: {len(final_state.world_deltas)} persistent changes")
-        
-        # Show current subtitles
-        current_subtitles = self.chronicler.get_current_subtitles()
-        if current_subtitles:
-            logger.info(f"📝 Current Subtitle: {current_subtitles[0]}")
-        
-        logger.info("=" * 50)
+        logger.info("🎮 Interactive mode ended")
     
-    def stop(self) -> None:
-        """Stop the heartbeat"""
+    async def run_demo_mode(self) -> None:
+        """Run demo mode with predefined scenarios"""
+        logger.info("🎭 Starting demo mode...")
+        
+        # Demo scenarios
+        scenarios = [
+            "tavern_chest_opening",
+            "forest_exploration", 
+            "town_navigation"
+        ]
+        
+        for scenario in scenarios:
+            logger.info(f"🎬 Running scenario: {scenario}")
+            await self._run_scenario(scenario)
+            await asyncio.sleep(2)  # Pause between scenarios
+        
+        logger.info("🎭 Demo mode completed")
+    
+    async def _run_scenario(self, scenario: str) -> None:
+        """Run a specific demo scenario"""
+        if scenario == "tavern_chest_opening":
+            await self._run_tavern_chest_scenario()
+        elif scenario == "forest_exploration":
+            await self._run_forest_scenario()
+        elif scenario == "town_navigation":
+            await self._run_town_scenario()
+    
+    async def _run_tavern_chest_scenario(self) -> None:
+        """Run tavern chest opening scenario"""
+        if not self.voyager:
+            return
+        
+        # Navigate to tavern
+        logger.info("🍺 Navigating to tavern...")
+        await self.voyager.navigate_to_position((25, 30))
+        
+        # Navigate to chest
+        logger.info("📦 Navigating to iron chest...")
+        await self.voyager.navigate_to_position((32, 32))
+        
+        # Interact with chest
+        logger.info("🔓 Opening iron chest...")
+        await self.voyager.interact_with_entity("iron_chest", "open")
+    
+    async def _run_forest_scenario(self) -> None:
+        """Run forest exploration scenario"""
+        if not self.voyager:
+            return
+        
+        # Explore forest locations
+        locations = [(15, 30), (20, 35), (25, 25), (30, 20)]
+        
+        for location in locations:
+            logger.info(f"🌲 Exploring location: {location}")
+            await self.voyager.navigate_to_position(location)
+            await asyncio.sleep(1)
+    
+    async def _run_town_scenario(self) -> None:
+        """Run town navigation scenario"""
+        if not self.voyager:
+            return
+        
+        # Navigate town landmarks
+        landmarks = [
+            ((10, 10), "town_square"),
+            ((15, 15), "market"),
+            ((20, 10), "tavern_entrance"),
+            ((10, 20), "town_gate")
+        ]
+        
+        for position, name in landmarks:
+            logger.info(f"🏘️ Visiting: {name}")
+            await self.voyager.navigate_to_position(position)
+            await asyncio.sleep(1)
+    
+    def shutdown(self) -> None:
+        """Graceful shutdown"""
+        logger.info("🛑 Shutting down DGT System...")
+        
         self.running = False
-        logger.info("🛑 Main Heartbeat stopped")
+        
+        if self.heartbeat:
+            self.heartbeat.stop()
+        
+        logger.info("✅ DGT System shutdown complete")
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Get system status"""
+        return {
+            "running": self.running,
+            "heartbeat_active": self.heartbeat.is_running() if self.heartbeat else False,
+            "pillars": {
+                "world_engine": self.world_engine is not None,
+                "dd_engine": self.dd_engine is not None,
+                "graphics_engine": self.graphics_engine is not None,
+                "voyager": self.voyager is not None
+            },
+            "config": self.config
+        }
+
+
+# === MAIN ENTRY POINTS ===
+
+async def run_tavern_autopilot():
+    """Run autonomous tavern movie mode"""
+    logger.info("🍺 Starting Tavern Autopilot Mode...")
+    
+    # Create system
+    system = DGTSystem()
+    
+    # Configure for tavern
+    config = {
+        "mode": "autonomous",
+        "scene": "tavern",
+        "seed": "TAVERN_SEED",
+        "target_fps": 60,
+        "enable_graphics": True,
+        "enable_persistence": True,
+        "enable_logging": True
+    }
+    
+    # Initialize and run
+    if await system.initialize(config):
+        await system.run_autonomous_mode()
+    else:
+        logger.error("💥 Failed to initialize system")
+        return 1
+    
+    return 0
+
+
+async def run_forest_autopilot():
+    """Run autonomous forest exploration mode"""
+    logger.info("🌲 Starting Forest Autopilot Mode...")
+    
+    # Create system
+    system = DGTSystem()
+    
+    # Configure for forest
+    config = {
+        "mode": "autonomous",
+        "scene": "forest",
+        "seed": "FOREST_SEED",
+        "target_fps": 60,
+        "enable_graphics": True,
+        "enable_persistence": True,
+        "enable_logging": True
+    }
+    
+    # Initialize and run
+    if await system.initialize(config):
+        await system.run_autonomous_mode()
+    else:
+        logger.error("💥 Failed to initialize system")
+        return 1
+    
+    return 0
+
+
+async def run_demo():
+    """Run demo mode with all scenarios"""
+    logger.info("🎭 Starting Demo Mode...")
+    
+    # Create system
+    system = DGTSystem()
+    
+    # Configure for demo
+    config = {
+        "mode": "demo",
+        "scene": "demo",
+        "seed": "DEMO_SEED",
+        "target_fps": 60,
+        "enable_graphics": True,
+        "enable_persistence": False,
+        "enable_logging": True
+    }
+    
+    # Initialize and run
+    if await system.initialize(config):
+        await system.run_demo_mode()
+    else:
+        logger.error("💥 Failed to initialize system")
+        return 1
+    
+    return 0
+
+
+async def run_interactive():
+    """Run interactive mode for development"""
+    logger.info("🎮 Starting Interactive Mode...")
+    
+    # Create system
+    system = DGTSystem()
+    
+    # Configure for interactive
+    config = {
+        "mode": "interactive",
+        "scene": "tavern",
+        "seed": "INTERACTIVE_SEED",
+        "target_fps": 60,
+        "enable_graphics": True,
+        "enable_persistence": True,
+        "enable_logging": True
+    }
+    
+    # Initialize and run
+    if await system.initialize(config):
+        await system.run_interactive_mode()
+    else:
+        logger.error("💥 Failed to initialize system")
+        return 1
+    
+    return 0
 
 
 def main():
-    """Main entry point for Autonomous Movie System"""
-    logger.info("� D&D Engine - Autonomous Movie System")
-    logger.info("🌍 The World (World Engine) - Deterministic data provider")
-    logger.info("🧠 The Mind (D&D Engine) - Single Source of Truth")
-    logger.info("🚶 The Actor (Voyager) - Pathfinding and Intent Generation")
-    logger.info("🎨 The Body (Graphics Engine) - 160x144 PPU Rendering")
-    logger.info("📝 The Chronicler (LLM Subtitles) - Movie dialogue generator")
-    logger.info("=" * 70)
+    """Main entry point"""
+    parser = argparse.ArgumentParser(description="DGT Autonomous Movie System")
+    parser.add_argument("--mode", choices=["autonomous", "demo", "interactive"], 
+                       default="autonomous", help="Running mode")
+    parser.add_argument("--scene", choices=["tavern", "forest", "demo"], 
+                       default="tavern", help="Scene to run")
+    parser.add_argument("--seed", default="TAVERN_SEED", help="World seed")
+    parser.add_argument("--fps", type=int, default=60, help="Target FPS")
+    parser.add_argument("--no-graphics", action="store_true", help="Disable graphics")
+    parser.add_argument("--no-persistence", action="store_true", help="Disable persistence")
+    parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    
+    args = parser.parse_args()
+    
+    # Configure logging level
+    if args.debug:
+        logger.remove()
+        logger.add(sys.stderr, level="DEBUG")
+    
+    logger.info(f"🏰 DGT Autonomous Movie System - {args.mode} mode")
+    logger.info(f"🎬 Scene: {args.scene}, Seed: {args.seed}")
     
     try:
-        # Create and run autonomous movie
-        heartbeat = MainHeartbeat()
-        heartbeat.run()
-        
-        logger.info("🎉 Autonomous Movie completed successfully")
-        return 0
-        
+        # Run appropriate mode
+        if args.mode == "autonomous":
+            if args.scene == "tavern":
+                return asyncio.run(run_tavern_autopilot())
+            elif args.scene == "forest":
+                return asyncio.run(run_forest_autopilot())
+            else:
+                return asyncio.run(run_tavern_autopilot())
+        elif args.mode == "demo":
+            return asyncio.run(run_demo())
+        elif args.mode == "interactive":
+            return asyncio.run(run_interactive())
+        else:
+            logger.error(f"Unknown mode: {args.mode}")
+            return 1
+            
     except KeyboardInterrupt:
-        logger.info("⏹️ Movie interrupted by user")
+        logger.info("🛑 Interrupted by user")
         return 0
     except Exception as e:
-        logger.error(f"💥 Movie crashed: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.error(f"💥 Fatal error: {e}")
         return 1
 
 
-def run_autonomous_movie():
-    """The 'Big Red Button' - Launch complete autonomous movie"""
-    print("🎬 Launching Autonomous D&D Movie...")
-    print("🌍 World Engine: Generating deterministic world...")
-    print("🧠 D&D Engine: Preparing logic and rules...")
-    print("🚶 Voyager: Setting pathfinding and navigation...")
-    print("🎨 Graphics Engine: Initializing 160x144 PPU...")
-    print("📝 Chronicler: Preparing subtitle generator...")
-    print("🎬 Starting autonomous movie - 60 FPS rendering...")
-    
-    # Create the four pillars
-    world = WorldEngineFactory.create_tavern_world()
-    mind = DD_Engine("assets/", world)
-    actor = Voyager(mind)
-    body = GraphicsEngine("assets/")
-    chronicler = ChroniclerFactory.create_movie_chronicler()
-    
-    # Create heartbeat and run
-    heartbeat = MainHeartbeat()
-    heartbeat.run()
-    
-    print("🎬 Movie complete! Check persistence.json for saved world state.")
-
-
 if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+    sys.exit(main())

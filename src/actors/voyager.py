@@ -17,31 +17,15 @@ import heapq
 
 from loguru import logger
 
-# Import from core
-try:
-    from ..core.state import (
-        GameState, VoyagerState, MovementIntent, InteractionIntent, PonderIntent,
-        InterestPoint, validate_position, DIRECTION_VECTORS
-    )
-    from ..core.constants import (
-        VOYAGER_SPEED_TILES_PER_SECOND, VOYAGER_INTERACTION_RANGE,
-        VOYAGER_DISCOVERY_RANGE, VOYAGER_PONDERING_TIMEOUT_SECONDS,
-        MOVEMENT_RANGE_TILES, PATHFINDING_MAX_ITERATIONS
-    )
-except ImportError:
-    # Fallback for development
-    import sys
-    from pathlib import Path
-    sys.path.append(str(Path(__file__).parent.parent))
-    from core.state import (
-        GameState, VoyagerState, MovementIntent, InteractionIntent, PonderIntent,
-        InterestPoint, validate_position, DIRECTION_VECTORS
-    )
-    from core.constants import (
-        VOYAGER_SPEED_TILES_PER_SECOND, VOYAGER_INTERACTION_RANGE,
-        VOYAGER_DISCOVERY_RANGE, VOYAGER_PONDERING_TIMEOUT_SECONDS,
-        MOVEMENT_RANGE_TILES, PATHFINDING_MAX_ITERATIONS
-    )
+from core.state import (
+    GameState, VoyagerState, MovementIntent, InteractionIntent, PonderIntent,
+    InterestPoint, validate_position, DIRECTION_VECTORS
+)
+from core.constants import (
+    VOYAGER_SPEED_TILES_PER_SECOND, VOYAGER_INTERACTION_RANGE,
+    VOYAGER_DISCOVERY_RANGE, VOYAGER_PONDERING_TIMEOUT_SECONDS,
+    MOVEMENT_RANGE_TILES, PATHFINDING_MAX_ITERATIONS
+)
 
 
 @dataclass

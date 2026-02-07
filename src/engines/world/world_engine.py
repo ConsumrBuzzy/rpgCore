@@ -17,11 +17,11 @@ from pathlib import Path
 
 from loguru import logger
 
-from ...core.state import (
+from core.state import (
     TileType, BiomeType, InterestType, TileData, InterestPoint, 
     WorldDelta, GameState, WorldGenerationError, validate_position
 )
-from ...core.constants import (
+from core.constants import (
     WORLD_SIZE_X, WORLD_SIZE_Y, CHUNK_SIZE, PERMUTATION_TABLE_SIZE,
     NOISE_SCALE, NOISE_OCTAVES, NOISE_PERSISTENCE, NOISE_LACUNARITY,
     INTEREST_POINT_DENSITY, INTEREST_POINT_MIN_DISTANCE, INTEREST_POINT_MAX_PER_CHUNK

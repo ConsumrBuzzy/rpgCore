@@ -17,12 +17,12 @@ from collections import deque
 
 from loguru import logger
 
-from ...core.state import (
+from core.state import (
     GameState, MovementIntent, InteractionIntent, PonderIntent,
     IntentValidation, ValidationResult, Command, CommandResult,
     WorldDelta, Effect, Trigger, ValidationError, validate_intent
 )
-from ...core.constants import (
+from core.constants import (
     MOVEMENT_RANGE_TILES, INTENT_COOLDOWN_MS, PERSISTENCE_INTERVAL_TURNS
 )
 
