@@ -29,7 +29,9 @@ class Goal(BaseModel):
 
 
 class PlayerStats(BaseModel):
-    """Player character statistics."""
+    """Player character statistics with vector trait support."""
+    
+    model_config = {"arbitrary_types_allowed": True}
     
     name: str = "Adventurer"
     hp: int = Field(default=100, ge=0, le=100)
@@ -51,6 +53,10 @@ class PlayerStats(BaseModel):
     archetype_name: Optional[str] = None
     personality_traits: List[str] = Field(default_factory=list)
     skill_proficiencies: List[str] = Field(default_factory=list)
+    
+    # Phase 2: Vectorized World Engine fields
+    vector_traits: List = Field(default_factory=list)  # Trait objects
+    trait_description: Optional[str] = None  # Generated description
     
     def __init__(self, **data):
         """Initialize with constitution-based HP calculation."""
