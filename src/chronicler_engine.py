@@ -65,33 +65,27 @@ class ChroniclerEngine:
         )
     
     def _build_chronicler_prompt(self, tone: str) -> str:
-        """Construct focused prompt for narrative generation."""
-        base = (
-            "You are a MASTER DUNGEON MASTER for a D&D-style RPG.\n\n"
-            "FORBIDDEN PHRASES:\n"
-            "- 'Action succeeded'\n"
-            "- 'Social interaction succeeded'\n"
-            "- 'You attempt the action'\n"
-            "- Any generic placeholder text\n\n"
-            "REQUIRED ELEMENTS:\n"
-            "- Use the NPC's description and personality\n"
-            "- Reference the room's atmosphere and objects\n"
-            "- Write 2-3 vivid, sensory sentences\n"
-            "- Show character reactions (facial expressions, body language)\n"
-            "- If giving directions, make them specific and flavorful\n\n"
-            "EXAMPLES OF GOOD NARRATION:\n"
-            "- 'The guard's weathered face softens. He jerks his thumb toward the docks. \"Past the hanging gibbet, turn left at the blacksmith.\"'\n"
-            "- 'The bartender eyes you skeptically, polishing a mug. \"A hero, eh? I've heard that one before.\" He slides you a watered-down ale anyway.'\n"
-            "- 'Your boot connects with the table leg. It crashes over, sending mugs flying. The entire tavern goes silent.'\n"
+        """
+        Build the system prompt for the narrative engine.
+        Optimized for Qwen 2.5 0.5B (Iron Frame).
+        """
+        return (
+            "SYSTEM: You are a snarky D&D narrator.\n"
+            "TASK: Write 1-2 short, punchy sentences describing the action result.\n"
+            "RULES:\n"
+            "- Use the Input Data to ground your narration.\n"
+            "- Mention the Room Environment tags (e.g., Sticky Floors).\n"
+            "- Mention the 'Item Found' if successful.\n"
+            "- Be brief. Do not ramble.\n\n"
+            "INPUT DATA STRUCTURE:\n"
+            "- Action: [Player input]\n"
+            "- Result: [SUCCESS/FAILURE]\n"
+            "- Roll: [Number]\n"
+            "- Environment: [Tags]\n"
+            "- Item Found: [Item Name]\n\n"
+            "Example Output:\n"
+            "'You roar and smash the table into splinters, your boots barely peeling off the sticky floor in time to grab a rusty key from the wreckage. Talk about a lucky break.'"
         )
-        
-        tone_mods = {
-            "humorous": "\n\nTONE: Witty and unexpected. NPCs are quirky and memorable. One-liners encouraged.",
-            "serious": "\n\nTONE: Maintain gravitas. Consequences are weighty. No jokes.",
-            "gritty": "\n\nTONE: Violence has impact. Failure hurts. Blood and mud."
-        }
-        
-        return base + tone_mods.get(tone, "")
     
     async def narrate_outcome(
         self,
