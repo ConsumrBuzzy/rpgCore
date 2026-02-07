@@ -110,25 +110,35 @@ class AssetLoader:
         logger.info(f"🎨 Asset Loader initialized - {len(self.registry)} assets loaded")
     
     def _load_assets(self) -> None:
-        """Load all assets from files"""
+        """Load all assets from multiple YAML files (ADR 086: Fault-Tolerant Asset Pipeline)"""
         try:
-            # Load object definitions first (these are critical)
-            self._load_object_definitions()
-            self._load_prefab_definitions()
+            # Load all YAML files in assets directory
+            assets_path = self.assets_path
+            yaml_files = list(assets_path.glob("*.yaml"))
             
-            # Generate sprites (these can fail without breaking the system)
-            try:
-                self._generate_tile_sprites()
-                self._generate_object_sprites()
-                self._generate_actor_sprites()
-                self._generate_effect_sprites()
-            except Exception as e:
-                logger.error(f"💥 Failed to generate sprites: {e}")
-                # Don't fail completely, just continue without sprites
+            logger.info(f"📁 Found {len(yaml_files)} asset files: {[f.name for f in yaml_files]}")
             
-            logger.info(f"🎨 Asset Loader initialized - {len(self.registry)} assets loaded")
+            # Load each file separately
+            loaded_files = 0
+            for yaml_file in yaml_files:
+                try:
+                    self._load_asset_file(yaml_file)
+                    loaded_files += 1
+                    logger.info(f"✅ Loaded {yaml_file.name}")
+                except Exception as e:
+                    logger.error(f"💥 Failed to load {yaml_file.name}: {e}")
+                    # Continue loading other files (fault tolerance)
+            
+            logger.info(f"📁 Successfully loaded {loaded_files}/{len(yaml_files)} asset files")
+            
+            # Generate sprites for loaded assets
+            self._generate_all_sprites()
+            
+            # Validate registry
+            self._validate_registry()
+            
         except Exception as e:
-            logger.error(f"💥 Failed to load assets: {e}")
+            logger.error(f"💥 Asset loading failed: {e}")
             # Create minimal fallback assets
             self._generate_minimal_assets()
     
