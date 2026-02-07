@@ -244,12 +244,19 @@ class GameEngine:
         
         return loot_item
     
-    async def _narrate_outcome(self, player_input: str, intent_id: str, d20_result: D20Result, loot_item):
+    async def narrate_outcome(self, player_input: str, intent_id: str, d20_result: D20Result, loot_item):
         """Generate and display narrative output."""
         self.console.print("[dim]📖 Narrator generating story...[/dim]")
         
         narrative_color = "green" if d20_result.success else "yellow"
         success_icon = "✅" if d20_result.success else "❌"
+        
+        # Use context manager to create compact narrative context
+        compact_context = self.context_manager.minify_context(
+            self.state, 
+            intent_id, 
+            max_tokens=200  # Keep it tight for LLM
+        )
         
         # Stream narrative generation
         async def _stream_bridge():
@@ -265,7 +272,7 @@ class GameEngine:
                     player_input=player_input,
                     intent_id=intent_id,
                     d20_result=d20_result,
-                    context=self.state.get_context_str()
+                    context=compact_context  # Use minified context
                 ):
                     narrative_text += token
                     live.update(Panel(narrative_text, title=title_text, border_style=narrative_color))
