@@ -16,14 +16,21 @@ from loguru import logger
 
 # Import tri-modal components
 try:
-    from ...body.dispatcher import DisplayDispatcher, DisplayMode, RenderPacket
-    from ...body.terminal import create_terminal_body
-    from ...body.cockpit import create_cockpit_body
-    from ...body.ppu import create_ppu_body
+    from src.body.dispatcher import DisplayDispatcher, DisplayMode, RenderPacket
+    from src.body.terminal import create_terminal_body
+    from src.body.cockpit import create_cockpit_body
+    from src.body.ppu import create_ppu_body
     TRI_MODAL_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"⚠️ Tri-Modal Display Suite not available: {e}")
     TRI_MODAL_AVAILABLE = False
+    # Define fallback types to prevent NameError
+    DisplayDispatcher = None
+    DisplayMode = None
+    RenderPacket = None
+    create_terminal_body = None
+    create_cockpit_body = None
+    create_ppu_body = None
 
 # Import legacy graphics engine
 from .graphics_engine import GraphicsEngine, RenderFrame, TileBank, Viewport
@@ -31,10 +38,15 @@ from .graphics_engine import GraphicsEngine, RenderFrame, TileBank, Viewport
 @dataclass
 class EngineConfig:
     """Configuration for Tri-Modal Engine"""
-    default_mode: DisplayMode = DisplayMode.TERMINAL
+    default_mode: Optional[DisplayMode] = None
     enable_legacy: bool = True
     auto_register_bodies: bool = True
     performance_tracking: bool = True
+    
+    def __post_init__(self):
+        # Set default mode if not specified
+        if self.default_mode is None and TRI_MODAL_AVAILABLE:
+            self.default_mode = DisplayMode.TERMINAL
 
 class TriModalEngine:
     """
