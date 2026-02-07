@@ -132,6 +132,43 @@ class AssetLoader:
             # Create minimal fallback assets
             self._generate_minimal_assets()
     
+    def _generate_minimal_assets(self) -> None:
+        """Generate minimal fallback assets when all else fails"""
+        try:
+            # Don't clear existing registry, just add minimal sprites
+            logger.warning("⚠️ Generating minimal fallback assets")
+            
+            # Create basic colored squares as fallbacks
+            basic_sprites = {
+                "voyager_idle": (0, 100, 255),
+                "voyager_combat": (0, 150, 255),
+                "guardian": (128, 128, 128),
+                "forest_imp": (0, 128, 0),
+                "shadow_beast": (128, 0, 128)
+            }
+            
+            for sprite_id, color in basic_sprites.items():
+                try:
+                    img = Image.new((16, 16), (255, 255, 255, 0), "RGBA")
+                    draw = ImageDraw.Draw(img)
+                    draw.rectangle([2, 2, 14, 14], fill=color + (255,))
+                    
+                    photo = ImageTk.PhotoImage(img)
+                    self.registry[sprite_id] = photo
+                    self._sprite_refs.append(photo)
+                except Exception as e:
+                    logger.error(f"💥 Failed to create sprite {sprite_id}: {e}")
+            
+            logger.info("🎨 Generated minimal fallback assets")
+        
+        except Exception as e:
+            logger.error(f"💥 Failed to generate minimal assets: {e}")
+            # Ensure registry exists even if empty
+            if not hasattr(self, 'registry'):
+                self.registry = {}
+            if not hasattr(self, '_sprite_refs'):
+                self._sprite_refs = []
+    
     def _load_object_definitions(self) -> None:
         """Load object definitions from YAML"""
         objects_file = self.assets_path / "objects.yaml"
