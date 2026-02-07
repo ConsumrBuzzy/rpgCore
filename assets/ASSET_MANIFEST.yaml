@@ -197,57 +197,49 @@ palettes:
       5: "wheat"
       6: "tan"
       7: "gray40"
-      - 0: "transparent"
-      - 1: "dark_blue"
-      - 2: "blue"
-      - 3: "light_blue"
-      - 4: "purple"
-      - 5: "wheat"
-      - 6: "tan"
-      - 7: "gray40"
     
   shadow_gray:
     description: "Gray palette for stealthy rogues"
     colors:
-      - 0: "transparent"
-      - 1: "black"
-      - 2: "gray40"
-      - 3: "gray60"
-      - 4: "tan"
-      - 5: "silver"
-      - 6: "wheat"
-      - 7: "gray30"
+      0: "transparent"
+      1: "black"
+      2: "gray40"
+      3: "gray60"
+      4: "tan"
+      5: "silver"
+      6: "wheat"
+      7: "gray30"
     
   natural_green:
     description: "Green palette for environments"
     colors:
-      - 0: "transparent"
-      - 1: "dark_green"
-      - 2: "green"
-      - 3: "light_green"
-      - 4: "brown"
-      - 5: "tan"
-      - 6: "yellow"
-      - 7: "gray30"
+      0: "transparent"
+      1: "dark_green"
+      2: "green"
+      3: "light_green"
+      4: "brown"
+      5: "tan"
+      6: "yellow"
+      7: "gray30"
 
 # Interaction Logic Definitions
 interactions:
   LootTable_T1:
     description: "Basic loot table for wooden chests"
     loot:
-      - gold: [5, 15]
-      - health_potion: [1, 3]
-      - iron_sword: [0.1, 0.3]
-      - leather_armor: [0.05, 0.15]
+      gold: [5, 15]
+      health_potion: [1, 3]
+      iron_sword: [0.1, 0.3]
+      leather_armor: [0.05, 0.15]
     
   LootTable_T2:
     description: "Enhanced loot table for iron chests"
     loot:
-      - gold: [20, 50]
-      - health_potion: [2, 5]
-      - steel_sword: [0.2, 0.5]
-      - chain_mail: [0.1, 0.3]
-      - magic_scroll: [0.05, 0.2]
+      gold: [20, 50]
+      health_potion: [2, 5]
+      steel_sword: [0.2, 0.5]
+      chain_mail: [0.1, 0.3]
+      magic_scroll: [0.05, 0.2]
     
   LootTable_T3:
     description: "Premium loot table for golden chests"
