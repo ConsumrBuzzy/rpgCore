@@ -9,6 +9,7 @@ Supports OVERWORLD (top-down) and COMBAT (side-view) rendering modes.
 import tkinter as tk
 from typing import List, Tuple, Optional, Dict, Any
 from enum import Enum
+from dataclasses import dataclass
 from loguru import logger
 
 from core.constants import TARGET_FPS
