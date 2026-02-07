@@ -28,5 +28,17 @@ STANDARD_ACTIONS = {
         {"id": "charm", "label": "Buy everyone a round", "stat": "charisma"},
         {"id": "finesse", "label": "Pickpocket a patron", "stat": "dexterity"},
         {"id": "leave_area", "label": "Leave this place", "stat": "dexterity"}
+    ],
+    "cunning": [
+        {"id": "stealth", "label": "Slip into the shadows", "stat": "dexterity"},
+        {"id": "finesse", "label": "Pick the lock", "stat": "dexterity"},
+        {"id": "investigate", "label": "Search for a secret passage", "stat": "intelligence"},
+        {"id": "leave_area", "label": "Leave this place", "stat": "dexterity"}
+    ],
+    "diplomatic": [
+        {"id": "charm", "label": "Negotiate a truce", "stat": "charisma"},
+        {"id": "social", "label": "De-escalate the tension", "stat": "charisma"},
+        {"id": "investigate", "label": "Look for shared interests", "stat": "intelligence"},
+        {"id": "leave_area", "label": "Leave this place", "stat": "dexterity"}
     ]
 }

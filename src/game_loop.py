@@ -72,17 +72,21 @@ class GameREPL:
                 logger.error(f"Failed to load save: {e}. Starting fresh.")
                 from factories import CharacterFactory, ScenarioFactory
                 self.state = GameState(player=CharacterFactory.create(personality))
-                # Auto-load heist for cunning/diplomatic archetypes
-                if personality.lower() in ["cunning", "diplomatic"]:
+                # Auto-load scenarios for specialized archetypes
+                if personality.lower() == "cunning":
                     self._initialize_story_frame(ScenarioFactory.load_act("heist"))
+                elif personality.lower() == "diplomatic":
+                    self._initialize_story_frame(ScenarioFactory.load_act("peace"))
         else:
             from factories import CharacterFactory, ScenarioFactory
             self.state = GameState(player=CharacterFactory.create(personality))
             self.console.print(f"[cyan]Loaded {personality.title()} archetype...[/cyan]")
             
-            # Special Story Frame for specialized archetypes
-            if personality.lower() in ["cunning", "diplomatic"]:
+            # Special Story Frames for specialized archetypes
+            if personality.lower() == "cunning":
                 self._initialize_story_frame(ScenarioFactory.load_act("heist"))
+            elif personality.lower() == "diplomatic":
+                self._initialize_story_frame(ScenarioFactory.load_act("peace"))
             else:
                 self.state = self._initialize_fresh_state()
         

@@ -1,0 +1,64 @@
+{
+    "act_name": "The Obsidian Peace Treaty",
+    "archetype_hooks": {
+        "diplomatic": "peace_v1"
+    },
+    "sequence": [
+        {
+            "id": "council_chamber",
+            "name": "The Chamber of Echoes",
+            "description": "A high-ceilinged room where long-standing conflicts are debated.",
+            "npcs": [
+                {
+                    "name": "Arbiter Vaelen",
+                    "description": "A weary mediator trying to prevent all-out war."
+                }
+            ],
+            "tags": [
+                "Formal",
+                "Quiet",
+                "High Stakes"
+            ],
+            "objectives": [
+                {
+                    "id": "sign_treaty",
+                    "desc": "Convince the Arbiter to sign the treaty without further concessions.",
+                    "methods": {
+                        "charm": 2.0,
+                        "social": 1.5,
+                        "force": 0.1
+                    },
+                    "success_intent": "charm",
+                    "success_state": "charmed"
+                }
+            ]
+        },
+        {
+            "id": "victory_hall",
+            "name": "Hall of Victors",
+            "description": "A celebratory hall where the treaty is celebrated.",
+            "npcs": [
+                {
+                    "name": "Herald",
+                    "description": "A jubilant official announcing the peace."
+                }
+            ],
+            "tags": [
+                "Celebratory",
+                "Bright"
+            ],
+            "objectives": [
+                {
+                    "id": "announce_peace",
+                    "desc": "Lead the toast to permanent peace.",
+                    "methods": {
+                        "social": 2.0,
+                        "charm": 1.5
+                    },
+                    "success_intent": "social",
+                    "success_state": "neutral"
+                }
+            ]
+        }
+    ]
+}
