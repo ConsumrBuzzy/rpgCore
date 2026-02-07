@@ -98,11 +98,10 @@ class Quartermaster:
         )
         logger.debug(log_msg)
         
-        return QuartermasterOutcome(
-            success=success,
-            total_score=total_score,
-            difficulty_class=target_dc,
             hp_delta=hp_delta,
+            narrative_context="" # Temporary placeholder
+        )
+        
         # Construct narrative context
         context_parts = []
         if tag_reason:
