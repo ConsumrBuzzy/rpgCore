@@ -18,7 +18,7 @@ from ui.sprite_factory import (
     SpriteFactory, SpriteLayer, ShadingPattern, CharacterClass,
     CompositeSpriteConfig, SpriteLayerTemplate
 )
-from ui.render_passes.geometric_profile import GeometricProfilePass, ProfileConfig
+from ui.render_passes.geometric_profile import GeometricProfilePass, ProfileConfig, ShapeType
 from ui.pixel_renderer import Pixel
 from ui.render_passes import RenderContext, RenderResult, RenderPassType
 from game_state import GameState

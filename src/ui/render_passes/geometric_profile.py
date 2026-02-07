@@ -39,6 +39,14 @@ class ProfileConfig:
     character_class: CharacterClass = CharacterClass.VOYAGER
     show_composite_sprite: bool = False
     line_thickness: int = 1
+    # Composite sprite parameters
+    head_type: str = "default"
+    body_type: str = "default"
+    feet_type: str = "default"
+    held_item: str = "none"
+    stance: str = "neutral"
+    shading_enabled: bool = True
+    breathing_enabled: bool = True
 
 
 class GeometricProfilePass(BaseRenderPass):
