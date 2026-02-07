@@ -97,6 +97,12 @@ class DeterministicArbiter:
         }
         seed = seeds.get(intent, "A standard attempt.")
 
+        # 4. Deterministic Exit Condition (The "Movie" Transition)
+        # If the target NPC is charmed or dead, signal that the path is clear.
+        if new_npc_state in ["charmed", "dead"]:
+            seed += " | Path Clear."
+            internal_logic += " | Transition Trigger: Path is now clear."
+
         return ArbiterLogic(
             difficulty_mod=difficulty_mod,
             internal_logic=internal_logic,

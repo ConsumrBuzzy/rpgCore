@@ -48,6 +48,7 @@ class VoyagerAgent:
         model_name is ignored (kept for compat).
         """
         self.personality = personality.lower()
+        self.used_actions = [] # History buffer
         logger.info(f"Voyager initialized (Deterministic) with '{self.personality}' personality")
     
     async def decide_action(
@@ -115,21 +116,24 @@ class VoyagerAgent:
             # Let's just use the Margin.
             score = (stat_val + item_bonus) - estimated_dc
             
-            # D. Personality Weights
-            # (Already filtered by STANDARD_ACTIONS, but we can boost preferred ones)
-            # e.g. Aggressive prefers FORCE (+2)
+            # D. History Decay (The "Stutter" Fix)
+            # Subtract -15 for each time this specific action ID was used in last 3 turns
+            history_penalty = 0
+            for used_id in self.used_actions:
+                if used_id == action_id:
+                    history_penalty += 15
             
-            # E. Stutter Penalty
-            if turn_history and len(turn_history) > 0:
-                # If we just did this, heavily penalize to prevent looping
-                # We don't have exact action string match, but we can track IDs next time?
-                # For now, rely on random noise if scores are close.
-                pass
+            score -= history_penalty
+            
+            # E. Room Exit Priority
+            # If "Path Clear" is present, heavily prioritize 'leave_area'
+            if room_tags and "Path Clear" in room_tags and action_id == "leave_area":
+                score += 100
 
             scored_actions.append({
                 "action": action,
                 "score": score,
-                "reason": f"Stat({stat_val}) + Item({item_bonus}) vs Est.DC({estimated_dc})"
+                "reason": f"Stat({stat_val}) + Item({item_bonus}) - DC({estimated_dc}) - Hist({history_penalty})"
             })
             
         # 3. Pick Best Action
@@ -137,11 +141,12 @@ class VoyagerAgent:
         scored_actions.sort(key=lambda x: x['score'], reverse=True)
         
         best = scored_actions[0]
-        
-        # Add some randomness if top scores are close? 
-        # For Iron Frame, let's be purely deterministic for now to prove stability.
-        
         selected_action = best['action']
+        
+        # Update history buffer (keep last 3)
+        self.used_actions.append(selected_action['id'])
+        if len(self.used_actions) > 3:
+            self.used_actions.pop(0)
         
         # 4. Generate Output
         # Flair can be a template for now, or use the label
