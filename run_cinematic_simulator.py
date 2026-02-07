@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 from core.simulator import SimulatorHost, ViewMode
 from views.terminal_view import TerminalView
 from views.gui_view import GUIView
-from logic.director import AutonomousDirector, DirectorFactory
+from logic.director import AutonomousDirector, DirectorFactory, DirectorMode
 from logic.pathfinding import NavigationFactory
 from ui.cinematic_camera import CameraFactory
 from ui.cinematic_pauses import CinematicFactory
@@ -223,15 +223,20 @@ class CinematicSimulator:
         """Start terminal-only mode."""
         logger.info("🖥️ Starting terminal-only mode")
         
-        # Start autonomous mode
-        asyncio.create_task(self.start_autonomous_mode())
+        # Create event loop
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         
-        # Run terminal view
         try:
-            asyncio.run(self.terminal_view.run())
+            # Start autonomous mode
+            loop.run_until_complete(self.start_autonomous_mode())
+            
+            # Run terminal view
+            loop.run_until_complete(self.terminal_view.run())
         except KeyboardInterrupt:
             logger.info("🖥️ Terminal mode stopped by user")
         finally:
+            loop.close()
             self.stop()
     
     def stop(self) -> None:

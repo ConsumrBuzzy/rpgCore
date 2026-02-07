@@ -1,0 +1,42 @@
+01:26:38 | DEBUG | Added intent: distract with 5 exemplars
+01:26:38 | DEBUG | Added intent: force with 5 exemplars
+01:26:38 | DEBUG | Added intent: finesse with 5 exemplars
+01:26:38 | DEBUG | Added intent: charm with 5 exemplars
+01:26:38 | DEBUG | Added intent: intimidate with 5 exemplars
+01:26:38 | DEBUG | Added intent: deceive with 5 exemplars
+01:26:38 | DEBUG | Added intent: investigate with 5 exemplars
+01:26:38 | DEBUG | Added intent: use_item with 5 exemplars
+01:26:38 | DEBUG | Added intent: defend with 5 exemplars
+01:26:38 | DEBUG | Added intent: leave_area with 5 exemplars
+01:26:38 | DEBUG | Added intent: improvise with 5 exemplars
+01:26:38 | INFO | Semantic Baker initialized with model: all-MiniLM-L6-v2
+01:26:38 | INFO | Loaded 11 pre-baked intent embeddings (55 total examples)
+01:26:38 | INFO | ✅ Instant boot: Loaded pre-baked embeddings
+01:26:38 | INFO | 🏛️ SimulatorHost initialized - Single Source of Truth
+01:26:38 | INFO | 🎬 CinematicSimulator initialized
+01:26:38 | INFO | 🚀 Initializing Cinematic Simulator...
+01:26:38 | INFO | 🚀 Initializing SimulatorHost...
+01:26:38 | INFO | 🆕 Creating new game state
+01:26:38 | INFO | ⚖️ Loading Arbiter (Deterministic Logic Core)...
+01:26:38 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+01:26:38 | INFO | 📖 Loading Chronicler (Narrative Engine)...
+01:26:39 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+01:26:39 | INFO | 🎲 Loading Quartermaster...
+01:26:39 | INFO | 💎 Loading Loot System...
+01:26:39 | INFO | LootSystem initialized without artifact support
+01:26:39 | INFO | ✅ SimulatorHost initialization complete
+01:26:39 | INFO | 🎬 Autonomous Director initialized
+01:26:39 | DEBUG | 🗺️ Pathfinding grid initialized: 64x64
+01:26:39 | INFO | 🧭 Navigation system initialized
+01:26:39 | INFO | 🎥 Cinematic camera initialized
+01:26:39 | INFO | 🎬 Camera controller initialized
+01:26:39 | DEBUG | 💬 Dialogue box initialized
+01:26:39 | INFO | 🎬 Cinematic pauses system initialized
+01:26:39 | INFO | 🖥️ TerminalView initialized - Observer of SimulatorHost
+01:26:39 | INFO | 🖼️ GUIView initialized - Observer of SimulatorHost
+01:26:39 | DEBUG | 👁️ Added observer: TerminalView
+01:26:39 | DEBUG | 👁️ Added observer: GUIView
+01:26:39 | INFO | ✅ Cinematic Simulator initialized successfully
+01:26:39 | INFO | 🖥️ Starting terminal-only mode
+01:26:39 | ERROR | ❌ Cinematic simulator error: no running event loop
+01:26:39 | INFO | 🛑 Stopping Cinematic Simulator
