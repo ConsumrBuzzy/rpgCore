@@ -1,32 +1,33 @@
 """
-Character Factory: Archetype Generation
+Character Factory: Archetype Generation with Vector Tags
 
 Handles character archetype generation with D&D stat arrays.
-Maps personality types to stat distributions and skill proficiencies.
+Maps personality types to stat distributions, skill proficiencies, and vector trait tags.
 
-Responsibilities:
-- Stat array generation (10/18/12/16/12/10 pattern)
-- Skill proficiency assignment
-- Personality-based archetype creation
+Phase 2: Vectorized World Engine Integration
 """
 
-from typing import Dict, List
+from typing import Dict, List, Optional
+import random
 
 from loguru import logger
 from pydantic import BaseModel
 
 from game_state import PlayerStats
 from loot_system import Item
+from vector_libraries.trait_library import TraitLibrary, TraitCategory
 
 
 class Archetype(BaseModel):
-    """Character archetype template."""
+    """Character archetype template with vector trait support."""
     name: str
     description: str
-    stat_array: Dict[str, int]  # strength, dexterity, intelligence, charisma
+    stat_array: Dict[str, int]  # strength, dexterity, constitution, intelligence, wisdom, charisma
     skill_proficiencies: List[str]
     starting_inventory: List[str]
     personality_traits: List[str]
+    vector_tags: List[str]  # Trait names for vector-based generation
+    trait_categories: List[str]  # Categories to pull traits from
 
 
 class CharacterFactory:
