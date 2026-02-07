@@ -102,11 +102,14 @@ def test_body_engine_compatibility():
     print("\n🔄 Testing BodyEngine Compatibility...")
     
     try:
-        from engines.body import BodyEngine, DisplayMode, TRI_MODAL_AVAILABLE
+        from engines.body import BodyEngine, TRI_MODAL_AVAILABLE
         
         if not TRI_MODAL_AVAILABLE:
             print("⚠️ Tri-Modal Display Suite not available")
             return False
+        
+        # Import DisplayMode only if available
+        from engines.body import DisplayMode
         
         # Create BodyEngine (should work like old API)
         engine = BodyEngine(use_tri_modal=True)
@@ -163,7 +166,14 @@ def run_migration_demo():
     print("\n🚀 Running Migration Demo...")
     
     try:
-        from engines.body import BodyEngine, DisplayMode
+        from engines.body import BodyEngine, TRI_MODAL_AVAILABLE
+        
+        if not TRI_MODAL_AVAILABLE:
+            print("⚠️ Tri-Modal Display Suite not available")
+            return False
+        
+        # Import DisplayMode only if available
+        from engines.body import DisplayMode
         
         # Create engine with both capabilities
         engine = BodyEngine(use_tri_modal=True)
