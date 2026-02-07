@@ -150,9 +150,25 @@ class DGTSystem:
                 self.graphics_engine = GraphicsEngineFactory.create_engine("assets/")
                 logger.info("🎨 Graphics Engine initialized")
             
+            # Initialize Chronos Engine (Quest & Progression Pillar)
+            self.chronos_engine = ChronosEngineFactory.create_engine()
+            self.chronos_engine.initialize_main_quest([
+                (10, 25), (10, 20), (10, 10), (20, 10), (25, 30), (32, 32)
+            ])
+            logger.info("⏳ Chronos Engine initialized")
+            
+            # Initialize Persona Engine (Social Soul Pillar)
+            self.persona_engine = PersonaEngineFactory.create_engine(seed)
+            self.persona_engine.seed_tavern_personas()
+            logger.info("👥 Persona Engine initialized")
+            
             # Initialize Voyager (Actor Pillar)
-            self.voyager = VoyagerFactory.create_voyager(self.dd_engine)
+            self.voyager = VoyagerFactory.create_voyager(self.dd_engine, self.chronos_engine)
             logger.info("🚶 Voyager initialized")
+            
+            # Connect pillars with dependency injection
+            self.world_engine.set_chronos_engine(self.chronos_engine)
+            logger.info("🔗 Pillar dependencies connected")
             
             # Initialize Heartbeat Controller
             try:
