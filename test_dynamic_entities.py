@@ -162,7 +162,8 @@ def test_dynamic_entities():
     # Test entity state changes
     print(f"\n   Final entity states after 50 turns:")
     for entity_id, entity in entity_ai._entities.items():
-        print(f"      {entity.name}: {entity.state.value} at ({entity.current_pos.x}, {entity.current_pos.y})")
+        state_value = entity.state.value if hasattr(entity.state, 'value') else str(entity.state)
+        print(f"      {entity.name}: {state_value} at ({entity.current_pos.x}, {entity.current_pos.y})")
     
     print("\n🎉 Dynamic Entity & Ecosystem Model Test Completed!")
     print("✅ Entity movement, perception, radar, and time evolution working!")
