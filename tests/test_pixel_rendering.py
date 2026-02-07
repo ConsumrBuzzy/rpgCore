@@ -466,11 +466,24 @@ class TestPixelRenderer:
         # Draw outline
         renderer.draw_rectangle(2, 2, 5, 3, pixel, fill=False)
         
-        # Check corners - rectangle from (2,2) to (6,4)
-        assert not renderer.pixels[2][2].is_empty()      # Top-left
-        assert not renderer.pixels[6][2].is_empty()      # Top-right (2+5-1, 2)
-        assert not renderer.pixels[2][4].is_empty()      # Bottom-left (2, 2+3-1)
-        assert not renderer.pixels[6][4].is_empty()      # Bottom-right (2+5-1, 2+3-1)
+        # Check all pixels that should be set in the rectangle outline
+        # Rectangle from (2,2) to (6,4)
+        
+        # Top edge (y=2, x=2 to 6)
+        for x in range(2, 7):
+            assert not renderer.pixels[2][x].is_empty(), f"Top edge pixel ({x}, 2) should be set"
+        
+        # Bottom edge (y=4, x=2 to 6)
+        for x in range(2, 7):
+            assert not renderer.pixels[4][x].is_empty(), f"Bottom edge pixel ({x}, 4) should be set"
+        
+        # Left edge (x=2, y=2 to 4)
+        for y in range(2, 5):
+            assert not renderer.pixels[y][2].is_empty(), f"Left edge pixel (2, {y}) should be set"
+        
+        # Right edge (x=6, y=2 to 4)
+        for y in range(2, 5):
+            assert not renderer.pixels[y][6].is_empty(), f"Right edge pixel (6, {y}) should be set"
         
         # Clear and draw filled
         renderer.clear()
@@ -479,7 +492,7 @@ class TestPixelRenderer:
         # Check fill - rectangle from (2,2) to (4,4)
         for y in range(2, 5):  # 2 to 4 inclusive
             for x in range(2, 5):  # 2 to 4 inclusive
-                assert not renderer.pixels[y][x].is_empty()
+                assert not renderer.pixels[y][x].is_empty(), f"Fill pixel ({x}, {y}) should be set"
 
     def test_render_to_string(self):
         """Test rendering to ANSI string."""
