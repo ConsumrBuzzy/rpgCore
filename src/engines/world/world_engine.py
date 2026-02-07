@@ -134,7 +134,7 @@ class WorldEngine:
             raise WorldGenerationError(f"Invalid position: {position}")
         
         if position not in self._biome_cache:
-            self._biome_cache[position] = self._generate_biome(position)
+            self._biome_cache[position] = await self._generate_biome(position)
         
         return self._biome_cache[position]
     
