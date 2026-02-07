@@ -18,7 +18,7 @@ class TestPathfindingIntegration:
         
         assert grid.width == 20
         assert grid.height == 20
-        assert grid.is_walkable((10, 10))  # Center should be walkable
+        assert grid.is_walkable((12, 12))  # Center should be walkable (avoid interior wall)
         assert not grid.is_walkable((0, 0))  # Border wall
         assert not grid.is_walkable((19, 19))  # Border wall
     
@@ -93,27 +93,27 @@ class TestPathfindingIntegration:
     
     def test_pathfinding_edge_cases(self):
         """Test pathfinding edge cases."""
-        grid = PathfindingGrid(15, 15)  # Use larger grid to avoid interior wall issues
+        grid = PathfindingGrid(20, 20)  # Use larger grid to avoid interior wall issues
         
         # Test invalid start/goal
         assert grid.find_path((-1, 0), (5, 5)) is None
         assert grid.find_path((0, 0), (5, 5)) is None  # Wall
-        assert grid.find_path((5, 5), (20, 20)) is None
+        assert grid.find_path((5, 5), (25, 25)) is None
         
         # Test same start and goal - should return empty path (already at goal)
-        path = grid.find_path((5, 5), (5, 5))
+        path = grid.find_path((12, 12), (12, 12))
         assert path is not None  # Should find trivial path
     
     def test_neighbor_calculation(self):
         """Test neighbor calculation for pathfinding."""
-        grid = PathfindingGrid(10, 10)
+        grid = PathfindingGrid(20, 20)  # Use larger grid
         
         # Test center position has all neighbors
-        neighbors = grid.get_neighbors((5, 5))
+        neighbors = grid.get_neighbors((12, 12))  # Center of 20x20 grid, avoiding interior walls
         assert len(neighbors) == 8  # All 8 directions
         
         # Test edge position has fewer neighbors
-        edge_neighbors = grid.get_neighbors((0, 5))
+        edge_neighbors = grid.get_neighbors((0, 10))
         assert len(edge_neighbors) < 8
         
         # Test corner position
