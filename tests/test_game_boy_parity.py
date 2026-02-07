@@ -80,7 +80,7 @@ class TestTileBank:
         assert tile_bank.current_bank == "town"
         
         assert tile_bank.switch_bank("dungeon") == True
-        assert tile_bank == "dungeon"
+        assert tile_bank.current_bank == "dungeon"
         
         # Test invalid bank
         assert tile_bank.switch_bank("invalid") == False
@@ -353,7 +353,7 @@ class TestVirtualPPU:
         # Should have empty spaces where transparent
         lines = rendered.split('\n')
         assert len(lines) > 0
-        assert lines[0][0] == " "  "  # Transparent areas
+        assert lines[0][0] == " "  # Transparent areas
     
     def test_ppu_info(self):
         """Test PPU information retrieval."""
