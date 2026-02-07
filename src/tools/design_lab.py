@@ -606,42 +606,41 @@ class DGTDesignLab:
         self.preview_info.config(text=f"Applied Sonic {preset_type} preset")
     
     def _save_template(self) -> None:
-        """Save current template"""
+        """Save current template using controller"""
         template_name = f"{self.current_material}_{self.current_pattern}"
-        self.template_designs[template_name] = {
-            'material': self.current_material,
-            'color': self.current_color,
-            'pattern': self.current_pattern,
-            'intensity': self.dithering_engine.dither_intensity
-        }
-        self.export_status.config(text=f"Saved template: {template_name}")
+        
+        template = self.controller.create_material_design(
+            name=template_name,
+            material=self.current_material,
+            color=self.current_color,
+            pattern=self.current_pattern,
+            intensity=self.dithering_engine.dither_intensity
+        )
+        
+        if template:
+            self.export_status.config(text=f"Saved template: {template_name}")
+            logger.info(f"Template saved: {template_name}")
+        else:
+            self.export_status.config(text="Failed to save template")
+            logger.error("Template save failed")
     
     def _export_to_yaml(self) -> None:
-        """Export designs to YAML"""
+        """Export designs to YAML using controller"""
         filename = filedialog.asksaveasfilename(
             defaultextension=".yaml",
             filetypes=[("YAML files", "*.yaml"), ("All files", "*.*")]
         )
         
         if filename:
-            try:
-                export_data = {
-                    'material_designs': self.material_designs,
-                    'template_designs': self.template_designs,
-                    'dithering_settings': {
-                        'intensity': self.dithering_engine.dither_intensity,
-                        'current_pattern': self.current_pattern
-                    }
-                }
-                
-                with open(filename, 'w') as f:
-                    yaml.dump(export_data, f, default_flow_style=False)
-                
+            success = self.controller.export_designs(Path(filename))
+            if success:
                 self.export_status.config(text=f"Exported to {filename}")
                 messagebox.showinfo("Export Success", f"Designs exported to {filename}")
-                
-            except Exception as e:
-                messagebox.showerror("Export Error", f"Failed to export: {e}")
+                logger.info(f"Export successful: {filename}")
+            else:
+                self.export_status.config(text="Export failed")
+                messagebox.showerror("Export Error", "Failed to export designs")
+                logger.error(f"Export failed: {filename}")
     
     def _export_to_templates(self) -> None:
         """Export to templates.yaml"""
@@ -719,10 +718,20 @@ class DGTDesignLab:
             sprites = self.fabricator.generate_all_sprites(parsed_data)
             self.registry.load_from_parsed_data(parsed_data, sprites)
             
+            # Validate existing templates
+            if 'templates' in parsed_data:
+                for template_name, template_data in parsed_data['templates'].items():
+                    validated = self.validator.validate_template(template_data)
+                    if validated:
+                        self.controller.template_designs[template_name] = validated
+                        logger.debug(f"Loaded valid template: {template_name}")
+            
             self.export_status.config(text="Loaded existing assets")
+            logger.info(f"Loaded {len(parsed_data.get('templates', {}))} templates")
             
         except Exception as e:
             self.export_status.config(text="Could not load existing assets")
+            logger.error(f"Failed to load existing assets: {e}")
 
 if __name__ == "__main__":
     lab = DGTDesignLab()
