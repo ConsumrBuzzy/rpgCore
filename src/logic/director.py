@@ -527,32 +527,6 @@ class NarrativeConsultation:
         self.timestamp = timestamp
         self.context = context
         self.beacons_generated = beacons_generated
-            self.on_beacon_generated(emergency_beacon)
-    
-    async def _llm_generate_beacons(self, context: str, num_beacons: int) -> List[Dict[str, Any]]:
-        """
-        Generate beacons using the LLM.
-        
-        This would integrate with the ChroniclerEngine to generate narrative-driven goals.
-        For now, this is a placeholder implementation.
-        """
-        # Placeholder for LLM integration
-        # In a full implementation, this would:
-        # 1. Send context to LLM with beacon generation prompt
-        # 2. Parse LLM response for beacon data
-        # 3. Validate beacon coordinates and priorities
-        
-        # For now, use the context-based generation
-        return await self._generate_narrative_beacons(context)
-
-
-class NarrativeConsultation:
-    """Record of LLM consultation for beacon generation."""
-    
-    def __init__(self, timestamp: str, context: str, beacons_generated: List[NarrativeBeacon]):
-        self.timestamp = timestamp
-        self.context = context
-        self.beacons_generated = beacons_generated
 
 
 # Director factory for dependency injection
