@@ -197,7 +197,7 @@ class DGTSystem:
         self.voyager.current_script_index = 0
         
         # Set initial position
-        await self.voyager.update_position((10, 25))
+        self.voyager.current_position = (10, 25)
         
         logger.info("🍺 Tavern scene configured - Iron Chest at (32, 32)")
     
@@ -217,7 +217,7 @@ class DGTSystem:
         self.voyager.movie_script = forest_script
         self.voyager.current_script_index = 0
         
-        await self.voyager.update_position((10, 25))
+        self.voyager.current_position = (10, 25)
         
         logger.info("🌲 Forest scene configured")
     
