@@ -2,9 +2,11 @@
 Isometric 2.5D Renderer
 
 Phase 8: Isometric World View Implementation
+Phase 9: Shape Language Avatar Integration
 Projects WorldLedger coordinates onto a staggered diamond grid for tactical RPG view.
 
 ADR 025: Isometric World-View Integration
+ADR 026: Shape Language Character Visualization
 """
 
 import math
@@ -14,6 +16,7 @@ from dataclasses import dataclass
 from loguru import logger
 from world_ledger import WorldLedger, Coordinate, WorldChunk
 from game_state import GameState
+from ui.shape_avatar import ShapeAvatarGenerator, ShapeType
 
 
 @dataclass
@@ -43,6 +46,9 @@ class IsometricRenderer:
         self.width = width
         self.height = height
         
+        # Initialize shape avatar generator
+        self.shape_avatar = ShapeAvatarGenerator()
+        
         # Isometric projection parameters
         self.char_width = 2  # Width of each character in screen space
         self.char_height = 1  # Height of each character in screen space
@@ -51,6 +57,13 @@ class IsometricRenderer:
         self.view_radius = 5  # How many tiles around the player
         self.center_x = width // 2
         self.center_y = height // 2
+        
+        # Distance-based rendering
+        self.distance_thresholds = {
+            "near": 3,    # Close range - detailed shapes
+            "mid": 6,     # Medium range - blurred shapes
+            "far": 10     # Far range - primitive shapes
+        }
         
         # Tile sets
         self.tile_chars = {
@@ -200,7 +213,7 @@ class IsometricRenderer:
     
     def get_entity_at(self, coordinate: Coordinate, game_state: GameState) -> Optional[Tuple[str, str, str]]:
         """
-        Check for entities at a specific coordinate.
+        Check for entities at a specific coordinate with shape-based visualization.
         
         Args:
             coordinate: World coordinate to check
@@ -212,7 +225,13 @@ class IsometricRenderer:
         # Check if player is at this coordinate
         if (coordinate.x == game_state.position.x and 
             coordinate.y == game_state.position.y):
-            return self.entity_chars["player"], self.entity_colors["player"], "player"
+            # Generate player avatar based on stats
+            player_avatar = self.shape_avatar.generate_avatar(
+                game_state.player.attributes, 
+                size="medium", 
+                distance="near"
+            )
+            return player_avatar, "bold green", "player"
         
         # Check for NPCs based on faction control
         faction = None
@@ -220,12 +239,41 @@ class IsometricRenderer:
             faction = self.faction_system.get_faction_at_coordinate(coordinate)
         if faction:
             faction_id = faction.id if isinstance(faction.id, str) else str(faction.id)
-            if faction_id == "legion":
-                return self.entity_chars["guard"], self.entity_colors["guard"], "guard"
-            elif faction_id == "traders":
-                return self.entity_chars["merchant"], self.entity_colors["merchant"], "merchant"
-            elif faction_id == "cult":
-                return self.entity_chars["cultist"], self.entity_colors["cultist"], "cultist"
+            
+            # Generate faction-specific stats for avatar
+            faction_stats = self._get_faction_stats(faction_id)
+            
+            # Calculate distance from player
+            distance = abs(coordinate.x - game_state.position.x) + abs(coordinate.y - game_state.position.y)
+            
+            # Determine distance level
+            if distance <= self.distance_thresholds["near"]:
+                distance_level = "near"
+            elif distance <= self.distance_thresholds["mid"]:
+                distance_level = "mid"
+            else:
+                distance_level = "far"
+            
+            # Generate faction avatar
+            faction_avatar = self.shape_avatar.generate_avatar(
+                faction_stats, 
+                size="small", 
+                distance=distance_level
+            )
+            
+            faction_colors = {
+                "legion": "bold red",
+                "traders": "bold yellow", 
+                "cult": "bold magenta"
+            }
+            
+            faction_types = {
+                "legion": "guard",
+                "traders": "merchant",
+                "cult": "cultist"
+            }
+            
+            return faction_avatar, faction_colors.get(faction_id, "white"), faction_types.get(faction_id, "npc")
         
         # Check for legacy props (wells, statues, etc.)
         historical_tags = self.world_ledger.get_historical_tags(coordinate)
@@ -236,6 +284,44 @@ class IsometricRenderer:
                 return self.entity_chars["statue"], self.entity_colors["statue"], "item"
         
         return None
+    
+    def _get_faction_stats(self, faction_id: str) -> Dict[str, int]:
+        """Generate representative stats for a faction."""
+        faction_stats = {
+            "legion": {
+                "strength": 16,
+                "dexterity": 12,
+                "constitution": 15,
+                "intelligence": 10,
+                "wisdom": 8,
+                "charisma": 10
+            },
+            "traders": {
+                "strength": 10,
+                "dexterity": 12,
+                "constitution": 12,
+                "intelligence": 14,
+                "wisdom": 12,
+                "charisma": 16
+            },
+            "cult": {
+                "strength": 8,
+                "dexterity": 14,
+                "constitution": 10,
+                "intelligence": 16,
+                "wisdom": 18,
+                "charisma": 12
+            }
+        }
+        
+        return faction_stats.get(faction_id, {
+            "strength": 10,
+            "dexterity": 10,
+            "constitution": 10,
+            "intelligence": 10,
+            "wisdom": 10,
+            "charisma": 10
+        })
     
     def generate_tiles(self, game_state: GameState) -> List[IsometricTile]:
         """
@@ -421,8 +507,18 @@ class IsometricRenderer:
             "color_schemes": {
                 "tiles": self.tile_colors,
                 "entities": self.entity_colors
-            }
+            },
+            "distance_thresholds": self.distance_thresholds,
+            "shape_avatar_enabled": True
         }
+    
+    def get_shape_legend(self) -> str:
+        """Get the shape language legend."""
+        return self.shape_avatar.generate_shape_legend()
+    
+    def get_player_shape_description(self, game_state: GameState) -> str:
+        """Get the player's shape-based character description."""
+        return self.shape_avatar.get_character_description(game_state.player.attributes)
 
 
 # Export for use by game engine
