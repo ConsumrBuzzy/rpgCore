@@ -24,6 +24,9 @@ from loguru import logger
 from .core.state import Entity, GameState, TileType, BiomeType
 from .core.constants import TARGET_FPS, FRAME_DELAY_MS
 from .simulation.breeding import GeneticBreedingService, UniversalTurtlePacket
+from .simulation.genetics import TurboGenome, genetic_registry
+from .simulation.racing import RacingService, RaceTrack
+from .simulation.terrain_mapper import terrain_mapper
 
 @dataclass
 class SimulationConfig:
@@ -34,6 +37,7 @@ class SimulationConfig:
     max_entities: int = 100
     enable_physics: bool = True
     enable_genetics: bool = True
+    enable_racing: bool = True
     enable_d20: bool = True
     heartbeat_interval_ms: int = 16  # ~60Hz
     log_to_file: bool = True
