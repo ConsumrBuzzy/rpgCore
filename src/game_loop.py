@@ -178,6 +178,7 @@ class GameREPL:
         # Step 2: Arbiter resolves logic (state changes)
         self.console.print("[dim]⚖️  Arbiter calculating...[/dim]")
         
+        context = self.state.get_context_str()
         # Get room tags
         room = self.state.rooms.get(self.state.current_room)
         room_tags = room.tags if room else []
