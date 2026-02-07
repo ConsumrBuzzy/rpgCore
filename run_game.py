@@ -22,6 +22,7 @@ from logic.faction_system import FactionSystem
 from logic.orientation import OrientationManager
 from ui.dashboard import UnifiedDashboard, DashboardLayout
 from ui.layout_manager_new import DirectorConsole
+from ui.static_canvas import StaticCanvas, RenderMode
 from chronos import ChronosEngine
 from utils.historian import Historian, WorldSeed
 from ui.renderer_3d import ASCIIDoomRenderer
@@ -52,6 +53,7 @@ class SyntheticRealityDirector:
         
         # Presentation systems
         self.console = Console()
+        self.static_canvas = StaticCanvas(self.console, self.world_ledger, self.faction_system)
         self.director_console = DirectorConsole(self.console, self.world_ledger, self.faction_system)
         
         # Initialize renderer based on view mode
@@ -207,7 +209,12 @@ class SyntheticRealityDirector:
         print("=" * 60)
         
         try:
-            # Initialize dashboard
+            # Initialize static canvas
+            if not self.static_canvas.start_live_display():
+                print("❌ DIRECTOR: Failed to start static canvas display")
+                return False
+            
+            # Show welcome message
             self.director_console.display_welcome()
             
             # Calculate initial perception range
@@ -215,7 +222,8 @@ class SyntheticRealityDirector:
             intelligence = self.game_state.player.attributes.get("intelligence", 10)
             perception_range = max(5, (wisdom + intelligence) // 2)
             
-            print(f"   ✅ Director's Console initialized")
+            print(f"   ✅ Static Canvas initialized with fixed-grid protocol")
+            print(f"   ✅ Director's Console ready")
             print(f"   ✅ Perception range: {perception_range} (WIS: {wisdom}, INT: {intelligence})")
             print(f"   ✅ Viewport ready: {self.renderer.width}x{self.renderer.height} viewport")
             
@@ -255,14 +263,10 @@ class SyntheticRealityDirector:
         if self.view_mode == "iso":
             # Isometric rendering
             try:
-                # Update game state in dashboard
-                self.director_console.update_game_state(self.game_state)
+                # Update static canvas with game state
+                self.static_canvas.update_game_state(self.game_state)
                 
-                # Render the complete dashboard
-                dashboard_panel = self.director_console.render_console()
-                self.console.print(dashboard_panel)
-                
-                # Show isometric view separately for clarity
+                # Show detailed isometric view separately for clarity
                 frame = self.renderer.render_frame(self.game_state)
                 frame_str = self.renderer.get_frame_as_string(frame)
                 
@@ -299,12 +303,8 @@ class SyntheticRealityDirector:
         else:
             # Doom-style raycasting rendering
             try:
-                # Update game state in dashboard
-                self.director_console.update_game_state(self.game_state)
-                
-                # Render the complete dashboard
-                dashboard_panel = self.director_console.render_console()
-                self.console.print(dashboard_panel)
+                # Update static canvas with game state
+                self.static_canvas.update_game_state(self.game_state)
                 
                 # Show 3D view separately for clarity
                 frame = self.renderer.render_frame(
@@ -453,6 +453,10 @@ class SyntheticRealityDirector:
             print("Interactive mode not implemented yet")
         
         print("\n🎬 DIRECTOR: Session complete. The Synthetic Reality Console stands ready.")
+        
+        # Cleanup static canvas
+        self.static_canvas.cleanup()
+        
         return True
 
 
