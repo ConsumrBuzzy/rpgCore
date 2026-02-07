@@ -148,6 +148,10 @@ class AutonomousDirector:
     
     def get_voyager_position(self) -> Tuple[int, int]:
         """Get the current Voyager position."""
+        # Get position from game state
+        state = self.simulator.get_state()
+        if state and hasattr(state, 'position'):
+            return (state.position.x, state.position.y)
         return self.voyager_position
     
     def get_current_beacon(self) -> Optional[NarrativeBeacon]:
@@ -220,12 +224,12 @@ class AutonomousDirector:
         
         logger.debug(f"🚶 Executing phase: Moving to {self.current_beacon.target_coords}")
         
-        # Use navigation system to set path
-        voyager_pos = self.voyager_position
+        # Get current Voyager position from game state
+        current_pos = self.get_voyager_position()
         beacon_coords = self.current_beacon.target_coords
         
         # For now, use simple path calculation (would integrate with NavigationSystem)
-        path = self._calculate_path_to_beacon(voyager_pos, beacon_coords)
+        path = self._calculate_path_to_beacon(current_pos, beacon_coords)
         
         if not path:
             logger.warning(f"❌ No path found to beacon {self.current_beacon.target_coords}")
@@ -241,20 +245,19 @@ class AutonomousDirector:
                 break
             
             # Calculate direction from current position to next position
-            direction = self._get_direction_from_movement(self.voyager_position, next_pos)
+            current_pos = self.get_voyager_position()  # Get fresh position
+            direction = self._get_direction_from_movement(current_pos, next_pos)
             action_input = f"I move {direction}"
             
             # Submit action through simulator
             self.simulator.submit_action(action_input)
             
-            # Update Voyager position
-            self.voyager_position = next_pos
-            
             # Wait for action processing
             await asyncio.sleep(0.5 / self.playback_speed)
             
             # Check if reached beacon
-            if next_pos == self.current_beacon.target_coords:
+            current_pos = self.get_voyager_position()  # Get updated position
+            if current_pos == self.current_beacon.target_coords:
                 self.current_beacon.achieved = True
                 if self.on_beacon_achieved:
                     self.on_beacon_achieved(self.current_beacon)
@@ -263,7 +266,7 @@ class AutonomousDirector:
                 self.mode = DirectorMode.CINEMATIC
                 break
         
-        # Return to planning
+        # Return to planning if not paused
         if self.mode != DirectorMode.PAUSED:
             self.mode = DirectorMode.PLANNING
     

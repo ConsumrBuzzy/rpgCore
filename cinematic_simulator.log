@@ -459,3 +459,174 @@
 01:31:36 | INFO | 🛑 Stopping Cinematic Simulator
 01:31:36 | INFO | 🛑 SimulatorHost stopped
 01:31:36 | INFO | 🎬 Cinematic Simulator stopped
+01:32:18 | DEBUG | Added intent: distract with 5 exemplars
+01:32:18 | DEBUG | Added intent: force with 5 exemplars
+01:32:18 | DEBUG | Added intent: finesse with 5 exemplars
+01:32:18 | DEBUG | Added intent: charm with 5 exemplars
+01:32:18 | DEBUG | Added intent: intimidate with 5 exemplars
+01:32:18 | DEBUG | Added intent: deceive with 5 exemplars
+01:32:18 | DEBUG | Added intent: investigate with 5 exemplars
+01:32:18 | DEBUG | Added intent: use_item with 5 exemplars
+01:32:18 | DEBUG | Added intent: defend with 5 exemplars
+01:32:18 | DEBUG | Added intent: leave_area with 5 exemplars
+01:32:18 | DEBUG | Added intent: improvise with 5 exemplars
+01:32:18 | INFO | Semantic Baker initialized with model: all-MiniLM-L6-v2
+01:32:18 | INFO | Loaded 11 pre-baked intent embeddings (55 total examples)
+01:32:18 | INFO | ✅ Instant boot: Loaded pre-baked embeddings
+01:32:18 | INFO | 🏛️ SimulatorHost initialized - Single Source of Truth
+01:32:18 | INFO | 🎬 CinematicSimulator initialized
+01:32:18 | INFO | 🚀 Initializing Cinematic Simulator...
+01:32:18 | INFO | 🚀 Initializing SimulatorHost...
+01:32:18 | INFO | 🆕 Creating new game state
+01:32:18 | INFO | ⚖️ Loading Arbiter (Deterministic Logic Core)...
+01:32:18 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+01:32:18 | INFO | 📖 Loading Chronicler (Narrative Engine)...
+01:32:19 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+01:32:19 | INFO | 🎲 Loading Quartermaster...
+01:32:19 | INFO | 💎 Loading Loot System...
+01:32:19 | INFO | LootSystem initialized without artifact support
+01:32:19 | INFO | ✅ SimulatorHost initialization complete
+01:32:19 | INFO | 🎬 Autonomous Director initialized
+01:32:19 | DEBUG | 🗺️ Pathfinding grid initialized: 64x64
+01:32:19 | INFO | 🧭 Navigation system initialized
+01:32:19 | INFO | 🎥 Cinematic camera initialized
+01:32:19 | INFO | 🎬 Camera controller initialized
+01:32:19 | DEBUG | 💬 Dialogue box initialized
+01:32:19 | INFO | 🎬 Cinematic pauses system initialized
+01:32:19 | INFO | 🖥️ TerminalView initialized - Observer of SimulatorHost
+01:32:19 | INFO | 🖼️ GUIView initialized - Observer of SimulatorHost
+01:32:19 | DEBUG | 👁️ Added observer: TerminalView
+01:32:19 | DEBUG | 👁️ Added observer: GUIView
+01:32:19 | INFO | ✅ Cinematic Simulator initialized successfully
+01:32:19 | INFO | 🖥️ Starting terminal-only mode
+01:32:19 | INFO | 🎬 Starting autonomous cinematic mode
+01:32:19 | INFO | 🎬 Starting Autonomous Director Mode
+01:32:19 | INFO | 🎭 Generating initial narrative beacons
+01:32:19 | INFO | 🎯 New beacon: Explore the surrounding area
+01:32:19 | INFO | 🛤️ Path set: 10 steps to (10, 10)
+01:32:19 | INFO | 🎯 Generated beacon: Explore the surrounding area at (10, 10)
+01:32:19 | INFO | 🎯 New beacon: Investigate nearby points of interest
+01:32:19 | INFO | 🛤️ Path set: 5 steps to (5, 5)
+01:32:19 | INFO | 🎯 Generated beacon: Investigate nearby points of interest at (5, 5)
+01:32:19 | INFO | 🚀 Initializing SimulatorHost...
+01:32:19 | INFO | 🆕 Creating new game state
+01:32:19 | INFO | ⚖️ Loading Arbiter (Deterministic Logic Core)...
+01:32:19 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+01:32:19 | INFO | 📖 Loading Chronicler (Narrative Engine)...
+01:32:19 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+01:32:19 | INFO | 🎲 Loading Quartermaster...
+01:32:19 | INFO | 💎 Loading Loot System...
+01:32:19 | INFO | LootSystem initialized without artifact support
+01:32:19 | INFO | ✅ SimulatorHost initialization complete
+01:32:19 | INFO | 🚀 SimulatorHost started
+01:32:19 | INFO | 🎬 Director loop started
+01:32:19 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:19 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:32:19 | INFO | 🎮 Starting 30 FPS game loop
+01:32:19 | INFO | 🎬 Cinematic loop started
+01:32:20 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:32:20 | DEBUG | 📤 Action queued: I move here
+01:32:20 | DEBUG | 🔍 Parsing intent for: I move here
+01:32:20 | INFO | Loading embedding model on-demand: all-MiniLM-L6-v2
+01:32:27 | INFO | Intent resolution: 'I move here' → leave_area (confidence: 0.496, matched exemplar: 'Leave this place')
+01:32:27 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:32:27 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:32:27 | DEBUG | Action: leave_area | Tags: [] | Roll: 5 + Attr: 10 + Item: 0 + Tag: 0 = 15 vs DC: 10 (10 + 0) -> SUCCESS
+01:32:27 | DEBUG | 🔄 Applying state changes...
+01:32:27 | INFO | Social consequences applied for None (success=True)
+01:32:27 | DEBUG | 📖 Generating narrative...
+01:32:27 | DEBUG | Chronicler streaming: leave_area
+01:32:27 | DEBUG | 📤 Action queued: I move south
+01:32:27 | DEBUG | 📤 Action queued: I move east
+01:32:28 | DEBUG | 📤 Action queued: I move south
+01:32:28 | DEBUG | 📤 Action queued: I move east
+01:32:29 | DEBUG | 📤 Action queued: I move south
+01:32:29 | DEBUG | 📤 Action queued: I move east
+01:32:30 | DEBUG | 📤 Action queued: I move south
+01:32:30 | DEBUG | 📤 Action queued: I move east
+01:32:31 | DEBUG | 📤 Action queued: I move south
+01:32:31 | DEBUG | 📤 Action queued: I move east
+01:32:32 | DEBUG | 📤 Action queued: I move south
+01:32:32 | DEBUG | 📤 Action queued: I move east
+01:32:33 | DEBUG | 📤 Action queued: I move south
+01:32:33 | DEBUG | 📤 Action queued: I move east
+01:32:34 | DEBUG | 📤 Action queued: I move south
+01:32:34 | DEBUG | 📤 Action queued: I move east
+01:32:35 | DEBUG | 📤 Action queued: I move south
+01:32:36 | DEBUG | 📤 Action queued: I move east
+01:32:36 | DEBUG | 📤 Action queued: I move south
+01:32:37 | DEBUG | 📤 Action queued: I move east
+01:32:37 | INFO | 🎯 Beacon achieved: Explore the surrounding area
+01:32:37 | DEBUG | 🎬 Added pause: discovery - Beacon achieved: Explore the surrounding area...
+01:32:37 | INFO | 🎯 Beacon achieved: Explore the surrounding area
+01:32:37 | INFO | 🎬 Executing pause: discovery
+01:32:37 | INFO | ⏸️ Pause started: discovery
+01:32:37 | INFO | 💬 Dialogue: Beacon achieved: Explore the surrounding area...
+01:32:38 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:38 | INFO | 🎯 Selected beacon: Investigate nearby points of interest
+01:32:38 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:32:38 | INFO | Game saved to premiere_voyage.json
+01:32:38 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:32:38 | DEBUG | 🔍 Parsing intent for: I move south
+01:32:38 | INFO | Intent resolution: 'I move south' → leave_area (confidence: 0.398, matched exemplar: 'Go to the next location')
+01:32:38 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:32:38 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:32:38 | DEBUG | Action: leave_area | Tags: [] | Roll: 1 + Attr: 10 + Item: 0 + Tag: 0 = 11 vs DC: 10 (10 + 0) -> SUCCESS
+01:32:38 | DEBUG | 🔄 Applying state changes...
+01:32:38 | INFO | Social consequences applied for None (success=True)
+01:32:38 | DEBUG | 📖 Generating narrative...
+01:32:38 | DEBUG | Chronicler streaming: leave_area
+01:32:39 | DEBUG | 🚶 Executing phase: Moving to (5, 5)
+01:32:39 | DEBUG | 📤 Action queued: I move here
+01:32:40 | DEBUG | 📤 Action queued: I move north
+01:32:40 | INFO | 🎬 Ended pause: discovery
+01:32:40 | INFO | ▶️ Pause ended: discovery
+01:32:40 | DEBUG | 📤 Action queued: I move west
+01:32:41 | DEBUG | 📤 Action queued: I move north
+01:32:41 | DEBUG | 📤 Action queued: I move west
+01:32:42 | DEBUG | 📤 Action queued: I move north
+01:32:42 | DEBUG | 📤 Action queued: I move west
+01:32:43 | DEBUG | 📤 Action queued: I move north
+01:32:43 | DEBUG | 📤 Action queued: I move west
+01:32:44 | DEBUG | 📤 Action queued: I move north
+01:32:44 | DEBUG | 📤 Action queued: I move west
+01:32:45 | INFO | 🎯 Beacon achieved: Investigate nearby points of interest
+01:32:45 | DEBUG | 🎬 Added pause: discovery - Beacon achieved: Investigate nearby points of inte...
+01:32:45 | INFO | 🎯 Beacon achieved: Investigate nearby points of interest
+01:32:45 | INFO | 🎬 Executing pause: discovery
+01:32:45 | INFO | ⏸️ Pause started: discovery
+01:32:45 | INFO | 💬 Dialogue: Beacon achieved: Investigate nearby points of inte...
+01:32:46 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:47 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:47 | INFO | 🎬 Ended pause: discovery
+01:32:47 | INFO | ▶️ Pause ended: discovery
+01:32:48 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:49 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:49 | ERROR | Chronicler stream failed: Exceeded maximum retries (1) for output validation
+01:32:49 | INFO | Game saved to premiere_voyage.json
+01:32:49 | INFO | ✅ Action processed: leave_area -> SUCCESS
+01:32:49 | DEBUG | 🔍 Parsing intent for: I move east
+01:32:49 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:32:49 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:32:49 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:32:49 | DEBUG | Action: leave_area | Tags: [] | Roll: 20 + Attr: 10 + Item: 0 + Tag: 0 = 30 vs DC: 10 (10 + 0) -> SUCCESS
+01:32:49 | DEBUG | 🔄 Applying state changes...
+01:32:49 | INFO | Social consequences applied for None (success=True)
+01:32:49 | DEBUG | 📖 Generating narrative...
+01:32:49 | DEBUG | Chronicler streaming: leave_area
+01:32:50 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:51 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:52 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:53 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:54 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:55 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:56 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:57 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:58 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:32:59 | INFO | 🖥️ Terminal mode stopped by user
+01:32:59 | INFO | 🛑 Stopping Cinematic Simulator
+01:32:59 | INFO | 🛑 SimulatorHost stopped
+01:32:59 | INFO | 🎬 Cinematic Simulator stopped
+01:32:59 | INFO | 🛑 Stopping Cinematic Simulator
+01:32:59 | INFO | 🛑 SimulatorHost stopped
+01:32:59 | INFO | 🎬 Cinematic Simulator stopped
