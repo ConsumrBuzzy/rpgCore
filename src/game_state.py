@@ -6,12 +6,13 @@ Uses Pydantic for validation and JSON serialization.
 """
 
 from pathlib import Path
-from typing import Dict, List, Literal, Optional, Any
+from typing import Dict, List, Literal, Optional, Any, Tuple
 import numpy as np
 
 from loguru import logger
 from pydantic import BaseModel, Field
 from loot_system import Item
+from world_ledger import Coordinate, WorldChunk
 
 
 class Goal(BaseModel):
@@ -143,13 +144,14 @@ class Relationship(BaseModel):
 
 
 class GameState(BaseModel):
-    """Complete state of the game world with vectorized context support."""
+    """Complete state of the game world with coordinate-based persistence."""
     
     model_config = {"arbitrary_types_allowed": True}
     
     player: PlayerStats = Field(default_factory=PlayerStats)
-    current_room: str = "tavern"
-    rooms: Dict[str, Room] = Field(default_factory=dict)
+    position: Coordinate = Field(default_factory=lambda: Coordinate(0, 0, 0))  # x, y, time
+    world_time: int = 0  # Global world clock (turns since epoch)
+    rooms: Dict[str, Room] = Field(default_factory=dict)  # Legacy compatibility
     turn_count: int = 0
     
     # Global standing with world powers
@@ -178,6 +180,25 @@ class GameState(BaseModel):
     latent_context: Dict[str, Any] = Field(default_factory=dict)  # Active world vectors
     lore_index: List[Dict[str, Any]] = Field(default_factory=list)  # Historical event vectors
     active_vectors: Dict[str, np.ndarray] = Field(default_factory=dict)  # Currently loaded vectors
+    
+    # Phase 3: Spatial-Temporal fields
+    current_chunk: Optional[WorldChunk] = None  # Currently loaded world chunk
+    travel_stamina: int = 100  # Constitution-based travel stamina
+    last_rest_turn: int = 0  # When player last rested
+    discovered_coordinates: List[Tuple[int, int]] = Field(default_factory=list)  # Discovered locations
+    
+    @property
+    def current_room(self) -> str:
+        """Legacy compatibility property."""
+        if self.current_chunk:
+            return self.current_chunk.name
+        return "unknown"
+    
+    @current_room.setter
+    def current_room(self, value: str):
+        """Legacy compatibility setter."""
+        # This is deprecated but kept for backward compatibility
+        pass
     
     def get_local_context(self) -> str:
         """
