@@ -48,13 +48,29 @@ class RaceTrack:
         self.checkpoints.append(checkpoint)
     
     def get_terrain_at(self, x: float, y: float) -> TerrainType:
-        """Get terrain type at position"""
-        # Check if near any checkpoint
+        """Get terrain type at position using Tiny Farm asset mapping"""
+        # First check if we have checkpoint-specific terrain
         for checkpoint in self.checkpoints:
             if checkpoint.is_reached(x, y):
                 return checkpoint.terrain_type
         
-        # Default terrain based on position
+        # Use terrain mapper to check for Tiny Farm assets at this position
+        # This integrates with the Rust-scanned metadata system
+        try:
+            # In a real implementation, this would check the PPU background data
+            # For now, we'll use the terrain mapper's asset-based detection
+            
+            # Simulate asset lookup based on position
+            asset_name = self._get_asset_at_position(x, y)
+            terrain = terrain_mapper.get_terrain_for_asset(asset_name)
+            
+            logger.debug(f"🗺️ Position ({x:.1f}, {y:.1f}) -> Asset: {asset_name} -> Terrain: {terrain.value}")
+            return terrain
+            
+        except Exception as e:
+            logger.warning(f"🗺️ Terrain lookup failed: {e}")
+        
+        # Fallback to position-based terrain
         if x < 100 or x > 700 or y < 100 or y > 500:
             return TerrainType.ROCKS
         elif 300 <= x <= 500 and 200 <= y <= 400:
@@ -65,6 +81,37 @@ class RaceTrack:
             return TerrainType.SAND
         else:
             return TerrainType.NORMAL
+    
+    def _get_asset_at_position(self, x: float, y: float) -> str:
+        """Simulate asset lookup at position (integrates with PPU background)"""
+        # This would normally read from the PPU background's baked tiles
+        # For demonstration, we'll simulate asset names based on position
+        
+        # Normalize position to asset grid
+        grid_x = int(x / 50)  # 50px grid cells
+        grid_y = int(y / 50)
+        
+        # Simulate different asset types based on position
+        asset_patterns = {
+            (0, 0): "grass_tile_01",
+            (1, 0): "grass_tile_02", 
+            (2, 0): "water_tile_01",
+            (3, 0): "water_tile_02",
+            (0, 1): "sand_tile_01",
+            (1, 1): "sand_tile_02",
+            (2, 1): "rock_tile_01",
+            (3, 1): "rock_tile_02",
+            (0, 2): "mud_tile_01",
+            (1, 2): "mud_tile_02",
+            (2, 2): "boost_tile_01",
+            (3, 2): "boost_tile_02",
+        }
+        
+        # Wrap around for larger tracks
+        grid_x = grid_x % 4
+        grid_y = grid_y % 3
+        
+        return asset_patterns.get((grid_x, grid_y), "default_tile")
     
     def generate_oval_track(self):
         """Generate standard oval track with varied terrain"""
