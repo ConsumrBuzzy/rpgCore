@@ -81,7 +81,7 @@ class GameState:
             player_health=self.player_health,
             player_status=self.player_status.copy(),
             current_environment=self.current_environment,
-            active_effects=self.effect.copy(),
+            active_effects=self.active_effects.copy(),
             interaction_triggers=[Trigger(t.position, t.trigger_type, t.parameters.copy(), t.active) 
                                  for t in self.interaction_triggers],
             turn_count=self.turn_count,

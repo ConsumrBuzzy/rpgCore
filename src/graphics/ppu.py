@@ -6,14 +6,22 @@ Game Boy Parity renderer with Tkinter/Canvas backend.
 """
 
 import time
+import sys
+from pathlib import Path
 from typing import Tuple, List, Dict, Any, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 
 from loguru import logger
 
+# Add src to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
+
 # Import from engines
-from ..engines.dd_engine import GameState, Effect
+try:
+    from ..engines.dd_engine import GameState, Effect
+except ImportError:
+    from engines.dd_engine import GameState, Effect
 
 
 class RenderLayer(Enum):

@@ -6,16 +6,27 @@ Autonomous navigation and decision making.
 """
 
 import time
+import sys
+from pathlib import Path
 from typing import Tuple, List, Dict, Any, Union, Optional
 from dataclasses import dataclass
 
 from loguru import logger
 
+# Add src to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
+
 # Import from engines
-from ..engines.dd_engine import (
-    DD_Engine, GameState, MovementIntent, InteractionIntent, 
-    IntentValidation, ValidationResult
-)
+try:
+    from ..engines.dd_engine import (
+        DD_Engine, GameState, MovementIntent, InteractionIntent, 
+        IntentValidation, ValidationResult
+    )
+except ImportError:
+    from engines.dd_engine import (
+        DD_Engine, GameState, MovementIntent, InteractionIntent, 
+        IntentValidation, ValidationResult
+    )
 
 
 @dataclass
@@ -367,6 +378,6 @@ class VoyagerFactory:
     @staticmethod
     def create_test_voyager() -> Voyager:
         """Create a Voyager for testing"""
-        from ..engines.dd_engine import DDEngineFactory
+        from engines.dd_engine import DDEngineFactory
         test_engine = DDEngineFactory.create_test_engine()
         return Voyager(test_engine)
