@@ -7,10 +7,10 @@ Fixed-grid rendering system that prevents data loss and flicker.
 ADR 028: Static Canvas Rendering Protocol
 """
 
+import time
 from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 from enum import Enum
-import time
 
 from rich.console import Console
 from rich.layout import Layout
