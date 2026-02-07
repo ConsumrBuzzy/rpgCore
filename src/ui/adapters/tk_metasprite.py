@@ -223,7 +223,7 @@ class EnhancedTkinterAdapter:
             width = 3 + y
             start_x = 8 - width // 2
             for x in range(start_x, start_x + width):
-                pixels[y][x] = 'dark_gray'
+                pixels[y][x] = 'gray40'  # Tkinter-compatible dark gray
         
         # Face shadow (rows 4-6)
         for y in range(4, 7):
@@ -242,9 +242,9 @@ class EnhancedTkinterAdapter:
         # Legs (rows 13-16)
         for y in range(13, 16):
             for x in range(6, 8):
-                pixels[y][x] = 'dark_gray'
+                pixels[y][x] = 'gray40'  # Tkinter-compatible dark gray
             for x in range(9, 11):
-                pixels[y][x] = 'dark_gray'
+                pixels[y][x] = 'gray40'
         
         return pixels
     
@@ -340,9 +340,10 @@ class EnhancedTkinterAdapter:
             
             # Cycle through roles for testing
             if self.frame_count % 90 == 0:  # Every 3 seconds
-                roles = list(CharacterRole)
-                current_index = roles.index(self.player_role)
-                self.player_role = roles[(current_index + 1) % len(roles)]
+                available_roles = list(self.metasprites.keys())
+                if available_roles:
+                    current_index = available_roles.index(self.player_role)
+                    self.player_role = available_roles[(current_index + 1) % len(available_roles)]
         
         # Simulate action resolution
         if current_time - self.last_action_time >= 2.0:
