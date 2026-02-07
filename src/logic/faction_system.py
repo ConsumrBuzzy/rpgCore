@@ -188,7 +188,7 @@ class FactionSystem:
                 INSERT OR REPLACE INTO factions (
                     id, name, type, color, home_base, current_power, territories,
                     relations, goals, expansion_rate, aggression_level, last_action_turn
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 faction.id,
                 faction.name,
@@ -197,7 +197,7 @@ class FactionSystem:
                 f"{faction.home_base[0]},{faction.home_base[1]}",
                 faction.current_power,
                 json.dumps(faction.territories),
-                json.dumps(faction.relations),
+                json.dumps({k: v.value for k, v in faction.relations.items()}),
                 json.dumps(faction.goals),
                 faction.expansion_rate,
                 faction.aggression_level,
