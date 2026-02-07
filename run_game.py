@@ -254,80 +254,88 @@ class SyntheticRealityDirector:
         if self.view_mode == "iso":
             # Isometric rendering
             try:
+                # Update game state in dashboard
+                self.director_console.update_game_state(self.game_state)
+                
+                # Render the complete dashboard
+                dashboard_panel = self.director_console.render_console()
+                self.console.print(dashboard_panel)
+                
+                # Show isometric view separately for clarity
                 frame = self.renderer.render_frame(self.game_state)
                 frame_str = self.renderer.get_frame_as_string(frame)
+                
+                print("🗺️ [bold green]DETAILED ISOMETRIC VIEW:[/bold green]")
+                print(frame_str)
+                
+                # Show status
+                print(f"📍 Position: ({self.game_state.position.x}, {self.game_state.position.y})")
+                print(f"🧭 Facing: {self.orientation_manager.get_facing_direction()}")
+                print(f"👁️  Perception: {perception_range}")
+                
+                # Show adjacent entities
+                adjacent_entities = self.renderer.get_adjacent_entities(self.game_state)
+                if adjacent_entities:
+                    print(f"👥 Nearby: {len(adjacent_entities)} entities")
+                    for entity in adjacent_entities:
+                        print(f"   - {entity.description}")
+                
+                # Check for dialogue activation
+                if len(adjacent_entities) > 0:
+                    print(f"💬 [bold yellow]DIALOGUE ACTIVATED[/bold yellow]")
+                    print("   NPCs are nearby. Use 'talk' to interact.")
+                
+                # Show player shape description
+                player_shape_desc = self.renderer.get_player_shape_description(self.game_state)
+                print(f"\n🎨 [bold magenta]PLAYER SHAPE PROFILE:[/bold magenta]")
+                print(player_shape_desc)
+                
             except Exception as e:
                 print(f"Error rendering isometric frame: {e}")
                 # Fallback to simple text
                 frame_str = f"Isometric view error: {e}"
             
-            # Get adjacent entities for dialogue activation
-            try:
-                adjacent_entities = self.renderer.get_adjacent_entities(self.game_state)
-            except Exception as e:
-                print(f"Error getting adjacent entities: {e}")
-                adjacent_entities = []
-            
-            print(f"\n🎬 [bold cyan]SCENE: {scene_name}[/bold cyan]")
-            print(f"📝 {description}")
-            print("-" * 60)
-            
-            # Show isometric view
-            print("🗺️ [bold green]ISOMETRIC VIEW:[/bold green]")
-            print(frame_str)
-            
-            # Show status
-            print(f"📍 Position: ({self.game_state.position.x}, {self.game_state.position.y})")
-            print(f"🧭 Facing: {self.orientation_manager.get_facing_direction()}")
-            print(f"👁️  Perception: {perception_range}")
-            
-            # Show adjacent entities
-            if adjacent_entities:
-                print(f"👥 Nearby: {len(adjacent_entities)} entities")
-                for entity in adjacent_entities:
-                    print(f"   - {entity.description}")
-            
-            # Check for dialogue activation
-            if len(adjacent_entities) > 0:
-                print(f"💬 [bold yellow]DIALOGUE ACTIVATED[/bold yellow]")
-                print("   NPCs are nearby. Use 'talk' to interact.")
-            
-            # Show player shape description
-            player_shape_desc = self.renderer.get_player_shape_description(self.game_state)
-            print(f"\n🎨 [bold magenta]PLAYER SHAPE PROFILE:[/bold magenta]")
-            print(player_shape_desc)
-            
         else:
             # Doom-style raycasting rendering
-            frame = self.renderer.render_frame(
-                self.game_state, 
-                self.game_state.player_angle, 
-                perception_range,
-                current_npc_mood
-            )
-            
-            frame_str = self.renderer.get_frame_as_string(frame)
-            
-            print(f"\n🎬 [bold cyan]SCENE: {scene_name}[/bold cyan]")
-            print(f"📝 {description}")
-            print("-" * 60)
-            
-            # Show 3D view
-            print("🎮 [bold green]3D VIEWPORT:[/bold green]")
-            print(frame_str)
-            
-            # Show status
-            print(f"📍 Position: ({self.game_state.position.x}, {self.game_state.position.y})")
-            print(f"🧭 Facing: {self.orientation_manager.get_facing_direction()}")
-            print(f"👁️  Perception: {perception_range}")
-            
-            if current_npc_mood:
-                print(f"😊 NPC Mood: {current_npc_mood}")
+            try:
+                # Update game state in dashboard
+                self.director_console.update_game_state(self.game_state)
+                
+                # Render the complete dashboard
+                dashboard_panel = self.director_console.render_console()
+                self.console.print(dashboard_panel)
+                
+                # Show 3D view separately for clarity
+                frame = self.renderer.render_frame(
+                    self.game_state, 
+                    self.game_state.player_angle, 
+                    perception_range,
+                    current_npc_mood
+                )
+                
+                frame_str = self.renderer.get_frame_as_string(frame)
+                
+                print("🎮 [bold green]DETAILED 3D VIEWPORT:[/bold green]")
+                print(frame_str)
+                
+                # Show status
+                print(f"📍 Position: ({self.game_state.position.x}, {self.game_state.position.y})")
+                print(f"🧭 Facing: {self.orientation_manager.get_facing_direction()}")
+                print(f"👁️  Perception: {perception_range}")
+                
+                if current_npc_mood:
+                    print(f"😊 NPC Mood: {current_npc_mood}")
+                
+            except Exception as e:
+                print(f"Error rendering 3D frame: {e}")
+                # Fallback to simple text
+                frame_str = f"3D view error: {e}"
         
         # Wait for scene duration
         if not self.auto_mode:
             input("\n[Press Enter to continue...]")
         else:
+            import time
             time.sleep(duration)
     
     def execute_auto_journey(self):
