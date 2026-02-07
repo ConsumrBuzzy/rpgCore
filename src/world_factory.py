@@ -45,6 +45,61 @@ class WorldFactory:
         
         logger.info("World Factory initialized with historical layer support")
     
+    def _load_blueprints(self) -> Dict[str, Dict[str, Any]]:
+        """Load procedural generation blueprints."""
+        return {
+            "tavern": {
+                "name": "The Rusty Flagon",
+                "description": "A dimly lit tavern filled with the smell of ale and roasted meat.",
+                "base_tags": ["indoor", "social", "safe"],
+                "npc_chance": 0.8,
+                "possible_npcs": ["bartender", "guard", "merchant", "bard"],
+                "item_chance": 0.3,
+                "possible_items": ["coin", "mug", "knife"],
+                "exits": {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+            },
+            "forest": {
+                "name": "Dense Forest",
+                "description": "Tall trees block out most of the sunlight. The air is thick with the smell of pine.",
+                "base_tags": ["outdoor", "nature", "wild"],
+                "npc_chance": 0.4,
+                "possible_npcs": ["bandit", "hermit", "hunter", "animal"],
+                "item_chance": 0.2,
+                "possible_items": ["stick", "berry", "feather"],
+                "exits": {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+            },
+            "plaza": {
+                "name": "Town Plaza",
+                "description": "A bustling open square surrounded by shops and stalls.",
+                "base_tags": ["outdoor", "social", "urban"],
+                "npc_chance": 0.9,
+                "possible_npcs": ["merchant", "guard", "noble", "child"],
+                "item_chance": 0.4,
+                "possible_items": ["coin", "fruit", "craft"],
+                "exits": {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+            },
+            "cave": {
+                "name": "Dark Cave",
+                "description": "A natural cave entrance beckons from the rocky hillside.",
+                "base_tags": ["indoor", "dark", "dangerous"],
+                "npc_chance": 0.6,
+                "possible_npcs": ["goblin", "bear", "hermit", "bat"],
+                "item_chance": 0.5,
+                "possible_items": ["gem", "bone", "torch"],
+                "exits": {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+            },
+            "shrine": {
+                "name": "Ancient Shrine",
+                "description": "Weathered stone pillars mark this sacred place.",
+                "base_tags": ["outdoor", "sacred", "quiet"],
+                "npc_chance": 0.3,
+                "possible_npcs": ["priest", "pilgrim", "guardian"],
+                "item_chance": 0.6,
+                "possible_items": ["holy_water", "relic", "incense"],
+                "exits": {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+            }
+        }
+    
     def create_world_with_history(
         self, 
         center_coord: Coordinate, 
