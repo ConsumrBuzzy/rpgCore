@@ -155,6 +155,11 @@ class FactionSystem:
         created_factions = {}
         
         for config in faction_configs:
+            # Convert relations from strings to FactionRelation enums
+            relations = {}
+            for other_id, relation_str in config.get("relations", {}).items():
+                relations[other_id] = FactionRelation(relation_str)
+            
             faction = Faction(
                 id=config["id"],
                 name=config["name"],
@@ -163,7 +168,7 @@ class FactionSystem:
                 home_base=tuple(config["home_base"]),
                 current_power=config.get("current_power", 0.5),
                 territories=[tuple(config["home_base"])],
-                relations=config.get("relations", {}),
+                relations=relations,
                 goals=config.get("goals", []),
                 expansion_rate=config.get("expansion_rate", 0.1),
                 aggression_level=config.get("aggression_level", 0.5)
