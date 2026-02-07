@@ -6,8 +6,8 @@ Tests the Voyager God Class in a beautiful, swaying 8-bit field.
 Forces the Voyager into a 4x4 square path while flowers sway in the background.
 """
 
-import sys
 import os
+import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from launch_movie import ObserverView
