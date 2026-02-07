@@ -204,11 +204,11 @@ class StaticCanvas:
             "active": self.is_active
         }
         
+        # Update dashboard state as well
+        self.dashboard.update_game_state(game_state)
+        
         # Mark as dirty for redraw
         self.state.mark_dirty()
-        
-        # Update dashboard state
-        self.dashboard.update_game_state(game_state)
     
     def refresh(self) -> bool:
         """
