@@ -80,9 +80,13 @@ class AssetDisplayTool:
             # Load into registry
             self.registry.load_from_parsed_data(parsed_data, sprites)
             
-            # Initialize PPU (pass None for canvas for now)
-            self.ppu = None  # Will be created after UI is built
-            logger.info("🎨 PPU will be initialized after UI")
+            # Initialize PPU now that canvas exists
+            if self.canvas:
+                try:
+                    self.ppu = NativeTkinterPPU(self.canvas, self.registry)
+                    logger.info("🎨 PPU initialized for asset display")
+                except Exception as e:
+                    logger.error(f"⚠️ PPU initialization failed: {e}")
             
         except Exception as e:
             logger.error(f"💥 System initialization failed: {e}")
