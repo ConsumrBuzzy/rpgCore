@@ -187,27 +187,27 @@ class WorldMap:
             exits=[]
         )
         
-        # Define Forest Path (0, -1) to (-20, -20)
-        forest_boundary = Boundary(-20, -20, 0, -1)
+        # Define Forest Path (0, 21) to (20, 40) - South of Town Square
+        forest_boundary = Boundary(0, 21, 20, 40)
         forest_landmarks = [
             Landmark(
                 name="South Exit",
                 env_type=EnvironmentType.FOREST_PATH,
-                coords=(0, -1),
+                coords=(10, 21),
                 description="Path leading south from the town square",
                 interaction_type="exit"
             ),
             Landmark(
                 name="Ancient Oak",
                 env_type=EnvironmentType.FOREST_PATH,
-                coords=(-10, -10),
+                coords=(10, 30),
                 description="Massive oak tree with carved initials",
                 interaction_type="object"
             ),
             Landmark(
                 name="Hidden Chest",
                 env_type=EnvironmentType.FOREST_PATH,
-                coords=(-15, -15),
+                coords=(15, 35),
                 description="Wooden chest concealed under foliage",
                 interaction_type="chest"
             )
@@ -217,7 +217,7 @@ class WorldMap:
             env_type=EnvironmentType.FOREST_PATH,
             name="Forest Path",
             boundary=forest_boundary,
-            entry_point=(0, -1),  # South exit from town
+            entry_point=(10, 21),  # South entrance from town
             tile_bank="forest_bank",
             landmarks=forest_landmarks,
             exits=[]
@@ -242,15 +242,15 @@ class WorldMap:
             Portal(
                 from_env=EnvironmentType.TOWN_SQUARE,
                 to_env=EnvironmentType.FOREST_PATH,
-                from_coords=(10, 0),    # South gate
-                to_coords=(0, -1),      # Forest path entrance
+                from_coords=(10, 20),   # South gate
+                to_coords=(10, 21),     # Forest path entrance
                 name="South Gate"
             ),
             Portal(
                 from_env=EnvironmentType.FOREST_PATH,
                 to_env=EnvironmentType.TOWN_SQUARE,
-                from_coords=(0, -1),    # Forest path entrance
-                to_coords=(10, 0),      # South gate
+                from_coords=(10, 21),   # Forest path entrance
+                to_coords=(10, 20),     # South gate
                 name="North Gate"
             )
         ]

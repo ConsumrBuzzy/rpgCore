@@ -99,6 +99,7 @@ class AutonomousDirector:
         self.playback_speed: float = 1.0
         self.cinematic_pause_duration: float = 2.0
         self.last_action_time: float = 0.0
+        self.is_paused: bool = False
         
         # Callbacks for external coordination
         self.on_beacon_generated: Optional[Callable[[NarrativeBeacon], None]] = None
