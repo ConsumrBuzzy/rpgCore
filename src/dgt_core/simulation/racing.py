@@ -14,6 +14,7 @@ import yaml
 
 from loguru import logger
 from .genetics import TurboGenome, TerrainType, genetic_registry
+from .terrain_mapper import terrain_mapper
 
 
 @dataclass
