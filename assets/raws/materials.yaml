@@ -1,0 +1,205 @@
+---
+# Raw Materials - ADR 089: Sovereign Schema Transformation
+# Dwarf Fortress style raw files with version support
+
+- object_type: material
+  id: wood_base
+  version: "1.1"
+  name: "Wood Base"
+  description: "Base wood material archetype"
+  tags: ["flammable", "organic", "wooden"]
+  resistances: ["blunt"]
+  weaknesses: ["fire", "sharp", "rot"]
+  physics:
+    weight: 0.7
+    hardness: 0.4
+    burn_temperature: 300
+    decay_rate: 0.1
+  inherits: null
+
+- object_type: material
+  id: oak_wood
+  version: "1.1"
+  name: "Oak Wood"
+  description: "Hardwood with superior durability"
+  tags: ["flammable", "organic", "wooden", "hardwood"]
+  inherits: "wood_base"
+  physics:
+    weight: 0.8
+    hardness: 0.6
+    burn_temperature: 350
+  wood_type: "hardwood"
+  grain_pattern: "prominent"
+
+- object_type: material
+  id: pine_wood
+  version: "1.1"
+  name: "Pine Wood"
+  description: "Lightweight softwood"
+  tags: ["flammable", "organic", "wooden", "softwood"]
+  inherits: "wood_base"
+  physics:
+    weight: 0.5
+    hardness: 0.3
+    burn_temperature: 250
+  wood_type: "softwood"
+  resin_content: 0.2
+
+- object_type: material
+  id: stone_base
+  version: "1.1"
+  name: "Stone Base"
+  description: "Base stone material archetype"
+  tags: ["heavy", "durable", "mineral"]
+  resistances: ["blunt", "sharp", "fire", "magic"]
+  weaknesses: ["acid", "earthquake"]
+  physics:
+    weight: 2.5
+    hardness: 0.9
+    erosion_resistance: 0.9
+    structural_integrity: 1.0
+
+- object_type: material
+  id: granite
+  version: "1.1"
+  name: "Granite"
+  description: "Igneous stone with high durability"
+  tags: ["heavy", "durable", "mineral", "igneous"]
+  inherits: "stone_base"
+  physics:
+    weight: 2.8
+    hardness: 0.95
+  geological_type: "igneous"
+  crystal_structure: "coarse_grained"
+
+- object_type: material
+  id: marble
+  version: "1.1"
+  name: "Marble"
+  description: "Metamorphic stone with elegant appearance"
+  tags: ["heavy", "durable", "mineral", "metamorphic"]
+  inherits: "stone_base"
+  physics:
+    weight: 2.6
+    hardness: 0.85
+  geological_type: "metamorphic"
+  veining_pattern: "elegant"
+
+- object_type: material
+  id: metal_base
+  version: "1.1"
+  name: "Metal Base"
+  description: "Base metal material archetype"
+  tags: ["conductive", "durable", "refined"]
+  resistances: ["blunt", "sharp"]
+  weaknesses: ["acid", "rust", "magic", "electricity"]
+  physics:
+    weight: 1.8
+    hardness: 0.8
+    conductivity: 1.0
+    rust_rate: 0.05
+
+- object_type: material
+  id: iron
+  version: "1.1"
+  name: "Iron"
+  description: "Common ferrous metal"
+  tags: ["conductive", "durable", "refined", "ferrous"]
+  inherits: "metal_base"
+  physics:
+    weight: 2.0
+    hardness: 0.7
+    rust_rate: 0.1
+  metal_type: "ferrous"
+  magnetic: true
+
+- object_type: material
+  id: steel
+  version: "1.1"
+  name: "Steel"
+  description: "Refined alloy with superior properties"
+  tags: ["conductive", "durable", "refined", "alloy"]
+  inherits: "metal_base"
+  physics:
+    weight: 2.2
+    hardness: 0.9
+    rust_rate: 0.02
+  metal_type: "alloy"
+  carbon_content: 0.02
+
+- object_type: material
+  id: organic_base
+  version: "1.1"
+  name: "Organic Base"
+  description: "Base organic material archetype"
+  tags: ["flammable", "decomposable", "natural"]
+  resistances: []
+  weaknesses: ["fire", "disease", "rot", "poison"]
+  physics:
+    weight: 0.3
+    hardness: 0.1
+    decay_rate: 0.2
+    growth_potential: 0.1
+
+- object_type: material
+  id: flower_petals
+  version: "1.1"
+  name: "Flower Petals"
+  description: "Delicate plant material"
+  tags: ["flammable", "decomposable", "natural", "plant"]
+  inherits: "organic_base"
+  physics:
+    weight: 0.1
+    hardness: 0.05
+    decay_rate: 0.3
+    pollen_count: 5
+  plant_part: "petals"
+  fragrance: "floral"
+
+- object_type: material
+  id: water_base
+  version: "1.1"
+  name: "Water Base"
+  description: "Base liquid material"
+  tags: ["fluid", "wet", "passable", "clean"]
+  resistances: []
+  weaknesses: ["evaporation", "absorption", "freezing"]
+  physics:
+    weight: 1.0
+    hardness: 0.0
+    viscosity: 1.0
+    evaporation_rate: 0.01
+    freezing_point: 0
+
+- object_type: material
+  id: crystal
+  version: "1.1"
+  name: "Crystal"
+  description: "Magical resonant crystal"
+  tags: ["magical", "resonant", "fragile", "mineral"]
+  resistances: ["blunt"]
+  weaknesses: ["sharp", "magic", "sonic"]
+  physics:
+    weight: 1.2
+    hardness: 0.4
+    magical_resonance: 0.8
+    fragility: "high"
+  crystal_type: "magical"
+  resonance_frequency: "high"
+
+- object_type: material
+  id: ancient_stone
+  version: "1.1"
+  name: "Ancient Stone"
+  description: "Mysterious ancient stone"
+  tags: ["ancient", "mysterious", "structural", "magical"]
+  resistances: ["blunt", "sharp", "fire", "magic", "time"]
+  weaknesses: ["divine_power"]
+  physics:
+    weight: 3.0
+    hardness: 1.0
+    erosion_resistance: 1.0
+    age: "ancient"
+    mystery_level: "high"
+  magical_ward: true
+  temporal_stability: "absolute"
