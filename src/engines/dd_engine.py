@@ -148,6 +148,14 @@ class BinaryROM:
             "tavern": "tavern_bank"
         }
         
+        # Mock interaction triggers for demo
+        self.interaction_triggers = {
+            (10, 25): [Trigger((10, 25), "forest_gate", {"new_environment": "town"}, True)],
+            (10, 20): [Trigger((10, 20), "town_gate", {"new_environment": "town"}, True)],
+            (20, 10): [Trigger((20, 10), "tavern_entrance", {"new_environment": "tavern"}, True)],
+            (25, 30): [Trigger((25, 30), "tavern_complete", {"effect_type": "completion", "duration": 5.0}, True)]
+        }
+        
         logger.info("✅ Assets loaded successfully")
     
     def _create_mock_collision_map(self, width: int, height: int) -> List[List[bool]]:
