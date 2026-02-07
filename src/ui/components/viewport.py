@@ -120,7 +120,7 @@ class ViewportComponent:
             Rich Panel containing the rendered frame
         """
         # Update state
-        self.state.player_position = (game_state.position.x, game_state.y)
+        self.state.player_position = (game_state.position.x, game_state.position.y)
         self.state.player_angle = game_state.player_angle
         
         # Calculate perception range
