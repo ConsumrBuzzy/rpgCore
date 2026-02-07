@@ -22,6 +22,7 @@ import threading
 import time
 import readline
 import atexit
+import json
 from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
 from pathlib import Path
@@ -76,7 +77,9 @@ class DeveloperConsole:
             "clear": self._handle_clear_command,
             "history": self._handle_history_command,
             "performance": self._handle_performance_command,
-            "circuits": self._handle_circuits_command
+            "circuits": self._handle_circuits_command,
+            "paint": self._handle_paint_command,
+            "cartographer": self._handle_cartographer_command
         }
         
         # Load command history
@@ -161,7 +164,9 @@ class DeveloperConsole:
             "clear": [],
             "history": [],
             "performance": ["stats", "export", "reset"],
-            "circuits": ["status", "reset", "stats"]
+            "circuits": ["status", "reset", "stats"],
+            "paint": ["tile", "area", "fill", "pattern"],
+            "cartographer": ["launch", "sync", "save", "load"]
         }
         return action_map.get(pillar, [])
     
@@ -714,6 +719,274 @@ class DeveloperConsole:
             self._output("❌ Unknown circuits action")
             self._output("Available actions: status, reset, stats")
     
+    async def _handle_paint_command(self, cmd: ConsoleCommand) -> None:
+        """Handle painting commands for tile manipulation"""
+        if cmd.action == "tile":
+            if len(cmd.args) >= 3:
+                try:
+                    x, y = int(cmd.args[0]), int(cmd.args[1])
+                    tile_type_str = cmd.args[2].upper()
+                    
+                    if validate_position((x, y)):
+                        tile_type = TileType[tile_type_str]
+                        await self._paint_tile(x, y, tile_type)
+                        self._output(f"🎨 Painted {tile_type_str} at ({x}, {y})")
+                    else:
+                        self._output("❌ Invalid position")
+                except (ValueError, KeyError):
+                    self._output("❌ Invalid coordinates or tile type")
+            else:
+                self._output("❌ Usage: /paint tile x y TILE_TYPE")
+        
+        elif cmd.action == "area":
+            if len(cmd.args) >= 5:
+                try:
+                    x1, y1 = int(cmd.args[0]), int(cmd.args[1])
+                    x2, y2 = int(cmd.args[2]), int(cmd.args[3])
+                    tile_type_str = cmd.args[4].upper()
+                    
+                    await self._paint_area(x1, y1, x2, y2, TileType[tile_type_str])
+                    self._output(f"🎨 Painted area ({x1},{y1}) to ({x2},{y2}) with {tile_type_str}")
+                except (ValueError, KeyError):
+                    self._output("❌ Invalid coordinates or tile type")
+            else:
+                self._output("❌ Usage: /paint area x1 y1 x2 y2 TILE_TYPE")
+        
+        elif cmd.action == "fill":
+            if len(cmd.args) >= 2:
+                try:
+                    x, y = int(cmd.args[0]), int(cmd.args[1])
+                    await self._fill_area(x, y)
+                    self._output(f"🎨 Filled area starting from ({x}, {y})")
+                except ValueError:
+                    self._output("❌ Invalid coordinates")
+            else:
+                self._output("❌ Usage: /paint fill x y")
+        
+        elif cmd.action == "pattern":
+            if len(cmd.args) >= 2:
+                pattern_name = cmd.args[0].lower()
+                if len(cmd.args) >= 4:
+                    x, y = int(cmd.args[1]), int(cmd.args[2])
+                    size = int(cmd.args[3])
+                    await self._paint_pattern(pattern_name, x, y, size)
+                    self._output(f"🎨 Applied pattern '{pattern_name}' at ({x}, {y}) size {size}")
+                else:
+                    self._output("❌ Usage: /paint pattern PATTERN_NAME x y size")
+            else:
+                self._output("❌ Available patterns: checkerboard, cross, diamond, spiral")
+        
+        else:
+            self._output("❌ Unknown paint action")
+            self._output("Available actions: tile, area, fill, pattern")
+    
+    async def _handle_cartographer_command(self, cmd: ConsoleCommand) -> None:
+        """Handle Cartographer tool commands"""
+        if cmd.action == "launch":
+            await self._launch_cartographer()
+        
+        elif cmd.action == "sync":
+            await self._sync_with_cartographer()
+        
+        elif cmd.action == "save":
+            if cmd.args:
+                prefab_name = cmd.args[0]
+                await self._save_cartographer_prefab(prefab_name)
+            else:
+                self._output("❌ Usage: /cartographer save PREFAB_NAME")
+        
+        elif cmd.action == "load":
+            if cmd.args:
+                prefab_name = cmd.args[0]
+                await self._load_cartographer_prefab(prefab_name)
+            else:
+                self._output("❌ Usage: /cartographer load PREFAB_NAME")
+        
+        else:
+            self._output("❌ Unknown cartographer action")
+            self._output("Available actions: launch, sync, save, load")
+    
+    # === PAINTING HELPER METHODS ===
+    
+    async def _paint_tile(self, x: int, y: int, tile_type: TileType) -> None:
+        """Paint a single tile"""
+        world = self.dgt_system.world_engine
+        if world:
+            await world.set_tile(x, y, tile_type)
+    
+    async def _paint_area(self, x1: int, y1: int, x2: int, y2: int, tile_type: TileType) -> None:
+        """Paint a rectangular area"""
+        world = self.dgt_system.world_engine
+        if world:
+            for x in range(min(x1, x2), max(x1, x2) + 1):
+                for y in range(min(y1, y2), max(y1, y2) + 1):
+                    if validate_position((x, y)):
+                        await world.set_tile(x, y, tile_type)
+    
+    async def _fill_area(self, start_x: int, start_y: int) -> None:
+        """Fill connected area (flood fill)"""
+        world = self.dgt_system.world_engine
+        if not world:
+            return
+        
+        # Get target tile type (the one to replace)
+        target_tile = await world.get_tile(start_x, start_y)
+        replacement_tile = TileType.GRASS  # Default replacement
+        
+        # Simple flood fill implementation
+        visited = set()
+        to_fill = [(start_x, start_y)]
+        
+        while to_fill:
+            x, y = to_fill.pop()
+            if (x, y) in visited or not validate_position((x, y)):
+                continue
+            
+            current_tile = await world.get_tile(x, y)
+            if current_tile != target_tile:
+                continue
+            
+            visited.add((x, y))
+            await world.set_tile(x, y, replacement_tile)
+            
+            # Add neighbors
+            to_fill.extend([(x+1, y), (x-1, y), (x, y+1), (x, y-1)])
+    
+    async def _paint_pattern(self, pattern: str, center_x: int, center_y: int, size: int) -> None:
+        """Paint a pattern at the specified location"""
+        world = self.dgt_system.world_engine
+        if not world:
+            return
+        
+        patterns = {
+            "checkerboard": self._create_checkerboard_pattern,
+            "cross": self._create_cross_pattern,
+            "diamond": self._create_diamond_pattern,
+            "spiral": self._create_spiral_pattern
+        }
+        
+        if pattern in patterns:
+            tiles_to_paint = patterns[pattern](center_x, center_y, size)
+            for x, y, tile_type in tiles_to_paint:
+                if validate_position((x, y)):
+                    await world.set_tile(x, y, tile_type)
+        else:
+            self._output(f"❌ Unknown pattern: {pattern}")
+    
+    def _create_checkerboard_pattern(self, cx: int, cy: int, size: int) -> List[Tuple[int, int, TileType]]:
+        """Create checkerboard pattern"""
+        tiles = []
+        for x in range(cx - size, cx + size + 1):
+            for y in range(cy - size, cy + size + 1):
+                if (x + y) % 2 == 0:
+                    tiles.append((x, y, TileType.STONE))
+                else:
+                    tiles.append((x, y, TileType.GRASS))
+        return tiles
+    
+    def _create_cross_pattern(self, cx: int, cy: int, size: int) -> List[Tuple[int, int, TileType]]:
+        """Create cross pattern"""
+        tiles = []
+        for i in range(-size, size + 1):
+            tiles.append((cx + i, cy, TileType.STONE))  # Horizontal
+            tiles.append((cx, cy + i, TileType.STONE))  # Vertical
+        return tiles
+    
+    def _create_diamond_pattern(self, cx: int, cy: int, size: int) -> List[Tuple[int, int, TileType]]:
+        """Create diamond pattern"""
+        tiles = []
+        for i in range(size + 1):
+            for j in range(size + 1 - i):
+                tiles.append((cx + i, cy + j, TileType.FOREST))
+                tiles.append((cx - i, cy + j, TileType.FOREST))
+                tiles.append((cx + i, cy - j, TileType.FOREST))
+                tiles.append((cx - i, cy - j, TileType.FOREST))
+        return tiles
+    
+    def _create_spiral_pattern(self, cx: int, cy: int, size: int) -> List[Tuple[int, int, TileType]]:
+        """Create spiral pattern"""
+        tiles = []
+        x, y = cx, cy
+        dx, dy = 0, -1
+        
+        for i in range(size * size):
+            tiles.append((x, y, TileType.WATER if i % 3 == 0 else TileType.STONE))
+            
+            if x == y or (x < 0 and x == -y) or (x > 0 and x == 1 - y):
+                dx, dy = -dy, dx
+            
+            x += dx
+            y += dy
+        
+        return tiles
+    
+    # === CARTOGRAPHER INTEGRATION ===
+    
+    async def _launch_cartographer(self) -> None:
+        """Launch Cartographer tool"""
+        try:
+            import subprocess
+            import sys
+            
+            # Launch Cartographer in separate process
+            cartographer_path = Path(__file__).parent / "cartographer.py"
+            subprocess.Popen([sys.executable, str(cartographer_path)])
+            
+            self._output("🗺️ Cartographer launched in separate window")
+            
+        except Exception as e:
+            self._output(f"❌ Failed to launch Cartographer: {e}")
+    
+    async def _sync_with_cartographer(self) -> None:
+        """Sync world state with Cartographer"""
+        # This would implement communication with running Cartographer
+        self._output("🔄 Cartographer sync not yet implemented")
+    
+    async def _save_cartographer_prefab(self, prefab_name: str) -> None:
+        """Save current world as Cartographer prefab"""
+        world = self.dgt_system.world_engine
+        if world:
+            try:
+                prefab_path = Path(f"assets/prefabs/{prefab_name}.json")
+                prefab_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                # Export world data
+                prefab_data = await world.export_region(0, 0, 50, 50)
+                
+                # Add metadata
+                prefab_data['metadata'] = {
+                    'created_by': 'Developer Console',
+                    'created_at': time.time(),
+                    'name': prefab_name
+                }
+                
+                # Save to file
+                with open(prefab_path, 'w') as f:
+                    json.dump(prefab_data, f, indent=2)
+                
+                self._output(f"💾 Prefab saved: {prefab_name}")
+                
+            except Exception as e:
+                self._output(f"❌ Failed to save prefab: {e}")
+    
+    async def _load_cartographer_prefab(self, prefab_name: str) -> None:
+        """Load Cartographer prefab"""
+        world = self.dgt_system.world_engine
+        if world:
+            try:
+                prefab_path = Path(f"assets/prefabs/{prefab_name}.json")
+                
+                with open(prefab_path, 'r') as f:
+                    prefab_data = json.load(f)
+                
+                # Import to world
+                await world.import_region(prefab_data)
+                
+                self._output(f"📂 Prefab loaded: {prefab_name}")
+                
+            except Exception as e:
+                self._output(f"❌ Failed to load prefab: {e}")
+    
     async def _handle_help_command(self, cmd: ConsoleCommand) -> None:
         """Show help information"""
         self._output("🖥️ Developer Console Help")
@@ -753,6 +1026,19 @@ class DeveloperConsole:
         self._output("  /history [clear]")
         self._output("  /performance stats|export|reset")
         self._output("  /circuits status|reset|stats")
+        self._output("")
+        self._output("Painting Commands:")
+        self._output("  /paint tile x y TILE_TYPE")
+        self._output("  /paint area x1 y1 x2 y2 TILE_TYPE")
+        self._output("  /paint fill x y")
+        self._output("  /paint pattern PATTERN_NAME x y size")
+        self._output("")
+        self._output("Cartographer Commands:")
+        self._output("  /cartographer launch")
+        self._output("  /cartographer sync")
+        self._output("  /cartographer save PREFAB_NAME")
+        self._output("  /cartographer load PREFAB_NAME")
+        self._output("")
         self._output("  /help")
         self._output("")
         self._output("Features:")
