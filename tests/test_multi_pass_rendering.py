@@ -447,6 +447,10 @@ class TestGeometricProfilePass:
         """Test rotation animation."""
         pass_obj = GeometricProfilePass(ProfileConfig(animate_rotation=True))
         
+        # Reset rotation angle and time for testing
+        pass_obj.rotation_angle = 0.0
+        pass_obj.last_rotation_time = time.time()
+        
         initial_angle = pass_obj.rotation_angle
         pass_obj._update_rotation(time.time())
         
