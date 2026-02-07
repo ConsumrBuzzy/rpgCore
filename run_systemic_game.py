@@ -22,6 +22,10 @@ from typing import Optional
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
+# Enable debug logging
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 from core.system_config import create_default_config
 from engines.world import WorldEngine, WorldEngineFactory
 from engines.mind import DDEngine, DDEngineFactory

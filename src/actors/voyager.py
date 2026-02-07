@@ -497,7 +497,7 @@ class Voyager:
         object_registry = self.dd_engine.object_registry
         
         # Debug: Check what objects are registered
-        logger.debug(f"🔍 Objects in registry: {list(object_registry.world_objects.keys())}")
+        print(f"🔍 DEBUG: Objects in registry: {list(object_registry.world_objects.keys())}")
         
         # Check adjacent positions (including current position)
         adjacent_positions = [
@@ -508,7 +508,7 @@ class Voyager:
             (current_position[0], current_position[1] - 1),  # Up
         ]
         
-        logger.debug(f"🔍 Checking positions: {adjacent_positions}")
+        print(f"🔍 DEBUG: Checking positions: {adjacent_positions}")
         
         # Prioritize objects by interaction difficulty and value
         best_interaction = None
@@ -519,7 +519,7 @@ class Voyager:
                 continue
                 
             obj = object_registry.get_object_at(pos)
-            logger.debug(f"🔍 Object at {pos}: {obj}")
+            print(f"🔍 DEBUG: Object at {pos}: {obj}")
             
             if not obj or not obj.characteristics:
                 continue
@@ -532,7 +532,7 @@ class Voyager:
             
             # Calculate interaction priority based on object characteristics
             priority = self._calculate_interaction_priority(obj, char)
-            logger.debug(f"🔍 {obj.asset_id} at {pos} priority: {priority}")
+            print(f"🔍 DEBUG: {obj.asset_id} at {pos} priority: {priority}")
             
             if priority > best_priority:
                 # Choose the best available interaction
@@ -547,8 +547,9 @@ class Voyager:
                         timestamp=time.time()
                     )
                     best_priority = priority
-                    logger.info(f"🎯 Found best interaction: {best_interaction_type} with {obj.asset_id} at {pos}")
+                    print(f"🎯 DEBUG: Found best interaction: {best_interaction_type} with {obj.asset_id} at {pos}")
         
+        print(f"🔍 DEBUG: Final best_interaction: {best_interaction}")
         return best_interaction
     
     def _calculate_interaction_priority(self, obj, characteristics) -> int:
