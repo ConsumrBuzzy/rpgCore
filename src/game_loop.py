@@ -654,8 +654,7 @@ def main():
     # Start game
     game = GameREPL(
         auto_mode=args.auto,
-        personality=args.personality,
-        max_turns=args.max_turns
+        personality=args.personality
     )
     game.run()
 
