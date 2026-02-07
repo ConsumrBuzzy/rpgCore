@@ -208,8 +208,9 @@ class HeartbeatController:
         # Check for new discoveries (Interest Points)
         await self._check_discoveries(state)
         
-        # Update subtitles
-        await self.chronicler.update_subtitles(state)
+        # Update subtitles (if chronicler is available)
+        if self.chronicler:
+            await self.chronicler.update_subtitles(state)
     
     async def _check_discoveries(self, state: GameState) -> None:
         """Check for new Interest Point discoveries"""
@@ -233,9 +234,13 @@ class HeartbeatController:
         # Change Voyager state to pondering
         await self.dd_engine.update_voyager_state(VoyagerState.STATE_PONDERING)
         
-        # Submit ponder intent to Chronicler
-        ponder_intent = self.chronicler.create_ponder_intent(interest_point, state)
-        await self.chronicler.submit_ponder_query(ponder_intent)
+        # Submit ponder intent to Chronicler (if available)
+        if self.chronicler:
+            ponder_intent = self.chronicler.create_ponder_intent(interest_point, state)
+            await self.chronicler.submit_ponder_query(ponder_intent)
+        else:
+            # Fallback: just log the pondering
+            logger.info(f"🤔 Voyager pondering Interest Point at {interest_point.position} (Chronicler not available)")
         
         logger.info(f"🤔 Voyager pondering Interest Point at {interest_point.position}")
     
