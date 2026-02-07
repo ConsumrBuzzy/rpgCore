@@ -65,6 +65,10 @@ class DeterministicArbiter:
         if "hostile" in context.lower():
             new_npc_state = "hostile"
             
+        # PROACTIVE: Check if path is ALREADY clear from context
+        # (e.g. Guard is already charmed/dead from previous turns)
+        is_path_clear = "charmed" in context.lower() or "dead" in context.lower()
+
         if intent == "combat":
             new_npc_state = "hostile"
             difficulty_mod += 2 # Combat is inherently tense
@@ -75,7 +79,11 @@ class DeterministicArbiter:
             if new_npc_state == "hostile":
                 difficulty_mod += 5
             new_npc_state = "charmed"
-
+            is_path_clear = True # Immediate clearing
+        elif intent == "force" and "guard" in player_input.lower():
+             # If we tried to force a guard, we assume it's combat-like
+             new_npc_state = "hostile"
+             
         # 3. Build Logic Trace
         internal_logic = f"Deterministic Logic: Intent '{intent}' evaluated against tags {room_tags}. "
         if reasons:
@@ -93,13 +101,13 @@ class DeterministicArbiter:
             "investigate": "A keen eye for detail.",
             "charm": "A silver-tongued approach.",
             "stealth": "A shadow in the corner.",
-            "distract": "A clever diversion."
+            "distract": "A clever diversion.",
+            "leave_area": "A swift departure."
         }
         seed = seeds.get(intent, "A standard attempt.")
 
-        # 4. Deterministic Exit Condition (The "Movie" Transition)
-        # If the target NPC is charmed or dead, signal that the path is clear.
-        if new_npc_state in ["charmed", "dead"]:
+        # 4b. Deterministic Exit Condition (The "Movie" Transition)
+        if is_path_clear or new_npc_state in ["charmed", "dead"]:
             seed += " | Path Clear."
             internal_logic += " | Transition Trigger: Path is now clear."
 

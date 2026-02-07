@@ -31,6 +31,8 @@ DC_TABLE = {
     "charm": 12,       # Social interactions vary
     "magic": 14,       # Magic is inherently difficult
     "stealth": 13,     # Harder than average
+    "leave_area": 10   # Standard exit DC
+    ,
     
     # Tag-based Modifiers (Impact on DC)
     # Positive values make it HARDER (higher DC from base)
@@ -54,6 +56,9 @@ DC_TABLE = {
         "loud": {
             "stealth": -5,  # Masked by noise
             "charm": 2      # Hard to be heard
+        },
+        "path_clear": {
+            "leave_area": -15 # Trivial once path is cleared
         }
     }
 }
@@ -199,7 +204,8 @@ class Quartermaster:
             "charm": "charisma",
             "persuade": "charisma",
             "social": "charisma",
-            "distract": "charisma"
+            "distract": "charisma",
+            "leave_area": "dexterity"
         }
         
         attr_name = mapping.get(intent, "luck") # Default to luck (0) if unknown
