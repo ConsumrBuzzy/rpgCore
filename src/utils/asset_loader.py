@@ -139,7 +139,8 @@ class AssetLoader:
                         integrity=char_data.get('integrity', 100),
                         triggers=char_data.get('triggers', {}),
                         tags=char_data.get('tags', []),
-                        interaction_hooks=char_data.get('interaction_hooks', [])
+                        interaction_hooks=char_data.get('interaction_hooks', []),
+                        d20_checks=char_data.get('d20_checks', {})
                     )
                 
                 # Create asset definition
