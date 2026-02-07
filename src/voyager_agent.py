@@ -11,20 +11,20 @@ Design:
 - Vends natural language action strings
 """
 
-import os
-from pydantic import BaseModel, Field
-from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
-from loguru import logger
-
+from voyager_logic import STANDARD_ACTIONS
 
 class VoyagerDecision(BaseModel):
     """Single action decision from the Voyager."""
     
-    selected_intent: str = Field(description="The intent_id chosen from the library (e.g., 'force', 'charm', 'stealth')")
-    action: str = Field(description="The natural language command to send to the loop")
-    strategic_reasoning: str = Field(description="Why this choice makes sense given my stats/tags")
-    internal_monologue: str = Field(description="My current emotional state (e.g., 'I'm tired of these sticky floors')")
+    selected_action_id: str = Field(description="The ID of the pre-baked action chosen from the menu")
+    custom_flair: str = Field(description="A short natural language flavor for the action (e.g., 'I slam my fist on the table')")
+    strategic_reasoning: str = Field(description="Why this choice fits the personality and stats")
+    internal_monologue: str = Field(description="My current emotional state")
+    
+    @property
+    def action(self) -> str:
+        """Compat property for game loop."""
+        return self.custom_flair
 
 
 class VoyagerAgent:
@@ -60,7 +60,7 @@ class VoyagerAgent:
         )
     }
     
-    def __init__(self, personality: str = "curious", model_name: str = "qwen2.5-coder:3b"):
+    def __init__(self, personality: str = "curious", model_name: str = "llama3.2:3b"):
         """
         Initialize Voyager agent.
         
@@ -120,53 +120,32 @@ class VoyagerAgent:
         player_stats: dict,
         turn_history: list[str] | None = None
     ) -> VoyagerDecision:
-        """
-        Decide next action based on current game state.
+        """Decide next action using deterministic menu."""
         
-        Args:
-            scene_context: Current room description, NPCs, items
-            player_stats: Player HP, Gold, Inventory
-            turn_history: Last 3 actions (for stutter check)
+        # Get pre-baked options
+        options = STANDARD_ACTIONS.get(self.personality, STANDARD_ACTIONS["curious"])
         
-        Returns:
-            VoyagerDecision with action string and reasoning
-        """
+        # Inject into prompt
+        options_str = "\n".join([f"- ID: {o['id']} | Label: {o['label']} (Uses {o['stat']})" for o in options])
+        
         # Build prompt
         prompt = (
-            f"Current Scene:\n{scene_context}\n\n"
-            f"Your Stats:\n"
-            f"- HP: {player_stats.get('hp', 100)}/{player_stats.get('max_hp', 100)}\n"
-            f"- Gold: {player_stats.get('gold', 0)}\n"
-            f"- Attributes: {player_stats.get('attributes', {})}\n"
+            f"CONTEXT:\n{scene_context}\n\n"
+            f"YOUR STATS:\n{player_stats}\n\n"
+            f"AVAILABLE ACTIONS (CHOOSE ONE):\n{options_str}\n\n"
+            "INSTRUCTIONS:\n"
+            "1. Analyze your stats and the context.\n"
+            "2. Choose the BEST Action ID from the list above.\n"
+            "3. Write a short 'custom_flair' sentence to describe doing it.\n"
+            "4. Explain your reasoning.\n\n"
+            "Make your decision now."
         )
         
-        if player_stats.get('inventory'):
-            # Inventory is now list of Item objects (dicts), need to parse
-            items = []
-            for item in player_stats['inventory']:
-                # Handle both dict (if serialized) and Item object
-                if isinstance(item, dict):
-                    name = item.get('name', 'Unknown')
-                    bonus = item.get('stat_bonus', '')
-                else:
-                    name = item.name
-                    bonus = item.stat_bonus
-                items.append(f"{name} ({bonus})")
-            prompt += f"- Inventory: {', '.join(items)}\n"
-        
-        if turn_history:
-            prompt += f"\nRecent Actions:\n"
-            for action in turn_history[-3:]:
-                prompt += f"  - {action}\n"
-            prompt += "\n(Avoid repeating the same action)\n"
-        
-        prompt += "\nWhat is your strategic move?"
-        
-        logger.debug(f"Voyager deciding action...")
+        logger.debug(f"Voyager deciding from menu...")
         
         # Call LLM
         result = await self.agent.run(prompt)
         
-        logger.info(f"Voyager decided: {result.data.action[:50]}...")
+        logger.info(f"Voyager decided: {result.data.selected_action_id}")
         
         return result.data
