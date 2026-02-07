@@ -1058,3 +1058,5 @@
 21:43:12 | DEBUG | Chronicler streaming: leave_area
 21:43:12 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
 21:43:12 | INFO | Game saved to savegame.json
+21:43:56 | INFO | Game loaded from savegame.json
+21:44:13 | INFO | Game loaded from savegame.json
