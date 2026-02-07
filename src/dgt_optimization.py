@@ -352,6 +352,25 @@ class DGTOptimizationIntegrator:
                 f.write(f"- **Pre-cached Latency:** {narrative_latency:.3f}s\n")
                 f.write(f"- **Target:** <0.01s\n\n")
             
+            # Trajectory-Aware Performance Analysis
+            if "turn_around_benchmark" in results["steps"]:
+                f.write("### Trajectory-Aware Performance\n\n")
+                turn_around = results["steps"]["turn_around_benchmark"]
+                
+                success_rate = turn_around.get("success_rate", 0)
+                recovery_time = turn_around.get("avg_recovery_time", 0)
+                
+                if success_rate >= 0.8 and recovery_time <= 0.5:
+                    f.write("🏆 **EXCELLENT**: Trajectory changes handled gracefully!\n")
+                elif success_rate >= 0.6:
+                    f.write("✅ **GOOD**: Most trajectory changes work well\n")
+                else:
+                    f.write("⚠️ **NEEDS IMPROVEMENT**: Trajectory handling needs work\n")
+                
+                f.write(f"- **Success Rate:** {success_rate:.1%}\n")
+                f.write(f"- **Avg Recovery Time:** {recovery_time:.3f}s\n")
+                f.write(f"- **Target:** >80% success, <0.5s recovery\n\n")
+            
             # Recommendations
             f.write("## Recommendations\n\n")
             for rec in results.get("recommendations", []):
