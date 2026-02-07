@@ -87,8 +87,10 @@ class SmoothDemo:
         self.particle_sprite = tk.PhotoImage(width=8, height=8)
         self._draw_particle(self.particle_sprite)
         
-        # Cache sprites in handler
-        self.window_handler.raster_cache.cache_sprite("voyager", self.voyager_sprite)
+        # Try to use Tiny Farm Voyager sprite if available
+        self._setup_voyager_sprite()
+        
+        # Cache remaining sprites in handler
         for i, grass in enumerate(self.grass_sprites):
             self.window_handler.raster_cache.cache_sprite(f"grass_{i}", grass)
         self.window_handler.raster_cache.cache_sprite("shadow", self.shadow_sprite)
@@ -300,7 +302,7 @@ class SmoothDemo:
         self.window_handler.queue_command(text_command)
     
     def _setup_static_background(self) -> None:
-        """ADR 109: Setup static background tiles for baking"""
+        """ADR 109: Setup static background tiles for baking with Tiny Farm integration"""
         # Create a grass field with some variation
         for y in range(0, 500, 16):
             for x in range(0, 800, 16):
@@ -308,11 +310,86 @@ class SmoothDemo:
                 pattern = ((x // 16) + (y // 16)) % 4
                 self.window_handler.set_static_tile(x, y, f"grass_{pattern}")
         
-        # Add some static decorative elements
+        # Try to load Tiny Farm assets for professional visuals
+        tiny_farm_loaded = self._load_tiny_farm_assets()
+        
+        if not tiny_farm_loaded:
+            # Fallback to simple procedural assets
+            self._setup_procedural_assets()
+        
+        logger.info(f"🏠 Static background setup: {len(self.window_handler.static_tiles)} tiles")
+    
+    def _load_tiny_farm_assets(self) -> bool:
+        """Load Tiny Farm assets for professional visuals"""
+        try:
+            # Try to import Tiny Farm loader
+            from src.assets.tiny_farm_sheet_loader import create_tiny_farm_sheet_loader
+            
+            # Create Tiny Farm loader
+            tiny_farm_loader = create_tiny_farm_sheet_loader()
+            
+            # Get available sprites
+            all_sprites = tiny_farm_loader.get_all_sprites()
+            
+            if len(all_sprites) > 0:
+                logger.info(f"🚜 Loaded {len(all_sprites)} Tiny Farm sprites")
+                
+                # Add Tiny Farm sprites to cache
+                for sprite_id, sprite in all_sprites.items():
+                    self.window_handler.raster_cache.cache_sprite(f"tiny_farm_{sprite_id}", sprite)
+                
+                # Place Tiny Farm assets in background
+                self._place_tiny_farm_assets(tiny_farm_loader)
+                return True
+            else:
+                logger.warning("⚠️ No Tiny Farm sprites found")
+                return False
+                
+        except Exception as e:
+            logger.warning(f"⚠️ Could not load Tiny Farm assets: {e}")
+            return False
+    
+    def _place_tiny_farm_assets(self, tiny_farm_loader) -> None:
+        """Place Tiny Farm assets in the background"""
+        # Place trees (using Tiny Farm tree sprites if available)
+        tree_positions = [(100, 100), (300, 150), (600, 200), (700, 400), (150, 350)]
+        for i, (tx, ty) in enumerate(tree_positions):
+            # Try Tiny Farm tree first, then fallback
+            tree_sprite_id = f"tiny_farm_swaying_oak"  # From Tiny Farm mapping
+            if tiny_farm_loader.get_single_sprite(tree_sprite_id.replace("tiny_farm_", "")):
+                self.window_handler.set_static_tile(tx, ty, tree_sprite_id)
+            else:
+                # Fallback to procedural tree
+                tree_sprite = tk.PhotoImage(width=32, height=32)
+                self._draw_tree(tree_sprite)
+                tree_id = f"tree_{tx}_{ty}"
+                self.window_handler.raster_cache.cache_sprite(tree_id, tree_sprite)
+                self.window_handler.set_static_tile(tx, ty, tree_id)
+        
+        # Place objects (chests, houses, etc.)
+        object_positions = [(200, 250), (400, 300), (500, 150)]
+        for i, (ox, oy) in enumerate(object_positions):
+            # Try Tiny Farm objects
+            object_sprites = ["tiny_farm_iron_lockbox", "tiny_farm_house", "tiny_farm_chicken"]
+            for obj_sprite_id in object_sprites:
+                if tiny_farm_loader.get_single_sprite(obj_sprite_id.replace("tiny_farm_", "")):
+                    self.window_handler.set_static_tile(ox, oy, obj_sprite_id)
+                    break
+            else:
+                # Fallback to procedural rock
+                rock_sprite = tk.PhotoImage(width=16, height=16)
+                self._draw_rock(rock_sprite)
+                rock_id = f"rock_{ox}_{oy}"
+                self.window_handler.raster_cache.cache_sprite(rock_id, rock_sprite)
+                self.window_handler.set_static_tile(ox, oy, rock_id)
+        
+        logger.info("🚜 Tiny Farm assets placed in background")
+    
+    def _setup_procedural_assets(self) -> None:
+        """Setup procedural assets as fallback"""
         # Trees
         tree_positions = [(100, 100), (300, 150), (600, 200), (700, 400), (150, 350)]
         for tx, ty in tree_positions:
-            # Create simple tree sprite
             tree_sprite = tk.PhotoImage(width=32, height=32)
             self._draw_tree(tree_sprite)
             tree_id = f"tree_{tx}_{ty}"
@@ -328,7 +405,7 @@ class SmoothDemo:
             self.window_handler.raster_cache.cache_sprite(rock_id, rock_sprite)
             self.window_handler.set_static_tile(rx, ry, rock_id)
         
-        logger.info(f"🏠 Static background setup: {len(self.window_handler.static_tiles)} tiles")
+        logger.info("🎨 Procedural assets placed in background")
     
     def _draw_tree(self, sprite: tk.PhotoImage) -> None:
         """Draw simple tree sprite"""
