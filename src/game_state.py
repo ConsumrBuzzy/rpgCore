@@ -6,12 +6,11 @@ Uses Pydantic for validation and JSON serialization.
 """
 
 from pathlib import Path
-from typing import Dict, List, Literal, Optional, Any, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 import numpy as np
 
 from loguru import logger
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional, Any
 from enum import Enum
 import uuid
 
