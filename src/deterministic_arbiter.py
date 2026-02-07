@@ -69,7 +69,7 @@ class DeterministicArbiter:
         new_npc_state = "neutral"
         reputation_deltas = {}
         
-        if reputation.get("city_watch", 0) <= -10:
+        if reputation.get("law", 0) <= -10:
             if "Wanted" not in room_tags:
                 room_tags.append("Wanted")
                 difficulty_mod += 5
@@ -84,7 +84,7 @@ class DeterministicArbiter:
         if intent == "combat":
             new_npc_state = "hostile"
             difficulty_mod += 2 # Combat is inherently tense
-            reputation_deltas["city_watch"] = -10
+            reputation_deltas["law"] = -5
         elif intent == "distract":
             new_npc_state = "distracted"
         elif intent == "charm":
@@ -93,10 +93,14 @@ class DeterministicArbiter:
                 difficulty_mod += 5
             new_npc_state = "charmed"
             is_path_clear = True # Immediate clearing
+            reputation_deltas["law"] = 2
+        elif intent == "finesse":
+             # Finesse or social actions usually help reputation with law if positive
+             reputation_deltas["law"] = 1
         elif intent == "force" and "guard" in player_input.lower():
              # If we tried to force a guard, we assume it's combat-like
              new_npc_state = "hostile"
-             reputation_deltas["city_watch"] = -5
+             reputation_deltas["law"] = -3
              
         # 3. Build Logic Trace
         internal_logic = f"Deterministic Logic: Intent '{intent}' evaluated against tags {room_tags}. "
