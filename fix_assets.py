@@ -1,6 +1,13 @@
 import yaml
 from pathlib import Path
 
+# Custom YAML loader to handle Python tuples
+class SafeTupleLoader(yaml.SafeLoader):
+    def construct_python_tuple(self, node):
+        return tuple(self.construct_sequence(node))
+
+SafeTupleLoader.add_constructor('tag:yaml.org,2002:python/tuple', SafeTupleLoader.construct_python_tuple)
+
 # Fix key assets with proper classifications
 harvested_dir = Path('assets/harvested')
 
@@ -29,7 +36,7 @@ for yaml_file, corrections_data in corrections.items():
     if yaml_path.exists():
         try:
             with open(yaml_path, 'r') as f:
-                metadata = yaml.safe_load(f)
+                metadata = yaml.load(f, Loader=SafeTupleLoader)
             
             # Apply corrections
             for key, value in corrections_data.items():
@@ -40,7 +47,7 @@ for yaml_file, corrections_data in corrections.items():
             if metadata['object_type'] == 'entity' and 'chest' in yaml_file:
                 metadata['detection_info']['is_chest'] = True
             
-            # Save corrected metadata
+            # Save corrected metadata (without Python-specific tags)
             with open(yaml_path, 'w') as f:
                 yaml.dump(metadata, f, default_flow_style=False, sort_keys=False)
             
