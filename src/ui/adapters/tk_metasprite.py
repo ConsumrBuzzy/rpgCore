@@ -169,7 +169,7 @@ class EnhancedTkinterAdapter:
         # Armor body (rows 7-12)
         for y in range(7, 13):
             for x in range(5, 11):
-                pixels[y][x] = 'steel'
+                pixels[y][x] = 'gray60'  # Tkinter-compatible steel color
         
         # Sword (right side)
         for y in range(8, 14):
@@ -179,9 +179,9 @@ class EnhancedTkinterAdapter:
         # Legs (rows 13-16)
         for y in range(13, 16):
             for x in range(6, 8):
-                pixels[y][x] = 'steel'
+                pixels[y][x] = 'gray60'  # Tkinter-compatible steel color
             for x in range(9, 11):
-                pixels[y][x] = 'steel'
+                pixels[y][x] = 'gray60'
         
         return pixels
     
@@ -233,7 +233,7 @@ class EnhancedTkinterAdapter:
         # Leather armor (rows 7-13)
         for y in range(7, 14):
             for x in range(6, 10):
-                pixels[y][x] = 'brown'
+                pixels[y][x] = 'tan'  # Tkinter-compatible leather color
         
         # Dagger (right hand)
         for y in range(9, 12):
