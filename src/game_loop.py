@@ -629,6 +629,12 @@ def main():
         default="curious",
         help="Voyager personality (default: curious)"
     )
+    parser.add_argument(
+        "--max-turns",
+        type=int,
+        default=50,
+        help="Maximum turns for auto-play mode (default: 50)"
+    )
     # DEBUG: Force argparse to see the new choices if it's being stubborn
     known_args, _ = parser.parse_known_args()
     args = parser.parse_args()
@@ -648,7 +654,8 @@ def main():
     # Start game
     game = GameREPL(
         auto_mode=args.auto,
-        personality=args.personality
+        personality=args.personality,
+        max_turns=args.max_turns
     )
     game.run()
 
