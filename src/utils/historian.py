@@ -56,6 +56,7 @@ class HistoricalTag:
     description: str
     intensity: float  # 0.0 to 1.0
     decay_rate: float  # How quickly the tag fades over time
+    world_state: Dict[str, Any]  # World state at time of tag creation
 
 
 @dataclass
