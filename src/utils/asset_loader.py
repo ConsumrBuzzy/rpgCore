@@ -138,13 +138,21 @@ class AssetLoader:
             # Don't clear existing registry, just add minimal sprites
             logger.warning("⚠️ Generating minimal fallback assets")
             
-            # Create basic colored squares as fallbacks
+            # Generate basic colored squares as fallbacks
             basic_sprites = {
-                "voyager_idle": (0, 100, 255),
-                "voyager_combat": (0, 150, 255),
-                "guardian": (128, 128, 128),
-                "forest_imp": (0, 128, 0),
-                "shadow_beast": (128, 0, 128)
+                'voyager_idle': (0, 100, 255),
+                'voyager_combat': (0, 150, 255),
+                'guardian': (128, 128, 128),
+                'forest_imp': (0, 128, 0),
+                'shadow_beast': (128, 0, 128),
+                'crystal': (255, 0, 255),
+                'iron_chest': (128, 128, 128),
+                'wooden_door': (139, 90, 43),
+                'tree': (0, 128, 0),
+                'bush': (0, 100, 0),
+                'animated_flower': (255, 182, 193),
+                'water': (0, 100, 200),
+                'ancient_ruins': (128, 64, 64)
             }
             
             for sprite_id, color in basic_sprites.items():
@@ -168,6 +176,12 @@ class AssetLoader:
                 self.registry = {}
             if not hasattr(self, '_sprite_refs'):
                 self._sprite_refs = []
+    
+    def _emergency_sprite_check(self) -> None:
+        """Check if registry has enough sprites, generate emergency sprites if needed"""
+        if len(self.registry) < 10:
+            logger.warning("⚠️ Registry too small - generating emergency sprites")
+            self._generate_minimal_assets()
     
     def _load_object_definitions(self) -> None:
         """Load object definitions from YAML"""
