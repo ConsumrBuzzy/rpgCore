@@ -99,13 +99,11 @@ class VoyagerAgent:
         )
         
         # Initialize Pydantic AI agent
-        # Use OpenAIModel for better compatibility with local Ollama
-        # This fixes 404 errors by explicitly setting the base_url
-        model = OpenAIModel(
-            model_name=model_name,
-            base_url=f"{os.environ['OLLAMA_BASE_URL']}/v1",
-            api_key='ollama',  # Required but ignored
-        )
+        # Use OpenAIModel with env vars for local Ollama
+        os.environ["OPENAI_BASE_URL"] = f"{os.environ['OLLAMA_BASE_URL']}/v1"
+        os.environ["OPENAI_API_KEY"] = "ollama"
+        
+        model = OpenAIModel(model_name)
         
         self.agent = Agent(
             model=model,
