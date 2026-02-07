@@ -647,11 +647,28 @@ class DGTSheetCutter:
         return color_diversity < 0.05
     
     def _auto_clean_edges(self, sprite: Image.Image) -> Image.Image:
-        """Automatically clean up transparent edges around sprite"""
+        """Automatically clean up transparent edges around sprite using Rust"""
         if sprite.mode != 'RGBA':
             sprite = sprite.convert('RGBA')
         
-        # Find bounding box of non-transparent pixels
+        width, height = sprite.size
+        pixels = sprite.tobytes()
+        
+        # Use Rust scanner for instant edge cleaning
+        try:
+            cleaned_pixels = self.rust_scanner.auto_clean_edges(pixels, width, height, self.threshold_var.get())
+            
+            # Convert back to PIL Image
+            return Image.frombytes('RGBA', (width, height), cleaned_pixels)
+            
+        except Exception as e:
+            logger.error(f"⚠️ Rust edge cleaning failed: {e}, using Python fallback")
+            # Fallback to Python implementation
+            return self._auto_clean_edges_python(sprite)
+    
+    def _auto_clean_edges_python(self, sprite: Image.Image) -> Image.Image:
+        """Python fallback edge cleaning"""
+        # Find bounding box of non-transparent content
         bbox = self._get_content_bounds(sprite)
         
         if not bbox:
