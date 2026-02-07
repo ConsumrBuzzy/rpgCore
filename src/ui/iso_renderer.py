@@ -330,7 +330,11 @@ class IsometricRenderer:
         for tile in self.tiles:
             if (0 <= tile.screen_x < self.width and 
                 0 <= tile.screen_y < self.height):
-                self.buffer[tile.screen_y][tile.screen_x] = tile.content
+                try:
+                    self.buffer[tile.screen_y][tile.screen_x] = tile.content
+                except IndexError:
+                    # Skip if coordinates are out of bounds
+                    continue
         
         return self.buffer
     
