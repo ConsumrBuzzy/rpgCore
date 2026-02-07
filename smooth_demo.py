@@ -72,7 +72,7 @@ class SmoothDemo:
         self.voyager_sprite = tk.PhotoImage(width=32, height=32)
         self._draw_triangle(self.voyager_sprite, "#00ff00", 32, 32)
         
-        # Grass sprite (animated pattern)
+        # Grass sprites for static background
         self.grass_sprites = []
         for i in range(4):
             grass = tk.PhotoImage(width=16, height=16)
@@ -94,7 +94,13 @@ class SmoothDemo:
         self.window_handler.raster_cache.cache_sprite("shadow", self.shadow_sprite)
         self.window_handler.raster_cache.cache_sprite("particle", self.particle_sprite)
         
-        logger.info("🎨 Demo sprites created and cached")
+        # ADR 109: Setup static background tiles
+        self._setup_static_background()
+        
+        # Bake the background
+        self.window_handler.bake_background()
+        
+        logger.info("🎨 Demo sprites created and cached with baked background")
     
     def _draw_triangle(self, sprite: tk.PhotoImage, color: str, width: int, height: int) -> None:
         """Draw triangle sprite"""
@@ -244,58 +250,44 @@ class SmoothDemo:
         self.frame_count += 1
     
     def _queue_render(self) -> None:
-        """Queue render commands for smooth display"""
-        # Clear canvas
+        """Queue render commands for smooth display with ADR 109 background baking"""
+        # Clear canvas command
         clear_command = RenderCommand(command_type=CommandType.CLEAR)
         self.window_handler.queue_command(clear_command)
         
-        # Draw animated grass background
-        grass_frame = int(self.grass_offset)
-        for y in range(0, 500, 16):
-            for x in range(0, 800, 16):
-                # Vary grass pattern for visual interest
-                pattern = (grass_frame + (x // 16) + (y // 16)) % 4
-                grass_command = RenderCommand(
-                    command_type=CommandType.DRAW_SPRITE,
-                    entity_id=f"grass_{x}_{y}",
-                    position=(x, y),
-                    sprite_id=f"grass_{pattern}"
-                )
-                self.window_handler.queue_command(grass_command)
+        # Update Voyager position in dynamic entities
+        self.window_handler.clear_dynamic_entities()
         
-        # Draw shadow under Voyager
+        # Add Voyager as dynamic entity
+        voyager_entity = {
+            'entity_id': 'voyager',
+            'position': (self.voyager_x - 16, self.voyager_y - 16),
+            'sprite_id': 'voyager'
+        }
+        self.window_handler.add_dynamic_entity(voyager_entity)
+        
+        # Add shadow as dynamic entity
         shadow_x = self.voyager_x + math.sin(self.shadow_angle) * 2
         shadow_y = self.voyager_y + 8
-        shadow_command = RenderCommand(
-            command_type=CommandType.DRAW_SPRITE,
-            entity_id="shadow",
-            position=(shadow_x, shadow_y),
-            sprite_id="shadow"
-        )
-        self.window_handler.queue_command(shadow_command)
+        shadow_entity = {
+            'entity_id': 'shadow',
+            'position': (shadow_x, shadow_y),
+            'sprite_id': 'shadow'
+        }
+        self.window_handler.add_dynamic_entity(shadow_entity)
         
-        # Draw Voyager
-        voyager_command = RenderCommand(
-            command_type=CommandType.DRAW_SPRITE,
-            entity_id="voyager",
-            position=(self.voyager_x - 16, self.voyager_y - 16),
-            sprite_id="voyager"
-        )
-        self.window_handler.queue_command(voyager_command)
-        
-        # Draw particles around Voyager
+        # Add particles as dynamic entities
         for i in range(8):
             angle = self.particle_time + (i * math.pi / 4)
             px = self.voyager_x + math.cos(angle) * 40
             py = self.voyager_y + math.sin(angle) * 40
             
-            particle_command = RenderCommand(
-                command_type=CommandType.DRAW_SPRITE,
-                entity_id=f"particle_{i}",
-                position=(px - 4, py - 4),
-                sprite_id="particle"
-            )
-            self.window_handler.queue_command(particle_command)
+            particle_entity = {
+                'entity_id': f'particle_{i}',
+                'position': (px - 4, py - 4),
+                'sprite_id': 'particle'
+            }
+            self.window_handler.add_dynamic_entity(particle_entity)
         
         # Draw performance text overlay
         fps_text = f"FPS: {self.window_handler.actual_fps}"
@@ -307,8 +299,60 @@ class SmoothDemo:
         )
         self.window_handler.queue_command(text_command)
     
+    def _setup_static_background(self) -> None:
+        """ADR 109: Setup static background tiles for baking"""
+        # Create a grass field with some variation
+        for y in range(0, 500, 16):
+            for x in range(0, 800, 16):
+                # Vary grass pattern for visual interest
+                pattern = ((x // 16) + (y // 16)) % 4
+                self.window_handler.set_static_tile(x, y, f"grass_{pattern}")
+        
+        # Add some static decorative elements
+        # Trees
+        tree_positions = [(100, 100), (300, 150), (600, 200), (700, 400), (150, 350)]
+        for tx, ty in tree_positions:
+            # Create simple tree sprite
+            tree_sprite = tk.PhotoImage(width=32, height=32)
+            self._draw_tree(tree_sprite)
+            tree_id = f"tree_{tx}_{ty}"
+            self.window_handler.raster_cache.cache_sprite(tree_id, tree_sprite)
+            self.window_handler.set_static_tile(tx, ty, tree_id)
+        
+        # Rocks
+        rock_positions = [(200, 250), (500, 100), (400, 350)]
+        for rx, ry in rock_positions:
+            rock_sprite = tk.PhotoImage(width=16, height=16)
+            self._draw_rock(rock_sprite)
+            rock_id = f"rock_{rx}_{ry}"
+            self.window_handler.raster_cache.cache_sprite(rock_id, rock_sprite)
+            self.window_handler.set_static_tile(rx, ry, rock_id)
+        
+        logger.info(f"🏠 Static background setup: {len(self.window_handler.static_tiles)} tiles")
+    
+    def _draw_tree(self, sprite: tk.PhotoImage) -> None:
+        """Draw simple tree sprite"""
+        # Tree trunk (brown)
+        for y in range(20, 28):
+            for x in range(12, 20):
+                sprite.put("#654321", (x, y))
+        
+        # Tree crown (green triangle)
+        for y in range(8, 20):
+            width = 20 - y
+            for x in range(16 - width, 16 + width):
+                sprite.put("#228b22", (x, y))
+    
+    def _draw_rock(self, sprite: tk.PhotoImage) -> None:
+        """Draw simple rock sprite"""
+        for y in range(16):
+            for x in range(16):
+                # Simple circular rock shape
+                cx, cy = 8, 8
+                if (x - cx) ** 2 + (y - cy) ** 2 <= 36:
+                    sprite.put("#808080", (x, y))
+    
     def _update_performance_display(self) -> None:
-        """Update performance UI elements"""
         current_time = time.time()
         
         # Update FPS display
