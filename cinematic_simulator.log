@@ -764,3 +764,147 @@
 01:33:56 | INFO | 🛑 Stopping Cinematic Simulator
 01:33:56 | INFO | 🛑 SimulatorHost stopped
 01:33:56 | INFO | 🎬 Cinematic Simulator stopped
+01:36:25 | DEBUG | Added intent: distract with 5 exemplars
+01:36:25 | DEBUG | Added intent: force with 5 exemplars
+01:36:25 | DEBUG | Added intent: finesse with 5 exemplars
+01:36:25 | DEBUG | Added intent: charm with 5 exemplars
+01:36:25 | DEBUG | Added intent: intimidate with 5 exemplars
+01:36:25 | DEBUG | Added intent: deceive with 5 exemplars
+01:36:25 | DEBUG | Added intent: investigate with 5 exemplars
+01:36:25 | DEBUG | Added intent: use_item with 5 exemplars
+01:36:25 | DEBUG | Added intent: defend with 5 exemplars
+01:36:25 | DEBUG | Added intent: leave_area with 5 exemplars
+01:36:25 | DEBUG | Added intent: improvise with 5 exemplars
+01:36:25 | INFO | Semantic Baker initialized with model: all-MiniLM-L6-v2
+01:36:25 | INFO | Loaded 11 pre-baked intent embeddings (55 total examples)
+01:36:25 | INFO | ✅ Instant boot: Loaded pre-baked embeddings
+01:36:25 | INFO | 🏛️ SimulatorHost initialized - Single Source of Truth
+01:36:25 | INFO | 🎬 CinematicSimulator initialized
+01:36:25 | INFO | 🚀 Initializing Cinematic Simulator...
+01:36:25 | INFO | 🚀 Initializing SimulatorHost...
+01:36:25 | INFO | 🆕 Creating new game state
+01:36:25 | INFO | ⚖️ Loading Arbiter (Deterministic Logic Core)...
+01:36:25 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+01:36:25 | INFO | 📖 Loading Chronicler (Narrative Engine)...
+01:36:25 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+01:36:25 | INFO | 🎲 Loading Quartermaster...
+01:36:25 | INFO | 💎 Loading Loot System...
+01:36:25 | INFO | LootSystem initialized without artifact support
+01:36:25 | INFO | ✅ SimulatorHost initialization complete
+01:36:25 | INFO | 🎬 Autonomous Director initialized
+01:36:25 | DEBUG | 🗺️ Pathfinding grid initialized: 64x64
+01:36:25 | INFO | 🧭 Navigation system initialized
+01:36:25 | INFO | 🎥 Cinematic camera initialized
+01:36:25 | INFO | 🎬 Camera controller initialized
+01:36:25 | DEBUG | 💬 Dialogue box initialized
+01:36:25 | INFO | 🎬 Cinematic pauses system initialized
+01:36:25 | INFO | 🖥️ TerminalView initialized - Observer of SimulatorHost
+01:36:25 | INFO | 🖼️ GUIView initialized - Observer of SimulatorHost
+01:36:25 | DEBUG | 👁️ Added observer: TerminalView
+01:36:25 | DEBUG | 👁️ Added observer: GUIView
+01:36:25 | INFO | ✅ Cinematic Simulator initialized successfully
+01:36:25 | INFO | 🖥️ Starting terminal-only mode
+01:36:25 | INFO | 🎬 Starting autonomous cinematic mode
+01:36:25 | INFO | 🎬 Starting Autonomous Director Mode
+01:36:25 | INFO | 🎭 Generating initial narrative beacons
+01:36:25 | INFO | 🎯 New beacon: Explore the surrounding area
+01:36:25 | INFO | 🛤️ Path set: 10 steps to (10, 10)
+01:36:25 | INFO | 🎯 Generated beacon: Explore the surrounding area at (10, 10)
+01:36:25 | INFO | 🎯 New beacon: Investigate nearby points of interest
+01:36:25 | INFO | 🛤️ Path set: 5 steps to (5, 5)
+01:36:25 | INFO | 🎯 Generated beacon: Investigate nearby points of interest at (5, 5)
+01:36:25 | INFO | 🚀 Initializing SimulatorHost...
+01:36:25 | INFO | 🆕 Creating new game state
+01:36:25 | INFO | ⚖️ Loading Arbiter (Deterministic Logic Core)...
+01:36:25 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+01:36:25 | INFO | 📖 Loading Chronicler (Narrative Engine)...
+01:36:25 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+01:36:25 | INFO | 🎲 Loading Quartermaster...
+01:36:25 | INFO | 💎 Loading Loot System...
+01:36:25 | INFO | LootSystem initialized without artifact support
+01:36:25 | INFO | ✅ SimulatorHost initialization complete
+01:36:25 | INFO | 🚀 SimulatorHost started
+01:36:25 | INFO | 🎬 Director loop started
+01:36:25 | DEBUG | 📋 Planning phase: Generating narrative beacons
+01:36:25 | INFO | 🎯 Selected beacon: Explore the surrounding area
+01:36:25 | INFO | 🎮 Starting 30 FPS game loop
+01:36:25 | INFO | 🎬 Cinematic loop started
+01:36:26 | DEBUG | 🚶 Executing phase: Moving to (10, 10)
+01:36:26 | DEBUG | 📤 Action queued: I move here
+01:36:26 | DEBUG | 🔍 Parsing intent for: I move here
+01:36:26 | INFO | Loading embedding model on-demand: all-MiniLM-L6-v2
+01:36:30 | INFO | Intent resolution: 'I move here' → leave_area (confidence: 0.496, matched exemplar: 'Leave this place')
+01:36:30 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:30 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:30 | DEBUG | Action: leave_area | Tags: [] | Roll: 9 + Attr: 10 + Item: 0 + Tag: 0 = 19 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:30 | DEBUG | 🔄 Applying state changes...
+01:36:30 | INFO | Social consequences applied for None (success=True)
+01:36:30 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:30 | DEBUG | 📤 Action queued: I move south
+01:36:30 | DEBUG | 🔍 Parsing intent for: I move south
+01:36:30 | INFO | Intent resolution: 'I move south' → leave_area (confidence: 0.398, matched exemplar: 'Go to the next location')
+01:36:30 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:30 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:30 | DEBUG | Action: leave_area | Tags: [] | Roll: 3 + Attr: 10 + Item: 0 + Tag: 0 = 13 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:30 | DEBUG | 🔄 Applying state changes...
+01:36:30 | INFO | Social consequences applied for None (success=True)
+01:36:30 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:31 | DEBUG | 📤 Action queued: I move east
+01:36:31 | DEBUG | 🔍 Parsing intent for: I move east
+01:36:31 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:36:31 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:31 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:31 | DEBUG | Action: leave_area | Tags: [] | Roll: 5 + Attr: 10 + Item: 0 + Tag: 0 = 15 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:31 | DEBUG | 🔄 Applying state changes...
+01:36:31 | INFO | Social consequences applied for None (success=True)
+01:36:31 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:31 | DEBUG | 📤 Action queued: I move east
+01:36:31 | DEBUG | 🔍 Parsing intent for: I move east
+01:36:31 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:36:31 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:31 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:31 | DEBUG | Action: leave_area | Tags: [] | Roll: 7 + Attr: 10 + Item: 0 + Tag: 0 = 17 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:31 | DEBUG | 🔄 Applying state changes...
+01:36:31 | INFO | Social consequences applied for None (success=True)
+01:36:31 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:32 | DEBUG | 📤 Action queued: I move east
+01:36:32 | DEBUG | 🔍 Parsing intent for: I move east
+01:36:32 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:36:32 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:32 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:32 | DEBUG | Action: leave_area | Tags: [] | Roll: 18 + Attr: 10 + Item: 0 + Tag: 0 = 28 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:32 | DEBUG | 🔄 Applying state changes...
+01:36:32 | INFO | Social consequences applied for None (success=True)
+01:36:32 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:32 | DEBUG | 📤 Action queued: I move east
+01:36:32 | DEBUG | 🔍 Parsing intent for: I move east
+01:36:32 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:36:32 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:32 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:32 | DEBUG | Action: leave_area | Tags: [] | Roll: 8 + Attr: 10 + Item: 0 + Tag: 0 = 18 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:32 | DEBUG | 🔄 Applying state changes...
+01:36:32 | INFO | Social consequences applied for None (success=True)
+01:36:32 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:33 | DEBUG | 📤 Action queued: I move east
+01:36:33 | DEBUG | 🔍 Parsing intent for: I move east
+01:36:33 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:36:33 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:33 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:33 | DEBUG | Action: leave_area | Tags: [] | Roll: 3 + Attr: 10 + Item: 0 + Tag: 0 = 13 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:33 | DEBUG | 🔄 Applying state changes...
+01:36:33 | INFO | Social consequences applied for None (success=True)
+01:36:33 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:33 | DEBUG | 📤 Action queued: I move east
+01:36:33 | DEBUG | 🔍 Parsing intent for: I move east
+01:36:33 | INFO | Intent resolution: 'I move east' → leave_area (confidence: 0.407, matched exemplar: 'Go to the next location')
+01:36:33 | DEBUG | ⚖️ Arbiter resolving: leave_area
+01:36:33 | DEBUG | 🎲 Quartermaster calculating outcome...
+01:36:33 | DEBUG | Action: leave_area | Tags: [] | Roll: 3 + Attr: 10 + Item: 0 + Tag: 0 = 13 vs DC: 10 (10 + 0) -> SUCCESS
+01:36:33 | DEBUG | 🔄 Applying state changes...
+01:36:33 | INFO | Social consequences applied for None (success=True)
+01:36:33 | ERROR | ❌ Action processing failed: name 'room_changed' is not defined
+01:36:34 | INFO | 🖥️ Terminal mode stopped by user
+01:36:35 | INFO | 🛑 Cinematic simulator stopped by user
+01:36:35 | INFO | 🛑 Stopping Cinematic Simulator
+01:36:35 | INFO | 🛑 SimulatorHost stopped
+01:36:35 | INFO | 🎬 Cinematic Simulator stopped

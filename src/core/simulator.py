@@ -337,14 +337,22 @@ class SimulatorHost:
             )
             
             # Position changes (POSITIONAL AUTHORITY)
-            if llm_response.intent == "leave_area" and room_changed:
-                self.state.current_room = new_room
-                logger.info(f"🚙️ Transitioned to {new_room}")
+            room_changed = False
+            new_room = None
+            
+            if llm_response.intent == "leave_area":
+                # Handle room transitions
+                if room and room.exits:
+                    next_room_id = list(room.exits.values())[0]
+                    self.state.current_room = next_room_id
+                    room_changed = True
+                    new_room = next_room_id
+                    logger.info(f"🚙️ Transitioned to {next_room_id}")
             elif llm_response.intent in ["move", "travel", "go", "walk"]:
                 # Extract direction from action input for position update
                 direction = self._extract_direction_from_input(player_input)
                 self._update_voyager_position(direction)
-                logger.info(f"�️ Voyager moved {direction}")
+                logger.info(f"🚶️ Voyager moved {direction}")
             
             # Loot generation
             loot_item = None
