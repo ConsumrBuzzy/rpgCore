@@ -86,10 +86,7 @@ class TinyFarmAssetLoader:
             # Convert to tkinter PhotoImage
             photo = ImageTk.PhotoImage(image)
             
-            # Scale for display (4x for 64x64)
-            photo = photo.zoom(4, 4)
-            
-            # Store sprite
+            # Store sprite (no zoom for now, just use original size)
             self.sprites[sprite_id] = photo
             
             logger.debug(f"✅ Loaded asset: {sprite_id} ({image.size[0]}x{image.size[1]})")

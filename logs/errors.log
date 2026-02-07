@@ -6448,3 +6448,13 @@ expected alphabetic or numeric character, but found '.'
 2026-02-07 14:54:53 | ERROR | assets.tiny_farm_ingestor:_apply_palette_locking:365 | ⚠️ Error applying palette locking: could not broadcast input array from shape (3,) into shape (4,)
 2026-02-07 14:54:53 | ERROR | assets.tiny_farm_ingestor:_numpy_to_tkinter:423 | ⚠️ Error converting numpy to tkinter: Too early to create image: no default root window
 2026-02-07 14:54:53 | ERROR | assets.tiny_farm_ingestor:_load_and_process_sprite:244 | ❌ Failed to process asset: cow
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Character/Idle.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Objects/Maple Tree.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Objects/chest.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Objects/Fence's copiar.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Objects/House.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Objects/Spring Crops.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Objects/Road copiar.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Tileset/Tileset Spring.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Farm Animals/Chicken Red.png: 'PhotoImage' object has no attribute 'zoom'
+2026-02-07 14:57:28 | ERROR | __main__:_load_single_asset:99 | ⚠️ Error loading Farm Animals/Female Cow Brown.png: 'PhotoImage' object has no attribute 'zoom'
