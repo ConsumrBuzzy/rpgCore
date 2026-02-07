@@ -56,13 +56,25 @@ class ObserverView:
         
         # Initialize systems
         self._initialize_systems()
+        
+        # Initialize remaining systems after _initialize_systems
+        self.dd_engine = DDEngineFactory.create_engine(self.config.mind)
+        self.voyager = VoyagerFactory.create_voyager(self.config.voyager, self.dd_engine)
+        
+        # Inject dependencies
+        self.dd_engine.world_engine = self.world_engine
+        self.voyager.dd_engine = self.dd_engine
+        
+        # Combat system
+        self.combat_resolver = CombatResolver(f"{self.seed}_combat")
+        
+        # Session state
         self.running = False
         self.current_mode = "OVERWORLD"
-        self.session_log = []
         
         print(f"🎬 Observer View Initialized")
-        print(f"🌍 Seed: {seed}")
-        print(f"🎨 Graphics: {'Enabled' if enable_graphics else 'Disabled'}")
+        print(f"🌍 Seed: {self.seed}")
+        print(f"🎨 Graphics: {'Enabled' if self.enable_graphics else 'Disabled'}")
         print(f"🧠 Mind Engine: Object-Aware D20 System Ready")
     
     def _init_graphics(self) -> None:
