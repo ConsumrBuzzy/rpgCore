@@ -550,8 +550,8 @@ class ChronosEngine:
             return None
         
         try:
-            tile = await self.world_engine.get_tile_at_position(interest_point.position[0], interest_point.position[1])
-            biome = tile.biome_type
+            tile = await self.world_engine.get_tile_at(interest_point.position)
+            biome = tile.biome
             
             # Get quest types for this biome
             quest_types = self.biome_quest_rules.get(biome, ["explore"])
