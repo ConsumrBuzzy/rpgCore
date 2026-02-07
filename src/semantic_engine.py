@@ -106,11 +106,17 @@ class SemanticResolver:
     
     def _load_prebaked_embeddings(self) -> bool:
         """
-        Attempt to load pre-baked embeddings for instant boot.
+        Attempt to load memory-mapped embeddings for instant boot.
         
         Returns:
             True if embeddings were loaded successfully
         """
+        # Try memory-mapped assets first (instant boot)
+        mmap_path = self.embeddings_path.with_suffix('.mmap')
+        if mmap_path.exists():
+            return self._load_mmap_embeddings(mmap_path)
+        
+        # Fallback to regular pre-baked embeddings
         if not self.embeddings_path.exists():
             logger.debug(f"No pre-baked embeddings found at {self.embeddings_path}")
             return False
@@ -147,6 +153,62 @@ class SemanticResolver:
             
         except Exception as e:
             logger.warning(f"Failed to load pre-baked embeddings: {e}")
+            return False
+    
+    def _load_mmap_embeddings(self, mmap_path: Path) -> bool:
+        """
+        Load memory-mapped embeddings for instant boot performance.
+        
+        Args:
+            mmap_path: Path to memory-mapped asset file
+            
+        Returns:
+            True if embeddings were loaded successfully
+        """
+        try:
+            from utils.mmap_assets import MMapAssetLoader
+            
+            logger.info("⚡ Loading memory-mapped embeddings for instant boot...")
+            loader = MMapAssetLoader(mmap_path)
+            
+            if not loader.is_loaded():
+                logger.warning("Memory-mapped loader failed to initialize")
+                return False
+            
+            # Extract intent embeddings from memory-mapped data
+            intent_embeddings = {}
+            intents = self.intent_library.get_intents()
+            
+            for intent_id in intents:
+                # Collect all example embeddings for this intent
+                example_keys = [k for k in loader.get_keys() if k.startswith(f"example_{intent_id}_")]
+                if not example_keys:
+                    logger.warning(f"No memory-mapped embeddings found for intent: {intent_id}")
+                    return False
+                
+                # Load all example embeddings for this intent
+                example_embeddings = []
+                for key in sorted(example_keys):  # Sort for consistent ordering
+                    vector = loader.get_vector(key)
+                    if vector is not None:
+                        example_embeddings.append(vector)
+                    else:
+                        logger.warning(f"Failed to load memory-mapped vector: {key}")
+                        return False
+                
+                intent_embeddings[intent_id] = np.stack(example_embeddings)
+            
+            # Cache the embeddings
+            self.intent_library.mark_embeddings_computed(intent_embeddings)
+            total_examples = sum(len(exemplars) for exemplars in intent_embeddings.values())
+            logger.info(f"✅ Instant boot: Loaded {len(intent_embeddings)} memory-mapped intent embeddings ({total_examples} total examples)")
+            
+            # Store loader for potential future use
+            self._mmap_loader = loader
+            return True
+            
+        except Exception as e:
+            logger.warning(f"Failed to load memory-mapped embeddings: {e}")
             return False
     
     def _ensure_model_loaded(self):
