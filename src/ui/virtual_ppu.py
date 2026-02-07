@@ -250,25 +250,47 @@ class VirtualPPU:
                                         if (buffer_x < self.width and buffer_y < self.height):
                                             self.pixel_renderer.set_pixel(buffer_x, buffer_y, tile_pixel)
     
-    def _render_objects(self) -> None:
-        """Render the object layer (OBJ) - Metasprites."""
+    def _render_objects_with_shadows(self) -> None:
+        """Render the object layer (OBJ) with Z-depth shadows."""
+        # First render shadows (low priority, rendered first)
         for sprite_coord in self.sprites:
-            metasprite = sprite_coord.metasprite
-            pixel_data = metasprite.get_pixel_data()
-            
-            # Render 16x16 metasprite at correct position
-            for y in range(metasprite.config.height):
-                for x in range(metasprite.config.width):
-                    pixel = pixel_data[y][x]
-                    
-                    if pixel is not None:
-                        # Check for transparency (Game Boy Color 0)
-                        if pixel.intensity > 0:
-                            buffer_x = sprite_coord.x + x
-                            buffer_y = sprite_coord.y + y
-                            
-                            if (buffer_x < self.width and buffer_y < self.height):
-                                self.pixel_renderer.set_pixel(buffer_x, buffer_y, pixel)
+            if sprite_coord.priority >= 100:  # Shadow sprites have high priority number
+                metasprite = sprite_coord.metasprite
+                pixel_data = metasprite.get_pixel_data()
+                
+                # Render shadow at sprite position
+                for y in range(metasprite.config.height):
+                    for x in range(metasprite.config.width):
+                        pixel = pixel_data[y][x]
+                        
+                        if pixel is not None:
+                            # Check for transparency (Game Boy Color 0)
+                            if pixel.intensity > 0:
+                                buffer_x = sprite_coord.x + x
+                                buffer_y = sprite_coord.y + y + 4  # Offset shadow below sprite
+                                
+                                if (buffer_x < self.width and buffer_y < self.height):
+                                    self.pixel_renderer.set_pixel(buffer_x, buffer_y, pixel)
+        
+        # Then render regular sprites
+        for sprite_coord in self.sprites:
+            if sprite_coord.priority < 100:  # Regular sprites have lower priority
+                metasprite = sprite_coord.metasprite
+                pixel_data = metasprite.get_pixel_data()
+                
+                # Render 16x16 metasprite at correct position
+                for y in range(metasprite.config.height):
+                    for x in range(metasprite.config.width):
+                        pixel = pixel_data[y][x]
+                        
+                        if pixel is not None:
+                            # Check for transparency (Game Boy Color 0)
+                            if pixel.intensity > 0:
+                                buffer_x = sprite_coord.x + x
+                                buffer_y = sprite_coord.y + y
+                                
+                                if (buffer_x < self.width and buffer_y < self.height):
+                                    self.pixel_renderer.set_pixel(buffer_x, buffer_y, pixel)
     
     def _render_windows(self) -> None:
         """Render the window layer (WIN) - Text overlay."""
