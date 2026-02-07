@@ -60,7 +60,7 @@ class VoyagerAgent:
         )
     }
     
-    def __init__(self, personality: str = "curious", model_name: str = "llama3.2:1b"):
+    def __init__(self, personality: str = "curious", model_name: str = "qwen2.5-coder:3b"):
         """
         Initialize Voyager agent.
         
