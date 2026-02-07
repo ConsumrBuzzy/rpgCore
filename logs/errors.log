@@ -6466,3 +6466,13 @@ expected alphabetic or numeric character, but found '.'
 2026-02-07 15:51:44 | ERROR | body.dispatcher:initialize:75 | ❌ Failed to initialize PPU: too many values to unpack (expected 2)
 2026-02-07 15:51:44 | ERROR | body.ppu:create_ppu_body:424 | ❌ Failed to create PPU body
 2026-02-07 15:51:54 | ERROR | body.ppu:_setup:94 | ❌ Failed to create PPU: NativeTkinterPPU.__init__() missing 1 required positional argument: 'asset_loader'
+2026-02-07 15:53:09 | ERROR | body.dispatcher:set_mode:158 | ❌ No body registered for terminal mode
+2026-02-07 15:53:09 | ERROR | body.dispatcher:set_mode:158 | ❌ No body registered for cockpit mode
+2026-02-07 15:53:09 | ERROR | body.dispatcher:set_mode:158 | ❌ No body registered for ppu mode
+2026-02-07 15:53:09 | ERROR | body.dispatcher:set_mode:158 | ❌ No body registered for ppu mode
+2026-02-07 15:53:09 | ERROR | __main__:validate_dispatcher:41 | ❌ Packet rendering failed
+2026-02-07 15:53:09 | ERROR | body.ppu:_setup:94 | ❌ Failed to create PPU: name 'PhotoImage' is not defined
+2026-02-07 15:53:09 | ERROR | __main__:validate_ppu_body:150 | ❌ PPU entity position update failed
+2026-02-07 15:53:09 | ERROR | body.ppu:_setup:94 | ❌ Failed to create PPU: name 'PhotoImage' is not defined
+2026-02-07 15:53:09 | ERROR | __main__:main:315 | ⚠️ Some validations failed - review before deployment
+2026-02-07 15:53:13 | ERROR | src.body.ppu:_setup:94 | ❌ Failed to create PPU: name 'PhotoImage' is not defined

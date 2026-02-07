@@ -50,3 +50,4 @@
 2026-02-07 09:45:52 | INFO | core.heartbeat:_background_performance_monitor:363 | 📊 Background performance monitoring started
 2026-02-07 09:45:52 | INFO | core.heartbeat:_heartbeat_loop:123 | 🫀 Starting 60 FPS heartbeat loop
 2026-02-07 09:46:30 | INFO | core.heartbeat:_background_performance_monitor:386 | 📊 Background performance monitoring stopped
+2026-02-07 15:53:09 | SUCCESS | __main__:validate_cockpit_body:122 | ✅ Cockpit performance stats working

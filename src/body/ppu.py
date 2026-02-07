@@ -15,6 +15,8 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 sys.path.append(str(Path(__file__).parent.parent))
 
+from loguru import logger
+
 try:
     # Import existing PPU components
     from graphics.ppu_tk_native import NativeTkinterPPU, RenderEntity, RenderLayer, CanvasEntity
@@ -23,8 +25,6 @@ try:
 except ImportError as e:
     logger.warning(f"⚠️ PPU components not available: {e}")
     PPU_AVAILABLE = False
-
-from loguru import logger
 
 from .dispatcher import DisplayBody, RenderPacket, HUDData
 
