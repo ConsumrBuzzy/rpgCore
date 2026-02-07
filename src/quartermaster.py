@@ -97,10 +97,7 @@ class Quartermaster:
             f"{'SUCCESS' if success else 'FAILURE'}"
         )
         logger.debug(log_msg)
-        
-            hp_delta=hp_delta,
-            narrative_context="" # Temporary placeholder
-        )
+
         
         # Construct narrative context
         context_parts = []
