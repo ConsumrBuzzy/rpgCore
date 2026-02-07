@@ -658,15 +658,15 @@ class NativeTkinterPPU:
         except Exception as e:
             logger.error(f"⚠️ Animation update error: {e}")
     
-    def update_actor_animation(self, actor_state: str, is_idle: bool) -> None:
-        """Update actor animation based on state (ADR 084: Move animations to Body Pillar)"""
+    def update_actor_animation(self, actor_state: str, is_idle: bool, idle_timer: int = 0, idle_threshold: int = 5) -> None:
+        """Update actor animation based on state (ADR 083: Actor-Aesthetic Bridge)"""
         try:
-            if is_idle and actor_state == "IDLE":
-                # Handle neck-pivot animation when idle
+            if is_idle and idle_timer >= idle_threshold and actor_state == "IDLE":
+                # Handle neck-pivot animation when idle for threshold
                 if not hasattr(self, 'idle_animation_frame'):
                     self.idle_animation_frame = 0
                 
-                # Cycle through idle frames
+                # Cycle through idle frames (neck-pivot)
                 idle_frames = self.asset_loader.get_animated_sprites("voyager", "idle_look")
                 if idle_frames:
                     current_frame = idle_frames[self.idle_animation_frame % len(idle_frames)]
@@ -674,6 +674,7 @@ class NativeTkinterPPU:
                     # Update Voyager sprite
                     if hasattr(self, 'voyager_entity_id'):
                         self.canvas.itemconfig(self.voyager_entity_id, image=current_frame)
+                        self.canvas.itemconfig(self.voyager_entity_id, tags="voyager_idle_pivot")
                     
                     self.idle_animation_frame += 1
             else:
@@ -681,8 +682,22 @@ class NativeTkinterPPU:
                 sprite = self.asset_loader.get_actor_sprite("voyager", actor_state.lower())
                 if sprite and hasattr(self, 'voyager_entity_id'):
                     self.canvas.itemconfig(self.voyager_entity_id, image=sprite)
+                    self.canvas.itemconfig(self.voyager_entity_id, tags="voyager")
         except Exception as e:
             logger.error(f"⚠️ Actor animation update error: {e}")
+    
+    def get_actor_render_hint(self, actor_state: str, is_idle: bool, idle_timer: int = 0, idle_threshold: int = 5) -> str:
+        """Get render hint for actor based on state (ADR 083: Actor-Aesthetic Bridge)"""
+        if is_idle and idle_timer >= idle_threshold and actor_state == "IDLE":
+            return "pondering_visual"  # Signal for neck-pivot animation
+        elif actor_state == "MOVING":
+            return "moving"
+        elif actor_state == "INTERACTING":
+            return "interacting"
+        elif actor_state == "COMBAT":
+            return "combat"
+        else:
+            return "idle"
     
     def render_actor(self, position: Tuple[int, int], actor_state: str, is_idle: bool) -> None:
         """Render actor with animation support"""
