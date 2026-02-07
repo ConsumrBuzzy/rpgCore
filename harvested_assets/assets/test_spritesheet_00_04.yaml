@@ -1,0 +1,25 @@
+asset_id: test_spritesheet_00_04
+asset_type: object
+material_id: unknown
+sprite_id: test_spritesheet_00_04
+description: Harvested from test_spritesheet at (0, 4)
+tags:
+- harvested
+- imported
+- test_spritesheet
+collision: false
+interaction_hooks: []
+d20_checks: {}
+palette:
+- '#4682b4'
+- '#5a96c8'
+source_sheet: test_spritesheet
+grid_position:
+- 0
+- 4
+harvest_timestamp: '2026-02-07T14:25:51.589911'
+version: '1.0'
+export_metadata:
+  exported_by: DGT Asset Ingestor
+  export_timestamp: '2026-02-07T14:25:51.616945'
+  format_version: '1.0'

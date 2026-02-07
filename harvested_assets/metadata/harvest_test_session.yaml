@@ -1,0 +1,9 @@
+session_id: test_session
+source_file: asset_ingestor
+harvest_timestamp: '2026-02-07T14:25:51.589927'
+total_assets: 25
+asset_types:
+  object: 25
+materials_used:
+- unknown
+version: '1.0'

@@ -1,0 +1,506 @@
+version: '2.0'
+harvested_assets:
+  test_spritesheet_00_00:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_00_00
+    description: Harvested from test_spritesheet at (0, 0)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#2d5a27'
+    - '#3c6936'
+    source: test_spritesheet
+    position:
+    - 0
+    - 0
+    harvested_at: '2026-02-07T14:25:51.589836'
+  test_spritesheet_01_00:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_01_00
+    description: Harvested from test_spritesheet at (1, 0)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#3a6b35'
+    - '#497a44'
+    source: test_spritesheet
+    position:
+    - 1
+    - 0
+    harvested_at: '2026-02-07T14:25:51.589859'
+  test_spritesheet_02_00:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_02_00
+    description: Harvested from test_spritesheet at (2, 0)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#4b7845'
+    - '#5a8754'
+    source: test_spritesheet
+    position:
+    - 2
+    - 0
+    harvested_at: '2026-02-07T14:25:51.589866'
+  test_spritesheet_03_00:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_03_00
+    description: Harvested from test_spritesheet at (3, 0)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#5c8745'
+    - '#6b9654'
+    source: test_spritesheet
+    position:
+    - 3
+    - 0
+    harvested_at: '2026-02-07T14:25:51.589875'
+  test_spritesheet_04_00:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_04_00
+    description: Harvested from test_spritesheet at (4, 0)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#6c96a5'
+    - '#7ba5b4'
+    source: test_spritesheet
+    position:
+    - 4
+    - 0
+    harvested_at: '2026-02-07T14:25:51.589877'
+  test_spritesheet_00_01:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_00_01
+    description: Harvested from test_spritesheet at (0, 1)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#5d4037'
+    source: test_spritesheet
+    position:
+    - 0
+    - 1
+    harvested_at: '2026-02-07T14:25:51.589880'
+  test_spritesheet_01_01:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_01_01
+    description: Harvested from test_spritesheet at (1, 1)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#6b5447'
+    source: test_spritesheet
+    position:
+    - 1
+    - 1
+    harvested_at: '2026-02-07T14:25:51.589882'
+  test_spritesheet_02_01:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_02_01
+    description: Harvested from test_spritesheet at (2, 1)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#7b6557'
+    source: test_spritesheet
+    position:
+    - 2
+    - 1
+    harvested_at: '2026-02-07T14:25:51.589884'
+  test_spritesheet_03_01:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_03_01
+    description: Harvested from test_spritesheet at (3, 1)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#8b7667'
+    source: test_spritesheet
+    position:
+    - 3
+    - 1
+    harvested_at: '2026-02-07T14:25:51.589886'
+  test_spritesheet_04_01:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_04_01
+    description: Harvested from test_spritesheet at (4, 1)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#9b8777'
+    source: test_spritesheet
+    position:
+    - 4
+    - 1
+    harvested_at: '2026-02-07T14:25:51.589888'
+  test_spritesheet_00_02:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_00_02
+    description: Harvested from test_spritesheet at (0, 2)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#757575'
+    source: test_spritesheet
+    position:
+    - 0
+    - 2
+    harvested_at: '2026-02-07T14:25:51.589890'
+  test_spritesheet_01_02:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_01_02
+    description: Harvested from test_spritesheet at (1, 2)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#858585'
+    source: test_spritesheet
+    position:
+    - 1
+    - 2
+    harvested_at: '2026-02-07T14:25:51.589893'
+  test_spritesheet_02_02:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_02_02
+    description: Harvested from test_spritesheet at (2, 2)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#959595'
+    source: test_spritesheet
+    position:
+    - 2
+    - 2
+    harvested_at: '2026-02-07T14:25:51.589895'
+  test_spritesheet_03_02:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_03_02
+    description: Harvested from test_spritesheet at (3, 2)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#a5a5a5'
+    source: test_spritesheet
+    position:
+    - 3
+    - 2
+    harvested_at: '2026-02-07T14:25:51.589896'
+  test_spritesheet_04_02:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_04_02
+    description: Harvested from test_spritesheet at (4, 2)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#b5b5b5'
+    source: test_spritesheet
+    position:
+    - 4
+    - 2
+    harvested_at: '2026-02-07T14:25:51.589898'
+  test_spritesheet_00_03:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_00_03
+    description: Harvested from test_spritesheet at (0, 3)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#bcbcbc'
+    source: test_spritesheet
+    position:
+    - 0
+    - 3
+    harvested_at: '2026-02-07T14:25:51.589900'
+  test_spritesheet_01_03:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_01_03
+    description: Harvested from test_spritesheet at (1, 3)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#cccccc'
+    source: test_spritesheet
+    position:
+    - 1
+    - 3
+    harvested_at: '2026-02-07T14:25:51.589903'
+  test_spritesheet_02_03:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_02_03
+    description: Harvested from test_spritesheet at (2, 3)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#dcdcdc'
+    source: test_spritesheet
+    position:
+    - 2
+    - 3
+    harvested_at: '2026-02-07T14:25:51.589905'
+  test_spritesheet_03_03:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_03_03
+    description: Harvested from test_spritesheet at (3, 3)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#ececec'
+    source: test_spritesheet
+    position:
+    - 3
+    - 3
+    harvested_at: '2026-02-07T14:25:51.589907'
+  test_spritesheet_04_03:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_04_03
+    description: Harvested from test_spritesheet at (4, 3)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ffffff'
+    - '#fcfcfc'
+    source: test_spritesheet
+    position:
+    - 4
+    - 3
+    harvested_at: '2026-02-07T14:25:51.589910'
+  test_spritesheet_00_04:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_00_04
+    description: Harvested from test_spritesheet at (0, 4)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#4682b4'
+    - '#5a96c8'
+    source: test_spritesheet
+    position:
+    - 0
+    - 4
+    harvested_at: '2026-02-07T14:25:51.589911'
+  test_spritesheet_01_04:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_01_04
+    description: Harvested from test_spritesheet at (1, 4)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ff6d28'
+    - '#ff4500'
+    source: test_spritesheet
+    position:
+    - 1
+    - 4
+    harvested_at: '2026-02-07T14:25:51.589913'
+  test_spritesheet_02_04:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_02_04
+    description: Harvested from test_spritesheet at (2, 4)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#9370db'
+    - '#ac89f4'
+    source: test_spritesheet
+    position:
+    - 2
+    - 4
+    harvested_at: '2026-02-07T14:25:51.589915'
+  test_spritesheet_03_04:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_03_04
+    description: Harvested from test_spritesheet at (3, 4)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#ff69b4'
+    - '#ff82cd'
+    source: test_spritesheet
+    position:
+    - 3
+    - 4
+    harvested_at: '2026-02-07T14:25:51.589916'
+  test_spritesheet_04_04:
+    object_type: object
+    material_id: unknown
+    sprite_id: test_spritesheet_04_04
+    description: Harvested from test_spritesheet at (4, 4)
+    tags:
+    - harvested
+    - imported
+    - test_spritesheet
+    collision: false
+    interaction_hooks: []
+    d20_checks: {}
+    palette:
+    - '#000000'
+    source: test_spritesheet
+    position:
+    - 4
+    - 4
+    harvested_at: '2026-02-07T14:25:51.589918'
+metadata:
+  total_assets: 25
+  harvest_timestamp: '2026-02-07T14:25:51.625563'
+  exporter: DGT Asset Ingestor
+  format: sovereign_registry

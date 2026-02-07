@@ -1,0 +1,82 @@
+unknown:
+  color: '#2d5a27'
+  tags:
+  - harvested
+  - imported
+  - test_spritesheet
+  assets:
+  - test_spritesheet_00_00
+  - test_spritesheet_01_00
+  - test_spritesheet_02_00
+  - test_spritesheet_03_00
+  - test_spritesheet_04_00
+  - test_spritesheet_00_01
+  - test_spritesheet_01_01
+  - test_spritesheet_02_01
+  - test_spritesheet_03_01
+  - test_spritesheet_04_01
+  - test_spritesheet_00_02
+  - test_spritesheet_01_02
+  - test_spritesheet_02_02
+  - test_spritesheet_03_02
+  - test_spritesheet_04_02
+  - test_spritesheet_00_03
+  - test_spritesheet_01_03
+  - test_spritesheet_02_03
+  - test_spritesheet_03_03
+  - test_spritesheet_04_03
+  - test_spritesheet_00_04
+  - test_spritesheet_01_04
+  - test_spritesheet_02_04
+  - test_spritesheet_03_04
+  - test_spritesheet_04_04
+  palettes:
+  - - '#2d5a27'
+    - '#3c6936'
+  - - '#3a6b35'
+    - '#497a44'
+  - - '#4b7845'
+    - '#5a8754'
+  - - '#5c8745'
+    - '#6b9654'
+  - - '#6c96a5'
+    - '#7ba5b4'
+  - - '#ffffff'
+    - '#5d4037'
+  - - '#ffffff'
+    - '#6b5447'
+  - - '#ffffff'
+    - '#7b6557'
+  - - '#ffffff'
+    - '#8b7667'
+  - - '#ffffff'
+    - '#9b8777'
+  - - '#ffffff'
+    - '#757575'
+  - - '#ffffff'
+    - '#858585'
+  - - '#ffffff'
+    - '#959595'
+  - - '#ffffff'
+    - '#a5a5a5'
+  - - '#ffffff'
+    - '#b5b5b5'
+  - - '#ffffff'
+    - '#bcbcbc'
+  - - '#ffffff'
+    - '#cccccc'
+  - - '#ffffff'
+    - '#dcdcdc'
+  - - '#ffffff'
+    - '#ececec'
+  - - '#ffffff'
+    - '#fcfcfc'
+  - - '#4682b4'
+    - '#5a96c8'
+  - - '#ff6d28'
+    - '#ff4500'
+  - - '#9370db'
+    - '#ac89f4'
+  - - '#ff69b4'
+    - '#ff82cd'
+  - - '#000000'
