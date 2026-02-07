@@ -109,8 +109,8 @@ class StaticCanvas:
         # Rendering configuration
         self.render_mode = RenderMode.LIVE
         self.target_fps = 10.0  # Target refresh rate
-        self.min_terminal_width = 120
-        self.min_terminal_height = 40
+        self.min_terminal_width = 80  # Reduced for testing
+        self.min_terminal_height = 24  # Reduced for testing
         
         # Live display
         self.live = None
