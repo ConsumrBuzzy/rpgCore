@@ -116,16 +116,21 @@ class SemanticBaker:
         
         if format == "safetensors":
             try:
-                import safetensors.torch
-                # Convert to torch tensors for safetensors
-                torch_embeddings = {
-                    key: torch.from_numpy(embedding) 
-                    for key, embedding in embeddings.items()
-                }
-                safetensors.torch.save_file(torch_embeddings, str(output_path))
-                logger.info(f"Saved embeddings in safetensors format")
-            except ImportError:
-                logger.warning("safetensors not available, falling back to pickle")
+                try:
+                    import torch
+                    import safetensors.torch
+                    # Convert to torch tensors for safetensors
+                    torch_embeddings = {
+                        key: torch.from_numpy(embedding) 
+                        for key, embedding in embeddings.items()
+                    }
+                    safetensors.torch.save_file(torch_embeddings, str(output_path))
+                    logger.info(f"Saved embeddings in safetensors format")
+                except ImportError:
+                    logger.warning("safetensors or torch not available, falling back to pickle")
+                    format = "pickle"
+            except Exception as e:
+                logger.warning(f"safetensors save failed: {e}, falling back to pickle")
                 format = "pickle"
         
         if format == "pickle":
