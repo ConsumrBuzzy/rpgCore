@@ -293,40 +293,114 @@ class IntentGenerator:
 
 
 class Voyager:
-    """Pathfinding and intent generation - The Actor Pillar"""
+    """Autonomous pathfinding and intent generation with STATE_PONDERING support"""
     
-    def __init__(self, dd_engine: DD_Engine):
+    def __init__(self, dd_engine):
         self.dd_engine = dd_engine
+        
+        # Navigation components
         self.navigator = PathfindingNavigator()
         self.intent_generator = IntentGenerator(self.navigator)
         
+        # State machine
+        self.state = VoyagerState.STATE_IDLE
+        self.state_entered_time: float = 0.0
+        
         # Navigation state
         self.current_position: Tuple[int, int] = (10, 25)
+        self.current_path: List[Tuple[int, int]] = []
+        self.current_goal: Optional[NavigationGoal] = None
+        
+        # Movie script (autonomous navigation beacons)
+        self.movie_script = [
+            (10, 25),  # Forest edge
+            (10, 20),  # Town gate
+            (10, 10),  # Town square
+            (20, 10),  # Tavern entrance
+            (25, 30),  # Tavern interior
+        ]
+        self.current_script_index = 0
+        
+        # Discovery tracking
+        self.discovered_interest_points: List[InterestPoint] = []
+        self.last_discovery_time: float = 0.0
+        
+        # Performance tracking
+        self.pathfinding_times: List[float] = []
+        self.intent_generation_times: List[float] = []
+        
+        # Timing
         self.last_intent_time: float = 0.0
-        self.intent_cooldown: float = 0.01  # Reduced from 0.1s to 0.01s for movie mode
+        self.intent_cooldown: float = 0.01  # 10ms for movie mode
         
-        logger.info("🚶 Voyager initialized - Actor Pillar ready")
+        logger.info("🚶 Voyager initialized - STATE_PONDERING support ready")
     
-    def update_position(self, new_position: Tuple[int, int]) -> None:
-        """Update current position from D&D Engine state"""
-        self.current_position = new_position
+    # === FACADE INTERFACE ===
     
-    def generate_movement_intent(self, target: Tuple[int, int]) -> MovementIntent:
-        """Generate movement intent for target position"""
-        current_state = self.dd_engine.get_current_state()
-        collision_map = self.dd_engine.assets.get_collision_map(current_state.current_environment)
+    async def generate_next_intent(self, game_state: GameState) -> Optional[Union[MovementIntent, InteractionIntent, PonderIntent]]:
+        """Generate next intent based on state and goals (Facade method)"""
+        start_time = time.time()
         
-        return self.intent_generator.generate_movement_intent(
-            self.current_position, target, collision_map
+        intent = None
+        
+        if self.state == VoyagerState.STATE_IDLE:
+            intent = await self._generate_idle_intent(game_state)
+        elif self.state == VoyagerState.STATE_PONDERING:
+            intent = await self._generate_pondering_intent(game_state)
+        elif self.state == VoyagerState.STATE_MOVING:
+            intent = await self._generate_movement_intent(game_state)
+        
+        # Track performance
+        generation_time = (time.time() - start_time) * 1000
+        self.intent_generation_times.append(generation_time)
+        if len(self.intent_generation_times) > 100:
+            self.intent_generation_times.pop(0)
+        
+        return intent
+    
+    async def generate_movement_intent(self, target_position: Tuple[int, int]) -> Optional[MovementIntent]:
+        """Generate movement intent with pathfinding (Facade method)"""
+        if not validate_position(target_position):
+            logger.warning(f"🚶 Invalid target position: {target_position}")
+            return None
+        
+        # Get collision map
+        collision_map = await self._get_collision_map()
+        
+        # Generate path
+        path = await self.navigator.find_path(self.current_position, target_position, collision_map)
+        
+        if not path:
+            logger.warning(f"🚶 No path found to {target_position}")
+            return None
+        
+        # Calculate confidence
+        confidence = self.intent_generator._calculate_path_confidence(path)
+        
+        intent = MovementIntent(
+            target_position=target_position,
+            path=path,
+            confidence=confidence,
+            timestamp=time.time()
         )
+        
+        logger.debug(f"🚶 Generated movement intent: {len(path)} steps, confidence: {confidence:.2f}")
+        return intent
     
-    def generate_interaction_intent(self, entity: str, interaction_type: str,
-                                   parameters: Optional[Dict[str, Any]] = None) -> InteractionIntent:
-        """Generate interaction intent for entity"""
-        return self.intent_generator.generate_interaction_intent(entity, interaction_type, parameters)
+    async def generate_interaction_intent(self, target_entity: str, interaction_type: str, parameters: Dict[str, Any] = None) -> Optional[InteractionIntent]:
+        """Generate interaction intent (Facade method)"""
+        intent = InteractionIntent(
+            target_entity=target_entity,
+            interaction_type=interaction_type,
+            parameters=parameters or {},
+            timestamp=time.time()
+        )
+        
+        logger.debug(f"🚶 Generated interaction intent: {interaction_type} with {target_entity}")
+        return intent
     
-    def submit_intent(self, intent: Union[MovementIntent, InteractionIntent]) -> bool:
-        """Submit intent to D&D Engine and handle response"""
+    async def submit_intent(self, intent: Union[MovementIntent, InteractionIntent, PonderIntent]) -> bool:
+        """Submit intent to D&D Engine (Facade method)"""
         # Check intent cooldown
         current_time = time.time()
         if current_time - self.last_intent_time < self.intent_cooldown:
@@ -335,75 +409,257 @@ class Voyager:
         
         self.last_intent_time = current_time
         
-        # Validate intent
-        validation = self.dd_engine.process_intent(intent)
-        
-        if not validation.is_valid:
-            logger.warning(f"❌ Intent rejected: {validation.validation_result.value} - {validation.message}")
-            return False
-        
-        # Execute intent
-        try:
-            new_state = self.dd_engine.execute_validated_intent(intent)
-            
-            # Update internal position
-            self.update_position(new_state.player_position)
-            
-            logger.info(f"✅ Intent executed successfully: {intent.intent_type}")
+        return await self.dd_engine.submit_intent(intent)
+    
+    async def is_movement_complete(self) -> bool:
+        """Check if current movement is complete (Facade method)"""
+        if not self.current_path:
             return True
+        
+        # Check if we've reached the target
+        if self.current_position == self.current_path[-1]:
+            self.current_path.clear()
+            return True
+        
+        return False
+    
+    async def update_position(self, new_position: Tuple[int, int]) -> None:
+        """Update Voyager position (Facade method)"""
+        if validate_position(new_position):
+            self.current_position = new_position
+            logger.debug(f"🚶 Position updated: {new_position}")
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Get Voyager status (Facade method)"""
+        avg_pathfinding_time = sum(self.pathfinding_times) / len(self.pathfinding_times) if self.pathfinding_times else 0
+        avg_intent_time = sum(self.intent_generation_times) / len(self.intent_generation_times) if self.intent_generation_times else 0
+        
+        return {
+            "position": self.current_position,
+            "state": self.state.value,
+            "current_goal": self.current_goal.target_position if self.current_goal else None,
+            "path_length": len(self.current_path),
+            "discovered_interest_points": len(self.discovered_interest_points),
+            "script_index": self.current_script_index,
+            "avg_pathfinding_time_ms": avg_pathfinding_time,
+            "avg_intent_generation_time_ms": avg_intent_time,
+            "health": "good"  # Placeholder
+        }
+    
+    # === STATE MACHINE ===
+    
+    async def _generate_idle_intent(self, game_state: GameState) -> Optional[Union[MovementIntent, InteractionIntent, PonderIntent]]:
+        """Generate intent when idle"""
+        # Check if we have pending discoveries to ponder
+        if self.discovered_interest_points:
+            for ip in self.discovered_interest_points:
+                if not ip.manifestation and time.time() - self.last_discovery_time > 2.0:
+                    # Time to ponder this discovery
+                    return await self._create_ponder_intent(ip)
+        
+        # Follow movie script
+        return await self._follow_movie_script(game_state)
+    
+    async def _generate_pondering_intent(self, game_state: GameState) -> Optional[PonderIntent]:
+        """Generate intent when pondering"""
+        # Check if pondering has timed out
+        if time.time() - self.state_entered_time > VOYAGER_PONDERING_TIMEOUT_SECONDS:
+            logger.warning("🚶 Pondering timeout, returning to idle")
+            await self._change_state(VoyagerState.STATE_IDLE)
+            return None
+        
+        # Pondering state - no new intents, waiting for LLM response
+        return None
+    
+    async def _generate_movement_intent(self, game_state: GameState) -> Optional[MovementIntent]:
+        """Generate intent when moving"""
+        # Continue following current path
+        if self.current_path:
+            # Get next position in path
+            next_position = self.current_path[0]
             
-        except Exception as e:
-            logger.error(f"💥 Intent execution failed: {e}")
-            return False
+            # Generate movement intent to next position
+            return MovementIntent(
+                target_position=next_position,
+                path=[next_position],
+                confidence=1.0,
+                timestamp=time.time()
+            )
+        
+        # Path complete, return to idle
+        await self._change_state(VoyagerState.STATE_IDLE)
+        return None
+    
+    async def _create_ponder_intent(self, interest_point: InterestPoint) -> PonderIntent:
+        """Create ponder intent for Interest Point"""
+        await self._change_state(VoyagerState.STATE_PONDERING)
+        
+        # Create query context for LLM
+        query_context = self._generate_query_context(interest_point)
+        
+        intent = PonderIntent(
+            interest_point=interest_point,
+            query_context=query_context,
+            timestamp=time.time()
+        )
+        
+        logger.info(f"🚶 Creating ponder intent for {interest_point.interest_type.value} at {interest_point.position}")
+        return intent
+    
+    # === MOVIE SCRIPT NAVIGATION ===
+    
+    async def _follow_movie_script(self, game_state: GameState) -> Optional[MovementIntent]:
+        """Follow autonomous movie script"""
+        if self.current_script_index >= len(self.movie_script):
+            logger.info("🚶 Movie script complete")
+            return None
+        
+        target_position = self.movie_script[self.current_script_index]
+        
+        # Check if we're close to target
+        distance = abs(self.current_position[0] - target_position[0]) + \
+                  abs(self.current_position[1] - target_position[1])
+        
+        if distance <= 1:
+            # Reached target, move to next script position
+            logger.info(f"🚶 Script position reached: {target_position}")
+            self.current_script_index += 1
+            
+            # Generate interaction if this is a special location
+            if self.current_script_index <= len(self.movie_script):
+                return await self._generate_script_interaction(target_position)
+            
+            return None
+        
+        # Generate movement intent toward target
+        return await self.generate_movement_intent(target_position)
+    
+    async def _generate_script_interaction(self, position: Tuple[int, int]) -> Optional[InteractionIntent]:
+        """Generate interaction for special movie locations"""
+        interactions = {
+            (10, 25): "forest_gate",
+            (10, 20): "town_gate",
+            (20, 10): "tavern_entrance",
+            (25, 30): "tavern_complete"
+        }
+        
+        interaction_type = interactions.get(position)
+        if interaction_type:
+            return await self.generate_interaction_intent(
+                f"location_{position[0]}_{position[1]}",
+                interaction_type
+            )
+        
+        return None
+    
+    # === DISCOVERY AND PONDERING ===
+    
+    async def handle_discovery(self, interest_point: InterestPoint) -> None:
+        """Handle discovery of new Interest Point"""
+        self.discovered_interest_points.append(interest_point)
+        self.last_discovery_time = time.time()
+        
+        logger.info(f"🚶 Discovered {interest_point.interest_type.value} at {interest_point.position}")
+    
+    def _generate_query_context(self, interest_point: InterestPoint) -> str:
+        """Generate query context for LLM"""
+        context = f"Interest Point at coordinates {interest_point.position} "
+        context += f"of type {interest_point.interest_type.value}. "
+        context += f"Seed value: {interest_point.seed_value}. "
+        context += "Based on the 1,000-year history of this realm, what is this landmark?"
+        
+        return context
+    
+    # === STATE MANAGEMENT ===
+    
+    async def _change_state(self, new_state: VoyagerState) -> None:
+        """Change Voyager state"""
+        old_state = self.state
+        self.state = new_state
+        self.state_entered_time = time.time()
+        
+        logger.info(f"🚶 State changed: {old_state.value} → {new_state.value}")
+        
+        # Update D&D Engine
+        await self.dd_engine.update_voyager_state(new_state)
+    
+    # === UTILITY METHODS ===
+    
+    async def _get_collision_map(self) -> List[List[bool]]:
+        """Get collision map from D&D Engine"""
+        # This would normally get from World Engine via D&D Engine
+        # For now, return a simple map
+        return [[False for _ in range(50)] for _ in range(50)]
+    
+    def get_navigation_stats(self) -> Dict[str, Any]:
+        """Get navigation statistics"""
+        return {
+            "pathfinding_count": len(self.pathfinding_times),
+            "avg_pathfinding_time_ms": sum(self.pathfinding_times) / len(self.pathfinding_times) if self.pathfinding_times else 0,
+            "intent_generation_count": len(self.intent_generation_times),
+            "avg_intent_generation_time_ms": sum(self.intent_generation_times) / len(self.intent_generation_times) if self.intent_generation_times else 0,
+            "goals_completed": len([g for g in self.intent_generator.current_goals if g.is_expired()]),
+            "current_path_length": len(self.current_path)
+        }
+    
+    # === LEGACY COMPATIBILITY METHODS ===
     
     def navigate_to_position(self, target_position: Tuple[int, int]) -> bool:
-        """Navigate to target position using pathfinding"""
+        """Legacy method - navigate to target position"""
         logger.info(f"🧭 Navigating to {target_position}")
         
         try:
             # Generate movement intent
             intent = self.generate_movement_intent(target_position)
             
-            # Submit intent
-            success = self.submit_intent(intent)
-            
-            if success:
-                logger.info(f"🎯 Navigation successful: {self.current_position} → {target_position}")
+            if intent:
+                # Submit intent
+                success = self.submit_intent(intent)
+                
+                if success:
+                    logger.info(f"🎯 Navigation successful: {self.current_position} → {target_position}")
+                else:
+                    logger.warning(f"❌ Navigation failed: {target_position}")
+                
+                return success
             else:
-                logger.warning(f"❌ Navigation failed: {target_position}")
-            
-            return success
-            
+                logger.warning(f"❌ Could not generate movement intent to {target_position}")
+                return False
+                
         except Exception as e:
             logger.error(f"💥 Navigation error: {e}")
             return False
     
     def interact_with_entity(self, entity: str, interaction_type: str,
                            parameters: Optional[Dict[str, Any]] = None) -> bool:
-        """Interact with entity at current position"""
+        """Legacy method - interact with entity at current position"""
         logger.info(f"🤝 Interacting with {entity}: {interaction_type}")
         
         try:
             # Generate interaction intent
             intent = self.generate_interaction_intent(entity, interaction_type, parameters)
             
-            # Submit intent
-            success = self.submit_intent(intent)
-            
-            if success:
-                logger.info(f"✅ Interaction successful: {entity}")
+            if intent:
+                # Submit intent
+                success = self.submit_intent(intent)
+                
+                if success:
+                    logger.info(f"✅ Interaction successful: {entity}")
+                else:
+                    logger.warning(f"❌ Interaction failed: {entity}")
+                
+                return success
             else:
-                logger.warning(f"❌ Interaction failed: {entity}")
-            
-            return success
-            
+                logger.warning(f"❌ Could not generate interaction intent for {entity}")
+                return False
+                
         except Exception as e:
             logger.error(f"💥 Interaction error: {e}")
             return False
     
     def add_navigation_goal(self, target_position: Tuple[int, int], priority: int = 1,
                            timeout: float = 30.0) -> None:
-        """Add navigation goal to intent generator"""
+        """Legacy method - add navigation goal"""
         goal = NavigationGoal(
             target_position=target_position,
             priority=priority,
@@ -412,7 +668,7 @@ class Voyager:
         self.intent_generator.add_goal(goal)
     
     def process_next_goal(self) -> bool:
-        """Process the next highest priority goal"""
+        """Legacy method - process next goal"""
         goal = self.intent_generator.get_next_goal()
         
         if not goal:
@@ -420,18 +676,6 @@ class Voyager:
         
         logger.debug(f"🎯 Processing goal: {goal.target_position}")
         return self.navigate_to_position(goal.target_position)
-    
-    def get_status(self) -> Dict[str, Any]:
-        """Get current Voyager status"""
-        current_state = self.dd_engine.get_current_state()
-        
-        return {
-            "position": self.current_position,
-            "health": current_state.player_health,
-            "environment": current_state.current_environment,
-            "active_goals": len(self.intent_generator.current_goals),
-            "last_intent_time": self.last_intent_time
-        }
 
 
 # Factory for creating Voyager instances
@@ -439,13 +683,41 @@ class VoyagerFactory:
     """Factory for creating Voyager instances"""
     
     @staticmethod
-    def create_voyager(dd_engine: DD_Engine) -> Voyager:
-        """Create a Voyager with default configuration"""
+    def create_voyager(dd_engine) -> Voyager:
+        """Create a Voyager with D&D Engine dependency"""
         return Voyager(dd_engine)
     
     @staticmethod
-    def create_test_voyager() -> Voyager:
+    def create_test_voyager(dd_engine) -> Voyager:
         """Create a Voyager for testing"""
-        from engines.dd_engine import DDEngineFactory
-        test_engine = DDEngineFactory.create_test_engine()
-        return Voyager(test_engine)
+        voyager = Voyager(dd_engine)
+        # Add test-specific configuration
+        return voyager
+
+
+# === SYNCHRONOUS WRAPPER ===
+
+class VoyagerSync:
+    """Synchronous wrapper for Voyager (for compatibility)"""
+    
+    def __init__(self, voyager: Voyager):
+        self.voyager = voyager
+        self._loop = asyncio.new_event_loop()
+    
+    def generate_next_intent(self, game_state: GameState) -> Optional[Union[MovementIntent, InteractionIntent, PonderIntent]]:
+        """Synchronous generate_next_intent"""
+        return self._loop.run_until_complete(
+            self.voyager.generate_next_intent(game_state)
+        )
+    
+    def generate_movement_intent(self, target_position: Tuple[int, int]) -> Optional[MovementIntent]:
+        """Synchronous generate_movement_intent"""
+        return self._loop.run_until_complete(
+            self.voyager.generate_movement_intent(target_position)
+        )
+    
+    def submit_intent(self, intent: Union[MovementIntent, InteractionIntent, PonderIntent]) -> bool:
+        """Synchronous submit_intent"""
+        return self._loop.run_until_complete(
+            self.voyager.submit_intent(intent)
+        )
