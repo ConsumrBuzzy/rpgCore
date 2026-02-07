@@ -15,9 +15,14 @@ import pickle
 from pathlib import Path
 from typing import Dict, List, Tuple
 import numpy as np
+import sys
+import os
 
 from loguru import logger
 from sentence_transformers import SentenceTransformer
+
+# Add parent directory to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from semantic_engine import create_default_intent_library, IntentLibrary
 
 

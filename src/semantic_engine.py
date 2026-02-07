@@ -13,9 +13,6 @@ import numpy as np
 from loguru import logger
 from sentence_transformers import SentenceTransformer, util
 
-# Import our enterprise tooling
-from utils.bake_embeddings import SemanticBaker
-
 
 @dataclass
 class IntentMatch:
@@ -120,6 +117,7 @@ class SemanticResolver:
         
         try:
             # Load pre-baked embeddings
+            from utils.bake_embeddings import SemanticBaker
             baker = SemanticBaker(model_name=self.model_name)
             all_embeddings = baker.load_embeddings(self.embeddings_path)
             
