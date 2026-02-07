@@ -262,8 +262,77 @@ class NarrativeBuffer:
             "processing": len(self._processing),
             "hit_count": self._hit_count,
             "miss_count": self._miss_count,
-            "hit_rate": hit_rate
+            "hit_rate": hit_rate,
+            "trajectory_valid": self._cache_valid_trajectory is not None,
+            "cache_invalidations": getattr(self, '_invalidation_count', 0)
         }
+    
+    def update_trajectory(self, position: Tuple[float, float], heading: float) -> bool:
+        """
+        Update player trajectory and invalidate cache if necessary.
+        
+        Args:
+            position: Current player position (x, y)
+            heading: Current player heading in degrees
+            
+        Returns:
+            True if cache was invalidated, False otherwise
+        """
+        new_trajectory = TrajectoryVector(position, heading)
+        
+        # If this is the first trajectory, mark cache as valid
+        if self._current_trajectory is None:
+            self._current_trajectory = new_trajectory
+            self._cache_valid_trajectory = new_trajectory
+            return False
+        
+        # Check if trajectory changed significantly
+        angle_change = self._current_trajectory.angle_to(new_trajectory)
+        distance_change = self._current_trajectory.distance_to(new_trajectory)
+        
+        # Update current trajectory
+        self._current_trajectory = new_trajectory
+        
+        # Check if cache invalidation is needed
+        if (angle_change > self._trajectory_threshold_angle or 
+            distance_change > self._trajectory_threshold_distance):
+            
+            logger.info(f"🔄 Trajectory changed: angle={angle_change:.1f}°, distance={distance_change:.1f}")
+            self.invalidate_cache()
+            return True
+        
+        return False
+    
+    def invalidate_cache(self) -> None:
+        """Invalidate cache due to trajectory change."""
+        if not self._cache:
+            return
+        
+        invalidated_count = len(self._cache)
+        self._cache.clear()
+        self._priority_queue.clear()
+        self._processing.clear()
+        
+        # Update cache valid trajectory
+        self._cache_valid_trajectory = self._current_trajectory
+        
+        # Track invalidation count
+        if not hasattr(self, '_invalidation_count'):
+            self._invalidation_count = 0
+        self._invalidation_count += 1
+        
+        logger.info(f"🗑️ Cache invalidated: {invalidated_count} entries cleared")
+    
+    def is_trajectory_valid(self) -> bool:
+        """Check if current cache is valid for current trajectory."""
+        if self._cache_valid_trajectory is None or self._current_trajectory is None:
+            return True  # No trajectory to validate against
+        
+        angle_change = self._cache_valid_trajectory.angle_to(self._current_trajectory)
+        distance_change = self._cache_valid_trajectory.distance_to(self._current_trajectory)
+        
+        return (angle_change <= self._trajectory_threshold_angle and 
+                distance_change <= self._trajectory_threshold_distance)
 
 
 class PredictiveNarrativeEngine:
