@@ -200,8 +200,8 @@ class LegacyHandler:
             return "nothing"
         
         # Find item with highest value
-        top_item = max(game_state.player.inventory, key=lambda x: x.get('value', 0))
-        return top_item.get('name', 'unknown item')
+        top_item = max(game_state.player.inventory, key=lambda x: getattr(x, 'value', 0))
+        return getattr(top_item, 'name', 'unknown item')
     
     def _save_world_mark(self, mark: WorldMark):
         """Save a world mark to the database."""
