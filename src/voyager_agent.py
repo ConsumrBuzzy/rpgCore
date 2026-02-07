@@ -20,8 +20,10 @@ from loguru import logger
 class VoyagerDecision(BaseModel):
     """Single action decision from the Voyager."""
     
-    action: str  # Natural language action (e.g., "I bribe the janitor with 10 gold")
-    reasoning: str  # Why this action was chosen (for debugging)
+    selected_intent: str = Field(description="The intent_id chosen from the library (e.g., 'force', 'charm', 'stealth')")
+    action: str = Field(description="The natural language command to send to the loop")
+    strategic_reasoning: str = Field(description="Why this choice makes sense given my stats/tags")
+    internal_monologue: str = Field(description="My current emotional state (e.g., 'I'm tired of these sticky floors')")
 
 
 class VoyagerAgent:
@@ -78,19 +80,21 @@ class VoyagerAgent:
         )
         
         system_prompt = (
-            "You are an RPG player making decisions in a D&D-style game.\n\n"
+            "You are an expert RPG STRATEGIST playing a D&D-style game.\n\n"
             f"Personality: {personality_trait}\n\n"
+            "OBJECTIVE: Choose the action with the HIGHEST PROBABILITY of success.\n"
+            "1. Analyze your Player Stats (Strength, Dex, etc.)\n"
+            "2. Analyze Room Tags (e.g., 'Sticky Floors' punishes Dexterity)\n"
+            "3. Select an Intent that leverages your high stats and avoids penalties.\n\n"
             "Rules:\n"
-            "- Output ONLY the action you want to perform in natural language\n"
-            "- Use first person ('I', not 'you')\n"
-            "- Be specific and concrete (not 'explore' but 'I search the wooden table')\n"
-            "- Consider your stats (HP, Gold, Inventory)\n"
-            "- Respond to the current scene and NPCs\n"
-            "- One action per turn\n\n"
+            "- Output `selected_intent` (e.g., 'force', 'charm')\n"
+            "- Output `action` in natural language (first person)\n"
+            "- Explain your `strategic_reasoning` (e.g., 'I have high Strength and sticky floors punish Dex, so I will Smash')\n"
+            "- Include `internal_monologue` reflecting your personality\n"
+            "- Consider Inventory bonuses (e.g., 'Iron Key' helps Lockpicking)\n\n"
             "Examples:\n"
-            "- 'I try to bribe the janitor with 10 gold to show me the sewers'\n"
-            "- 'I sneak past the guard while he's distracted'\n"
-            "- 'I kick the table over to create a distraction'\n"
+            "- Sticky Floor + High Str: Intent='force', Action='I smash the table', Reasoning='Avoiding Dex check due to floors'\n"
+            "- Rowdy Crowd + High Cha: Intent='charm', Action='I buy a round', Reasoning='Leveraging Cha to calm crowd'\n"
         )
         
         # Initialize Pydantic AI agent
@@ -126,10 +130,22 @@ class VoyagerAgent:
             f"Your Stats:\n"
             f"- HP: {player_stats.get('hp', 100)}/{player_stats.get('max_hp', 100)}\n"
             f"- Gold: {player_stats.get('gold', 0)}\n"
+            f"- Attributes: {player_stats.get('attributes', {})}\n"
         )
         
         if player_stats.get('inventory'):
-            prompt += f"- Inventory: {', '.join(player_stats['inventory'])}\n"
+            # Inventory is now list of Item objects (dicts), need to parse
+            items = []
+            for item in player_stats['inventory']:
+                # Handle both dict (if serialized) and Item object
+                if isinstance(item, dict):
+                    name = item.get('name', 'Unknown')
+                    bonus = item.get('stat_bonus', '')
+                else:
+                    name = item.name
+                    bonus = item.stat_bonus
+                items.append(f"{name} ({bonus})")
+            prompt += f"- Inventory: {', '.join(items)}\n"
         
         if turn_history:
             prompt += f"\nRecent Actions:\n"
@@ -137,7 +153,7 @@ class VoyagerAgent:
                 prompt += f"  - {action}\n"
             prompt += "\n(Avoid repeating the same action)\n"
         
-        prompt += "\nWhat do you do?"
+        prompt += "\nWhat is your strategic move?"
         
         logger.debug(f"Voyager deciding action...")
         

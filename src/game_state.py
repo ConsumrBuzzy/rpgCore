@@ -10,6 +10,7 @@ from typing import Dict, List, Literal
 
 from loguru import logger
 from pydantic import BaseModel, Field
+from loot_system import Item
 
 
 class PlayerStats(BaseModel):
@@ -19,7 +20,7 @@ class PlayerStats(BaseModel):
     hp: int = Field(default=100, ge=0, le=100)
     max_hp: int = 100
     gold: int = Field(default=50, ge=0)
-    inventory: List[str] = Field(default_factory=list)
+    inventory: List[Item] = Field(default_factory=list)
     attributes: Dict[str, int] = Field(
         default_factory=lambda: {
             "strength": 0,

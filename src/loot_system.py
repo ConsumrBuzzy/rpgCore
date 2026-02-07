@@ -10,12 +10,16 @@ from pydantic import BaseModel, Field
 from loguru import logger
 
 
+from typing import Literal
+
 class Item(BaseModel):
     """A loot item with stats."""
     
     name: str = Field(description="Item name")
     description: str = Field(description="Flavorful description")
-    stat_bonus: str = Field(default="", description="Stat modifier (e.g., '+1 Pierce', '+5 HP')")
+    stat_bonus: str = Field(default="", description="Human-readable stat modifier (e.g., '+1 Pierce', '+5 HP')")
+    target_stat: Literal["strength", "dexterity", "intelligence", "charisma"] | None = Field(default=None, description="Stat this item boosts")
+    modifier_value: int = Field(default=0, description="Numerical bonus value")
     value: int = Field(default=0, ge=0, description="Gold value")
 
 
@@ -32,17 +36,17 @@ class LootSystem:
     def __init__(self):
         """Initialize loot tables."""
         self.tavern_loot = [
-            Item(name="Dull Dirk", description="A rusty dagger with a chipped blade", stat_bonus="+1 Pierce", value=5),
+            Item(name="Dull Dirk", description="A rusty dagger with a chipped blade", stat_bonus="+1 Strength", target_stat="strength", modifier_value=1, value=5),
             Item(name="Ale-Soaked Rag", description="It smells terrible but might be useful", stat_bonus="", value=1),
             Item(name="Copper Coins", description="A small handful of tarnished copper", stat_bonus="", value=3),
-            Item(name="Lucky Die", description="A six-sided die that always rolls 6", stat_bonus="+1 Luck", value=10),
-            Item(name="Bent Fork", description="Surprisingly sharp", stat_bonus="+1 Stab", value=2),
-            Item(name="Half-Eaten Cheese", description="Still good? Probably?", stat_bonus="+2 HP", value=1),
+            Item(name="Lucky Die", description="A six-sided die that always rolls 6", stat_bonus="+1 Charisma", target_stat="charisma", modifier_value=1, value=10),
+            Item(name="Bent Fork", description="Surprisingly sharp", stat_bonus="+1 Strength", target_stat="strength", modifier_value=1, value=2),
+            Item(name="Half-Eaten Cheese", description="Still good? Probably?", stat_bonus="+2 HP", value=1), # HP isn't a stat check, special case
         ]
         
         self.dungeon_loot = [
-            Item(name="Iron Key", description="Rusty but functional", stat_bonus="", value=5),
-            Item(name="Torch Stub", description="Burns for about 10 minutes", stat_bonus="", value=2),
+            Item(name="Iron Key", description="Rusty but functional", stat_bonus="+1 Dex (Lockpicking)", target_stat="dexterity", modifier_value=1, value=5),
+            Item(name="Torch Stub", description="Burns for about 10 minutes", stat_bonus="+1 Int (Search)", target_stat="intelligence", modifier_value=1, value=2),
             Item(name="Skull Fragment", description="Creepy memento", stat_bonus="", value=1),
         ]
     

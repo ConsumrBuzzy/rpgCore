@@ -12,9 +12,10 @@ Calculates final outcomes based on:
 import random
 from dataclasses import dataclass
 from typing import List, Dict, Optional, Literal
-
+    
 from loguru import logger
 from pydantic import BaseModel, Field
+from loot_system import Item
 
 
 class QuartermasterOutcome(BaseModel):
@@ -45,7 +46,9 @@ class Quartermaster:
         room_tags: List[str],
         base_difficulty: int = 10,
         arbiter_mod: int = 0,
-        player_stats: Dict[str, int] | None = None
+        arbiter_mod: int = 0,
+        player_stats: Dict[str, int] | None = None,
+        inventory_items: List[Item] | None = None
     ) -> QuartermasterOutcome:
         """
         Resolve the final outcome of an action.
@@ -69,12 +72,26 @@ class Quartermaster:
             if attr_val != 0:
                 attr_bonus = attr_val
                 attr_reason = f"{attr_name.title()} ({attr_val:+d})"
+                attr_reason = f"{attr_name.title()} ({attr_val:+d})"
+        
+        # 2c. Calculate Inventory Bonus
+        item_bonus = 0
+        item_reason = ""
+        if inventory_items:
+            # Determine relevant stat for this intent
+            target_stat, _ = self._get_attribute_bonus(intent_id, player_stats or {})
+            
+            # Sum bonuses from relevant items
+            for item in inventory_items:
+                if item.target_stat == target_stat:
+                    item_bonus += item.modifier_value
+                    item_reason = f"Item: {item.name} ({item.modifier_value:+d})" # Simple single item reason for now
         
         # 3. Roll the Die
         d20_roll = random.randint(1, 20)
         
         # 4. Total Score
-        total_score = d20_roll + attr_bonus + tag_mod
+        total_score = d20_roll + attr_bonus + item_bonus + tag_mod
         
         # 5. Determine Success
         success = total_score >= target_dc
@@ -92,7 +109,7 @@ class Quartermaster:
         # Log the math for debugging
         log_msg = (
             f"Action: {intent_id} | Tags: {room_tags} | "
-            f"Roll: {d20_roll} + Bonus: {attr_bonus} + TagMod: {tag_mod} = {total_score} "
+            f"Roll: {d20_roll} + Attr: {attr_bonus} + Item: {item_bonus} + Tag: {tag_mod} = {total_score} "
             f"vs DC: {target_dc} ({base_difficulty} + {arbiter_mod}) -> "
             f"{'SUCCESS' if success else 'FAILURE'}"
         )
@@ -105,6 +122,8 @@ class Quartermaster:
             context_parts.append(tag_reason)
         if attr_reason:
             context_parts.append(attr_reason)
+        if item_reason:
+            context_parts.append(item_reason)
         context_parts.append(f"Rolled {d20_roll}")
         
         return QuartermasterOutcome(
