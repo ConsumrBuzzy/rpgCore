@@ -288,7 +288,7 @@ class GladeOfTrialsTinyFarm:
         
         stone_gray = DitherPresets.get_stone_gray()
         stone_gray.dark_color = professional_palette["darkest"]
-        stone_gray.light_color = professional_palette["stone_gray"]
+        stone_gray.light_color = professional_palette["stone"]
     
     def _setup_input(self) -> None:
         """Setup keyboard input handling"""
