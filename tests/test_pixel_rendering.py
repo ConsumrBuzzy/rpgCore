@@ -262,7 +262,7 @@ class TestSpriteTemplate:
     def test_create_animated_sprite_from_template(self):
         """Test animated sprite creation from template."""
         frame1_data = [[1]]
-        frame2_data = [[0, 1]]
+        frame2_data = [[1]]  # Same dimensions as frame1
         
         template = SpriteTemplate(
             "animated_test", 

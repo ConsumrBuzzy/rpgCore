@@ -60,10 +60,13 @@ class PixelViewport:
         
         # Viewport state
         self.state = ViewportState(
+            view_mode="pixel",
             player_position=(0, 0),
             player_angle=0.0,
-            zoom_level=1.0,
-            render_mode="pixel"
+            perception_range=10,
+            frame_count=0,
+            last_render_time=0.0,
+            is_active=True
         )
         
         # Animation timing
