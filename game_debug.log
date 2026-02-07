@@ -1686,3 +1686,29 @@
 21:53:34 | DEBUG | Chronicler streaming: use_item
 21:53:34 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
 21:53:34 | INFO | Game saved to savegame.json
+21:55:29 | INFO | Game loaded from savegame.json
+21:55:29 | DEBUG | Added intent: distract with 5 exemplars
+21:55:29 | DEBUG | Added intent: force with 5 exemplars
+21:55:29 | DEBUG | Added intent: finesse with 5 exemplars
+21:55:29 | DEBUG | Added intent: charm with 5 exemplars
+21:55:29 | DEBUG | Added intent: intimidate with 5 exemplars
+21:55:29 | DEBUG | Added intent: deceive with 5 exemplars
+21:55:29 | DEBUG | Added intent: investigate with 5 exemplars
+21:55:29 | DEBUG | Added intent: use_item with 5 exemplars
+21:55:29 | DEBUG | Added intent: defend with 5 exemplars
+21:55:29 | DEBUG | Added intent: leave_area with 5 exemplars
+21:55:29 | DEBUG | Added intent: improvise with 5 exemplars
+21:55:29 | INFO | Loading embedding model: all-MiniLM-L6-v2
+21:55:31 | INFO | Precomputed embeddings for 11 intents (55 total exemplars)
+21:55:31 | INFO | Deterministic Arbiter (Iron Frame) initialized.
+21:55:31 | INFO | Initializing Chronicler with ollama:llama3.2:1b
+21:55:31 | INFO | Voyager initialized (Deterministic) with 'aggressive' personality
+21:55:31 | INFO | Game initialized with Council of Three architecture
+21:55:31 | INFO | Voyager Heuristic: Selected force with score -8
+21:55:31 | INFO | Intent resolution: 'Intimidate the guard' → charm (confidence: 0.653, matched exemplar: 'Convince the guard to let me pass with words')
+21:55:31 | DEBUG | Action: charm | Tags: ['Smoky', 'Dimly Lit', 'Sticky Floors', 'Path Clear'] | Roll: 11 + Attr: 0 + Item: 0 + Tag: 0 = 11 vs DC: 12 (10 + 0) -> FAILURE
+21:55:31 | INFO | Quartermaster: success=False, roll=11 vs DC 12
+21:55:31 | INFO | Player took 1 damage. HP: 0/100
+21:55:31 | DEBUG | Chronicler streaming: charm
+21:55:31 | ERROR | Chronicler stream failed: AbstractAgent.run_stream() got an unexpected keyword argument 'result_type'
+21:55:31 | INFO | Game saved to savegame.json
