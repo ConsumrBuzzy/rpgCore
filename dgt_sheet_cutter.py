@@ -178,12 +178,26 @@ class DGTSheetCutter:
                  bg="#607D8B", fg="white").pack(pady=5, fill=tk.X, padx=10)
         
         # Status
-        tk.Label(self.ctrl_frame, text="📊 Status", bg="#2e2e2e", fg="white",
-                font=("Arial", 10, "bold")).pack(pady=(20, 5))
+        self.status_frame = tk.Frame(self.root, bg='#2a2a2a')
+        self.status_frame.pack(fill=tk.X, padx=20, pady=(0, 10))
         
-        self.status_label = tk.Label(self.ctrl_frame, text="No sheet loaded", bg="#2e2e2e", fg="#00ff00",
-                                    font=("Arial", 8))
-        self.status_label.pack(pady=5)
+        self.status_label = tk.Label(
+            self.status_frame,
+            text="🚀 Rust-Powered Scanner Ready",
+            font=("Courier", 10),
+            fg='#00ff00',
+            bg='#2a2a2a'
+        )
+        self.status_label.pack(side=tk.LEFT, padx=10)
+        
+        self.performance_label = tk.Label(
+            self.status_frame,
+            text="⚡ Sub-millisecond analysis per sprite",
+            font=("Courier", 9),
+            fg='#ffff00',
+            bg='#2a2a2a'
+        )
+        self.performance_label.pack(side=tk.RIGHT, padx=10)
         
         self.cut_count_label = tk.Label(self.ctrl_frame, text="Sprites cut: 0", bg="#2e2e2e", fg="white",
                                       font=("Arial", 8))
