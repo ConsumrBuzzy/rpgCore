@@ -268,24 +268,18 @@ Examples:
     print("   Press Ctrl+C to stop all processes")
     print()
     
-    def signal_handler(sig, frame):
-        print("\n🛑 Stopping all processes...")
-        for process in processes:
-            if process.is_alive():
-                process.terminate()
-                process.join(timeout=2)
-        print("✅ All processes stopped")
-        sys.exit(0)
-    
-    signal.signal(signal.SIGINT, signal_handler)
-    
     try:
         # Wait for processes to finish
         for process in processes:
             process.join()
     
     except KeyboardInterrupt:
-        signal_handler(None, None)
+        print("\n🛑 Stopping all processes...")
+        for process in processes:
+            if process.is_alive():
+                process.terminate()
+                process.join(timeout=2)
+        print("✅ All processes stopped")
     
     finally:
         # Ensure all processes are stopped
