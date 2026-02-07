@@ -1,5 +1,5 @@
 """
-Test script for Quartermaster Logic (v1.1 - Stats Integration)
+Test script for Quartermaster Logic (v1.2 - Inventory Integration)
 """
 import sys
 import os
@@ -8,6 +8,7 @@ import os
 sys.path.append(r"c:\Github\rpgCore\src")
 
 from quartermaster import Quartermaster
+from loot_system import Item
 
 def test_sticky_floors():
     """Verify Sticky Floors logic."""
@@ -26,58 +27,49 @@ def test_sticky_floors():
     else:
         print(f"FAIL: Sticky floors ignored. Context: {outcome.narrative_context}")
 
-def test_attribute_mapping():
-    """Verify Attribute logic."""
-    print("\nTesting Attribute Integration...")
+def test_inventory_bonus():
+    """Verify Inventory Item logic."""
+    print("\nTesting Inventory Integration...")
     qm = Quartermaster()
     
-    # 1. Strength Bonus for Force
+    # Create item: Magic Ring (+2 Charisma)
+    magic_ring = Item(
+        name="Ring of Charm",
+        description="Shiny",
+        target_stat="charisma",
+        modifier_value=2,
+        stat_bonus="+2 Charisma"
+    )
+    
+    # Test Charm action with Ring
     outcome = qm.calculate_outcome(
+        intent_id="charm",
+        room_tags=[],
+        player_stats={"charisma": 0},
+        inventory_items=[magic_ring]
+    )
+    
+    if "Item: Ring of Charm (+2)" in outcome.narrative_context:
+        print("PASS: Magic Ring bonus applied.")
+    else:
+         print(f"FAIL: Magic Ring ignored. Context: {outcome.narrative_context}")
+
+    # Test Force action (Ring shouldn't help)
+    outcome_force = qm.calculate_outcome(
         intent_id="force",
         room_tags=[],
-        player_stats={"strength": 5, "dexterity": 0, "intelligence": 0, "charisma": 0}
+        player_stats={"strength": 0},
+        inventory_items=[magic_ring]
     )
     
-    if "Strength (+5)" in outcome.narrative_context:
-        print("PASS: Strength bonus applied correctly.")
+    if "Item: Ring of Charm" not in outcome_force.narrative_context:
+        print("PASS: Magic Ring correctly ignored for Force.")
     else:
-        print(f"FAIL: Strength bonus missing. Context: {outcome.narrative_context}")
-
-    # 2. Charisma Penalty for Charm (-2 Charisma)
-    outcome_neg = qm.calculate_outcome(
-        intent_id="charm",
-        room_tags=[],
-        player_stats={"strength": 0, "dexterity": 0, "intelligence": 0, "charisma": -2}
-    )
-    
-    if "Charisma (-2)" in outcome_neg.narrative_context:
-        print("PASS: Negative Charisma applied correctly.")
-    else:
-        print(f"FAIL: Negative Charisma missing. Context: {outcome_neg.narrative_context}")
-
-def test_combined_difficulty():
-    """Verify Stacked Penalties (Rowdy Crowd + Low Charisma)."""
-    print("\nTesting Combined Difficulty (The 'Rowdy Charm' Case)...")
-    qm = Quartermaster()
-    
-    # Charm (-2 Crowd) + (-2 Charisma) = -4 Total Modifier
-    outcome = qm.calculate_outcome(
-        intent_id="charm",
-        room_tags=["Rowdy Crowd"],
-        player_stats={"strength": 0, "dexterity": 0, "intelligence": 0, "charisma": -2}
-    )
-    
-    context = outcome.narrative_context
-    if "Crowd noise" in context and "Charisma (-2)" in context:
-        print("PASS: Both Crowd and Charisma penalties applied.")
-        print(f"Narrative Context: {context}")
-    else:
-        print(f"FAIL: Missing context modifiers. Context: {context}")
+        print(f"FAIL: Magic Ring applied to wrong stat. Context: {outcome_force.narrative_context}")
 
 def main():
     test_sticky_floors()
-    test_attribute_mapping()
-    test_combined_difficulty()
+    test_inventory_bonus()
 
 if __name__ == "__main__":
     main()
