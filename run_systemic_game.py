@@ -61,7 +61,7 @@ class SystemicGameSession:
     
     def spawn_test_objects(self) -> None:
         """Spawn test objects for Voyager interaction"""
-        # Spawn objects around Voyager starting position
+        # Spawn test objects for Voyager interaction
         test_objects = [
             ('iron_chest', (12, 10)),    # High priority container
             ('wooden_door', (10, 12)),   # Medium priority barrier
@@ -74,6 +74,8 @@ class SystemicGameSession:
             spawned_obj = self.object_registry.spawn_object(object_id, position)
             if spawned_obj:
                 print(f"🏗️ Spawned {object_id} at {position}")
+                # Also register in DDEngine's object registry
+                self.dd_engine.object_registry.world_objects[position] = spawned_obj
             else:
                 print(f"❌ Failed to spawn {object_id}")
     
