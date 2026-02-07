@@ -18,6 +18,7 @@ from rich.align import Align
 from rich.live import Live
 
 from loguru import logger
+from world_ledger import WorldLedger, Coordinate
 
 # Import components
 from .vitals import VitalsComponent, VitalStatus, HealthStatus, FatigueStatus
