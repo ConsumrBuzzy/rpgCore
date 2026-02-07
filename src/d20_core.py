@@ -8,18 +8,17 @@ Responsibilities:
 - Dice rolling (d20 + modifiers)
 - HP calculations
 - Reputation changes
-- Relationship state transitions
-- Goal completion verification
 """
 
 import random
-from typing import Dict, List, Optional, Literal, Tuple
+from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
+from enum import Enum
 
 from loguru import logger
-from pydantic import BaseModel, Field
-
-from game_state import GameState, Goal, NPC
+from game_state import GameState, PlayerStats
+from world_ledger import Coordinate
+from logic.faction_system import FactionSystem, FactionRelation
 from quartermaster import DC_TABLE
 
 

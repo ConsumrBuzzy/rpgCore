@@ -7,14 +7,16 @@ Handles asynchronous state drifting and world clock progression.
 ADR 017: Spatial-Temporal Coordinate System Implementation
 """
 
-from typing import Dict, List, Optional, Any, Tuple
+import sqlite3
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 import random
 from datetime import datetime
 
 from loguru import logger
-from world_ledger import WorldLedger, Coordinate
+from world_ledger import WorldLedger, Coordinate, WorldChunk
 from game_state import GameState, NPC
+from logic.faction_system import FactionSystem
 
 
 @dataclass
@@ -45,7 +47,10 @@ class ChronosEngine:
         self.drift_interval = 10  # Process drift every 10 turns (1 in-game day)
         self.max_drift_events = 5  # Maximum drift events per interval
         
-        logger.info("Chronos Engine initialized for world evolution")
+        # Initialize faction system
+        self.faction_system = FactionSystem(world_ledger)
+        
+        logger.info("Chronos Engine initialized for world evolution with faction system")
     
     def advance_time(self, delta_turns: int) -> List[WorldEvent]:
         """
@@ -74,6 +79,11 @@ class ChronosEngine:
             events = events[-self.max_drift_events:]
         
         self.event_history.extend(events)
+        
+        # Process faction dynamics
+        faction_events = self.process_factions(self.world_clock)
+        events.extend(faction_events)
+        
         return events
     
     def _process_world_drift(self, turn: int) -> List[WorldEvent]:
@@ -107,6 +117,83 @@ class ChronosEngine:
             events.extend(social_events)
         
         return events
+    
+    def process_factions(self, current_turn: int) -> List[Dict[str, Any]]:
+        """
+        Process faction dynamics and conflicts.
+        
+        Args:
+            current_turn: Current world turn
+            
+        Returns:
+            List of faction events that occurred
+        """
+        faction_events = []
+        
+        # Simulate faction dynamics
+        new_conflicts = self.faction_system.simulate_factions(current_turn)
+        
+        # Convert conflicts to world events
+        for conflict in new_conflicts:
+            event = WorldEvent(
+                turn=current_turn,
+                coordinate=Coordinate(conflict.coordinate[0], conflict.coordinate[1], 0),
+                event_type="faction_conflict",
+                description=f"Faction conflict: {conflict.aggressor} vs {conflict.defender}",
+                impact={
+                    "aggressor": conflict.aggressor,
+                    "defender": conflict.defender,
+                    "coordinate": conflict.coordinate,
+                    "outcome": conflict.outcome
+                }
+            )
+            
+            faction_events.append({
+                "turn": current_turn,
+                "type": "faction_conflict",
+                "description": f"Faction conflict: {conflict.aggressor} vs {conflict.defender} at ({conflict.coordinate[0]}, {conflict.coordinate[1]})",
+                "impact": {
+                    "aggressor": conflict.aggressor,
+                    "defender": conflict.defender,
+                    "coordinate": conflict.coordinate,
+                    "outcome": conflict.outcome
+                }
+            })
+            
+            self.event_history.append(event)
+        
+        # Process faction expansion
+        for faction_id, faction in self.faction_system.factions.items():
+            if current_turn - faction.last_action_turn >= 10:
+                # Check for recent expansion
+                if len(faction.territories) > len(faction.territories) - 5:
+                    expansion_event = WorldEvent(
+                        turn=current_turn,
+                        coordinate=Coordinate(faction.territories[-1][0], faction.territories[-1][1], 0),
+                        event_type="faction_expansion",
+                        description=f"{faction.name} expanded territory",
+                        impact={
+                            "faction": faction_id,
+                            "new_territory": faction.territories[-1],
+                            "total_territories": len(faction.territories)
+                        }
+                    )
+                    
+                    faction_events.append({
+                        "turn": current_turn,
+                        "type": "faction_expansion",
+                        "description": f"{faction.name} expanded to ({faction.territories[-1][0]}, {faction.territories[-1][1]})",
+                        "impact": {
+                            "faction": faction_id,
+                            "new_territory": faction.territories[-1],
+                            "total_territories": len(faction.territories)
+                        }
+                    })
+                    
+                    self.event_history.append(expansion_event)
+        
+        logger.info(f"Processed factions for turn {current_turn}: {len(faction_events)} events")
+        return faction_events
     
     def _get_discovered_coordinates(self) -> List[Coordinate]:
         """Get all coordinates that have been discovered by players."""
