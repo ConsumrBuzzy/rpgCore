@@ -595,6 +595,11 @@ class AssetLoader:
         # Store reference to prevent garbage collection
         self._sprite_refs.append(photo)
     
+    def get_object_sprite(self, object_id: str) -> Optional[ImageTk.PhotoImage]:
+        """Get object sprite by ID"""
+        sprite_id = f"{object_id}"
+        return self.registry.get(sprite_id)
+    
     def get_actor_sprite(self, actor_id: str, state: str = "idle", orientation: str = "left") -> Optional[ImageTk.PhotoImage]:
         """Get actor sprite with state and orientation"""
         sprite_id = f"{actor_id}_{state}_{orientation}"
