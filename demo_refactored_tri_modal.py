@@ -43,12 +43,15 @@ def test_tri_modal_engine():
     try:
         from engines.body import (
             TriModalEngine, BodyEngine, EngineConfig,
-            DisplayMode, TRI_MODAL_AVAILABLE
+            TRI_MODAL_AVAILABLE
         )
         
         if not TRI_MODAL_AVAILABLE:
             print("⚠️ Tri-Modal Display Suite not available")
             return False
+        
+        # Import DisplayMode only if available
+        from engines.body import DisplayMode
         
         # Create tri-modal engine
         config = EngineConfig(
