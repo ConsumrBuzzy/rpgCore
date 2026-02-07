@@ -22,10 +22,9 @@ from core.state import (
     InterestPoint, validate_position, DIRECTION_VECTORS
 )
 from core.constants import (
-    VOYAGER_SPEED_TILES_PER_SECOND, VOYAGER_INTERACTION_RANGE,
-    VOYAGER_DISCOVERY_RANGE, VOYAGER_PONDERING_TIMEOUT_SECONDS,
-    MOVEMENT_RANGE_TILES, PATHFINDING_MAX_ITERATIONS
+    VOYAGER_PONDERING_TIMEOUT_SECONDS, MOVEMENT_RANGE_TILES
 )
+from narrative.chronos import ChronosEngine, ChronosEngineFactory
 
 
 @dataclass
@@ -279,8 +278,9 @@ class IntentGenerator:
 class Voyager:
     """Autonomous pathfinding and intent generation with STATE_PONDERING support"""
     
-    def __init__(self, dd_engine):
+    def __init__(self, dd_engine, chronos_engine=None):
         self.dd_engine = dd_engine
+        self.chronos_engine = chronos_engine or ChronosEngineFactory.create_engine()
         
         # Navigation components
         self.navigator = PathfindingNavigator()
@@ -295,7 +295,7 @@ class Voyager:
         self.current_path: List[Tuple[int, int]] = []
         self.current_goal: Optional[NavigationGoal] = None
         
-        # Movie script (autonomous navigation beacons)
+        # Legacy movie script (kept for compatibility)
         self.movie_script = [
             (10, 25),  # Forest edge
             (10, 20),  # Town gate
@@ -305,6 +305,9 @@ class Voyager:
             (32, 32),  # Iron Chest (final target)
         ]
         self.current_script_index = 0
+        
+        # Quest-driven navigation (primary)
+        self.quest_mode = True  # Use quest system instead of movie script
         
         # Discovery tracking
         self.discovered_interest_points: List[InterestPoint] = []
@@ -493,11 +496,51 @@ class Voyager:
     
     # === MOVIE SCRIPT NAVIGATION ===
     
-    async def _follow_movie_script(self, game_state: GameState) -> Optional[MovementIntent]:
-        """Follow autonomous movie script with Interest Point Discovery fallback"""
+    async def _follow_quest_objective(self, game_state: GameState) -> Optional[MovementIntent]:
+        """Follow quest-driven objectives instead of fixed movie script"""
+        try:
+            # Get current objective from Chronos Engine
+            objective_position = await self.chronos_engine.get_current_objective()
+            
+            if objective_position:
+                logger.info(f"🎯 Quest objective: {objective_position}")
+                
+                # Check if we're close to objective
+                distance = abs(self.current_position[0] - objective_position[0]) + \
+                          abs(self.current_position[1] - objective_position[1])
+                
+                if distance <= 1:
+                    # Reached objective, let Chronos handle completion
+                    await self.chronos_engine.update_character_position(objective_position)
+                    logger.info(f"✅ Quest objective reached: {objective_position}")
+                    return None
+                
+                # Generate movement intent toward objective
+                return await self.generate_movement_intent(objective_position)
+            else:
+                # No active quest, fall back to legacy movie script or exploration
+                if self.quest_mode:
+                    logger.info("🔍 No active quest - checking for available quests")
+                    available_quests = self.chronos_engine.get_available_quests()
+                    if available_quests:
+                        # Auto-accept highest priority quest
+                        next_quest = available_quests[0]
+                        if await self.chronos_engine.accept_quest(next_quest.quest_id):
+                            logger.info(f"📜 Auto-accepted quest: {next_quest.title}")
+                            return await self._follow_quest_objective(game_state)
+                
+                # Fallback to legacy movie script
+                return await self._follow_legacy_script(game_state)
+                
+        except Exception as e:
+            logger.error(f"💥 Quest navigation failed: {e}")
+            return await self._follow_legacy_script(game_state)
+    
+    async def _follow_legacy_script(self, game_state: GameState) -> Optional[MovementIntent]:
+        """Fallback to original movie script for compatibility"""
         # Check if script is complete, then switch to discovery mode
         if self.current_script_index >= len(self.movie_script):
-            logger.info("🚶 Movie script complete - switching to Interest Point Discovery")
+            logger.info("🚶 Legacy script complete - switching to Interest Point Discovery")
             return await self._discover_next_interest_point()
         
         target_position = self.movie_script[self.current_script_index]
