@@ -108,7 +108,8 @@ class VoyagerAgent:
         self.agent = Agent(
             model=model,
             output_type=VoyagerDecision,
-            system_prompt=system_prompt
+            system_prompt=system_prompt,
+            retries=3
         )
         
         logger.info(f"Voyager initialized with '{self.personality}' personality")
