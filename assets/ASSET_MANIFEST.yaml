@@ -244,12 +244,12 @@ interactions:
   LootTable_T3:
     description: "Premium loot table for golden chests"
     loot:
-      - gold: [50, 100]
-      - health_potion: [3, 8]
-      - enchanted_sword: [0.3, 0.7]
-      - plate_armor: [0.2, 0.5]
-      - rare_gem: [0.1, 0.4]
-      - legendary_artifact: [0.01, 0.05]
+      gold: [50, 100]
+      health_potion: [3, 8]
+      enchanted_sword: [0.3, 0.7]
+      plate_armor: [0.2, 0.5]
+      rare_gem: [0.1, 0.4]
+      legendary_artifact: [0.01, 0.05]
     
   Door_Exit:
     description: "Door that leads to another area"
