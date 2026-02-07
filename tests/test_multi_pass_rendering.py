@@ -515,14 +515,11 @@ class TestIntegration:
         
         mock_ledger.get_chunk = mock_get_chunk
         
-        # Create a proper mock with __iter__ method
-        class IterableMock:
-            def __init__(self):
-                self.items = []
-            def __iter__(self):
-                return iter(self.items)
+        # Set __iter__ directly on the mock object
+        def mock_iter():
+            return iter([])
         
-        mock_ledger.__iter__ = IterableMock().__iter__
+        type(mock_ledger).__iter__ = lambda self: iter([])
         
         context = RenderContext(
             game_state=mock_game_state,
