@@ -1,0 +1,11 @@
+C:\Github\rpgCore\dgt_harvest_rust\..\release\deps\getrandom-a41e4003290d541c.d: C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\lib.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\util.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error_impls.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\windows.rs
+
+C:\Github\rpgCore\dgt_harvest_rust\..\release\deps\libgetrandom-a41e4003290d541c.rlib: C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\lib.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\util.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error_impls.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\windows.rs
+
+C:\Github\rpgCore\dgt_harvest_rust\..\release\deps\libgetrandom-a41e4003290d541c.rmeta: C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\lib.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\util.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error_impls.rs C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\windows.rs
+
+C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\lib.rs:
+C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error.rs:
+C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\util.rs:
+C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\error_impls.rs:
+C:\Users\cheat\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\getrandom-0.1.16\src\windows.rs:

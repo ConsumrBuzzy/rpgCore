@@ -1,14 +1,14 @@
 """
-Rust-Powered Sprite Scanner - Python 3.12 Compatible
-High-performance semantic scanning without PyO3 build complexity
+Rust-Powered Sprite Scanner - Material Triage Engine
+High-performance intelligent asset analysis with Rust backend
 """
 
 import ctypes
-from typing import Tuple, Optional
+import sys
+from typing import Tuple, Optional, Dict, Any
 from pathlib import Path
 from loguru import logger
 import subprocess
-import sys
 
 # Load the compiled Rust library
 try:
@@ -20,9 +20,9 @@ try:
     
     if lib_path.exists():
         rust_lib = ctypes.CDLL(str(lib_path))
-        logger.success(f"🦀 Loaded Rust harvest core from {lib_path}")
+        logger.success(f"🦀 Loaded Rust Material Triage Engine from {lib_path}")
     else:
-        logger.warning("⚠️ Rust harvest core not found, falling back to Python implementation")
+        logger.warning("⚠️ Rust Material Triage Engine not found, falling back to Python implementation")
         rust_lib = None
 except Exception as e:
     logger.error(f"⚠️ Failed to load Rust library: {e}")
@@ -30,10 +30,7 @@ except Exception as e:
 
 
 class RustSpriteScanner:
-    """
-    High-performance sprite scanner using Rust when available,
-    falling back to Python implementation
-    """
+    """High-performance sprite scanner with Rust Material Triage Engine"""
     
     def __init__(self, chest_threshold: float = 0.3, green_threshold: float = 0.2, 
                  gray_threshold: float = 0.3, diversity_threshold: float = 0.05):
@@ -41,88 +38,102 @@ class RustSpriteScanner:
         self.green_threshold = green_threshold
         self.gray_threshold = gray_threshold
         self.diversity_threshold = diversity_threshold
-        self.use_rust = rust_lib is not None
         
-        if self.use_rust:
-            logger.info("🚀 Using Rust-powered sprite scanner")
-        else:
-            logger.info("🐍 Using Python fallback scanner")
+        # Try to load Rust Material Triage Engine
+        self.rust_engine = None
+        if rust_lib:
+            try:
+                # Import the Rust Material Triage Engine
+                import dgt_harvest_rust
+                self.rust_engine = dgt_harvest_rust.MaterialTriageEngine()
+                logger.info("🚀 Using Rust Material Triage Engine for intelligent analysis")
+            except Exception as e:
+                logger.error(f"⚠️ Failed to initialize Rust Material Triage Engine: {e}")
+                logger.info("🐍 Using Python fallback scanner")
     
-    def analyze_sprite(self, pixels: bytes, width: int, height: int) -> dict:
-        """
-        Analyze sprite for semantic properties
-        Returns analysis results as a dictionary
-        """
-        if self.use_rust and rust_lib:
+    def analyze_sprite(self, pixels: bytes, width: int, height: int) -> Dict[str, Any]:
+        """Analyze sprite using Rust Material Triage Engine or Python fallback"""
+        if self.rust_engine:
             return self._analyze_with_rust(pixels, width, height)
         else:
             return self._analyze_with_python(pixels, width, height)
     
-    def _analyze_with_rust(self, pixels: bytes, width: int, height: int) -> dict:
-        """Use Rust implementation for maximum performance"""
+    def _analyze_with_rust(self, pixels: bytes, width: int, height: int) -> Dict[str, Any]:
+        """Use Rust Material Triage Engine for maximum intelligence"""
         try:
-            # Define Rust function signature
-            scan_function = rust_lib.scan_sprite_for_chest
-            scan_function.argtypes = [ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint]
-            scan_function.restype = ctypes.c_double
+            # Use Rust Material Triage Engine
+            from dgt_harvest_rust import MaterialTriageEngine
             
-            # Convert pixels to bytes
-            pixels_ptr = ctypes.create_string_buffer(pixels)
+            # Convert pixels to bytes for Rust
+            import pyo3
+            py_bytes = pyo3.PyBytes(pixels)
             
-            # Call Rust function
-            chest_prob = scan_function(pixels_ptr, width, height)
+            # Get complete Material DNA analysis
+            material_dna = self.rust_engine.analyze_sprite(py_bytes, width, height)
             
-            # Additional analysis with Python fallback for now
-            analysis = self._analyze_with_python(pixels, width, height)
-            analysis['chest_probability'] = chest_prob
-            analysis['is_chest'] = chest_prob > self.chest_threshold
+            # Convert Material DNA to analysis format
+            analysis = {
+                'chest_probability': 0.0,  # Will be calculated from material type
+                'is_chest': False,        # Will be calculated from material type
+                'content_bounds': material_dna.alpha_bounding_box,
+                'color_diversity': len(material_dna.color_profile) * 0.01,  # Approximate
+                'green_ratio': material_dna.color_profile.get('grass', 0.0),
+                'gray_ratio': material_dna.color_profile.get('stone', 0.0),
+                'brown_gold_ratio': material_dna.color_profile.get('wood', 0.0),
+                'is_character': material_dna.is_object and material_dna.material_type in ['organic', 'metal'],
+                'is_decoration': material_dna.material_type in ['wood', 'stone', 'glass'],
+                'is_material': material_dna.material_type in ['wood', 'stone', 'grass', 'water'],
+                
+                # New Material Triage data
+                'material_type': material_dna.material_type,
+                'confidence': material_dna.confidence,
+                'edge_density': material_dna.edge_density,
+                'is_object': material_dna.is_object,
+                'dominant_color': material_dna.dominant_color,
+                'transparency_ratio': material_dna.transparency_ratio,
+                'color_profile': dict(material_dna.color_profile),
+                'alpha_bounding_box': material_dna.alpha_bounding_box,
+            }
+            
+            # Calculate chest probability from material type and color profile
+            if material_dna.material_type in ['wood', 'metal', 'glass']:
+                analysis['chest_probability'] = material_dna.color_profile.get('wood', 0.0) * 0.8
+                analysis['is_chest'] = analysis['chest_probability'] > self.chest_threshold
             
             return analysis
             
         except Exception as e:
-            logger.error(f"⚠️ Rust analysis failed: {e}, falling back to Python")
+            logger.error(f"⚠️ Rust Material Triage failed: {e}, falling back to Python")
             return self._analyze_with_python(pixels, width, height)
     
-    def _analyze_with_python(self, pixels: bytes, width: int, height: int) -> dict:
-        """Python fallback implementation"""
+    def _analyze_with_python(self, pixels: bytes, width: int, height: int) -> Dict[str, Any]:
+        """Python fallback analysis"""
+        from PIL import Image
+        
+        # Convert bytes to PIL Image
+        image = Image.frombytes('RGBA', (width, height), pixels)
+        
+        # Basic analysis
+        colors = {}
+        total_pixels = 0
         brown_gold_pixels = 0
         green_pixels = 0
         gray_pixels = 0
-        total_pixels = 0
-        min_x, min_y = width, height
-        max_x, max_y = 0, 0
         
-        colors = set()
+        # Get pixel data
+        pixel_data = image.getdata()
         
-        # Process pixels in chunks of 4 (RGBA)
-        for i in range(0, len(pixels), 4):
-            if i + 3 >= len(pixels):
-                break
-                
-            x = (i // 4) % width
-            y = (i // 4) // width
-            
-            r = pixels[i]
-            g = pixels[i + 1]
-            b = pixels[i + 2]
-            a = pixels[i + 3]
-            
-            if a > 0:  # Non-transparent pixel
+        for r, g, b, a in pixel_data:
+            if a > 0:
                 total_pixels += 1
                 
-                # Track content bounds
-                min_x = min(min_x, x)
-                min_y = min(min_y, y)
-                max_x = max(max_x, x)
-                max_y = max(max_y, y)
+                # Track colors
+                color_key = (r, g, b)
+                colors[color_key] = colors.get(color_key, 0) + 1
                 
-                # Track color diversity
-                colors.add((r, g, b))
-                
-                # Chest detection (extended brown/gold ranges)
+                # Chest detection (brown/gold)
                 if (80 <= r <= 180 and 40 <= g <= 140 and b <= 80) or \
-                   (160 <= r <= 255 and 100 <= g <= 200 and b <= 100) or \
-                   (200 <= r <= 255 and 180 <= g <= 220 and b <= 100):
+                   (160 <= r <= 255 and 100 <= g <= 200 and b <= 100):
                     brown_gold_pixels += 1
                 
                 # Plant detection
@@ -133,30 +144,25 @@ class RustSpriteScanner:
                 if abs(r - g) < 40 and abs(g - b) < 40:
                     gray_pixels += 1
         
-        total_pixels_f = total_pixels if total_pixels > 0 else 1
-        chest_probability = brown_gold_pixels / total_pixels_f
-        green_ratio = green_pixels / total_pixels_f
-        gray_ratio = gray_pixels / total_pixels_f
-        color_diversity = len(colors) / total_pixels_f
+        # Calculate metrics
+        chest_probability = brown_gold_pixels / max(total_pixels, 1)
+        green_ratio = green_pixels / max(total_pixels, 1)
+        gray_ratio = gray_pixels / max(total_pixels, 1)
+        color_diversity = len(colors) / max(total_pixels, 1)
         
-        # Character detection
-        aspect_ratio = width / height if height > 0 else 1.0
-        is_character = (total_pixels > 20 and 
-                          0.5 <= aspect_ratio <= 2.0 and 
-                          len(colors) > 3)
-        
-        # Decoration detection
-        is_decoration = (color_diversity > 0.05 or 
-                         green_ratio > 0.2 or 
-                         gray_ratio > 0.3)
-        
-        # Material detection
+        # Determine object type
+        aspect_ratio = width / height
+        is_character = total_pixels > 20 and 0.5 <= aspect_ratio <= 2.0 and len(colors) > 3
+        is_decoration = color_diversity > 0.05 or green_ratio > 0.2 or gray_ratio > 0.3
         is_material = color_diversity < 0.1
+        
+        # Simple bounding box
+        content_bounds = (0, 0, width, height)
         
         return {
             'chest_probability': chest_probability,
             'is_chest': chest_probability > self.chest_threshold,
-            'content_bounds': (min_x, min_y, max_x, max_y),
+            'content_bounds': content_bounds,
             'color_diversity': color_diversity,
             'green_ratio': green_ratio,
             'gray_ratio': gray_ratio,
@@ -164,75 +170,79 @@ class RustSpriteScanner:
             'is_character': is_character,
             'is_decoration': is_decoration,
             'is_material': is_material,
+            
+            # Material Triage fallback data
+            'material_type': 'unknown',
+            'confidence': 0.5,
+            'edge_density': 0.0,
+            'is_object': is_character,
+            'dominant_color': (128, 128, 128),
+            'transparency_ratio': 0.0,
+            'color_profile': {},
+            'alpha_bounding_box': content_bounds,
         }
     
-    def auto_clean_edges(self, pixels: bytes, width: int, height: int, threshold: int = 2) -> bytes:
-        """Auto-clean sprite edges"""
-        if self.use_rust and rust_lib:
+    def auto_clean_edges(self, pixels: bytes, width: int, height: int, threshold: int) -> bytes:
+        """Auto-clean sprite edges using Rust or Python"""
+        if self.rust_engine:
             try:
-                # Define Rust function signature
-                clean_function = rust_lib.clean_sprite_edges
-                clean_function.argtypes = [ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint]
-                clean_function.restype = ctypes.POINTER(ctypes.c_char)
+                # Use Rust Material Triage Engine for edge cleaning
+                from dgt_harvest_rust import MaterialTriageEngine
+                import pyo3
                 
-                # Convert pixels to bytes
-                pixels_ptr = ctypes.create_string_buffer(pixels)
+                py_bytes = pyo3.PyBytes(pixels)
                 
-                # Call Rust function
-                result_ptr = clean_function(pixels_ptr, width, height, threshold)
+                # Get Alpha-Bounding Box from Rust
+                abb = self.rust_engine.get_alpha_bounding_box(py_bytes, width, height)
+                x, y, bbox_width, bbox_height = abb
                 
-                # Convert result back to Python bytes
-                result_size = width * height * 4
-                result = ctypes.string_at(result_ptr, result_size)
+                # Create cleaned pixels based on ABB
+                cleaned_pixels = bytearray(pixels)
                 
-                return result
+                # Clear pixels outside the tight bounding box
+                for py in range(height):
+                    for px in range(width):
+                        if px < x or px >= x + bbox_width or py < y or py >= y + bbox_height:
+                            idx = (py * width + px) * 4
+                            if idx + 3 < len(cleaned_pixels):
+                                cleaned_pixels[idx:idx+4] = b'\x00\x00\x00\x00'
+                
+                return bytes(cleaned_pixels)
                 
             except Exception as e:
-                logger.error(f"⚠️ Rust edge cleaning failed: {e}, falling back to Python")
+                logger.error(f"⚠️ Rust edge cleaning failed: {e}, using Python fallback")
         
-        # Python fallback
-        return self._clean_edges_with_python(pixels, width, height, threshold)
+        # Python fallback edge cleaning
+        return self._auto_clean_edges_python(pixels, width, height, threshold)
     
-    def _clean_edges_with_python(self, pixels: bytes, width: int, height: int, threshold: int) -> bytes:
+    def _auto_clean_edges_python(self, pixels: bytes, width: int, height: int, threshold: int) -> bytes:
         """Python fallback edge cleaning"""
-        # Convert to list for modification
-        pixel_list = list(pixels)
+        from PIL import Image
         
-        # Find content bounds
-        min_x, min_y = width, height
-        max_x, max_y = 0, 0
+        image = Image.frombytes('RGBA', (width, height), pixels)
         
-        for i in range(0, len(pixels), 4):
-            if i + 3 >= len(pixels):
-                break
-                
-            x = (i // 4) % width
-            y = (i // 4) // width
-            
-            if pixels[i + 3] > 0:  # Non-transparent
-                min_x = min(min_x, x)
-                min_y = min(min_y, y)
-                max_x = max(max_x, x)
-                max_y = max(max_y, y)
+        # Find bounding box of non-transparent content
+        bbox = image.getbbox()
         
-        # Apply threshold padding
-        min_x = max(0, min_x - threshold)
-        min_y = max(0, min_y - threshold)
-        max_x = min(width - 1, max_x + threshold)
-        max_y = min(height - 1, max_y + threshold)
+        if not bbox:
+            return pixels  # Empty sprite
         
-        # Clear pixels outside content bounds
-        for y in range(height):
-            for x in range(width):
-                if x < min_x or x > max_x or y < min_y or y > max_y:
-                    idx = (y * width + x) * 4
-                    if idx + 3 < len(pixel_list):
-                        pixel_list[idx] = 0     # R
-                        pixel_list[idx + 1] = 0 # G
-                        pixel_list[idx + 2] = 0 # B
-                        pixel_list[idx + 3] = 0 # A
+        # Crop to content bounds with padding
+        x1, y1, x2, y2 = bbox
         
-        return bytes(pixel_list)
+        # Add small padding to preserve edge pixels
+        x1 = max(0, x1 - threshold)
+        y1 = max(0, y1 - threshold)
+        x2 = min(width, x2 + threshold)
+        y2 = min(height, y2 + threshold)
+        
+        # Crop sprite
+        cleaned = image.crop((x1, y1, x2, y2))
+        
+        # Resize back to original dimensions
+        cleaned = cleaned.resize((width, height), Image.Resampling.LANCZOS)
+        
+        return cleaned.tobytes()
 
 
 # Convenience functions for direct use
