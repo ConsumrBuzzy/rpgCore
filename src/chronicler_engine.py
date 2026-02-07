@@ -6,6 +6,7 @@ No mechanics - just vivid storytelling based on what the Arbiter calculated.
 """
 
 import os
+import asyncio
 
 from loguru import logger
 from pydantic import BaseModel, Field
@@ -143,13 +144,24 @@ class ChroniclerEngine:
         intent_id: str,
         arbiter_result: dict,
         context: str
-    ):
+    ) -> AsyncGenerator[str, None]:
         """
-        Stream narrative prose token by token.
-        Yields: str keywords/tokens
+        Generate narrative stream for an action.
+        
+        Args:
+            player_input: The player's action input
+            intent_id: The resolved intent ID
+            arbiter_result: Result from the arbiter
+            context: Current game context
+            
+        Yields:
+            Narrative text chunks
         """
+        # Check for interior context injection
+        enhanced_context = self._enhance_context_with_interior(context)
+        
         prompt = (
-            f"Context: {context}\n\n"
+            f"Context: {enhanced_context}\n\n"
             f"Player Action: \"{player_input}\"\n"
             f"Intent: {intent_id}\n\n"
             f"Arbiter Result:\n"
@@ -165,10 +177,24 @@ class ChroniclerEngine:
         logger.debug(f"Chronicler streaming: {intent_id}")
         
         try:
-            # We use text streaming directly
-            async with self.agent.run_stream(prompt) as result:
-                async for message in result.stream_text():
-                    yield message
+            # We use text streaming directly with increased retries for interior scenes
+            max_retries = 3 if "interior" in enhanced_context.lower() else 1
+            retry_count = 0
+            
+            while retry_count < max_retries:
+                try:
+                    async with self.agent.run_stream(prompt) as result:
+                        async for message in result.stream_text():
+                            yield message
+                    break  # Success, exit retry loop
+                except Exception as e:
+                    retry_count += 1
+                    if retry_count >= max_retries:
+                        logger.error(f"Chronicler stream failed after {max_retries} retries: {e}")
+                        raise
+                    else:
+                        logger.warning(f"Chronicler stream retry {retry_count}/{max_retries}")
+                        await asyncio.sleep(0.5)  # Brief pause before retry
                     
         except Exception as e:
             logger.error(f"Chronicler stream failed: {e}")
@@ -179,9 +205,9 @@ class ChroniclerEngine:
                 yield " It succeeds."
                 
                 # Add location context if available
-                if "📍 Location:" in context:
+                if "📍 Location:" in enhanced_context:
                     # Extract location from context
-                    location_line = [line for line in context.split('\n') if '📍 Location:' in line]
+                    location_line = [line for line in enhanced_context.split('\n') if '📍 Location:' in line]
                     if location_line:
                         location_name = location_line[0].replace('📍 Location:', '').strip()
                         yield f" 📍 {location_name}"
@@ -191,6 +217,12 @@ class ChroniclerEngine:
                     yield " 📍 Unknown Location"
             else:
                 yield " It fails."
+    
+    def _enhance_context_with_interior(self, context: str) -> str:
+        """Enhance context with interior information if available."""
+        # This would be enhanced to check for interior context injection
+        # For now, return the original context
+        return context
     
     def _fallback_prose(self, player_input: str, arbiter_result: dict) -> ChroniclerProse:
         """Fallback narrative if LLM fails."""

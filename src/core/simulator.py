@@ -642,24 +642,27 @@ class SimulatorHost:
         except Exception as e:
             logger.error(f"❌ Failed to check spatial transitions: {e}")
     
-    def _trigger_scene_lock(self, transition_message: str) -> None:
+    def _trigger_scene_lock(self, transition_message: str, duration: Optional[float] = None) -> None:
         """Trigger a scene lock for cinematic transitions."""
         try:
             self.scene_locked = True
             self.scene_lock_start_time = time.time()
             
-            logger.info(f"🎬 Scene-Lock engaged: {transition_message}")
+            # Use custom duration or default
+            lock_duration = duration if duration is not None else self.scene_lock_duration
+            
+            logger.info(f"🎬 Scene-Lock engaged: {transition_message} (duration: {lock_duration}s)")
             
             # Notify views for cinematic transition display
             self._notify_observers("scene_transition", {
                 "message": transition_message,
-                "duration": self.scene_lock_duration,
+                "duration": lock_duration,
                 "location": self.state.current_location if self.state else "Unknown"
             })
             
             # Schedule scene lock release
             def release_scene_lock():
-                time.sleep(self.scene_lock_duration)
+                time.sleep(lock_duration)
                 self.scene_locked = False
                 logger.info("🎬 Scene-Lock released - Movement resumed")
                 
@@ -698,6 +701,12 @@ class SimulatorHost:
                 tile_bank = zone.tile_bank
                 logger.info(f"🎨 Tile bank swap: {tile_bank}")
                 
+                # Enhanced Scene-Lock for portal transitions
+                self._trigger_scene_lock(f"--- ENTERING {zone.name.upper()} ---", duration=3.0)
+                
+                # Inject interior context for Chronicler
+                self._inject_interior_context(zone)
+                
                 # Notify views of transition
                 self._notify_observers("portal_transition", {
                     "environment": target_env.value,
@@ -708,6 +717,27 @@ class SimulatorHost:
             
         except Exception as e:
             logger.error(f"❌ Failed to execute portal transition: {e}")
+    
+    def _inject_interior_context(self, zone) -> None:
+        """Inject interior context for the Chronicler."""
+        try:
+            # Build interior context from zone data
+            interior_context = f"📍 Location: {zone.name}\n"
+            interior_context += f"Environment: {', '.join(zone.tags)}\n"
+            
+            # Add landmark descriptions
+            if zone.landmarks:
+                interior_context += "Notable features:\n"
+                for landmark in zone.landmarks:
+                    interior_context += f"- {landmark.name}: {landmark.description}\n"
+            
+            # Update GameState context temporarily
+            if hasattr(self.state, '_interior_context'):
+                self.state._interior_context = interior_context
+                logger.info(f"📖 Interior context injected: {zone.name}")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to inject interior context: {e}")
     
     def _trigger_interaction(self, landmark) -> None:
         """Trigger an interaction with a landmark."""
