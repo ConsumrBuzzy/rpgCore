@@ -657,6 +657,64 @@ class DGTSheetCutter:
         
         return (min_x, min_y, max_x + 1, max_y + 1)
     
+    def _generate_tags(self, detected_type: str, sprite: Image.Image) -> List[str]:
+        """Generate intelligent tags based on detection analysis"""
+        tags = []
+        
+        # Base type tags
+        if detected_type == "entity":
+            tags.extend(["interactive", "gameplay"])
+            if self._is_chest(sprite, {}, sprite.width, sprite.height):
+                tags.extend(["container", "lootable", "static"])
+        elif detected_type == "decoration":
+            tags.extend(["visual", "ambient"])
+            if self._is_plant(sprite):
+                tags.append("organic")
+            elif self._is_rock(sprite):
+                tags.extend(["natural", "terrain"])
+        elif detected_type == "material":
+            tags.extend(["building", "surface"])
+        
+        # Add processing tags
+        if self.auto_clean_var.get():
+            tags.append("edge_cleaned")
+        
+        if self.auto_detect_var.get():
+            tags.append("auto_detected")
+        
+        return tags
+    
+    def _is_plant(self, sprite: Image.Image) -> bool:
+        """Check if sprite appears to be a plant"""
+        if sprite.mode != 'RGBA':
+            sprite = sprite.convert('RGBA')
+        
+        # Check for green dominance
+        pixels = list(sprite.get_flattened_data())
+        non_transparent = [p for p in pixels if p[3] > 0]
+        
+        if not non_transparent:
+            return False
+        
+        green_pixels = sum(1 for p in non_transparent if p[1] > p[0] and p[1] > p[2])
+        return (green_pixels / len(non_transparent)) > 0.4
+    
+    def _is_rock(self, sprite: Image.Image) -> bool:
+        """Check if sprite appears to be a rock"""
+        if sprite.mode != 'RGBA':
+            sprite = sprite.convert('RGBA')
+        
+        # Check for gray dominance
+        pixels = list(sprite.get_flattened_data())
+        non_transparent = [p for p in pixels if p[3] > 0]
+        
+        if not non_transparent:
+            return False
+        
+        gray_pixels = sum(1 for p in non_transparent 
+                         if abs(p[0] - p[1]) < 30 and abs(p[1] - p[2]) < 30)
+        return (gray_pixels / len(non_transparent)) > 0.5
+    
     def _save_sprite_with_metadata(self, sprite: Image.Image, asset_id: str, coords: Tuple[int, int], detected_type: str = "material") -> None:
         """Save sprite image and YAML metadata"""
         # Create output directory
