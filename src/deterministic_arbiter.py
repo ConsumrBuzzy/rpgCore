@@ -7,7 +7,7 @@ Replaces ArbiterEngine (LLM) with hardcoded rules.
 - Provides static narrative seeds for the Chronicler.
 """
 
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Dict
 from pydantic import BaseModel, Field
 from quartermaster import DC_TABLE
 from loguru import logger

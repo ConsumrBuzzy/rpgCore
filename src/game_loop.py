@@ -55,6 +55,7 @@ class GameREPL:
             personality: Personality for Voyager agent (default: curious)
         """
         self.console = Console()
+        self.save_path = save_path or Path("savegame.json")
         self.auto_mode = auto_mode
         
         # Initialize game state
