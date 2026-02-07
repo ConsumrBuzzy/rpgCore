@@ -50,6 +50,7 @@ class ObjectCharacteristics:
     tags: List[str] = field(default_factory=list)
     interaction_hooks: List[str] = field(default_factory=list)
     d20_checks: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    combat_stats: Dict[str, Any] = field(default_factory=dict)
     
     def has_tag(self, tag: str) -> bool:
         """Check if object has specific tag"""
@@ -58,6 +59,10 @@ class ObjectCharacteristics:
     def can_interact(self, action: str) -> bool:
         """Check if object supports specific interaction"""
         return action in self.interaction_hooks
+    
+    def get_combat_stat(self, stat: str, default: Any = 0) -> Any:
+        """Get combat stat with default fallback"""
+        return self.combat_stats.get(stat, default)
 
 
 @dataclass
@@ -140,7 +145,8 @@ class AssetLoader:
                         triggers=char_data.get('triggers', {}),
                         tags=char_data.get('tags', []),
                         interaction_hooks=char_data.get('interaction_hooks', []),
-                        d20_checks=char_data.get('d20_checks', {})
+                        d20_checks=char_data.get('d20_checks', {}),
+                        combat_stats=char_data.get('combat_stats', {})
                     )
                 
                 # Create asset definition

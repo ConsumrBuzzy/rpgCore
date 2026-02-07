@@ -603,6 +603,40 @@ crystal:
     energy_type: "arcane"
     crystal_type: "magical"
 
+forest_guardian:
+  characteristics:
+    material: "stone_wood"
+    state: "alert"
+    rarity: 0.02
+    integrity: 150
+    weight: "heavy"
+    triggers:
+      on_approach: "challenge_intruder"
+      on_defeat: "open_gate"
+      on_victory: "repel_intruder"
+    tags: ["armored", "guardian", "sentinel", "stone", "defensive"]
+    interaction_hooks: ["attack", "defend", "intimidate", "negotiate"]
+    resistances: ["blunt", "sharp", "fire"]
+    weaknesses: ["magic", "acid"]
+    d20_checks:
+      attack: {"difficulty": 12, "skill": "strength", "success": "deal_damage"}
+      defend: {"difficulty": 14, "skill": "defense", "success": "block_attack"}
+      intimidate: {"difficulty": 15, "skill": "intimidation", "success": "flee"}
+    combat_stats:
+      hp: 50
+      str: 10
+      def: 8
+      initiative: 6
+  collision: true
+  friction: 0.8
+  sprite_id: "forest_guardian"
+  metadata:
+    guardian_type: "gatekeeper"
+    armor_class: 16
+    weapon_damage: "2d6+3"
+    special_attack: "shield_bash"
+    gate_access: "requires_defeat": true
+
 fountain:
   characteristics:
     material: "stone_water"
