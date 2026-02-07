@@ -567,10 +567,12 @@ class TestIntegration:
         registry.register_pass(PixelViewportPass())
         registry.register_pass(BrailleRadarPass())
         
-        # Create mock game state with specific position
+        # Create mock game state with proper position attribute
         mock_game_state = Mock(spec=GameState)
-        mock_game_state.position.x = 42.5
-        mock_game_state.position.y = 37.8
+        mock_position = Mock()
+        mock_position.x = 42.5
+        mock_position.y = 37.8
+        mock_game_state.position = mock_position
         
         mock_ledger = Mock(spec=WorldLedger)
         mock_ledger.get_chunk.return_value = None
@@ -588,6 +590,10 @@ class TestIntegration:
         # Both passes should use the same player position
         pixel_result = results[RenderPassType.PIXEL_VIEWPORT]
         radar_result = results[RenderPassType.BRAILLE_RADAR]
+        
+        # Should have some content
+        assert pixel_result.content is not None
+        assert radar_result.content is not None
         
         # The player should be visible in both renders
         # (This is a basic check - in reality, the positions would be transformed
