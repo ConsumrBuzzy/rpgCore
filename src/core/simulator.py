@@ -74,6 +74,10 @@ class Observer(Protocol):
     def on_narrative_generated(self, prose: str) -> None:
         """Called when narrative is generated."""
         ...
+    
+    def on_simulator_event(self, event_type: str, data: Dict[str, Any]) -> None:
+        """Called when simulator events occur (scene transitions, etc.)."""
+        ...
 
 
 class IntentTaggingProtocol:
