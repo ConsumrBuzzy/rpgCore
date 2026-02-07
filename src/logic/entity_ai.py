@@ -175,6 +175,12 @@ class EntityAI:
                 # Load existing entities
                 for row in rows:
                     entity_data = json.loads(row[0])
+                    # Convert coordinate dict back to Coordinate object
+                    if isinstance(entity_data.get("current_pos"), dict):
+                        entity_data["current_pos"] = Coordinate(**entity_data["current_pos"])
+                    if isinstance(entity_data.get("home_pos"), dict):
+                        entity_data["home_pos"] = Coordinate(**entity_data["home_pos"])
+                    
                     entity = Entity(**entity_data)
                     self._entities[entity.id] = entity
             else:
