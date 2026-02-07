@@ -29,21 +29,11 @@ def get_model(model_name: str = "llama3.2:1b", temperature: float = 0.1) -> Open
     if 'OLLAMA_BASE_URL' not in os.environ:
         os.environ['OLLAMA_BASE_URL'] = 'http://localhost:11434'
         
-    base_url = f"{os.environ['OLLAMA_BASE_URL']}/v1"
+    os.environ["OPENAI_BASE_URL"] = f"{os.environ['OLLAMA_BASE_URL']}/v1"
+    os.environ["OPENAI_API_KEY"] = "ollama"
     
-    return OpenAIModel(
-        model_name,
-        base_url=base_url,
-        api_key="ollama", # Placeholder for local instances
-        http_client=_SHARED_CLIENT,
-        
-        # Omit 'temperature' here as it's passed at run-time or via different mechanism
-        # PydanticAI models usually take params in `agent.run(..., model_settings={...})`
-        # OR we can pass some config here if supported by the specific backend adapter.
-        # For OpenAIModel, we'll rely on the agent to pass temperature if needed,
-        # or we might need to subclass if we want it hardcoded.
-        # Actually, let's keep it simple: The Model object itself is stateless regarding params usually.
-    )
+    # We rely on Env vars for configuration as Model logic doesn't accept them directly in this version
+    return OpenAIModel(model_name)
 
 def get_common_model_settings(temperature: float = 0.1) -> dict:
     """
