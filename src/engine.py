@@ -1,15 +1,16 @@
 """
-Game Engine: Orchestrator
+Synthetic Reality Engine: Cinematic Orchestrator
 
-The thin orchestrator that moves data between specialized modules.
-Replaces the God Class GameREPL with clean separation of concerns.
+The enhanced orchestrator that integrates all seven phases of engineering into a
+cohesive cinematic experience. Provides narrated journeys with historical context
+and spatial awareness.
 
-Flow: Sense → Resolve → Act → Narrate
+Flow: World Bake → Avatar Instantiation → 3D Rendering → Narrated Journey
 """
 
 import asyncio
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any, List
 
 from loguru import logger
 from rich.console import Console
@@ -17,14 +18,16 @@ from rich.panel import Panel
 from rich.live import Live
 
 from game_state import GameState
-from semantic_engine import SemanticResolver, create_default_intent_library
+from world_ledger import WorldLedger, Coordinate
+from logic.faction_system import FactionSystem
+from logic.orientation import OrientationManager
+from ui.dashboard import UnifiedDashboard, DashboardLayout
+from chronos import ChronosEngine
+from utils.historian import Historian, WorldSeed
+from ui.renderer_3d import ASCIIDoomRenderer
 from d20_core import D20Resolver, D20Result
-from narrator import Narrator
-from world_factory import WorldFactory
-from character_factory import CharacterFactory
+from logic.artifacts import ArtifactGenerator
 from loot_system import LootSystem
-from utils.context_manager import ContextManager
-from ui.layout_manager import GameDashboard
 
 
 class GameEngine:
