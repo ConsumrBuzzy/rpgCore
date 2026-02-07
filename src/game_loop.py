@@ -164,7 +164,7 @@ class GameREPL:
                 
                 # Assign Goals for new rooms
                 new_goals = generate_goals_for_location(loc_id, loc_id) # Using loc_id as template_id for simplicity
-                self.state.active_goals.extend(new_goals)
+                self.state.goal_stack.extend(new_goals)
                 for g in new_goals:
                     self.console.print(f"[bold magenta]🎯 New Objective: {g.description}[/bold magenta]")
             else:

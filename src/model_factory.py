@@ -40,8 +40,11 @@ def get_model(model_name: str = "llama3.2:1b", temperature: float = 0.1) -> Open
         timeout=120.0
     )
     
+    # Strip 'ollama:' prefix if present for OpenAI compatible endpoint
+    actual_model = model_name.replace("ollama:", "")
+    
     # Return configured model
-    return OpenAIModel(model_name, settings=settings)
+    return OpenAIModel(actual_model, settings=settings)
 
 def get_common_model_settings(temperature: float = 0.1) -> dict:
     """
