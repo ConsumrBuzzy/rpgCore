@@ -201,22 +201,29 @@ class WorldMap:
                 name="South Exit",
                 env_type=EnvironmentType.FOREST_PATH,
                 coords=(10, 21),
-                description="Path leading south from the town square",
-                interaction_type="exit"
+                description="Path leading south from the town square, marked by an old stone marker",
+                interaction_type="portal"
             ),
             Landmark(
                 name="Ancient Oak",
                 env_type=EnvironmentType.FOREST_PATH,
                 coords=(10, 30),
-                description="Massive oak tree with carved initials",
+                description="Massive oak tree with carved initials from past travelers",
                 interaction_type="object"
             ),
             Landmark(
                 name="Hidden Chest",
                 env_type=EnvironmentType.FOREST_PATH,
                 coords=(15, 35),
-                description="Wooden chest concealed under foliage",
+                description="Wooden chest concealed under dense foliage, containing forgotten treasures",
                 interaction_type="chest"
+            ),
+            Landmark(
+                name="Town Gate Portal",
+                env_type=EnvironmentType.FOREST_PATH,
+                coords=(10, 21),
+                description="Magical portal back to the Town Square, shimmering with ancient runes",
+                interaction_type="portal"
             )
         ]
         
@@ -259,6 +266,14 @@ class WorldMap:
                 from_coords=(10, 21),   # Forest path entrance
                 to_coords=(10, 20),     # South gate
                 name="North Gate"
+            ),
+            # NEW: Portal Hook from Forest Path back to Town Square
+            Portal(
+                from_env=EnvironmentType.FOREST_PATH,
+                to_env=EnvironmentType.TOWN_SQUARE,
+                from_coords=(10, 21),   # Town Gate Portal in forest
+                to_coords=(10, 20),     # Town Square South Gate
+                name="Forest Return Portal"
             )
         ]
         
