@@ -26,7 +26,7 @@ from pathlib import Path
 from loguru import logger
 
 from core.simulator import SimulatorHost, ActionResult
-from core.intent_registry import IntentRegistry
+from core.world_map import get_world_map, EnvironmentType
 from game_state import GameState
 
 

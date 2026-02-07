@@ -599,6 +599,91 @@ class SimulatorHost:
         except Exception as e:
             logger.error(f"❌ Failed to update location context: {e}")
     
+    def _check_spatial_transitions(self) -> None:
+        """Check for spatial transitions (portals, boundaries, interactions)."""
+        if not self.state:
+            return
+        
+        x, y = self.state.position.x, self.state.position.y
+        
+        try:
+            # Check for portal transitions
+            transition = self.world_map.get_transition_target(x, y)
+            if transition:
+                target_env, target_coords = transition
+                self._execute_portal_transition(target_env, target_coords)
+                return
+            
+            # Check for nearby landmarks (interaction triggers)
+            nearby_landmarks = self.world_map.get_nearby_landmarks(x, y, radius=1)
+            for landmark in nearby_landmarks:
+                if landmark.interaction_type in ["chest", "npc"]:
+                    self._trigger_interaction(landmark)
+                    break
+            
+            # Check boundary hits (for cinematic transitions)
+            if self.world_map.is_boundary_hit(x, y):
+                current_env = self.world_map.get_current_environment(x, y)
+                if current_env:
+                    logger.info(f"🗺️ Boundary hit in {current_env.value}")
+                    
+        except Exception as e:
+            logger.error(f"❌ Failed to check spatial transitions: {e}")
+    
+    def _execute_portal_transition(self, target_env: EnvironmentType, target_coords: Tuple[int, int]) -> None:
+        """Execute a portal transition to a new environment."""
+        if not self.state:
+            return
+        
+        try:
+            # Update position to target coordinates
+            self.state.position.x, self.state.position.y = target_coords
+            
+            # Update current environment
+            zone = self.world_map.zones.get(target_env)
+            if zone:
+                self.state.current_location = zone.name
+                logger.info(f"🚪 Portal transition: {zone.name} at {target_coords}")
+                
+                # Trigger tile bank swap (would notify PPU in real implementation)
+                tile_bank = zone.tile_bank
+                logger.info(f"🎨 Tile bank swap: {tile_bank}")
+                
+                # Notify views of transition
+                self._notify_observers("portal_transition", {
+                    "environment": target_env.value,
+                    "location": zone.name,
+                    "coordinates": target_coords,
+                    "tile_bank": tile_bank
+                })
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to execute portal transition: {e}")
+    
+    def _trigger_interaction(self, landmark) -> None:
+        """Trigger an interaction with a landmark."""
+        try:
+            logger.info(f"🎯 Interaction triggered: {landmark.name} ({landmark.interaction_type})")
+            
+            # Notify views for interaction handling
+            self._notify_observers("landmark_interaction", {
+                "landmark": landmark.name,
+                "type": landmark.interaction_type,
+                "coords": landmark.coords,
+                "description": landmark.description
+            })
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to trigger interaction: {e}")
+    
+    def _notify_observers(self, event_type: str, data: Dict[str, Any]) -> None:
+        """Notify all observers of an event."""
+        for observer in self.observers:
+            try:
+                observer.on_simulator_event(event_type, data)
+            except Exception as e:
+                logger.error(f"❌ Observer notification failed: {e}")
+    
     def stop(self) -> None:
         """Stop the simulator."""
         self.running = False
