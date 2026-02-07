@@ -43,9 +43,16 @@ class AssetDisplayTool:
         self.info_text = None
         self.hover_sprite_id = None
         
-        # Initialize systems
-        self._initialize_deconstructed_systems()
+        # Build UI first
         self._build_ui()
+        
+        # Initialize PPU now that canvas exists
+        if self.canvas:
+            try:
+                self.ppu = NativeTkinterPPU(self.canvas, self.registry)
+                logger.info("🎨 PPU initialized for asset display")
+            except Exception as e:
+                logger.error(f"⚠️ PPU initialization failed: {e}")
         
         # Display assets
         self._display_all_assets()
@@ -57,7 +64,8 @@ class AssetDisplayTool:
         """Initialize deconstructed asset systems"""
         try:
             # Initialize Parser
-            self.parser = AssetParser(self.config.assets_path)
+            assets_path = Path(__file__).parent / "assets"
+            self.parser = AssetParser(assets_path)
             logger.info("📄 Parser initialized")
             
             # Initialize Fabricator
@@ -77,9 +85,9 @@ class AssetDisplayTool:
             # Load into registry
             self.registry.load_from_parsed_data(parsed_data, sprites)
             
-            # Initialize PPU
-            self.ppu = NativeTkinterPPU(self.canvas, self.registry)
-            logger.info("🎨 PPU initialized for asset display")
+            # Initialize PPU (pass None for canvas for now)
+            self.ppu = None  # Will be created after UI is built
+            logger.info("🎨 PPU will be initialized after UI")
             
         except Exception as e:
             logger.error(f"💥 System initialization failed: {e}")
