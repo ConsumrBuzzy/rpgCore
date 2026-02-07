@@ -128,6 +128,20 @@ class WorldLedger:
                 )
             """)
             
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS historical_tags (
+                    coordinate TEXT PRIMARY KEY,
+                    tag TEXT NOT NULL,
+                    epoch INTEGER NOT NULL,
+                    event_type TEXT NOT NULL,
+                    faction TEXT,
+                    description TEXT NOT NULL,
+                    intensity REAL NOT NULL,
+                    decay_rate REAL NOT NULL,
+                    world_state TEXT
+                )
+            """)
+            
             conn.commit()
     
     def _load_blueprints(self):
@@ -447,10 +461,75 @@ class WorldLedger:
         
         return nearby_chunks
     
-    def cleanup_cache(self):
-        """Clear the in-memory chunk cache."""
-        self._chunk_cache.clear()
-        logger.info("World Ledger cache cleared")
+    def get_historical_tags(self, coord: Coordinate) -> List[Dict[str, Any]]:
+        """
+        Get historical tags for a coordinate.
+        
+        Args:
+            coord: Coordinate to check
+            
+        Returns:
+            List of historical tag data
+        """
+        with sqlite3.connect(self.save_path) as conn:
+            cursor = conn.execute("""
+                SELECT tag, epoch, event_type, faction, description, intensity, decay_rate
+                FROM historical_tags
+                WHERE coordinate = ?
+                ORDER BY intensity DESC
+            """, (f"{coord.x},{coord.y}",))
+            
+            tags = []
+            for row in cursor.fetchall():
+                tags.append({
+                    "tag": row[0],
+                    "epoch": row[1],
+                    "event_type": row[2],
+                    "faction": row[3],
+                    "description": row[4],
+                    "intensity": row[5],
+                    "decay_rate": row[6]
+                })
+            
+            return tags
+    
+    def get_historical_context(self, coord: Coordinate, current_turn: int) -> List[str]:
+        """
+        Get historical context for narrative generation.
+        
+        Args:
+            coord: Coordinate to check
+            current_turn: Current world turn
+            
+        Returns:
+            List of historical descriptions for Chronicler
+        """
+        tags = self.get_historical_tags(coord)
+        
+        # Filter by intensity and create descriptions
+        context = []
+        for tag in tags:
+            if tag["intensity"] > 0.3:  # Only show significant tags
+                context.append(tag["description"])
+        
+        return context
+    
+    def add_historical_tags_to_chunk(self, chunk: WorldChunk, coord: Coordinate):
+        """
+        Add historical tags to a chunk's metadata.
+        
+        Args:
+            chunk: Chunk to modify
+            coord: Coordinate of the chunk
+        """
+        tags = self.get_historical_tags(coord)
+        
+        # Add significant tags to chunk metadata
+        for tag in tags:
+            if tag["intensity"] > 0.3:  # Only significant tags
+                chunk.tags.append(tag["tag"])
+        
+        return chunk
     
     def get_statistics(self) -> Dict[str, Any]:
         """Get world ledger statistics."""

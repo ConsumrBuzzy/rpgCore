@@ -1,15 +1,19 @@
 """
-World Factory: Location & Scenario Generation
+World Factory: Procedural World Generation with Historical Layers
 
-Handles procedural location generation and scenario loading.
-Templates for Urban, Dungeon, and Wilderness environments.
-Manages Social Graph persistence between room transitions.
+Phase 5: Narrative Archaeology Engine Implementation
+Generates worlds with sedimentary history layers from the Historian.
+
+ADR 020: The Historian Utility & Sedimentary World-Gen Implementation
 """
 
-from typing import Dict, List, Optional
+import random
+from typing import Dict, List, Optional, Any
+from pathlib import Path
 
 from loguru import logger
-from pydantic import BaseModel
+from world_ledger import WorldLedger, Coordinate, WorldChunk
+from utils.historian import Historian, WorldSeed
 
 from game_state import Room, NPC, GameState
 
@@ -20,30 +24,276 @@ class LocationTemplate(BaseModel):
     description: str
     environment_tags: List[str]
     initial_npcs: List[str]
-    props: List[str]
-    connections: Dict[str, str]  # direction -> location_id
 
 
 class WorldFactory:
     """
-    Factory for creating and managing game world locations.
+    Factory for creating dynamic world content with historical layers.
     
-    Responsible for:
-    - Location templates (Urban, Dungeon, Wilderness)
-    - Scenario loading (Heist, Diplomacy arcs)
-    - Social Graph persistence
+    Generates worlds that feel like they have centuries of history
+    by combining procedural generation with sedimentary historical tags.
     """
     
-    def __init__(self):
-        """Initialize world factory with location templates."""
-        self.templates = self._load_templates()
-        self.scenarios = self._load_scenarios()
-        logger.info("World Factory initialized with location templates")
+    def __init__(self, world_ledger: WorldLedger):
+        """Initialize the factory with world ledger and historian."""
+        self.world_ledger = world_ledger
+        self.historian = Historian(world_ledger)
+        self.blueprints = self._load_blueprints()
+        self.location_templates = self._load_location_templates()
+        self.historical_seeds = self._load_historical_seeds()
+        
+        logger.info("World Factory initialized with historical layer support")
     
-    def _load_templates(self) -> Dict[str, LocationTemplate]:
-        """Load location templates for different environment types."""
+    def create_world_with_history(
+        self, 
+        center_coord: Coordinate, 
+        world_seed: Optional[WorldSeed] = None,
+        epochs: int = 10,
+        radius: int = 5
+    ) -> Dict[str, Any]:
+        """
+        Create a world with deep time simulation.
+        
+        Args:
+            center_coord: Center coordinate for world generation
+            world_seed: Optional seed for world generation
+            epochs: Number of epochs to simulate
+            radius: Initial settlement radius
+            
+        Returns:
+            Dictionary with world information
+        """
+        if world_seed is None:
+            world_seed = self._generate_random_seed(center_coord)
+        
+        logger.info(f"Creating world with {epochs} epochs of history for {world_seed.location_name}")
+        
+        # Simulate deep time
+        simulated_epochs = self.historian.simulate_deep_time(world_seed, epochs)
+        
+        # Create initial settlement area
+        settlement_chunks = self._create_settlement_area(center_coord, radius, world_seed)
+        
+        # Apply historical layers to chunks
+        for coord, chunk in settlement_chunks.items():
+            self.world_ledger.add_historical_tags_to_chunk(chunk, coord)
+        
         return {
-            # Urban Templates
+            "world_seed": world_seed,
+            "simulated_epochs": simulated_epochs,
+            "settlement_chunks": settlement_chunks,
+            "total_chunks": len(settlement_chunks),
+            "historical_summary": self.historian.get_historical_summary()
+        }
+    
+    def _generate_random_seed(self, center_coord: Coordinate) -> WorldSeed:
+        """Generate a random world seed."""
+        # Random founding vector
+        resources = ["gold", "silver", "iron", "wood", "grain"]
+        climates = ["temperate", "cold", "arid", "tropical", "continental"]
+        factions = [Faction.NOBILITY, Faction.CLERGY, Faction.MERCHANTS]
+        
+        return WorldSeed(
+            founding_vector={
+                "resource": random.choice(resources),
+                "climate": random.choice(climates),
+                "faction": random.choice(factions).value
+            },
+            starting_population=random.randint(50, 500),
+            initial_factions=random.sample(factions, k=2),
+            location_name=f"Settlement_{center_coord.x}_{center_coord.y}",
+            coordinates=center_coord,
+            radius=random.randint(3, 8)
+        )
+    
+    def _load_historical_seeds(self) -> Dict[str, WorldSeed]:
+        """Load predefined historical world seeds."""
+        return {
+            "river_valley": WorldSeed(
+                founding_vector={
+                    "resource": "water",
+                    "climate": "temperate",
+                    "faction": "merchants"
+                },
+                starting_population=200,
+                initial_factions=[Faction.MERCHANTS, Faction.PEASANTRY],
+                location_name="River Valley",
+                coordinates=(0, 0),
+                radius=4
+            ),
+            "mountain_pass": WorldSeed(
+                founding_vector={
+                    "resource": "iron",
+                    "climate": "cold",
+                    "faction": "nobility"
+                },
+                starting_population=100,
+                initial_factions=[Faction.NOBILITY, Faction.CLERGY],
+                location_name="Mountain Pass",
+                coordinates=(10, 10),
+                radius=3
+            ),
+            "coastal_town": WorldSeed(
+                founding_vector={
+                    "resource": "fish",
+                    "climate": "temperate",
+                    "faction": "merchants"
+                },
+                starting_population=300,
+                initial_factions=[Faction.MERCHANTS, Faction.PEASANTRY],
+                location_name="Coastal Town",
+                coordinates=(0, 10),
+                radius=5
+            ),
+            "frontier_outpost": WorldSeed(
+                founding_vector={
+                    "resource": "wood",
+                    "climate": "arid",
+                    "faction": "outlaws"
+                },
+                starting_population=50,
+                initial_factions=[Faction.OUTLAWS, Faction.PEASANTRY],
+                location_name="Frontier Outpost",
+                coordinates=(-5, -5),
+                radius=2
+            )
+        }
+    
+    def _create_settlement_area(self, center_coord: Coordinate, radius: int, world_seed: WorldSeed) -> Dict[Tuple[int, int], WorldChunk]:
+        """Create the initial settlement area with procedural generation."""
+        settlement_chunks = {}
+        
+        for dx in range(-radius, radius + 1):
+            for dy in range(-radius, radius + 1):
+                if dx == 0 and dy == 0:
+                    continue  # Skip center coordinate for now
+                
+                coord = Coordinate(center_coord.x + dx, center_coord.y + dy, 0)
+                
+                # Generate chunk with historical context
+                chunk = self.world_ledger.get_chunk(coord, 0)
+                
+                # Add historical tags from historian
+                self.world_ledger.add_historical_tags_to_chunk(chunk, coord)
+                
+                # Add world seed influence to blueprint selection
+                blueprint_name = self._select_blueprint_with_influence(chunk, world_seed)
+                if blueprint_name:
+                    blueprint = self.blueprints[blueprint_name]
+                    chunk.name = blueprint["name"]
+                    chunk.description = blueprint["description"]
+                    chunk.tags.extend(blueprint["base_tags"])
+                
+                settlement_chunks[(coord.x, coord.y)] = chunk
+        
+        return settlement_chunks
+    
+    def _select_blueprint_with_influence(self, chunk: WorldChunk, world_seed: WorldSeed) -> Optional[str]:
+        """Select blueprint based on world seed influence."""
+        # Simple heuristic: match resource and climate preferences
+        resource = world_seed.founding_vector.get("resource", "gold")
+        climate = world_seed.founding_vector.get("climate", "temperate")
+        faction = world_seed.founding_vector.get("faction", "merchants")
+        
+        # Blueprint preferences based on founding vector
+        blueprint_preferences = {
+            ("gold", "temperate", "merchants"): "tavern",
+            ("iron", "cold", "nobility"): "fortress",
+            ("fish", "temperate", "merchants"): "market",
+            ("wood", "arid", "outlaws"): "camp",
+            ("grain", "temperate", "peasantry"): "farm",
+        }
+        
+        key = (resource, climate, faction)
+        return blueprint_preferences.get(key)
+    
+    def _load_location_templates(self) -> Dict[str, Dict[str, Any]]:
+        """Load location templates for special locations."""
+        return {
+            "ancient_ruins": {
+                "name": "Ancient Ruins",
+                "description": " crumbling stone structures from a forgotten age",
+                "base_tags": ["ancient", "ruined", "mysterious"],
+                "npc_chance": 0.3,
+                "possible_npcs": ["ghost", "specter", "ancient_guard"],
+                "item_chance": 0.6,
+                "possible_items": ["ancient_artifact", "rare_gem", "old_coin"]
+            },
+            "magical_site": {
+                "name": "Magical Site",
+                "description": "a place where the veil between worlds is thin",
+                "base_tags": ["magical", "enchanted", "dangerous"],
+                "npc_chance": 0.2,
+                "possible_npcs": ["wizard", "elemental", "spirit"],
+                "item_chance": 0.4,
+                "possible_items": ["mana_crystal", "enchanted_item", "scroll"]
+            },
+            "battlefield": {
+                "name": "Ancient Battlefield",
+                "description": "the ground is still stained with the blood of ancient battles",
+                "base_tags": ["battleground", "haunted", "scarred"],
+                "npc_chance": 0.1,
+                "possible_npcs": ["ghost_soldier", "wraith", "specter"],
+                "item_chance": 0.8,
+                "possible_items": ["broken_sword", "rusty_armor", "battle_standard"]
+            }
+        }
+    
+    def get_historical_context_for_chunk(self, coord: Coordinate) -> List[str]:
+        """
+        Get historical context for a chunk for narrative generation.
+        
+        Args:
+            coord: Coordinate of the chunk
+            
+        Returns:
+            List of historical descriptions
+        """
+        return self.world_ledger.get_historical_context(coord, 0)
+    
+    def create_location_with_history(
+        self, 
+        coord: Coordinate, 
+        template_name: str,
+        current_turn: int = 0
+    ) -> WorldChunk:
+        """
+        Create a location with historical context.
+        
+        Args:
+            coord: Coordinate for the location
+            template_name: Name of the location template
+            current_turn: Current world turn
+            
+        Returns:
+            WorldChunk with historical tags applied
+        """
+        # Generate base chunk
+        chunk = self.world_ledger.get_chunk(coord, current_turn)
+        
+        # Apply template if specified
+        if template_name in self.location_templates:
+            template = self.location_templates[template_name]
+            chunk.name = template["name"]
+            chunk.description = template["description"]
+            chunk.tags.extend(template["base_tags"])
+        
+        # Add historical tags
+        self.world_ledger.add_historical_tags_to_chunk(chunk, coord)
+        
+        return chunk
+    
+    def get_location(self, location_id: str) -> Optional[Room]:
+        """
+        Get a Room object from location template.
+        
+        Args:
+            location_id: Template identifier
+            
+        Returns:
+            Room object or None if not found
+        """
+        template = {
             "tavern": LocationTemplate(
                 name="The Rusty Flagon",
                 description="A dimly lit tavern filled with the smell of ale and roasted meat. Rowdy patrons fill the wooden tables.",
