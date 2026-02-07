@@ -74,6 +74,13 @@ except ImportError:
     # Fallback for development
     from utils.logger import initialize_logging, get_logger_manager
 
+# Import developer console
+try:
+    from tools import DeveloperConsole
+except ImportError:
+    # Fallback for development
+    from tools.developer_console import DeveloperConsole
+
 
 class DGTSystem:
     """Main DGT Autonomous Movie System"""
