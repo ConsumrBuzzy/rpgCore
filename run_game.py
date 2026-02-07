@@ -33,6 +33,7 @@ from ui.dashboard import UnifiedDashboard, DashboardLayout
 from chronos import ChronosEngine
 from utils.historian import Historian, WorldSeed
 from ui.renderer_3d import ASCIIDoomRenderer
+from ui.iso_renderer import IsometricRenderer
 from d20_core import D20Resolver
 
 
@@ -44,10 +45,11 @@ class SyntheticRealityDirector:
     a cohesive cinematic experience.
     """
     
-    def __init__(self, auto_mode: bool = False, demo_mode: bool = False):
+    def __init__(self, auto_mode: bool = False, demo_mode: bool = False, view_mode: str = "doom"):
         """Initialize the Director with all systems."""
         self.auto_mode = auto_mode
         self.demo_mode = demo_mode
+        self.view_mode = view_mode  # "doom" or "iso"
         
         # Core systems
         self.world_ledger = WorldLedger()
@@ -58,7 +60,13 @@ class SyntheticRealityDirector:
         
         # Presentation systems
         self.dashboard = UnifiedDashboard(self.world_ledger, self.faction_system)
-        self.renderer = ASCIIDoomRenderer(self.world_ledger)
+        
+        # Initialize renderer based on view mode
+        if view_mode == "iso":
+            self.renderer = IsometricRenderer(self.world_ledger)
+        else:
+            self.renderer = ASCIIDoomRenderer(self.world_ledger)
+        
         self.orientation_manager = OrientationManager()
         
         # Game state
@@ -69,7 +77,7 @@ class SyntheticRealityDirector:
         self.scene_duration = 2.0  # seconds per scene
         self.auto_turn_delay = 0.5  # seconds per auto turn
         
-        logger.info(f"Director initialized - Auto: {auto_mode}, Demo: {demo_mode}")
+        logger.info(f"Director initialized - Auto: {auto_mode}, Demo: {demo_mode}, View: {view_mode}")
     
     def bake_world(self) -> bool:
         """

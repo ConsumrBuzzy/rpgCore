@@ -1,10 +1,8 @@
 """
-ASCII-Doom 3D Renderer
+3D Rendering System
 
-Phase 6: Spatial Tactical Depth Implementation
-Implements Wolfenstein-style raycasting for ASCII-based 3D rendering.
-
-ADR 023: The ASCII-Raycast Viewport Implementation
+Phase 8: Dual-Mode Rendering Implementation
+Supports both ASCII-Doom raycasting and Isometric 2.5D projection.
 """
 
 import math
@@ -303,9 +301,6 @@ class ASCIIDoomRenderer:
         for y in range(start_y, end_y):
             if 0 <= y < self.height and 0 <= x < self.width:
                 self.buffer[y][x] = char
-            else:
-                # Debug: print out of bounds info
-                logger.debug(f"Out of bounds: y={y}, height={self.height}, x={x}, width={self.width}")
     
     def _apply_distance_shading(self, char: str, distance: float) -> str:
         """Apply distance-based shading to a character."""
