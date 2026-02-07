@@ -400,64 +400,70 @@ class AssetLoader:
     
     def _generate_actor_sprites(self) -> None:
         """Generate actor sprites for multiple states"""
-        # Generate Voyager sprites
-        voyager_states = ["idle", "moving", "interacting", "combat"]
+        try:
+            # Generate Voyager sprites
+            voyager_states = ["idle", "moving", "interacting", "combat"]
+            
+            for state in voyager_states:
+                # Generate voyager sprite
+                voyager_img = Image.new((16, 16), (255, 255, 255, 0))
+                voyager_draw = ImageDraw.Draw(voyager_img)
+                
+                if state == "idle":
+                    # Blue circle for idle
+                    voyager_draw.ellipse([2, 2, 14, 14], fill=(0, 100, 255, 255))
+                elif state == "moving":
+                    # Blue triangle for moving
+                    voyager_draw.polygon([(8, 2), (2, 14), (14, 14)], fill=(0, 150, 255, 255))
+                elif state == "interacting":
+                    # Blue square with interaction indicator
+                    voyager_draw.rectangle([2, 2, 14, 14], fill=(0, 200, 255, 255))
+                    voyager_draw.ellipse([6, 6, 10, 10], fill=(255, 255, 0, 255))
+                elif state == "combat":
+                    # Blue diamond for combat
+                    voyager_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(0, 100, 255, 255))
+                
+                # Create both left and right facing versions for combat
+                self._create_sprite_variant(voyager_img, f"voyager_{state}_left")
+                self._create_sprite_variant(voyager_img, f"voyager_{state}_right")
+                
+                # Default sprite (left-facing for combat)
+                self._create_sprite_variant(voyager_img, f"voyager_{state}")
+            
+            # Generate enemy sprites with orientations
+            enemy_types = ["guardian", "forest_imp", "shadow_beast"]
+            
+            for enemy_type in enemy_types:
+                # Generate base enemy sprite
+                enemy_img = Image.new((16, 16), (255, 255, 255, 0))
+                enemy_draw = ImageDraw.Draw(enemy_img)
+                
+                if enemy_type == "guardian":
+                    # Stone guardian - gray diamond
+                    enemy_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(128, 128, 128, 255))
+                    enemy_draw.polygon([(8, 4), (12, 8), (8, 12), (4, 8)], fill=(96, 96, 96, 255))
+                elif enemy_type == "forest_imp":
+                    # Forest imp - green triangle
+                    enemy_draw.polygon([(8, 2), (2, 14), (14, 14)], fill=(0, 128, 0, 255))
+                    enemy_draw.ellipse([6, 6, 10, 10], fill=(255, 0, 0, 255))
+                elif enemy_type == "shadow_beast":
+                    # Shadow beast - purple circle
+                    enemy_draw.ellipse([2, 2, 14, 14], fill=(128, 0, 128, 255))
+                    enemy_draw.ellipse([4, 4, 12, 12], fill=(64, 0, 64, 255))
+                
+                # Create both left and right facing versions
+                self._create_sprite_variant(enemy_img, f"{enemy_type}_left")
+                self._create_sprite_variant(enemy_img, f"{enemy_type}_right")
+                
+                # Default sprite
+                self._create_sprite_variant(enemy_img, enemy_type)
+            
+            logger.info("🎨 Generated actor sprites for multiple states and orientations")
         
-        for state in voyager_states:
-            # Generate voyager sprite
-            voyager_img = Image.new((16, 16), (255, 255, 255, 0))
-            voyager_draw = ImageDraw.Draw(voyager_img)
-            
-            if state == "idle":
-                # Blue circle for idle
-                voyager_draw.ellipse([2, 2, 14, 14], fill=(0, 100, 255, 255))
-            elif state == "moving":
-                # Blue triangle for moving
-                voyager_draw.polygon([(8, 2), (2, 14), (14, 14)], fill=(0, 150, 255, 255))
-            elif state == "interacting":
-                # Blue square with interaction indicator
-                voyager_draw.rectangle([2, 2, 14, 14], fill=(0, 200, 255, 255))
-                voyager_draw.ellipse([6, 6, 10, 10], fill=(255, 255, 0, 255))
-            elif state == "combat":
-                # Blue diamond for combat
-                voyager_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(0, 100, 255, 255))
-            
-            # Create both left and right facing versions for combat
-            self._create_sprite_variant(voyager_img, f"voyager_{state}_left")
-            self._create_sprite_variant(voyager_img, f"voyager_{state}_right")
-            
-            # Default sprite (left-facing for combat)
-            self._create_sprite_variant(voyager_img, f"voyager_{state}")
-        
-        # Generate enemy sprites with orientations
-        enemy_types = ["guardian", "forest_imp", "shadow_beast"]
-        
-        for enemy_type in enemy_types:
-            # Generate base enemy sprite
-            enemy_img = Image.new((16, 16), (255, 255, 255, 0))
-            enemy_draw = ImageDraw.Draw(enemy_img)
-            
-            if enemy_type == "guardian":
-                # Stone guardian - gray diamond
-                enemy_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(128, 128, 128, 255))
-                enemy_draw.polygon([(8, 4), (12, 8), (8, 12), (4, 8)], fill=(96, 96, 96, 255))
-            elif enemy_type == "forest_imp":
-                # Forest imp - green triangle
-                enemy_draw.polygon([(8, 2), (2, 14), (14, 14)], fill=(0, 128, 0, 255))
-                enemy_draw.ellipse([6, 6, 10, 10], fill=(255, 0, 0, 255))
-            elif enemy_type == "shadow_beast":
-                # Shadow beast - purple circle
-                enemy_draw.ellipse([2, 2, 14, 14], fill=(128, 0, 128, 255))
-                enemy_draw.ellipse([4, 4, 12, 12], fill=(64, 0, 64, 255))
-            
-            # Create both left and right facing versions
-            self._create_sprite_variant(enemy_img, f"{enemy_type}_left")
-            self._create_sprite_variant(enemy_img, f"{enemy_type}_right")
-            
-            # Default sprite
-            self._create_sprite_variant(enemy_img, enemy_type)
-        
-        logger.info("🎨 Generated actor sprites for multiple states and orientations")
+        except Exception as e:
+            logger.error(f"💥 Failed to generate actor sprites: {e}")
+            # Generate minimal fallback sprites
+            self._generate_fallback_sprites()
     
     def _create_sprite_variant(self, image: Image.Image, sprite_id: str) -> None:
         """Create a sprite variant and store it"""
