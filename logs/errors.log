@@ -6479,3 +6479,4 @@ expected alphabetic or numeric character, but found '.'
 2026-02-07 15:53:23 | ERROR | src.body.ppu:_setup:94 | ❌ Failed to create PPU: name 'PhotoImage' is not defined
 2026-02-07 15:53:33 | ERROR | src.body.dispatcher:initialize:75 | ❌ Failed to initialize PPU: too many values to unpack (expected 2)
 2026-02-07 15:53:33 | ERROR | src.body.dispatcher:set_mode:172 | ❌ Failed to initialize ppu body
+2026-02-07 15:54:54 | ERROR | engines.body.tri_modal_engine:_init_legacy_engine:84 | ❌ Failed to initialize legacy engine: int() argument must be a string, a bytes-like object or a real number, not 'tuple'

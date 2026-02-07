@@ -78,7 +78,13 @@ class TriModalEngine:
     def _init_legacy_engine(self):
         """Initialize legacy GraphicsEngine for backward compatibility"""
         try:
-            self.legacy_engine = GraphicsEngine()
+            # Check if GraphicsEngine needs arguments
+            import inspect
+            sig = inspect.signature(GraphicsEngine.__init__)
+            if len(sig.parameters) > 1:  # Has parameters beyond self
+                self.legacy_engine = GraphicsEngine(width=160, height=144)
+            else:
+                self.legacy_engine = GraphicsEngine()
             logger.info("📊 Legacy GraphicsEngine initialized")
         except Exception as e:
             logger.error(f"❌ Failed to initialize legacy engine: {e}")
@@ -141,6 +147,11 @@ class TriModalEngine:
         """Render using tri-modal display dispatcher"""
         try:
             target_mode = mode or self.config.default_mode
+            
+            # Handle case where tri-modal is not available
+            if not DisplayMode or not target_mode:
+                logger.warning("⚠️ Tri-Modal DisplayMode not available")
+                return False
             
             # Convert game state to render packet
             packet = self._game_state_to_packet(game_state, target_mode)
