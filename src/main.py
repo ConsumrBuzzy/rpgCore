@@ -203,6 +203,8 @@ class DGTSystem:
             dd_engine=self.dd_engine,
             voyager=self.voyager,
             graphics_engine=self.graphics_engine,
+            chronos_engine=self.chronos_engine,
+            persona_engine=self.persona_engine,
             chronicler=None,  # Not implemented yet
             persistence_manager=None  # Not implemented yet
         )
