@@ -210,8 +210,11 @@ class ObserverView:
         if self.enable_graphics:
             self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
             
-            # Use asyncio to run both the Tkinter main loop and autonomous session
-            self.root.after(100, self._update_asyncio)
+            # Start autonomous session in a thread
+            import threading
+            self.session_thread = threading.Thread(target=self._run_session_thread)
+            self.session_thread.daemon = True
+            self.session_thread.start()
             
             # Run Tkinter main loop
             self.root.mainloop()
@@ -219,19 +222,17 @@ class ObserverView:
             # Run headless
             asyncio.run(self.run_autonomous_session())
     
-    def _update_asyncio(self) -> None:
-        """Update asyncio tasks and Tkinter"""
+    def _run_session_thread(self) -> None:
+        """Run autonomous session in a thread"""
         try:
-            # Process asyncio events
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                loop.run_until_complete(asyncio.sleep(0.1))
+            # Create new event loop for this thread
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
             
-            # Schedule next update
-            if self.running:
-                self.root.after(100, self._update_asyncio)
+            # Run the session
+            loop.run_until_complete(self.run_autonomous_session())
         except Exception as e:
-            self.log_event(f"⚠️ Asyncio update error: {e}")
+            self.log_event(f"💥 Session thread error: {e}")
     
     async def run_autonomous_session(self) -> None:
         """Run the autonomous movie session"""
@@ -533,8 +534,11 @@ class ObserverView:
         if self.enable_graphics:
             self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
             
-            # Start autonomous session in background
-            asyncio.create_task(self.run_autonomous_session())
+            # Start autonomous session in a thread
+            import threading
+            self.session_thread = threading.Thread(target=self._run_session_thread)
+            self.session_thread.daemon = True
+            self.session_thread.start()
             
             # Run Tkinter main loop
             self.root.mainloop()
