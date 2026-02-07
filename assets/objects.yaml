@@ -1,3 +1,4 @@
+---
 # Archetype-Based Object Manifest
 # ADR 082: The Archetype Manifest Protocol
 # Using YAML Anchors for Material Inheritance
