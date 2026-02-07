@@ -67,13 +67,13 @@ class ScenicAnchor:
         self.location_registry["tavern_interior"] = LocationMetadata(
             location_id="tavern_interior",
             name="Tavern Interior",
-            atmosphere="Dim, cozy tavern smelling of roasted malt and woodsmoke",
-            key_objects=["Iron Chest", "Oak Bar", "Heavy Door", "Hearth", "Wooden Tables"],
-            sensory_tags=["dim", "warm", "woodsmoke", "malt", "iron", "oak", "hearth", "flickering"],
-            ambient_sounds=["crackling fire", "mug clinking", "low conversation", "door creaks"],
-            lighting="Dim interior with flickering hearth light and candle glow",
-            smells=["roasted malt", "woodsmoke", "old wood", "spilled ale", "meat stew"],
-            state_hint="The Voyager has just entered through the heavy door"
+            atmosphere="Dim, cozy tavern smelling of roasted malt and woodsmoke, with warm hearth light dancing on ancient wooden beams",
+            key_objects=["Iron Chest", "Oak Bar", "Heavy Door", "Hearth", "Wooden Tables", "Ancient Runes"],
+            sensory_tags=["dim", "warm", "woodsmoke", "malt", "iron", "oak", "hearth", "flickering", "ancient", "runes", "cozy"],
+            ambient_sounds=["crackling fire", "mug clinking", "low conversation", "door creaks", "barrel tapping"],
+            lighting="Dim interior with flickering hearth light and candle glow, creating long shadows",
+            smells=["roasted malt", "woodsmoke", "old wood", "spilled ale", "meat stew", "ancient parchment"],
+            state_hint="The Voyager has just entered through the heavy oak door, the warmth of the hearth beckoning"
         )
         
         # Forest Path

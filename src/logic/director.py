@@ -441,9 +441,11 @@ class AutonomousDirector:
             
             logger.info(f"🎯 Generated beacon: {beacon.description} at {beacon.target_coords}")
     
-    async def _generate_narrative_beacons(self, context: str, num_beacons: int = 3) -> List[Dict[str, Any]]:
+    def _generate_narrative_beacons(self, context: str, num_beacons: int = 3) -> List[Dict[str, Any]]:
         """
         Generate narrative beacons using physical landmarks from the world map.
+        
+        Enhanced to prioritize interior objects and provide specific targets.
         
         Args:
             context: Current game context
@@ -459,25 +461,38 @@ class AutonomousDirector:
             current_pos = self.get_voyager_position()
             current_env = self.world_map.get_current_environment(current_pos[0], current_pos[1])
             
-            # Get available landmarks in current environment
-            if current_env:
-                landmarks = self.world_map.get_landmarks_in_zone(current_env)
-                director_landmarks = [lm for lm in landmarks if lm.interaction_type in ["portal", "chest", "npc"]]
+            # Priority 1: If in interior, target interactive objects
+            if current_env == EnvironmentType.TAVERN_INTERIOR:
+                interior_landmarks = self.world_map.get_landmarks_in_zone(current_env)
+                interactive_landmarks = [lm for lm in interior_landmarks if lm.interaction_type in ["chest", "npc"]]
                 
-                # Generate beacons for each landmark
-                for landmark in director_landmarks[:num_beacons]:
+                for landmark in interactive_landmarks[:num_beacons]:
                     beacon_data = {
-                        'beacon_id': f"landmark_{landmark.name.lower().replace(' ', '_')}",
+                        'beacon_id': f"interact_{landmark.name.lower().replace(' ', '_')}",
                         'target_coords': landmark.coords,
-                        'description': f"Visit {landmark.name}",
+                        'description': f"Interact with {landmark.name}",
                         'priority': 1,
-                        'intent_type': 'explore',
+                        'intent_type': 'interact',
                         'reasoning': landmark.description
                     }
                     beacons.append(beacon_data)
-                    logger.info(f"🎯 Generated landmark beacon: {landmark.name} at {landmark.coords}")
+                    logger.info(f"🎯 Generated interior beacon: {landmark.name} at {landmark.coords}")
             
-            # If no landmarks in current zone, generate travel beacons
+            # Priority 2: If at portal, target entry
+            current_landmark = self.world_map.get_landmark_at(current_pos[0], current_pos[1])
+            if current_landmark and current_landmark.interaction_type in ["portal", "door"]:
+                beacon_data = {
+                    'beacon_id': f"enter_{current_landmark.name.lower().replace(' ', '_')}",
+                    'target_coords': current_landmark.coords,
+                    'description': f"Enter {current_landmark.name}",
+                    'priority': 1,
+                    'intent_type': 'interact',
+                    'reasoning': current_landmark.description
+                }
+                beacons.append(beacon_data)
+                logger.info(f"🎯 Generated portal beacon: {current_landmark.name} at {current_landmark.coords}")
+            
+            # Priority 3: If no interior/portal targets, generate travel beacons
             if len(beacons) < num_beacons:
                 for env_type in [EnvironmentType.TOWN_SQUARE, EnvironmentType.TAVERN_INTERIOR, EnvironmentType.FOREST_PATH]:
                     if env_type != current_env and len(beacons) < num_beacons:
@@ -488,7 +503,7 @@ class AutonomousDirector:
                                 'beacon_id': f"travel_{env_type.value}",
                                 'target_coords': entry_point,
                                 'description': f"Travel to {zone.name}",
-                                'priority': 1,
+                                'priority': 2,
                                 'intent_type': 'travel',
                                 'reasoning': f"Entry point to {zone.name}"
                             }
@@ -503,7 +518,7 @@ class AutonomousDirector:
                 'beacon_id': 'explore_fallback',
                 'target_coords': (current_pos[0] + 5, current_pos[1] + 5),
                 'description': "Explore the area",
-                'priority': 1,
+                'priority': 3,
                 'intent_type': 'explore',
                 'reasoning': "Basic exploration directive"
             }
