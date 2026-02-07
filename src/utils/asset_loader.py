@@ -471,66 +471,84 @@ class AssetLoader:
         return sprite
     
     def _generate_actor_sprites(self) -> None:
-        """Generate actor sprites for multiple states"""
+        """Generate actor sprites for multiple states with animation support"""
         try:
-            # Generate Voyager sprites
-            voyager_states = ["idle", "moving", "interacting", "combat"]
+            # Generate Voyager sprites with idle animation frames
+            voyager_states = ["idle", "moving", "interacting", "combat", "idle_look"]
             
             for state in voyager_states:
-                # Generate voyager sprite
-                voyager_img = Image.new((16, 16), (255, 255, 255, 0), "RGBA")
-                voyager_draw = ImageDraw.Draw(voyager_img)
-                
-                if state == "idle":
-                    # Blue circle for idle
-                    voyager_draw.ellipse([2, 2, 14, 14], fill=(0, 100, 255, 255))
-                elif state == "moving":
-                    # Blue triangle for moving
-                    voyager_draw.polygon([(8, 2), (2, 14), (14, 14)], fill=(0, 150, 255, 255))
-                elif state == "interacting":
-                    # Blue square with interaction indicator
-                    voyager_draw.rectangle([2, 2, 14, 14], fill=(0, 200, 255, 255))
-                    voyager_draw.ellipse([6, 6, 10, 10], fill=(255, 255, 0, 255))
-                elif state == "combat":
-                    # Blue diamond for combat
-                    voyager_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(0, 100, 255, 255))
-                
-                # Create both left and right facing versions for combat
-                self._create_sprite_variant(voyager_img, f"voyager_{state}_left")
-                self._create_sprite_variant(voyager_img, f"voyager_{state}_right")
-                
-                # Default sprite (left-facing for combat)
-                self._create_sprite_variant(voyager_img, f"voyager_{state}")
+                if state == "idle_look":
+                    # Generate neck-pivot idle animation frames
+                    for frame_num in [1, 2]:
+                        voyager_img = Image.new((16, 16), (255, 255, 255, 0), "RGBA")
+                        voyager_draw = ImageDraw.Draw(voyager_img)
+                        
+                        # Base blue diamond
+                        voyager_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(0, 100, 255, 255))
+                        
+                        # Neck pivot effect - slight rotation indication
+                        if frame_num == 1:
+                            # Looking left
+                            voyager_draw.ellipse([4, 6, 6, 10], fill=(0, 150, 255, 255))
+                        else:
+                            # Looking right
+                            voyager_draw.ellipse([10, 6, 12, 10], fill=(0, 150, 255, 255))
+                        
+                        # Create both left and right facing versions
+                        self._create_sprite_variant(voyager_img, f"voyager_{state}_left_frame_{frame_num}")
+                        self._create_sprite_variant(voyager_img, f"voyager_{state}_right_frame_{frame_num}")
+                        
+                        # Default
+                        self._create_sprite_variant(voyager_img, f"voyager_{state}_frame_{frame_num}")
+                else:
+                    # Generate regular voyager sprite
+                    voyager_img = Image.new((16, 16), (255, 255, 255, 0), "RGBA")
+                    voyager_draw = ImageDraw.Draw(voyager_img)
+                    
+                    if state == "idle":
+                        # Blue circle for idle
+                        voyager_draw.ellipse([2, 2, 14, 14], fill=(0, 100, 255, 255))
+                    elif state == "moving":
+                        # Blue triangle for moving
+                        voyager_draw.polygon([(8, 2), (2, 14), (14, 14)], fill=(0, 150, 255, 255))
+                    elif state == "interacting":
+                        # Blue square with interaction indicator
+                        voyager_draw.rectangle([2, 2, 14, 14], fill=(0, 200, 255, 255))
+                        voyager_draw.ellipse([6, 6, 10, 10], fill=(255, 255, 0, 255))
+                    elif state == "combat":
+                        # Blue diamond for combat
+                        voyager_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(0, 100, 255, 255))
+                    
+                    # Create both left and right facing versions for combat
+                    self._create_sprite_variant(voyager_img, f"voyager_{state}_left")
+                    self._create_sprite_variant(voyager_img, f"voyager_{state}_right")
+                    
+                    # Default sprite
+                    self._create_sprite_variant(voyager_img, f"voyager_{state}")
             
-            # Generate enemy sprites with orientations
-            enemy_types = ["guardian", "forest_imp", "shadow_beast"]
+            # Generate animated flower sprites
+            for frame_num in [1, 2, 3]:
+                flower_img = Image.new((8, 8), (255, 255, 255, 0), "RGBA")
+                flower_draw = ImageDraw.Draw(flower_img)
+                
+                # Color variation for animation
+                colors = [(255, 182, 193, 255), (255, 192, 203, 255), (255, 255, 255, 255)]
+                color = colors[frame_num - 1]
+                
+                # Sway effect - slight position shift
+                sway_offset = frame_num - 2  # -1, 0, 1
+                
+                # Draw flower petals
+                flower_draw.ellipse([2 + sway_offset, 2, 6 + sway_offset, 6], fill=color)
+                flower_draw.ellipse([3 + sway_offset, 3, 5 + sway_offset, 5], fill=(255, 255, 200, 255))
+                
+                # Stem
+                flower_draw.rectangle([3, 6, 4, 7], fill=(0, 128, 0, 255))
+                
+                # Create sprite variant
+                self._create_sprite_variant(flower_img, f"flower_frame_{frame_num}")
             
-            for enemy_type in enemy_types:
-                # Generate base enemy sprite
-                enemy_img = Image.new((16, 16), (255, 255, 255, 0), "RGBA")
-                enemy_draw = ImageDraw.Draw(enemy_img)
-                
-                if enemy_type == "guardian":
-                    # Stone guardian - gray diamond
-                    enemy_draw.polygon([(8, 2), (14, 8), (8, 14), (2, 8)], fill=(128, 128, 128, 255))
-                    enemy_draw.polygon([(8, 4), (12, 8), (8, 12), (4, 8)], fill=(96, 96, 96, 255))
-                elif enemy_type == "forest_imp":
-                    # Forest imp - green triangle
-                    enemy_draw.polygon([(8, 2), (2, 14), (14, 14)], fill=(0, 128, 0, 255))
-                    enemy_draw.ellipse([6, 6, 10, 10], fill=(255, 0, 0, 255))
-                elif enemy_type == "shadow_beast":
-                    # Shadow beast - purple circle
-                    enemy_draw.ellipse([2, 2, 14, 14], fill=(128, 0, 128, 255))
-                    enemy_draw.ellipse([4, 4, 12, 12], fill=(64, 0, 64, 255))
-                
-                # Create both left and right facing versions
-                self._create_sprite_variant(enemy_img, f"{enemy_type}_left")
-                self._create_sprite_variant(enemy_img, f"{enemy_type}_right")
-                
-                # Default sprite
-                self._create_sprite_variant(enemy_img, enemy_type)
-            
-            logger.info("🎨 Generated actor sprites for multiple states and orientations")
+            logger.info("🎨 Generated actor sprites with animation support")
         
         except Exception as e:
             logger.error(f"💥 Failed to generate actor sprites: {e}")
@@ -590,6 +608,28 @@ class AssetLoader:
             return combat_sprite
         
         return self.get_actor_sprite(entity_id, "idle", orientation)
+    
+    def get_animation_sprite(self, entity_id: str, animation_type: str, frame: int = 1) -> Optional[ImageTk.PhotoImage]:
+        """Get animation frame sprite"""
+        sprite_id = f"{entity_id}_{animation_type}_frame_{frame}"
+        return self.registry.get(sprite_id)
+    
+    def get_animated_sprites(self, entity_id: str, animation_type: str) -> List[ImageTk.PhotoImage]:
+        """Get all animation frames for an entity"""
+        frames = []
+        frame_num = 1
+        while True:
+            sprite = self.get_animation_sprite(entity_id, animation_type, frame_num)
+            if sprite:
+                frames.append(sprite)
+                frame_num += 1
+            else:
+                break
+        return frames
+    
+    def has_animation(self, entity_id: str, animation_type: str) -> bool:
+        """Check if entity has specific animation"""
+        return self.get_animation_sprite(entity_id, animation_type, 1) is not None
     
     def get_effect_sprite(self, effect_type: str) -> Optional[Image.Image]:
         """Get effect sprite"""
