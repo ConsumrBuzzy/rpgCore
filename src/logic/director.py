@@ -76,30 +76,33 @@ class AutonomousDirector:
     Generates narrative beacons and orchestrates the cinematic experience.
     """
     
-    def __init__(self, simulator: SimulatorHost):
-        self.simulator = simulator
-        self.mode = DirectorMode.IDLE
+    def __init__(self, simulator: SimulatorHost, max_turns: int = 100):
+        """
+        Initialize the Autonomous Director.
+        
+        Args:
+            simulator: The SimulatorHost instance
+            max_turns: Maximum number of turns for the autonomous session
+        """
+        # Core systems
+        self.simulator: SimulatorHost = simulator
+        self.world_map = get_world_map()
         
         # Director state
+        self.mode: DirectorMode = DirectorMode.PLANNING
         self.current_beacon: Optional[NarrativeBeacon] = None
         self.beacon_history: List[NarrativeBeacon] = []
-        self.voyager_position: Tuple[int, int] = (0, 0)
-        self.turn_count: int = 0  # Add turn counter as instance variable
+        self.turn_count: int = 0
+        self.max_turns: int = max_turns
         
-        # Cinematic controls
-        self.playback_speed = 1.0  # 1.0 = normal, 2.0 = fast, 0.5 = slow
-        self.is_paused = False
-        self.is_cinematic_mode = False
+        # Timing and pacing
+        self.playback_speed: float = 1.0
+        self.cinematic_pause_duration: float = 2.0
+        self.last_action_time: float = 0.0
         
-        # Director configuration
-        self.beacon_generation_interval = 30  # Generate new beacon every 30 turns
-        self.max_active_beacons = 3
-        self.beacon_decay_time = 100  # Beacons expire after 100 turns
-        
-        # Event callbacks
+        # Callbacks for external coordination
         self.on_beacon_generated: Optional[Callable[[NarrativeBeacon], None]] = None
         self.on_beacon_achieved: Optional[Callable[[NarrativeBeacon], None]] = None
-        self.on_cinematic_pause: Optional[Callable[[str], None]] = None
         
         logger.info("🎬 Autonomous Director initialized")
     
