@@ -353,28 +353,35 @@ class NativeTkinterPPU:
         """Get a native PhotoImage sprite by ID"""
         return self.sprites.get(sprite_id)
 
-class NativeTkinterGameWindow:
-    """Complete game window using Pure Tkinter PPU"""
+class NativeTkinterPPU:
+    """Pure Tkinter PPU with Multi-Mode Support"""
     
-    def __init__(self, title: str = "rpgCore - Pure Tkinter"):
-        self.root = tk.Tk()
-        self.root.title(title)
-        self.root.resizable(False, False)
+    def __init__(self, canvas: tk.Canvas, asset_loader: AssetLoader):
+        self.canvas = canvas
+        self.asset_loader = asset_loader
         
-        # Create PPU
-        self.ppu = NativeTkinterPPU(self.root)
+        # Multi-mode support
+        self.current_mode = PPUMode.OVERWORLD
+        self.layout = PPULayouts.get_layout(PPUMode.OVERWORLD)
         
-        # Game state
-        self.running = False
+        # Animation state
+        self.animation_frame = 0
+        self.animation_active = False
+        self.lunge_positions = []
+        self.current_lunge_index = 0
+        
+        # Transition effects
+        self.transition_frames = []
+        self.transition_active = False
+        
+        # Sprite references to prevent garbage collection
+        self._sprite_refs = []
+        
+        # Performance tracking
         self.frame_count = 0
+        self.render_times = []
         
-        # Performance display
-        self.perf_label = tk.Label(
-            self.root,
-            text="FPS: 0",
-            bg='black',
-            fg='white',
-            font=('Courier', 10)
+        logger.info(" Native Tkinter PPU initialized with multi-mode support")
         )
         self.perf_label.place(x=10, y=10)
         
