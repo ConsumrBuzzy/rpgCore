@@ -34,3 +34,44 @@
 2026-02-07 09:31:17 | INFO | core.heartbeat:__init__:54 | 🫀 Heartbeat Controller initialized
 2026-02-07 09:31:17 | INFO | core.heartbeat:initialize_heartbeat:432 | 🫀 Heartbeat system initialized
 2026-02-07 09:31:17 | ERROR | main:initialize:160 | 💥 System initialization failed: 'HeartbeatController' object has no attribute 'register_service'
+2026-02-07 09:31:26 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 09:31:31 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 09:31:31 | INFO | main:__init__:86 | 🏰 DGT System initialized - Production SOA Architecture
+2026-02-07 09:31:31 | INFO | main:initialize:113 | 🚀 Initializing DGT System components...
+2026-02-07 09:31:31 | INFO | main:initialize:121 | 📝 Using fallback logging
+2026-02-07 09:31:31 | INFO | engines.world.world_engine:__init__:112 | 🌍 World Engine initialized with seed: TAVERN_SEED
+2026-02-07 09:31:31 | INFO | main:initialize:126 | 🌍 World Engine initialized with seed: TAVERN_SEED
+2026-02-07 09:31:31 | INFO | engines.mind.dd_engine:__init__:90 | 🧠 D&D Engine initialized - Command Pattern ready
+2026-02-07 09:31:31 | INFO | engines.mind.dd_engine:set_world_engine:499 | 🧠 World Engine dependency injected
+2026-02-07 09:31:31 | INFO | main:initialize:131 | 🧠 D&D Engine initialized
+2026-02-07 09:31:31 | INFO | actors.voyager:__init__:69 | 🧭 Pathfinding Navigator initialized: 50x50
+2026-02-07 09:31:31 | INFO | actors.voyager:__init__:185 | 🎯 Intent Generator initialized
+2026-02-07 09:31:31 | INFO | actors.voyager:__init__:320 | 🚶 Voyager initialized - STATE_PONDERING support ready
+2026-02-07 09:31:31 | INFO | main:initialize:140 | 🚶 Voyager initialized
+2026-02-07 09:31:31 | INFO | core.heartbeat:__init__:54 | 🫀 Heartbeat Controller initialized
+2026-02-07 09:31:31 | INFO | core.heartbeat:initialize_heartbeat:432 | 🫀 Heartbeat system initialized
+2026-02-07 09:31:31 | INFO | core.heartbeat:register_services:65 | 🫀 All services registered with Heartbeat
+2026-02-07 09:31:31 | INFO | main:_configure_tavern_scene:212 | 🍺 Tavern scene configured - Iron Chest at (32, 32)
+2026-02-07 09:31:31 | INFO | main:initialize:156 | ✅ DGT System initialization complete
+2026-02-07 09:31:33 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 09:31:37 | INFO | utils.logger:initialize:59 | 📝 Logging system initialized
+2026-02-07 09:31:37 | INFO | main:__init__:86 | 🏰 DGT System initialized - Production SOA Architecture
+2026-02-07 09:31:37 | INFO | main:initialize:113 | 🚀 Initializing DGT System components...
+2026-02-07 09:31:37 | INFO | main:initialize:121 | 📝 Using fallback logging
+2026-02-07 09:31:37 | INFO | engines.world.world_engine:__init__:112 | 🌍 World Engine initialized with seed: TAVERN_SEED
+2026-02-07 09:31:37 | INFO | main:initialize:126 | 🌍 World Engine initialized with seed: TAVERN_SEED
+2026-02-07 09:31:37 | INFO | engines.mind.dd_engine:__init__:90 | 🧠 D&D Engine initialized - Command Pattern ready
+2026-02-07 09:31:37 | INFO | engines.mind.dd_engine:set_world_engine:499 | 🧠 World Engine dependency injected
+2026-02-07 09:31:37 | INFO | main:initialize:131 | 🧠 D&D Engine initialized
+2026-02-07 09:31:37 | INFO | actors.voyager:__init__:69 | 🧭 Pathfinding Navigator initialized: 50x50
+2026-02-07 09:31:37 | INFO | actors.voyager:__init__:185 | 🎯 Intent Generator initialized
+2026-02-07 09:31:37 | INFO | actors.voyager:__init__:320 | 🚶 Voyager initialized - STATE_PONDERING support ready
+2026-02-07 09:31:37 | INFO | main:initialize:140 | 🚶 Voyager initialized
+2026-02-07 09:31:37 | INFO | core.heartbeat:__init__:54 | 🫀 Heartbeat Controller initialized
+2026-02-07 09:31:37 | INFO | core.heartbeat:initialize_heartbeat:432 | 🫀 Heartbeat system initialized
+2026-02-07 09:31:37 | INFO | core.heartbeat:register_services:65 | 🫀 All services registered with Heartbeat
+2026-02-07 09:31:37 | INFO | main:_configure_tavern_scene:212 | 🍺 Tavern scene configured - Iron Chest at (32, 32)
+2026-02-07 09:31:37 | INFO | main:initialize:156 | ✅ DGT System initialization complete
+2026-02-07 09:31:37 | INFO | main:run_autonomous_mode:236 | 🎬 Starting autonomous movie mode...
+2026-02-07 09:31:37 | ERROR | main:run_autonomous_mode:250 | 💥 Autonomous mode error: 'HeartbeatController' object has no attribute 'run'
+2026-02-07 09:31:37 | INFO | main:run_autonomous_mode:253 | 🎬 Autonomous mode ended

@@ -1,2 +1,3 @@
 2026-02-07 09:31:09 | ERROR | main:initialize:160 | 💥 System initialization failed: 'coroutine' object has no attribute 'register_service'
 2026-02-07 09:31:17 | ERROR | main:initialize:160 | 💥 System initialization failed: 'HeartbeatController' object has no attribute 'register_service'
+2026-02-07 09:31:37 | ERROR | main:run_autonomous_mode:250 | 💥 Autonomous mode error: 'HeartbeatController' object has no attribute 'run'

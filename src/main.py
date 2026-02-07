@@ -239,7 +239,10 @@ class DGTSystem:
         try:
             if self.heartbeat:
                 # Start the heartbeat loop
-                await self.heartbeat.run()
+                await self.heartbeat.start()
+                # Wait for heartbeat to complete
+                if self.heartbeat.loop_task:
+                    await self.heartbeat.loop_task
             else:
                 # Fallback simple loop
                 await self._run_simple_autonomous_loop()
