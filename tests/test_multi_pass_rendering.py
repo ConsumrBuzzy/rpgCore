@@ -424,7 +424,7 @@ class TestGeometricProfilePass:
                 for row in buffer
             )
             assert has_content, f"Shape {shape_type.value} should have content"
-
+    
     def test_line_drawing(self):
         """Test line drawing functionality."""
         pass_obj = GeometricProfilePass()
@@ -440,7 +440,8 @@ class TestGeometricProfilePass:
         assert buffer[0][0] != " "
         assert buffer[0][9] != " "
         assert buffer[9][0] != " "
-
+        assert buffer[9][9] != " "
+    
     def test_rotation_animation(self):
         """Test rotation animation."""
         pass_obj = GeometricProfilePass(ProfileConfig(animate_rotation=True))
@@ -456,15 +457,17 @@ class TestGeometricProfilePass:
         pass_obj._update_rotation(time.time())
         
         assert pass_obj.rotation_angle != initial_angle
-
+    
     def test_geometric_profile_rendering(self):
         """Test geometric profile rendering."""
         pass_obj = GeometricProfilePass()
         
-        # Create mock context
+        # Create mock context with proper position attribute
         mock_game_state = Mock(spec=GameState)
-        mock_game_state.position.x = 10.0
-        mock_game_state.position.y = 15.0
+        mock_position = Mock()
+        mock_position.x = 10.0
+        mock_position.y = 15.0
+        mock_game_state.position = mock_position
         
         mock_ledger = Mock(spec=WorldLedger)
         
