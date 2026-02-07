@@ -383,10 +383,10 @@ def start_rendering_loop(self) -> bool:
         logger.error(f"Rendering loop failed: {e}")
         return False
     
-def render_cinematic_scene(self, scene_name: str, description: str, duration: float = None):
-    """Render a cinematic scene with 3D view and narration."""
-    if duration is None:
-        duration = self.scene_duration
+    def render_cinematic_scene(self, scene_name: str, description: str, duration: float = None):
+        """Render a cinematic scene with 3D view and narration."""
+        if duration is None:
+            duration = self.scene_duration
     
     # Get current NPC mood for threat indicators (only for Doom mode)
     current_npc_mood = None
