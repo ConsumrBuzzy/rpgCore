@@ -1,7 +1,7 @@
 {
   "player": {
     "name": "Adventurer",
-    "hp": 10,
+    "hp": 9,
     "max_hp": 10,
     "gold": 50,
     "inventory": [],
@@ -27,9 +27,9 @@
   "player_angle": 0.0,
   "world_time": 0,
   "rooms": {},
-  "turn_count": 2,
+  "turn_count": 5,
   "reputation": {
-    "law": 2,
+    "law": 4,
     "underworld": 0,
     "clergy": 0
   },
@@ -38,11 +38,11 @@
   "social_graph": {
     "unknown": {
       "Bartender": {
-        "disposition": 10,
+        "disposition": 20,
         "tags": [
           "charmed"
         ],
-        "last_interaction_turn": 0
+        "last_interaction_turn": 2
       }
     }
   },
