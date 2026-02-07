@@ -196,7 +196,13 @@ class EntityAI:
                 goal=EntityGoal.MAINTAIN_POST,
                 attributes={"strength": 14, "dexterity": 12, "constitution": 13, "intelligence": 10, "wisdom": 11, "charisma": 10},
                 faction="law",
-                **self._movement_patterns["guard"]
+                movement_speed=1.0,
+                perception_range=8,
+                last_moved=0,
+                path=[],
+                target_entity=None,
+                inventory=[],
+                relationships={}
             ),
             Entity(
                 id="merchant_plaza_1",
@@ -208,7 +214,13 @@ class EntityAI:
                 goal=EntityGoal.TRADE_GOODS,
                 attributes={"strength": 10, "dexterity": 12, "constitution": 11, "intelligence": 14, "wisdom": 12, "charisma": 16},
                 faction="merchant",
-                **self._movement_patterns["merchant"]
+                movement_speed=0.8,
+                perception_range=6,
+                last_moved=0,
+                path=[],
+                target_entity=None,
+                inventory=[],
+                relationships={}
             ),
             Entity(
                 id="bandit_forest_1",
@@ -220,7 +232,13 @@ class EntityAI:
                 goal=EntityGoal.SURVIVE,
                 attributes={"strength": 13, "dexterity": 14, "constitution": 12, "intelligence": 10, "wisdom": 11, "charisma": 9},
                 faction="underworld",
-                **self._movement_patterns["bandit"]
+                movement_speed=1.2,
+                perception_range=10,
+                last_moved=0,
+                path=[],
+                target_entity=None,
+                inventory=[],
+                relationships={}
             ),
             Entity(
                 id="wolf_wilds_1",
@@ -232,7 +250,13 @@ class EntityAI:
                 goal=EntityGoal.SURVIVE,
                 attributes={"strength": 15, "dexterity": 16, "constitution": 14, "intelligence": 4, "wisdom": 12, "charisma": 6},
                 faction="wild",
-                **self._movement_patterns["animal"]
+                movement_speed=1.5,
+                perception_range=6,
+                last_moved=0,
+                path=[],
+                target_entity=None,
+                inventory=[],
+                relationships={}
             )
         ]
         
