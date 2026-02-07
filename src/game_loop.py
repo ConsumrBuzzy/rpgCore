@@ -17,12 +17,13 @@ from rich.prompt import Prompt
 from rich.table import Table
 from rich.live import Live
 
-from game_state import GameState, create_tavern_scenario
+from game_state import GameState, Room, NPC, create_tavern_scenario
 from semantic_engine import SemanticResolver, create_default_intent_library
 
 from sync_engines import ChroniclerEngine
 from quartermaster import Quartermaster
 from deterministic_arbiter import DeterministicArbiter
+from world_map import create_starter_campaign, Location, WorldObject
 
 
 class GameREPL:
@@ -57,17 +58,23 @@ class GameREPL:
         self.auto_mode = auto_mode
         
         # Initialize game state
+        self.world_map = create_starter_campaign()
+        
         if state:
             self.state = state
         elif self.save_path.exists():
-            self.console.print(f"[green]Loading saved game from {self.save_path}[/green]")
-            self.state = GameState.load_from_file(self.save_path)
+            try:
+                self.console.print(f"[green]Loading saved game from {self.save_path}[/green]")
+                self.state = GameState.load_from_file(self.save_path)
+            except Exception as e:
+                logger.error(f"Failed to load save: {e}. Starting fresh.")
+                self.state = self._initialize_fresh_state()
         else:
-            self.console.print("[yellow]Starting new campaign...[/yellow]")
-            # Use multi-location scenario with Social Graph
-            from scenarios import create_multi_location_scenario
-            self.state = create_multi_location_scenario()
-            self.console.print("[cyan]Loaded: Rusty Flagon (Tavern) + Emerald City Plaza[/cyan]")
+            self.state = self._initialize_fresh_state()
+            self.console.print("[cyan]World Map loaded: Tavern -> Plaza -> Dungeon Entrance[/cyan]")
+        
+        # Ensure current location is in state.rooms
+        self._sync_location_to_state()
         
         # Initialize semantic engine
         self.console.print("[cyan]Loading semantic engine...[/cyan]")
@@ -102,13 +109,54 @@ class GameREPL:
             # Model name is ignored by Deterministic Voyager
             self.voyager = SyncVoyagerAgent(personality=personality, model_name="llama3.2:1b")
         
-        # Turn history for stutter check (last 5 actions)
         self.turn_history: list[str] = []
         
         logger.info("Game initialized with Council of Three architecture")
         
         self.console.print("[dim]🔥 Warming up engines...[/dim]")
         self.warm_up()
+
+    def _initialize_fresh_state(self) -> GameState:
+        """Create initial state using world map."""
+        state = GameState()
+        state.current_room = "tavern"
+        return state
+
+    def _sync_location_to_state(self):
+        """Standardize current world_map location into GameState Room."""
+        loc_id = self.state.current_room
+        if loc_id in self.world_map:
+            loc = self.world_map[loc_id]
+            
+            # If room doesn't exist in state, create it
+            if loc_id not in self.state.rooms:
+                room_data = Room(
+                    name=loc.name,
+                    description=loc.description,
+                    exits=loc.connections,
+                    tags=loc.environment_tags,
+                    items=[p.name for p in loc.props],
+                    npcs=[]
+                )
+                
+                # Spawn NPCs based on world map
+                if loc_id == "tavern":
+                    # Special case for tavern to get hardcoded NPC descriptions
+                    temp_state = create_tavern_scenario()
+                    room_data.npcs = temp_state.rooms["tavern"].npcs
+                else:
+                    room_data.npcs = [NPC(name=name) for name in loc.initial_npcs]
+                
+                self.state.rooms[loc_id] = room_data
+            else:
+                # Update metadata but keep NPCs/relationships
+                existing = self.state.rooms[loc_id]
+                existing.name = loc.name
+                existing.description = loc.description
+                existing.exits = loc.connections
+                existing.tags = loc.environment_tags
+                # Items could be dynamic, let's refresh them from props
+                existing.items = [p.name for p in loc.props]
 
     def warm_up(self):
         """
@@ -260,7 +308,11 @@ class GameREPL:
                 # Pick the first exit (usually north)
                 next_room_id = list(room.exits.values())[0]
                 self.state.current_room = next_room_id
-                self.console.print(f"\n[bold yellow]🚙 Transitioning to {next_room_id.replace('_', ' ').title()}...[/bold yellow]")
+                
+                # Sync new location data to state
+                self._sync_location_to_state()
+                
+                self.console.print(f"\n[bold yellow]🚙 Transitioning to {self.state.rooms[next_room_id].name}...[/bold yellow]")
                 # Clear stutter history on room change
                 self.turn_history = []
         
