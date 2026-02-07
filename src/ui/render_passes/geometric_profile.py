@@ -13,6 +13,7 @@ import math
 from loguru import logger
 
 from . import BaseRenderPass, RenderContext, RenderResult, RenderPassType
+from ..sprite_factory import SpriteFactory, CompositeSpriteConfig, CharacterClass, SpriteLayer, ShadingPattern
 
 
 class ShapeType(Enum):
@@ -34,6 +35,9 @@ class ProfileConfig:
     show_outline: bool = True
     show_fill: bool = False
     animate_rotation: bool = False
+    render_mode: str = "geometric"  # "geometric" or "silhouette"
+    character_class: CharacterClass = CharacterClass.VOYAGER
+    show_composite_sprite: bool = False
     line_thickness: int = 1
 
 
@@ -72,9 +76,16 @@ class GeometricProfilePass(BaseRenderPass):
             "tee_right": "┤"
         }
         
+        # Initialize sprite factory for composite rendering
+        self.sprite_factory = SpriteFactory()
+        
         # Rotation animation state
         self.rotation_angle = 0.0
         self.last_rotation_time = 0.0
+        
+        # Animation frame state
+        self.animation_frame = 0
+        self.last_animation_time = 0.0
         
         logger.info(f"GeometricProfilePass initialized: {self.config.shape_type.value}")
     
@@ -86,17 +97,19 @@ class GeometricProfilePass(BaseRenderPass):
             context: Shared rendering context
             
         Returns:
-            RenderResult with geometric profile content
+            RenderResult with profile content
         """
         # Update rotation animation
         if self.config.animate_rotation:
             self._update_rotation(context.current_time)
         
-        # Create shape buffer
-        shape_buffer = self._create_shape_buffer()
-        
-        # Convert to string
-        content = self._buffer_to_string(shape_buffer)
+        if self.config.render_mode == "silhouette" and self.config.show_composite_sprite:
+            # Render composite sprite
+            content = self._render_composite_sprite(context)
+        else:
+            # Render geometric shape
+            buffer = self._create_shape_buffer()
+            content = self._buffer_to_string(buffer)
         
         return RenderResult(
             content=content,
@@ -104,11 +117,89 @@ class GeometricProfilePass(BaseRenderPass):
             height=self.config.height,
             metadata={
                 "shape_type": self.config.shape_type.value,
+                "render_mode": self.config.render_mode,
                 "rotation_angle": self.rotation_angle,
-                "outline": self.config.show_outline,
-                "fill": self.config.show_fill
+                "character_class": self.config.character_class.value
             }
         )
+    
+    def _render_composite_sprite(self, context: RenderContext) -> str:
+        """
+        Render a composite sprite using the SpriteFactory.
+        
+        Args:
+            context: Rendering context
+            
+        Returns:
+            Rendered composite sprite as string
+        """
+        # Create sprite configuration
+        sprite_config = CompositeSpriteConfig(
+            character_class=self.config.character_class,
+            head_type="default",
+            body_type="default",
+            feet_type="default",
+            held_item="none",
+            stance="neutral",
+            shading_enabled=True,
+            breathing_enabled=True
+        )
+        
+        # Create composite sprite
+        composite_sprite = self.sprite_factory.create_composite_sprite(sprite_config)
+        
+        # Create breathing animation frames
+        animation_frames = self.sprite_factory.create_breathing_animation_frames(sprite_config, 2)
+        
+        # Update animation state
+        self._update_animation(context.current_time)
+        
+        # Get current frame
+        current_frame = animation_frames[self.animation_frame % len(animation_frames)]
+        
+        # Convert to string representation
+        return self._composite_sprite_to_string(current_frame)
+    
+    def _composite_sprite_to_string(self, sprite: List[List[Optional[Pixel]]]) -> str:
+        """
+        Convert composite sprite to string representation.
+        
+        Args:
+            sprite: Composite sprite pixel array
+            
+        Returns:
+            String representation
+        """
+        lines = []
+        
+        for row in sprite:
+            line_chars = []
+            for pixel in row:
+                if pixel is None:
+                    line_chars.append(" ")
+                else:
+                    # Convert pixel to character based on intensity
+                    if pixel.intensity == 0.0:
+                        line_chars.append(" ")
+                    elif pixel.intensity < 0.3:
+                        line_chars.append("░")
+                    elif pixel.intensity < 0.6:
+                        line_chars.append("▒")
+                    elif pixel.intensity < 0.9:
+                        line_chars.append("▓")
+                    else:
+                        line_chars.append("█")
+            
+            lines.append(''.join(line_chars))
+        
+        return '\n'.join(lines)
+    
+    def _update_animation(self, current_time: float) -> None:
+        """Update animation state for breathing effect."""
+        # Update breathing animation every 1.5 seconds
+        if current_time - self.last_animation_time > 1.5:
+            self.animation_frame += 1
+            self.last_animation_time = current_time
     
     def get_optimal_size(self, context: RenderContext) -> Tuple[int, int]:
         """Get optimal size for geometric profile."""
