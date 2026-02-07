@@ -2,15 +2,19 @@
 Semantic Intent Resolution Engine
 
 Uses sentence embeddings to map natural language player input to structured intents.
-Designed for laptop-friendly performance (<50ms on CPU).
+Designed for laptop-friendly performance (<50ms on CPU) with instant boot support.
 """
 
 from dataclasses import dataclass
 from typing import Dict, Optional
+from pathlib import Path
 
 import numpy as np
 from loguru import logger
 from sentence_transformers import SentenceTransformer, util
+
+# Import our enterprise tooling
+from utils.bake_embeddings import SemanticBaker
 
 
 @dataclass
