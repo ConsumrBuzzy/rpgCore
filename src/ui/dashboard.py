@@ -383,17 +383,16 @@ class UnifiedDashboard:
             # 70% raycast, 30% dialogue/monitor
             left_layout = Layout()
             left_layout.split_column(
-                Panel(viewport_panel, title="3D Viewport"),
-                Panel(
-                    Layout(conversation_panel, status_panel),
-                    title="Information"
+                Layout(viewport_panel, name="3d_viewport"),
+                Layout(name="info").split_row(
+                    Layout(conversation_panel, name="dialogue"),
+                    Layout(status_panel, name="status")
                 )
             )
             
             right_layout = Layout()
             right_layout.split_column(
-                monitor_panel,
-                title="Director's Monitor"
+                Layout(monitor_panel, name="monitor")
             )
             
             main_layout = Layout()
@@ -403,14 +402,14 @@ class UnifiedDashboard:
             # 50/50 split
             left_layout = Layout()
             left_layout.split_column(
-                Panel(viewport_panel, title="3D Viewport"),
-                Panel(conversation_panel, title="Dialogue")
+                Layout(viewport_panel, name="3d_viewport"),
+                Layout(conversation_panel, name="dialogue")
             )
             
             right_layout = Layout()
             right_layout.split_column(
-                monitor_panel,
-                Panel(status_panel, title="Status")
+                Layout(monitor_panel, name="monitor"),
+                Layout(status_panel, name="status")
             )
             
             main_layout = Layout()
@@ -419,14 +418,14 @@ class UnifiedDashboard:
         else:  # MONITOR_DOMINANT
             left_layout = Layout()
             left_layout.split_column(
-                Panel(viewport_panel, title="3D Viewport"),
-                Panel(status_panel, title="Status")
+                Layout(viewport_panel, name="3d_viewport"),
+                Layout(status_panel, name="status")
             )
             
             right_layout = Layout()
             right_layout.split_column(
-                Panel(conversation_panel, title="Dialogue"),
-                Panel(monitor_panel, title="Director's Monitor")
+                Layout(conversation_panel, name="dialogue"),
+                Layout(monitor_panel, name="monitor")
             )
             
             main_layout = Layout()
