@@ -317,27 +317,40 @@ class TrainingPaddock:
         return self.pilots
     
     def _generate_tournament_matches(self, num_matches: int) -> List[Tuple[str, str]]:
-        """Generate tournament matches based on ELO ratings"""
+        """Generate tournament matches based on ELO ratings and generation"""
         matches = []
         pilot_ids = list(self.elo_ratings.keys())
         
         # Sort by ELO rating for tournament pairing
         sorted_pilots = sorted(pilot_ids, key=lambda pid: self.elo_ratings[pid].rating)
         
-        # Generate matches using tournament pairing
-        for i in range(num_matches):
-            if self.training_mode == TrainingMode.ELO_RANKING:
-                # Pair similar ELO ratings
-                idx1 = i % len(sorted_pilots)
-                idx2 = (i + len(sorted_pilots) // 2) % len(sorted_pilots)
-            else:
-                # Random pairing with some ELO bias
+        # Dynamic matchmaking based on generation
+        if self.current_generation < 5:
+            # Early generations: random pairing for exploration
+            for i in range(num_matches):
                 idx1 = random.randint(0, len(sorted_pilots) - 1)
                 idx2 = random.randint(0, len(sorted_pilots) - 1)
                 while idx2 == idx1:
                     idx2 = random.randint(0, len(sorted_pilots) - 1)
-            
-            matches.append((sorted_pilots[idx1], sorted_pilots[idx2]))
+                matches.append((sorted_pilots[idx1], sorted_pilots[idx2]))
+        elif self.current_generation < 15:
+            # Mid generations: ELO-based with some randomness
+            for i in range(num_matches):
+                if random.random() < 0.7:  # 70% ELO-based
+                    idx1 = i % len(sorted_pilots)
+                    idx2 = (i + len(sorted_pilots) // 2) % len(sorted_pilots)
+                else:  # 30% random for diversity
+                    idx1 = random.randint(0, len(sorted_pilots) - 1)
+                    idx2 = random.randint(0, len(sorted_pilots) - 1)
+                    while idx2 == idx1:
+                        idx2 = random.randint(0, len(sorted_pilots) - 1)
+                matches.append((sorted_pilots[idx1], sorted_pilots[idx2]))
+        else:
+            # Late generations: Strict ELO ranking for competition
+            for i in range(num_matches):
+                idx1 = i % len(sorted_pilots)
+                idx2 = (i + len(sorted_pilots) // 2) % len(sorted_pilots)
+                matches.append((sorted_pilots[idx1], sorted_pilots[idx2]))
         
         return matches
     
