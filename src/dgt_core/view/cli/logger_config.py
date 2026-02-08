@@ -47,7 +47,7 @@ class RichLogHandler:
         
         # Standard format
         timestamp = record.get("time", "")
-        return f"[{level_style}]{level}[/]: [{dim cyan}]{module}[/]:[{dim}]{function}[/] {message}"
+        return f"[{level_style}]{level}[/]: {module}:{function} {message}"
 
 
 def configure_logging(
