@@ -89,8 +89,9 @@ class ShellEngine:
     
     def __init__(self, party_size: int = 5):
         self.party_size = party_size
-        self.shell_wright = ShellWright()
         self.entities: Dict[str, ShellEntity] = {}
+        self.shell_wright = create_shell_wright()
+        self.d20_core = create_d20_core()
         self.simulation_time: float = 0.0
         self.dt: float = 0.1  # 10 FPS for turn-based RPG
         
