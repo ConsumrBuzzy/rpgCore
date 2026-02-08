@@ -251,7 +251,7 @@ class NeuroPilot:
     
     def update_fitness(self, hit_scored: bool, damage_dealt: float, damage_taken: float, 
                       survived: bool, enemies_destroyed: int, generation: int = 0):
-        """Update pilot fitness based on performance with dynamic pressure"""
+        """Update pilot fitness based on performance with Newtonian flight bonuses"""
         # Base fitness components
         if hit_scored:
             self.hits_scored += 1
@@ -290,10 +290,55 @@ class NeuroPilot:
         movement_efficiency = self._calculate_movement_efficiency()
         self.fitness += movement_efficiency * 3.0
         
+        # NEW: Newtonian Flight Bonuses
+        newtonian_bonus = self._calculate_newtonian_flight_bonus()
+        self.fitness += newtonian_bonus * 10.0  # High bonus for good Newtonian flight
+        
         # Tactical score (combination of factors)
         self.tactical_score = (self.enemies_destroyed * 10 + 
                               self.accuracy * 5 + 
                               (self.damage_dealt - self.damage_taken) * 0.1)
+    
+    def _calculate_newtonian_flight_bonus(self) -> float:
+        """Calculate bonus for smooth Newtonian flight patterns"""
+        if len(self.action_history) < 10 or len(self.velocity_history) < 10:
+            return 0.0
+        
+        bonus = 0.0
+        
+        # Analyze recent actions and velocities
+        recent_actions = self.action_history[-10:]
+        recent_velocities = self.velocity_history[-10:]
+        
+        for i in range(1, len(recent_actions)):
+            action = recent_actions[i]
+            prev_velocity = recent_velocities[i-1]
+            current_velocity = recent_velocities[i]
+            
+            # Vector Alignment Bonus: Reward thrust aligned with velocity
+            if abs(action.thrust) > 0.1:  # If actively thrusting
+                # Calculate velocity vector
+                vel_magnitude = math.sqrt(current_velocity[0]**2 + current_velocity[1]**2)
+                if vel_magnitude > 1.0:  # Only if moving
+                    # Bonus for forward thrust aligned with velocity
+                    if action.thrust > 0:  # Forward thrust
+                        # Simple alignment check (more complex would need heading)
+                        alignment_bonus = min(1.0, vel_magnitude / 100.0)  # Scale with speed
+                        bonus += alignment_bonus * 0.5
+                    
+                    # HIGH TACTICAL BONUS: Reverse thrust to slow down for turns
+                    elif action.thrust < 0:  # Reverse thrust (braking)
+                        if abs(action.rotation) > 0.1:  # While turning
+                            # High bonus for counter-thrusting during turns
+                            bonus += 1.0  # Maximum bonus for smart braking
+        
+        # Stagnation Penalty: Penalize sitting still
+        if len(recent_velocities) > 0:
+            avg_speed = sum(math.sqrt(v[0]**2 + v[1]**2) for v in recent_velocities) / len(recent_velocities)
+            if avg_speed < 10.0:  # Too slow
+                bonus -= 0.5  # Penalty for stagnation
+        
+        return max(0.0, bonus)  # Don't allow negative bonuses
     
     def _calculate_pattern_diversity(self) -> float:
         """Calculate diversity of movement patterns"""
