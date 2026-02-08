@@ -6570,3 +6570,9 @@ mode
 2026-02-07 19:49:11 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: 'InfiniteTournamentLoop' object has no attribute 'roster_manager'
 2026-02-07 19:49:12 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: 'InfiniteTournamentLoop' object has no attribute 'roster_manager'
 2026-02-07 19:49:13 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: 'InfiniteTournamentLoop' object has no attribute 'roster_manager'
+2026-02-07 19:49:27 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: name 'tournament' is not defined
+2026-02-07 19:49:28 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: name 'tournament' is not defined
+2026-02-07 19:49:29 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: name 'tournament' is not defined
+2026-02-07 19:49:30 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: name 'tournament' is not defined
+2026-02-07 19:49:31 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: name 'tournament' is not defined
+2026-02-07 19:49:32 | ERROR | dgt_core.simulation.infinite_tournament:_start_new_tournament:159 | ♾️ Failed to start new tournament: name 'tournament' is not defined

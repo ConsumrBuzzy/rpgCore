@@ -194,17 +194,17 @@ class TournamentService:
             round_matches.append(match)
         
         tournament.matches = round_matches
-        tournament.total_rounds = self._calculate_total_rounds(len(participants))
+        tournament.total_rounds = self._calculate_total_rounds(len(participants), tournament.participants_per_heat)
         
         logger.debug(f"🏆 Generated {len(round_matches)} matches for round 1")
     
-    def _calculate_total_rounds(self, participant_count: int) -> int:
+    def _calculate_total_rounds(self, participant_count: int, participants_per_heat: int) -> int:
         """Calculate total rounds needed for tournament"""
         rounds = 0
         remaining = participant_count
         
         while remaining > 1:
-            remaining = (remaining + tournament.participants_per_heat - 1) // tournament.participants_per_heat
+            remaining = (remaining + participants_per_heat - 1) // participants_per_heat
             rounds += 1
         
         return max(1, rounds)
