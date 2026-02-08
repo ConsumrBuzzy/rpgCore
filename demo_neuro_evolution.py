@@ -341,15 +341,15 @@ class NeuroEvolutionArena:
         if not self.is_training:
             return
         
-        # Run a few training matches
-        try:
-            matches = self.training_paddock.run_training_generation(num_matches=10)
+        # Run a few training matches (reduced for stability)
+        matches = self.training_paddock.run_training_generation(num_matches=5)
             
-            # Evolve population
-            self.training_paddock.evolve_population()
-            self.current_generation = self.training_paddock.current_generation
+        # Evolve population
+        self.training_paddock.evolve_population()
+        self.current_generation = self.training_paddock.current_generation
             
-            # Update demonstration ships with new pilots
+        # Update demonstration ships with new pilots
+        self.update_demo_ships()
             self.update_demo_ships()
             
             # Update progress
