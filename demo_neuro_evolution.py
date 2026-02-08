@@ -49,7 +49,7 @@ class NeuroEvolutionArena:
         self.simulation_time = 0.0
         self.dt = 1.0 / 60.0
         self.is_running = False
-        self.battle_complete = False
+        self.battle_complete = False  # Keep this for potential future use
         
         # Evolution state
         self.current_generation = 0
