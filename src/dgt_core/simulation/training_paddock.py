@@ -249,7 +249,7 @@ class TrainingPaddock:
         
         # Training parameters
         self.training_mode = TrainingMode.HYBRID
-        self.novelty_weight = 0.3  # Weight for novelty in fitness
+        self.novelty_weight = 0.5  # Increased from 0.3 for more exploration
         self.elo_weight = 0.2      # Weight for ELO in fitness
         
         logger.info(f"🧠 TrainingPaddock initialized: {population_size} pilots, {self.num_processes} processes")
