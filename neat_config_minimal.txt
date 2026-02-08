@@ -50,8 +50,8 @@ feed_forward            = True
 initial_connection      = full
 
 # node add/remove rates
-node_add_prob           = 0.4  # Increased from 0.2
-node_delete_prob        = 0.4  # Increased from 0.2
+node_add_prob           = 0.4
+node_delete_prob        = 0.4
 
 # network parameters for space combat
 num_hidden              = 1
