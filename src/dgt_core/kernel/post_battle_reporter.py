@@ -3,10 +3,13 @@ Post-Battle Reporter - MVP Identification & Performance Analysis
 Analyzes 5v5 skirmish results to identify MVP and generate performance metrics
 """
 
+import json
 import time
+import threading
 from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from loguru import logger
 from .persistence import legendary_registry, ShipPerformance
