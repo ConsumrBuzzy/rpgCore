@@ -302,10 +302,17 @@ class TrainingPaddock:
         return all_matches
     
     def evolve_population(self) -> List[NeuroPilot]:
-        """Evolve population to next generation"""
+        """Evolve population to next generation with stagnation detection"""
         logger.info(f"🧠 Evolving population from generation {self.current_generation}")
         
-        # Evolve using NEAT
+        # Check for stagnation
+        if self.current_generation > 0:
+            stagnation_detected = self._detect_stagnation()
+            if stagnation_detected:
+                logger.warning(f"🧠 Stagnation detected at generation {self.current_generation}! Applying reset.")
+                self._apply_stagnation_reset()
+        
+        # Evolve population using NEAT
         self.pilots = self.pilot_factory.evolve_population(self.pilots)
         
         # Update ELO ratings for new genomes
@@ -315,6 +322,50 @@ class TrainingPaddock:
         
         self.current_generation += 1
         return self.pilots
+    
+    def _detect_stagnation(self) -> bool:
+        """Detect if the population is stagnating"""
+        if len(self.training_history) < 50:  # Not enough data
+            return False
+        
+        # Check if average fitness hasn't improved in last 5 generations
+        recent_fitness = []
+        for i in range(min(5, len(self.training_history) // 10)):
+            gen_matches = self.training_history[-(i+1)*10:(i+2)*10] if (i+1)*10 < len(self.training_history) else self.training_history[-10:]
+            if gen_matches:
+                avg_fitness = sum(m.pilot1_fitness + m.pilot2_fitness for m in gen_matches) / (len(gen_matches) * 2)
+                recent_fitness.append(avg_fitness)
+        
+        if len(recent_fitness) < 3:
+            return False
+        
+        # Check if fitness is flat or declining
+        fitness_trend = recent_fitness[-1] - recent_fitness[0]
+        return fitness_trend <= 1.0  # No improvement or declining
+    
+    def _apply_stagnation_reset(self):
+        """Apply stagnation reset measures"""
+        logger.info("🧠 Applying stagnation reset measures...")
+        
+        # Increase mutation rates temporarily
+        for pilot in self.pilots:
+            # Add some random mutations to break local optima
+            if random.random() < 0.3:  # 30% chance
+                # Randomly modify some connections
+                for conn_key in list(pilot.genome.connections.keys()):
+                    if random.random() < 0.2:  # 20% chance per connection
+                        conn = pilot.genome.connections[conn_key]
+                        conn.weight *= random.uniform(0.5, 2.0)  # Random weight change
+                        conn.enabled = random.choice([True, False])  # Random enable/disable
+        
+        # Reset some ELO ratings to promote new strategies
+        if self.current_generation > 10:
+            # Reset bottom 25% of ELO ratings
+            sorted_ratings = sorted(self.elo_ratings.values(), key=lambda e: e.rating)
+            reset_count = max(1, len(sorted_ratings) // 4)
+            for elo in sorted_ratings[:reset_count]:
+                elo.rating = max(1200, elo.rating - 200)  # Reduce but not too much
+                elo.matches_played = 0  # Reset match count
     
     def _generate_tournament_matches(self, num_matches: int) -> List[Tuple[str, str]]:
         """Generate tournament matches based on ELO ratings and generation"""
