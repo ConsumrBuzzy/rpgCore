@@ -7,7 +7,7 @@ Creates intelligent ship pilots that learn through evolution
 """
 
 import math
-import neat_python as neat
+import neat
 import random
 import time
 from typing import Dict, List, Optional, Tuple, Any
@@ -387,7 +387,7 @@ class NeuroPilotFactory:
             'genome_id': pilot.genome.key,
             'fitness': pilot.fitness,
             'nodes': [(node.key, getattr(node, 'x', 0.5), getattr(node, 'y', 0.5)) for node in pilot.genome.nodes.values()],
-            'connections': [(conn.key, conn.in_node_id, conn.out_node_id, conn.weight, conn.enabled) 
+            'connections': [(conn.key, getattr(conn, 'source', conn.source), getattr(conn, 'target', conn.target), conn.weight, conn.enabled) 
                            for conn in pilot.genome.connections.values()]
         }
     
@@ -407,8 +407,8 @@ class NeuroPilotFactory:
             genome.nodes[node_key] = node
         
         # Add connections
-        for conn_key, in_node, out_node, weight, enabled in pilot_data['connections']:
-            conn = neat.DefaultGenome.create_connection(genome.config, in_node, out_node, conn_key)
+        for conn_key, from_node, to_node, weight, enabled in pilot_data['connections']:
+            conn = neat.DefaultGenome.create_connection(genome.config, from_node, to_node, conn_key)
             conn.weight = weight
             conn.enabled = enabled
             genome.connections[conn_key] = conn
