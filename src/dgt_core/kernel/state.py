@@ -588,6 +588,16 @@ class PerformanceMetrics:
             "llm_response_time_ms": self.llm_response_time_ms
         }
 
+# === GENITCS SYSTEM ===
+
+@dataclass
+class ShipGenome:
+    """Genetic makeup of a ship"""
+    genome_id: str
+    traits: Dict[str, float] = field(default_factory=dict)
+    generation: int = 0
+    parent_ids: List[str] = field(default_factory=list)
+
 # === SYSTEM INITIALIZATION ===
 
 def create_initial_game_state(seed: str = "SEED_ZERO") -> GameState:
