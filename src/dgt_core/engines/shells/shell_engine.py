@@ -10,7 +10,8 @@ from dataclasses import dataclass
 from enum import Enum
 
 from loguru import logger
-from .shell_wright import ShellWright, ShellAttributes, ShellRole
+from .shell_wright import ShellWright, create_shell_wright
+from .d20.mechanics import D20Core, create_d20_core, SaveType, SkillCheckType
 from ..space.ship_genetics import ShipGenome
 
 
