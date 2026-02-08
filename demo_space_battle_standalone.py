@@ -232,20 +232,15 @@ class CombatNavigator:
         return nav_data
     
     def _should_fire(self, target: SpaceShip, distance: float, current_time: float) -> bool:
+        # More aggressive firing - check if weapon is ready
         if not self.ship.can_fire(current_time):
             return False
         
-        if distance > self.ship.weapon_range:
-            return False
+        # Fire if in range (don't worry too much about angle for demo)
+        if distance <= self.ship.weapon_range * 1.2:  # Extend range a bit
+            return True
         
-        # Check angle to target
-        angle_to_target = math.degrees(math.atan2(
-            target.y - self.ship.y, 
-            target.x - self.ship.x
-        ))
-        angle_diff = abs((angle_to_target - self.ship.heading + 180) % 360 - 180)
-        
-        return angle_diff <= 20.0
+        return False
 
 
 class ProjectileSystem:
@@ -391,10 +386,12 @@ class SpaceBattleArena:
             navigator = self.navigators[ship_id]
             nav_data = navigator.update(active_ships, self.simulation_time, self.dt)
             
-            # Update physics
-            ship.physics_engine.update(ship, nav_data.get('target_position'), self.dt)
+            # Update physics - ALWAYS move towards target
+            target_pos = nav_data.get('target_position')
+            if target_pos:
+                ship.physics_engine.update(ship, target_pos, self.dt)
             
-            # Fire weapons
+            # Fire weapons more aggressively
             if nav_data.get('should_fire', False):
                 target_id = nav_data.get('target_id')
                 if target_id and target_id in self.ships:
@@ -402,6 +399,7 @@ class SpaceBattleArena:
                     proj_id = self.projectile_system.fire_projectile(ship, target)
                     if proj_id:
                         self.shots_fired += 1
+                        print(f"🚀 {ship_id} fires at {target_id}!")
             
             # Keep in bounds
             margin = 50
@@ -424,15 +422,21 @@ class SpaceBattleArena:
         for impact in impacts:
             self.total_hits += 1
             self.total_damage += impact['damage']
+            print(f"💥 {impact['projectile_id']} hits {impact['target_id']} for {impact['damage']} damage!")
             
             target_ship = self.ships.get(impact['target_id'])
             if target_ship and target_ship.is_destroyed():
                 self.ships_destroyed.append(impact['target_id'])
+                print(f"☠️  Ship {impact['target_id']} destroyed!")
         
         # Check battle end
         if len(active_ships) <= 1:
             self.battle_complete = True
             self.is_running = False
+            if active_ships:
+                print(f"🏆 Winner: {active_ships[0].ship_id}!")
+            else:
+                print("💀 No survivors!")
     
     def create_display(self) -> str:
         """Create simple text display"""
@@ -480,28 +484,32 @@ class SpaceBattleArena:
         
         start_time = time.time()
         
-        with Live(self.create_display(), refresh_per_second=10, console=self.console) as live:
+        try:
             while self.is_running and (time.time() - start_time) < duration:
                 self.update()
-                live.update(self.create_display())
-                time.sleep(0.016)
+                
+                # Clear screen and display status
+                import os
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(self.create_display())
+                
+                time.sleep(0.1)  # Update every 100ms for visibility
+        except KeyboardInterrupt:
+            print("\nBattle interrupted by user")
         
         # Final report
         accuracy = (self.total_hits / max(1, self.shots_fired) * 100)
         survivors = len([s for s in self.ships.values() if not s.is_destroyed()])
         
-        report = Panel(
-            f"Battle Duration: {self.simulation_time:.1f}s\n"
-            f"Shots Fired: {self.shots_fired}\n"
-            f"Hits: {self.total_hits}\n"
-            f"Accuracy: {accuracy:.1f}%\n"
-            f"Total Damage: {self.total_damage:.1f}\n"
-            f"Ships Destroyed: {len(self.ships_destroyed)}\n"
-            f"Survivors: {survivors}",
-            title="🚀 Battle Report",
-            border_style="green"
-        )
-        self.console.print(report)
+        print("\n╭────── Battle Report ───────╮")
+        print(f"│ Battle Duration: {self.simulation_time:.1f}s")
+        print(f"│ Shots Fired: {self.shots_fired}")
+        print(f"│ Hits: {self.total_hits}")
+        print(f"│ Accuracy: {accuracy:.1f}%")
+        print(f"│ Total Damage: {self.total_damage:.1f}")
+        print(f"│ Ships Destroyed: {len(self.ships_destroyed)}")
+        print(f"│ Survivors: {survivors}")
+        print("╰───────────────────────────╯")
 
 
 def main():
