@@ -1,0 +1,54 @@
+2026-02-07 21:56:04.637 | INFO     | logger_config:configure_logging | 📝 Logging configured: level=INFO, rich=True, file=logs/dgt_orchestrator.log
+2026-02-07 21:56:04.640 | DEBUG    | orchestrator:_initialize_core_components | 🎖️ Core components initialized
+2026-02-07 21:56:04.640 | DEBUG    | space_physics:__init__ | 🚀 SpaceVoyagerEngine initialized: thrust=0.5, rotation=5.0
+2026-02-07 21:56:04.640 | INFO     | space_voyager_engine:__init__ | 🚀 SpaceVoyagerEngineRunner initialized: fleet_size=1
+2026-02-07 21:56:04.641 | INFO     | orchestrator:_initialize_engine | 🎖️ Space engine initialized: fleet_size=1
+2026-02-07 21:56:04.643 | DEBUG    | view_coordinator:__init__ | 👁️ ViewCoordinator initialized
+2026-02-07 21:56:04.643 | DEBUG    | inspector:__init__ | 🔍 TerminalInspector initialized
+2026-02-07 21:56:04.643 | INFO     | view_coordinator:initialize_views | 👁️ Views initialized: dashboard=False, inspector=True
+2026-02-07 21:56:04.644 | INFO     | view_coordinator:start_coordination | 👁️ View coordination started
+2026-02-07 21:56:04.645 | INFO     | orchestrator:_initialize_view_system | 🎖️ View system initialized: type=terminal, graphics=False
+2026-02-07 21:56:04.646 | SUCCESS  | orchestrator:start | 🎖️ DGT Orchestrator started successfully
+2026-02-07 21:56:04.646 | INFO     | orchestrator:_orchestration_loop | 🎖️ Entering orchestration loop
+2026-02-07 21:56:05.149 | INFO     | orchestrator:stop | 🎖️ Stopping DGT Orchestrator...
+2026-02-07 21:56:05.169 | INFO     | view_coordinator:stop_coordination | 👁️ View coordination stopped
+2026-02-07 21:56:05.171 | INFO     | orchestrator:stop | 🎖️ DGT Orchestrator stopped
+2026-02-07 21:56:05.172 | INFO     | hardware_stress_test:test_orchestrator_initialization | 🧪 ✅ Orchestrator initialization successful
+2026-02-07 21:56:05.173 | INFO     | hardware_stress_test:create_gen_50_pilot | 🧪 Creating Gen-50 pilot...
+2026-02-07 21:56:05.174 | ERROR    | hardware_stress_test:create_gen_50_pilot | 🧪 ❌ Failed to create Gen-50 pilot: 3 validation errors for ShipGenome
+cooling_capacity
+  Input should be less than or equal to 2 [type=less_than_equal, input_value=2.2, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.12/v/less_than_equal
+targeting_system
+  Input should be less than or equal to 2 [type=less_than_equal, input_value=2.5, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.12/v/less_than_equal
+critical_chance
+  Input should be less than or equal to 2 [type=less_than_equal, input_value=2.2, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.12/v/less_than_equal
+2026-02-07 21:56:05.203 | INFO     | hardware_stress_test:deplete_resources_to_critical | 🧪 Depleting resources for test_pilot_failed...
+2026-02-07 21:56:05.205 | ERROR    | hardware_stress_test:deplete_resources_to_critical | 🧪 ❌ Failed to deplete resources: Ship test_pilot_failed not found in stakes manager
+2026-02-07 21:56:05.207 | INFO     | hardware_stress_test:trigger_death_save | 🧪 Triggering death save for test_pilot_failed...
+2026-02-07 21:56:05.208 | CRITICAL | death_arbiter:resolve_mortality | ⚰️ DEATH ARBITRATION: test_pilot_failed - resource_depletion
+2026-02-07 21:56:05.209 | ERROR    | death_arbiter:_get_ship_data | ⚰️ Failed to get ship data for test_pilot_failed: 'UniversalRegistry' object has no attribute 'get_ship_summary'
+2026-02-07 21:56:05.211 | ERROR    | death_arbiter:resolve_mortality | ⚰️ Ship test_pilot_failed not found for death arbitration
+2026-02-07 21:56:05.213 | CRITICAL | hardware_stress_test:trigger_death_save | 🧪 Death save FAILED: None
+2026-02-07 21:56:05.214 | INFO     | hardware_stress_test:verify_graveyard_transfer | 🧪 Verifying graveyard transfer for test_pilot_failed...
+2026-02-07 21:56:05.217 | ERROR    | hardware_stress_test:verify_graveyard_transfer | 🧪 ❌ Ship not found in graveyard
+2026-02-07 21:56:05.218 | INFO     | hardware_stress_test:verify_funeral_rite | 🧪 Verifying funeral rite generation...
+2026-02-07 21:56:05.219 | ERROR    | hardware_stress_test:verify_funeral_rite | 🧪 ❌ Funeral rite not generated
+2026-02-07 21:56:05.221 | INFO     | hardware_stress_test:test_clean_shutdown | 🧪 Testing clean shutdown...
+2026-02-07 21:56:05.223 | INFO     | hardware_stress_test:test_clean_shutdown | 🧪 Graveyard stats: {'total_deaths': 0, 'deaths_by_cause': {}, 'average_generation': 0, 'total_victories_lost': 0, 'recent_deaths_24h': 0}
+2026-02-07 21:56:05.225 | INFO     | hardware_stress_test:test_clean_shutdown | 🧪 ✅ Clean shutdown successful
+2026-02-07 21:56:05.227 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 === HARDWARE STRESS TEST REPORT ===
+2026-02-07 21:56:05.229 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 Total Tests: 7
+2026-02-07 21:56:05.230 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 Passed: 3
+2026-02-07 21:56:05.231 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 Success Rate: 42.9%
+2026-02-07 21:56:05.233 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 Overall Status: FAIL
+2026-02-07 21:56:05.234 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 ✅ orchestrator_init
+2026-02-07 21:56:05.235 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 ❌ pilot_creation
+2026-02-07 21:56:05.236 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 ❌ resource_depletion
+2026-02-07 21:56:05.238 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 ✅ death_save
+2026-02-07 21:56:05.239 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 ❌ graveyard_transfer
+2026-02-07 21:56:05.240 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 ❌ funeral_rite
+2026-02-07 21:56:05.241 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 ✅ shutdown_clean
+2026-02-07 21:56:05.242 | CRITICAL | hardware_stress_test:generate_test_report | 🧪 === END REPORT ===

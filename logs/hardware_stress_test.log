@@ -1,0 +1,15 @@
+2026-02-07 21:56:04.630 | INFO     | src.dgt_core.tactics.graveyard_manager:_init_graveyard_table:43 - ⚰️ Graveyard table initialized
+2026-02-07 21:56:04.630 | DEBUG    | src.dgt_core.tactics.graveyard_manager:__init__:21 - ⚰️ GraveyardManager initialized
+2026-02-07 21:56:04.631 | INFO     | src.dgt_core.kernel.universal_registry:__init__:53 - 🌍 UniversalRegistry initialized: roster.db
+2026-02-07 21:56:04.631 | INFO     | src.dgt_core.tactics.stakes_manager:__init__:90 - ⚰️ StakesManager initialized: 3 chassis slots
+2026-02-07 21:56:04.631 | DEBUG    | src.dgt_core.engines.shells.d20.mechanics:__init__:118 - 🎲 D20Core initialized with random seed
+2026-02-07 21:56:04.632 | DEBUG    | src.dgt_core.tactics.death_arbiter:__init__:40 - ⚰️ DeathArbiter initialized - Final Judge active
+2026-02-07 21:56:04.632 | INFO     | __main__:__init__:39 - 🧪 HardwareStressTest initialized
+2026-02-07 21:56:04.632 | CRITICAL | __main__:run_full_test:43 - 🧪 STARTING HARDWARE STRESS TEST
+2026-02-07 21:56:04.632 | INFO     | __main__:test_orchestrator_initialization:77 - 🧪 Testing orchestrator initialization...
+2026-02-07 21:56:04.633 | INFO     | src.dgt_core.orchestrator:__init__:61 - 🎖️ DGTOrchestrator initialized: engine=space, view=terminal
+2026-02-07 21:56:04.633 | INFO     | src.dgt_core.orchestrator:start:66 - 🎖️ Starting DGT Orchestrator...
+2026-02-07 21:56:04.633 | DEBUG    | src.dgt_core.kernel.batch_processor:__init__:41 - 🔄 ThreadSafeBatchProcessor initialized: roster.db
+2026-02-07 21:56:04.634 | INFO     | src.dgt_core.tactics.graveyard_manager:_init_graveyard_table:43 - ⚰️ Graveyard table initialized
+2026-02-07 21:56:04.634 | DEBUG    | src.dgt_core.tactics.graveyard_manager:__init__:21 - ⚰️ GraveyardManager initialized
+2026-02-07 21:56:04.635 | INFO     | src.dgt_core.kernel.universal_registry:__init__:53 - 🌍 UniversalRegistry initialized: roster.db
