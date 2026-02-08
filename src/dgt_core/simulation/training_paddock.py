@@ -7,6 +7,7 @@ Implements ELO-based ranking and novelty search
 """
 
 import time
+import random
 import multiprocessing as mp
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
