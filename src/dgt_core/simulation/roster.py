@@ -60,17 +60,17 @@ class TurtleStats:
 @dataclass
 class TurtleRecord:
     """Persistent turtle record for database storage"""
-    turtle_id: str
     name: str
     generation: int
-    created_at: float
-    last_active: float
     stats: TurtleStats
     genome: TurboGenome
-    race_history: List[Dict[str, Any]]
-    total_races: int
-    wins: int
-    earnings: float
+    turtle_id: str = ""
+    created_at: float = 0.0
+    last_active: float = 0.0
+    race_history: List[Dict[str, Any]] = None
+    total_races: int = 0
+    wins: int = 0
+    earnings: float = 0.0
     is_active: bool = True
     is_retired: bool = False
     
