@@ -13,7 +13,15 @@ from loguru import logger
 
 from ..kernel.universal_registry import UniversalRegistry
 from ..kernel.models import StoryFragment, asset_registry
-from ..kernel.state import PhysicsState
+
+# PhysicsState placeholder for now
+class PhysicsState:
+    def __init__(self):
+        self.ship_id = "unknown"
+        self.thrust_active = False
+        self.position = (0.0, 0.0)
+        self.velocity_x = 0.0
+        self.velocity_y = 0.0
 
 
 class ResourceStatus(str, Enum):
