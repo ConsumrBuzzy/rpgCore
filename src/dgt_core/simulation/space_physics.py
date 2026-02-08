@@ -253,6 +253,9 @@ class SpaceShip:
     max_thrust: float = 100.0
     turn_rate: float = 5.0
     
+    # Tactcs Inputs (Admiral Layer)
+    tactical_target: Optional[Tuple[float, float]] = None # (x, y) of focus target
+    fleet_center: Optional[Tuple[float, float]] = None   # (x, y) of formation center
 
     # Physics engine
     physics_engine: Optional[SpaceVoyagerEngine] = None
