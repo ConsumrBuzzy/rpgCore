@@ -207,23 +207,6 @@ class NeuroEvolutionArena:
             # Apply neural control
             fleet_ship.apply_action(ship, action, self.dt)
             
-            # Create render packet for solid body
-            render_packet = RenderPacket(
-                ship_id=ship.ship_id,
-                x=ship.x,
-                y=ship.y,
-                heading=ship.heading,
-                velocity_x=ship.velocity_x,
-                velocity_y=ship.velocity_y,
-                ship_class=getattr(ship, 'ship_class', ShipClass.INTERCEPTOR),
-                ship_dna=getattr(ship, 'ship_dna', ShipDNA()),
-                is_destroyed=ship.is_destroyed(),
-                thrust_level=action.thrust
-            )
-            
-            # Render solid ship body
-            self.ship_renderer.render_ship(render_packet, self.canvas)
-            
             # Handle weapon firing
             if fleet_ship.should_fire_weapon(action, ship):
                 if targets:
@@ -440,8 +423,37 @@ class NeuroEvolutionArena:
         )
         self.canvas.create_text(10, 10, text=status_text, fill="white", anchor="nw")
         
-        # Ships are rendered in update() function with solid bodies
-        # Particles are updated in update() function
+        # Render ships with solid bodies
+        for ship_id, ship in self.ships.items():
+            if not ship.is_destroyed():
+                # Get the pilot for this ship
+                pilot = self.pilots.get(ship_id)
+                if pilot:
+                    # Get the last action to determine thrust level
+                    last_action = getattr(pilot, 'last_action', None)
+                    thrust_level = last_action.thrust if last_action else 0.0
+                else:
+                    thrust_level = 0.0
+                
+                # Create render packet for solid body
+                render_packet = RenderPacket(
+                    ship_id=ship.ship_id,
+                    x=ship.x,
+                    y=ship.y,
+                    heading=ship.heading,
+                    velocity_x=ship.velocity_x,
+                    velocity_y=ship.velocity_y,
+                    ship_class=getattr(ship, 'ship_class', ShipClass.INTERCEPTOR),
+                    ship_dna=getattr(ship, 'ship_dna', ShipDNA()),
+                    is_destroyed=ship.is_destroyed(),
+                    thrust_level=thrust_level
+                )
+                
+                # Render solid ship body
+                self.ship_renderer.render_ship(render_packet, self.canvas)
+        
+        # Update and render particles
+        self.ship_renderer.update_particles(self.dt, self.canvas)
         
         # Draw projectiles
         for projectile in self.projectile_system.get_active_projectiles():
