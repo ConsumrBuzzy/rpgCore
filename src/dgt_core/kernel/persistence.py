@@ -57,14 +57,18 @@ class LegendaryRegistry:
     """Handles the persistence of 'Ace' pilots and fleet prestige."""
     
     def __init__(self, db_path: str = "roster.db"):
-        self.db_path = Path(db_path)
+        self.db_path = db_path
         self.conn = None
         self._init_db()
         logger.info(f"🏆 Legendary Registry initialized: {self.db_path}")
     
     def _init_db(self):
-        """Initialize database schema for fleet performance tracking"""
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        """Initialize database and create tables"""
+        from pathlib import Path
+        db_path = Path(self.db_path)
+        
+        # Create directory if it doesn't exist
+        db_path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         
         # ADR 145: Persistence for Fleet Victories
