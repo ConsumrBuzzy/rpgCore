@@ -31,10 +31,10 @@ class TournamentStatus(str, Enum):
 @dataclass
 class TournamentMatch:
     """Single tournament match/heat"""
-    match_id: str
     round_number: int
     heat_number: int
     participants: List[str]  # Turtle IDs
+    match_id: str = ""
     results: List[Dict[str, Any]] = field(default_factory=list)
     start_time: float = 0.0
     end_time: float = 0.0
