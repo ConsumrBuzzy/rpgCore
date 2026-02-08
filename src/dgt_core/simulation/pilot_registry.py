@@ -143,7 +143,8 @@ class ElitePilot:
             self.stats.evasion * 15 +
             self.stats.efficiency * 15
         ) / 100
-        """Calculate pilot compatibility with ship class (0.0-1.0)"""
+    
+    def calculate_compatibility(self, ship_class: str) -> float:
         compatibility_map = {
             "interceptor": {
                 PilotSpecialization.INTERCEPTOR: 1.0,
