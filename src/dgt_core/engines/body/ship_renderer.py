@@ -159,8 +159,8 @@ class ShipRenderer:
         
         return rotated
     
-    def render_ship(self, packet: RenderPacket, canvas) -> None:
-        """Render ship as solid dithered polygon"""
+    def render_ship(self, packet: RenderPacket, canvas, is_top_elo: bool = False) -> None:
+        """Render ship as solid dithered polygon with optional highlight"""
         if packet.is_destroyed:
             # Remove destroyed ship
             if packet.ship_id in self.ship_polygons:
@@ -171,6 +171,14 @@ class ShipRenderer:
         # Get ship geometry
         base_geometry = self.ship_geometry.get(packet.ship_class, 
                                             self.ship_geometry[ShipClass.INTERCEPTOR])
+        
+        # Scale up for Top-ELO ship (highlight)
+        if is_top_elo:
+            scale_factor = 1.5  # 50% larger for visibility
+            scaled_geometry = []
+            for x, y in base_geometry:
+                scaled_geometry.append((x * scale_factor, y * scale_factor))
+            base_geometry = scaled_geometry
         
         # Rotate geometry based on heading
         rotated_geometry = self.rotate_geometry(base_geometry, packet.heading)
@@ -189,12 +197,28 @@ class ShipRenderer:
             # Update existing polygon
             canvas.coords(self.ship_polygons[packet.ship_id], *translated_geometry)
         else:
-            # Create new polygon
+            # Create new polygon with enhanced visibility for Top-ELO
+            fill_color = packet.ship_dna.get_primary_color()
+            outline_color = packet.ship_dna.get_accent_color()
+            outline_width = 2
+            
+            if is_top_elo:
+                # Enhanced visibility for Top-ELO ship
+                outline_width = 4  # Thicker outline
+                # Add glow effect with larger outline
+                glow_polygon = canvas.create_polygon(
+                    translated_geometry,
+                    fill="",
+                    outline="#FFFF00",  # Yellow glow
+                    width=outline_width + 2,
+                    tags="ship_glow"
+                )
+            
             polygon_id = canvas.create_polygon(
                 translated_geometry,
-                fill=packet.ship_dna.get_primary_color(),
-                outline=packet.ship_dna.get_accent_color(),
-                width=2,
+                fill=fill_color,
+                outline=outline_color,
+                width=outline_width,
                 tags="ship"
             )
             self.ship_polygons[packet.ship_id] = polygon_id
