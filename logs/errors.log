@@ -6541,3 +6541,5 @@ mode
 2026-02-07 16:10:00 | ERROR | dgt_core.client:start:190 | ❌ Display engine not available
 2026-02-07 16:10:00 | ERROR | __main__:start:185 | ❌ Failed to start client
 2026-02-07 19:46:43 | ERROR | __main__:create_sample_turtles:391 | 🔄 Failed to create sample turtles: name 'random' is not defined
+2026-02-07 19:47:04 | ERROR | __main__:create_sample_turtles:392 | 🔄 Failed to create sample turtles: 'NoneType' object has no attribute 'roster_manager'
+2026-02-07 19:47:14 | ERROR | __main__:create_sample_turtles:393 | 🔄 Failed to create sample turtles: TurtleRecord.__init__() missing 7 required positional arguments: 'turtle_id', 'created_at', 'last_active', 'race_history', 'total_races', 'wins', and 'earnings'

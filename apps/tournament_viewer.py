@@ -342,10 +342,11 @@ class GeneticTournamentSystem:
     def setup_services(self) -> bool:
         """Setup tournament services"""
         try:
-            from dgt_core.simulation.tournament import tournament_service
+            from dgt_core.simulation.tournament import get_tournament_service
             from dgt_core.simulation.roster import roster_manager
             
-            self.tournament_service = tournament_service
+            self.tournament_service = get_tournament_service()
+            self.roster_manager = roster_manager
             
             logger.info("🔄 Tournament services setup complete")
             return True
@@ -376,14 +377,14 @@ class GeneticTournamentSystem:
                 )
                 
                 # Create turtle in roster
-                turtle_id = self.tournament_service.roster_manager.create_turtle(name, genome)
+                turtle_id = self.roster_manager.create_turtle(name, genome)
                 
                 # Add some race history for variety
                 if random.random() < 0.7:  # 70% have some experience
                     for j in range(random.randint(1, 10)):
                         position = random.randint(1, 4)
                         earnings = 100.0 / position
-                        self.tournament_service.roster_manager.update_race_result(turtle_id, position, earnings)
+                        self.roster_manager.update_race_result(turtle_id, position, earnings)
             
             logger.info(f"🔄 Created {count} sample turtles")
             return True
