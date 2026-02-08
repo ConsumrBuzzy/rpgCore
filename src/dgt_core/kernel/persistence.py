@@ -99,7 +99,7 @@ class LegendaryRegistry:
                 skirmish_id TEXT PRIMARY KEY,
                 timestamp REAL NOT NULL,
                 fleet_id TEXT NOT NULL,
-                outcome TEXT NOT NULL,  'victory' or 'defeat'
+                outcome TEXT NOT NULL,
                 total_damage_dealt REAL DEFAULT 0.0,
                 total_damage_taken REAL DEFAULT 0.0,
                 mvp_ship_id TEXT,
