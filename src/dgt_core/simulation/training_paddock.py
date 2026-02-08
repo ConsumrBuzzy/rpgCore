@@ -325,8 +325,12 @@ class TrainingPaddock:
         
         return matches
     
-    def _run_single_match_worker(self, pilot1: NeuroPilot, pilot2: NeuroPilot) -> TrainingMatch:
+    def _run_single_match_worker(self, pilot1_data: Dict, pilot2_data: Dict) -> TrainingMatch:
         """Worker function for running single match (for multiprocessing)"""
+        # Recreate pilots from serializable data
+        pilot1 = NeuroPilotFactory._create_pilot_from_data(pilot1_data)
+        pilot2 = NeuroPilotFactory._create_pilot_from_data(pilot2_data)
+        
         battle = HeadlessBattle()
         return battle.run_dogfight(pilot1, pilot2)
     
