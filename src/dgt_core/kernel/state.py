@@ -627,6 +627,7 @@ __all__ = [
     "MovementIntent", "InteractionIntent", "PonderIntent",
     "IntentValidation", "Command", "CommandResult",
     "Effect", "Trigger", "SubtitleEvent", "PerformanceMetrics", "Entity", "Tile",
+    "ShipGenome",
     
     # Exceptions
     "SystemError", "WorldGenerationError", "ValidationError", 
