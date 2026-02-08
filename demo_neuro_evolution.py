@@ -39,7 +39,7 @@ class NeuroEvolutionArena:
         
         # Initialize NEAT evolution components
         self.pilot_factory = initialize_neuro_pilot_factory()
-        self.training_paddock = initialize_training_paddock(population_size=10, num_processes=1)  # Single process for now
+        self.training_paddock = initialize_training_paddock(population_size=20, num_processes=4)
         
         # Battle ships
         self.ships: Dict[str, SpaceShip] = {}
