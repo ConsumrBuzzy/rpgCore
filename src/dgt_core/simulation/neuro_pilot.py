@@ -189,7 +189,7 @@ class NeuroPilot:
         return action
     
     def apply_action(self, ship: SpaceShip, action: NeuroOutput, dt: float):
-        """Apply neural network action to ship physics"""
+        """Apply neural network action to ship physics with analog control"""
         # Track movement patterns
         self.action_history.append(action)
         self.position_history.append((ship.x, ship.y))
@@ -203,18 +203,32 @@ class NeuroPilot:
         if len(self.velocity_history) > 50:
             self.velocity_history.pop(0)
         
-        # Apply rotation (from RogueAsteroid physics)
-        if abs(action.rotation) > 0.1:  # Dead zone to prevent jitter
-            rotation_amount = action.rotation * ROGUE_PHYSICS['SHIP_ROTATION_SPEED'] * dt
-            ship.heading += rotation_amount
+        # Apply rotation with variable torque (analog control)
+        if abs(action.rotation) > 0.05:  # Smaller dead zone for analog control
+            # Variable rotation speed based on analog output
+            rotation_speed = abs(action.rotation) * ROGUE_PHYSICS['SHIP_ROTATION_SPEED']
+            rotation_amount = rotation_speed * dt
+            
+            # Apply rotation direction
+            if action.rotation > 0:  # Starboard (positive)
+                ship.heading += rotation_amount
+            else:  # Port (negative)
+                ship.heading -= rotation_amount
+            
             ship.heading = ship.heading % 360
         
-        # Apply thrust (from RogueAsteroid physics)
-        if action.thrust > 0.1:  # Dead zone
-            thrust_force = action.thrust * ROGUE_PHYSICS['SHIP_ACCELERATION'] * dt
+        # Apply thrust with analog control (including reverse)
+        if abs(action.thrust) > 0.05:  # Smaller dead zone for analog control
+            # Variable thrust power based on analog output
+            thrust_power = abs(action.thrust) * ROGUE_PHYSICS['SHIP_ACCELERATION'] * dt
             rad = math.radians(ship.heading)
-            ship.velocity_x += math.cos(rad) * thrust_force
-            ship.velocity_y += math.sin(rad) * thrust_force
+            
+            if action.thrust > 0:  # Forward thrust
+                ship.velocity_x += math.cos(rad) * thrust_power
+                ship.velocity_y += math.sin(rad) * thrust_power
+            else:  # Reverse thrust (braking)
+                ship.velocity_x -= math.cos(rad) * thrust_power
+                ship.velocity_y -= math.sin(rad) * thrust_power
         
         # Apply friction (space drag from RogueAsteroid)
         ship.velocity_x *= (1.0 - ROGUE_PHYSICS['SHIP_FRICTION'])
