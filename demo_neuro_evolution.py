@@ -420,17 +420,37 @@ class NeuroEvolutionArena:
         self.evolution_label.config(text=evolution_text)
     
     def render_frame(self):
-        """Render one frame"""
+        """Render the current frame"""
         # Clear canvas
-        self.canvas.create_rectangle(
-            0, 0, self.width, self.height,
-            fill="#000011",
-            outline=""
-        )
+        self.canvas.delete("all")
         
-        # Render vector graphics
-        self.vector_ppu.render_to_canvas(self.canvas)
-    
+        # Draw background
+        self.canvas.create_rectangle(0, 0, self.width, self.height, fill="#000033", outline="")
+        
+        # Draw arena boundary
+        self.canvas.create_rectangle(50, 50, self.width-50, self.height-50, 
+                                   outline="#00FF00", width=2)
+        
+        # Draw status text
+        status_text = (
+            f"Time: {self.simulation_time:.1f}s | "
+            f"Ships: {len([s for s in self.ships.values() if not s.is_destroyed()])} | "
+            f"Generation: {self.current_generation} | "
+            f"Training: {'ON' if self.is_training else 'OFF'}"
+        )
+        self.canvas.create_text(10, 10, text=status_text, fill="white", anchor="nw")
+        
+        # Ships are rendered in update() function with solid bodies
+        # Particles are updated in update() function
+        
+        # Draw projectiles
+        for projectile in self.projectile_system.get_active_projectiles():
+            self.canvas.create_oval(
+                projectile.x - 2, projectile.y - 2,
+                projectile.x + 2, projectile.y + 2,
+                fill="#FFFF00", outline=""
+            )
+
     def game_loop(self):
         """Main game loop"""
         if self.is_running:
