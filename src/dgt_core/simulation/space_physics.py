@@ -100,19 +100,32 @@ class SpaceVoyagerEngine:
         self.target_id: Optional[str] = None
         self.target_position: Optional[Tuple[float, float]] = None
         
+        # Command confidence for smooth targeting
+        self.command_confidence: float = 1.0
+        self.confidence_decay_rate: float = 0.1  # Confidence decay per second
+        self.min_confidence_threshold: float = 0.3  # Minimum confidence to follow commands
+        
         logger.debug(f"🚀 SpaceVoyagerEngine initialized: thrust={thrust_power}, rotation={rotation_speed}")
     
-    def update(self, ship: 'SpaceShip', target_pos: Optional[Tuple[float, float]] = None, dt: float = 0.016) -> Dict[str, Any]:
-        """Update ship physics with Newtonian mechanics"""
+    def update(self, ship: 'SpaceShip', target_pos: Optional[Tuple[float, float]] = None, 
+               command_confidence: float = 1.0, dt: float = 0.016) -> Dict[str, Any]:
+        """Update ship physics with Newtonian mechanics and command confidence"""
+        # Update command confidence with decay
+        self.command_confidence = max(
+            self.min_confidence_threshold,
+            command_confidence * (1 - self.confidence_decay_rate * dt)
+        )
+        
         update_data = {
             'thrust_applied': False,
             'rotation_applied': False,
             'target_locked': False,
-            'intent_state': CombatIntent.PURSUIT
+            'intent_state': CombatIntent.PURSUIT,
+            'command_confidence': self.command_confidence
         }
         
-        # Update target position
-        if target_pos:
+        # Update target position only if confidence is sufficient
+        if target_pos and self.command_confidence >= self.min_confidence_threshold:
             self.target_position = target_pos
             update_data['target_locked'] = True
         
@@ -129,10 +142,13 @@ class SpaceVoyagerEngine:
             if angle_diff < 5.0:  # 5-degree threshold
                 update_data['intent_state'] = CombatIntent.LOCKED
         
-        # 2. Apply Newtonian Thrust
+        # 2. Apply Newtonian Thrust (confidence-weighted)
         if self.target_position and update_data['intent_state'] == CombatIntent.LOCKED:
-            thrust_output = self._apply_thrust_control(ship, self.target_position, dt)
+            # Scale thrust output by command confidence
+            thrust_confidence_factor = self.command_confidence
+            thrust_output = self._apply_thrust_control(ship, self.target_position, dt * thrust_confidence_factor)
             update_data['thrust_applied'] = True
+            update_data['thrust_confidence'] = thrust_confidence_factor
         
         # 3. Apply Physics
         self._apply_physics(ship, dt)
@@ -149,12 +165,15 @@ class SpaceVoyagerEngine:
         return math.degrees(math.atan2(dy, dx))
     
     def _apply_rotation_control(self, ship: 'SpaceShip', target_angle: float, dt: float) -> float:
-        """Apply PID-controlled rotation towards target"""
+        """Apply PID-controlled rotation towards target with confidence weighting"""
         # Calculate shortest angular path
         angle_diff = (target_angle - ship.heading + 180) % 360 - 180
         
+        # Apply confidence weighting to rotation responsiveness
+        confidence_weight = 0.3 + (self.command_confidence * 0.7)  # Range: 0.3 to 1.0
+        
         # PID control for smooth rotation
-        rotation_output = self.rotation_pid.update(angle_diff, dt)
+        rotation_output = self.rotation_pid.update(angle_diff, dt) * confidence_weight
         
         # Apply rotation with limits
         rotation_change = max(-self.max_angular_velocity, 
