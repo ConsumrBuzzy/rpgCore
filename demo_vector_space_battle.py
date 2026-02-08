@@ -113,11 +113,11 @@ class VectorBattleArena:
             ship_id=ship_id,
             x=x, y=y,
             heading=heading,
-            hull_integrity=100.0,
-            shield_strength=50.0,
+            hull_integrity=200.0,  # Increased hull health
+            shield_strength=100.0,  # Increased shields
             weapon_range=400.0,
-            weapon_damage=15.0,
-            fire_rate=2.0
+            weapon_damage=5.0,      # Reduced damage for longer battles
+            fire_rate=1.0          # Slower fire rate
         )
         
         # Add physics engine

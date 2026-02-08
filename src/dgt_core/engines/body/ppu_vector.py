@@ -328,14 +328,16 @@ class VectorShipBody:
                 stipple='gray50'  # Dithered effect
             )
         
-        # Draw ship triangles
-        for triangle_points in render_data['triangles']:
-            canvas.create_polygon(
-                triangle_points,
-                fill=render_data['color'],
-                outline=render_data['outline_color'],
-                width=2
-            )
+        # Draw ship triangles - only if ship is not destroyed
+        # Check if this ship still exists in the battle
+        if hasattr(self, 'is_destroyed') and not self.is_destroyed:
+            for triangle_points in render_data['triangles']:
+                canvas.create_polygon(
+                    triangle_points,
+                    fill=render_data['color'],
+                    outline=render_data['outline_color'],
+                    width=2
+                )
     
     def clear_trails(self):
         """Clear motion blur trails"""
@@ -449,9 +451,11 @@ class VectorPPU:
         # Render projectile tracers
         self.projectile_tracer.render_to_canvas(canvas)
         
-        # Render ships
+        # Render ships - check if they're destroyed
         for ship_id, ship_body in self.ship_bodies.items():
             if ship_body.last_position != (0, 0):  # Only render if positioned
+                # Check if ship is destroyed by looking it up in a registry
+                # For now, we'll render all ships but could add destroyed check here
                 ship_body.render_to_canvas(
                     canvas,
                     ship_body.last_position[0],
