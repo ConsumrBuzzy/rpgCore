@@ -165,6 +165,12 @@ class VectorBattleArena:
             # Update vector PPU with new position
             self.vector_ppu.update_ship(ship_id, ship.x, ship.y, ship.heading)
             
+            # Mark ship as destroyed in vector PPU if needed
+            if ship.is_destroyed():
+                ship_body = self.vector_ppu.ship_bodies.get(ship_id)
+                if ship_body:
+                    ship_body.is_destroyed = True
+            
             # Fire weapons
             if nav_data.get('should_fire', False):
                 target_id = nav_data.get('target_id')

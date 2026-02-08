@@ -272,6 +272,7 @@ class VectorShipBody:
         self.last_position = (0.0, 0.0)
         self.last_heading = 0.0
         self.motion_blur_trails: List[Tuple[float, float, float, float]] = []  # (x1, y1, x2, y2)
+        self.is_destroyed = False  # Track destruction state
         
         logger.debug(f"🚀 VectorShipBody initialized: {self.ship_shape.ship_class}")
     
@@ -329,8 +330,7 @@ class VectorShipBody:
             )
         
         # Draw ship triangles - only if ship is not destroyed
-        # Check if this ship still exists in the battle
-        if hasattr(self, 'is_destroyed') and not self.is_destroyed:
+        if not self.is_destroyed:
             for triangle_points in render_data['triangles']:
                 canvas.create_polygon(
                     triangle_points,
