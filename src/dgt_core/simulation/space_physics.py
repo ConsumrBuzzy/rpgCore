@@ -247,7 +247,13 @@ class SpaceShip:
     weapon_damage: float = 10.0
     fire_rate: float = 1.0  # Shots per second
     last_fire_time: float = 0.0
+
+    # Physics properties (ShipGenome)
+    mass: float = 10.0
+    max_thrust: float = 100.0
+    turn_rate: float = 5.0
     
+
     # Physics engine
     physics_engine: Optional[SpaceVoyagerEngine] = None
     
