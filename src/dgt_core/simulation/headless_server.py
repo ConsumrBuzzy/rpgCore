@@ -170,20 +170,55 @@ class HeadlessSimulationServer:
         # Create pilot groups for parallel evaluation
         pilot_groups = self._create_pilot_groups(pilots)
         
-        # Create arenas for each process
-        arenas = [HeadlessArena(i, self.config) for i in range(self.config.num_processes)]
+        # Create pickle-safe arena data
+        arena_data = []
+        for i in range(self.config.num_processes):
+            arena_data.append((i, self.config.__dict__))
         
-        # Evaluate pilots in parallel
-        with mp.Pool(self.config.num_processes) as pool:
-            # Map evaluation tasks to processes
-            results = pool.starmap(
-                self._evaluate_pilot_group,
-                [(arena, group) for arena, group in zip(arenas, pilot_groups)]
-            )
+        # Create pickle-safe pilot data
+        pilots_data = []
+        for group in pilot_groups:
+            group_data = []
+            for pilot in group:
+                pilot_data = {
+                    'fitness': pilot.fitness,
+                    'hits_scored': pilot.hits_scored,
+                    'shots_fired': pilot.shots_fired,
+                    'enemies_destroyed': pilot.enemies_destroyed
+                }
+                group_data.append(pilot_data)
+            pilots_data.append(group_data)
         
-        # Collect results
+        # Evaluate pilots in parallel using simple sequential approach for now
         all_stats = []
-        for group_stats in results:
+        for i, group_data in enumerate(pilots_data):
+            # Create arena for this group
+            arena = HeadlessArena(i, self.config)
+            
+            # Reconstruct pilots
+            group_pilots = []
+            for j, pilot_data in enumerate(group_data):
+                if j < len(pilots):
+                    pilot = pilots[j]
+                    # Reset pilot stats
+                    pilot.fitness = 0.0
+                    pilot.hits_scored = 0
+                    pilot.shots_fired = 0
+                    pilot.damage_dealt = 0.0
+                    pilot.damage_taken = 0.0
+                    pilot.enemies_destroyed = 0
+                    group_pilots.append(pilot)
+            
+            # Evaluate group
+            group_stats = []
+            for pilot in group_pilots:
+                # Create opponents
+                opponents = [p for p in group_pilots if p != pilot]
+                
+                # Evaluate pilot
+                pilot_stats = arena.evaluate_pilot(pilot, opponents)
+                group_stats.append(pilot_stats)
+            
             all_stats.extend(group_stats)
         
         # Update pilot fitnesses

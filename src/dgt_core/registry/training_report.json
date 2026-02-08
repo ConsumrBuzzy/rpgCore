@@ -1,0 +1,28 @@
+{
+  "training_time": 0.23613500595092773,
+  "final_generation": 2,
+  "elite_fitness": 0.0,
+  "elite_performance": {
+    "fitness": 0.0,
+    "hits_scored": 0,
+    "shots_fired": 0,
+    "accuracy": 0.0,
+    "survival_time": 0.0,
+    "damage_dealt": 0.0,
+    "damage_taken": 0.0,
+    "enemies_destroyed": 0,
+    "tactical_score": 0.0,
+    "novelty_score": 0.0,
+    "genome_complexity": 61
+  },
+  "config": {
+    "pop_size": 4,
+    "num_processes": 2,
+    "sim_duration": 30.0,
+    "sim_dt": 0.1,
+    "fitness_threshold": 200000.0,
+    "snapshot_interval": 5,
+    "headless_mode": true,
+    "enable_logging": false
+  }
+}
