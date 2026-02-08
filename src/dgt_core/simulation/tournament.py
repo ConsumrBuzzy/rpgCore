@@ -247,6 +247,11 @@ class TournamentService:
                     logger.info(f"🏆 Advancing to round {tournament.current_round}")
                     return self._generate_next_round_matches(tournament)
                 else:
+                    # Tournament finished
+                    tournament.status = TournamentStatus.Finished
+                    tournament.finished_at = time.time()
+                    logger.info(f"🏆 Tournament finished: {tournament.name}")
+                    return self._finalize_tournament(tournament)
         
         # Run the heat
         return self._run_heat(tournament, next_match)
