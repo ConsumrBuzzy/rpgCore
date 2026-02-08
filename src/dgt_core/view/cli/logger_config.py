@@ -17,7 +17,7 @@ class RichLogHandler:
     
     def __init__(self, console: Optional[Console] = None):
         self.console = console or Console()
-        self.traceback_handler = Traceback()
+        self.traceback_handler = None  # Initialize lazily
     
     def format_message(self, record: Dict[str, Any]) -> str:
         """Format log message with Rich styling"""
@@ -41,6 +41,8 @@ class RichLogHandler:
         if level in ["ERROR", "CRITICAL"]:
             # Show full traceback for errors
             if record.get("exception"):
+                if not self.traceback_handler:
+                    self.traceback_handler = Traceback()
                 exception = record["exception"]
                 formatted_exception = self.traceback_handler.traceback(*exception)
                 return f"[{level_style}]{level}[/]: {message}\n{formatted_exception}"
@@ -176,8 +178,4 @@ def create_terminal_logger() -> ViewLogger:
 
 
 # Auto-configure logging on import
-configure_logging(
-    log_level="INFO",
-    log_file="logs/dgt_view.log",
-    enable_rich=True
-)
+# Note: Moved to end of file to avoid circular imports

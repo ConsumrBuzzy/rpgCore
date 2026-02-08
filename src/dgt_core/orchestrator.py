@@ -14,7 +14,7 @@ from loguru import logger
 from .engines.space import SpaceVoyagerEngineRunner, create_space_engine_runner
 from .engines.shells import ShellEngine, create_shell_engine
 from .view.view_coordinator import ViewCoordinator, create_view_coordinator
-from .kernel.batch_processor import BatchProcessor, create_batch_processor
+from .kernel.batch_processor import ThreadSafeBatchProcessor, create_batch_processor
 from .kernel.universal_registry import UniversalRegistry, create_universal_registry
 
 
@@ -52,7 +52,7 @@ class DGTOrchestrator:
         self.config = config
         self.engine: Optional[Union[SpaceVoyagerEngineRunner, ShellEngine]] = None
         self.view_coordinator: Optional[ViewCoordinator] = None
-        self.batch_processor: Optional[BatchProcessor] = None
+        self.batch_processor: Optional[ThreadSafeBatchProcessor] = None
         self.universal_registry: Optional[UniversalRegistry] = None
         
         self._running = False
