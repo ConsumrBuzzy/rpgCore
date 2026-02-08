@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from loguru import logger
 from .persistence import legendary_registry, ShipPerformance
+from .batch_processor import batch_processor, create_batch_update_data
 
 
 class SkirmishOutcome(Enum):
