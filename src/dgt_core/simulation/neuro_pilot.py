@@ -154,16 +154,13 @@ class NeuroPilot:
             # Movement pattern memory (last action feedback)
         ]
         
-        # Add movement pattern memory (only 2 inputs to stay within 11 total)
+        # Add movement pattern memory (only 1 input to stay within 11 total)
         if hasattr(self, 'last_action'):
-            # Add previous action feedback
             prev_thrust = self.last_action.thrust
-            prev_rotation = self.last_action.rotation
         else:
             prev_thrust = 0.0
-            prev_rotation = 0.0
         
-        input_array.extend([prev_thrust, prev_rotation])
+        input_array.append(prev_thrust)
         
         # Feed through neural network
         output = self.net.activate(input_array)
