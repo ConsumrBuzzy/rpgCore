@@ -380,19 +380,34 @@ class NeuroPilotFactory:
     
     def _serialize_pilot(self, pilot: NeuroPilot) -> Dict:
         """Serialize pilot for multiprocessing"""
+        # Create a simple serializable representation
         return {
             'genome_id': pilot.genome.key,
             'fitness': pilot.fitness,
-            'genome_data': pilot.genome.__getstate__() if hasattr(pilot.genome, '__getstate__') else None
+            'nodes': [(node.key, node.x, node.y) for node in pilot.genome.nodes.values()],
+            'connections': [(conn.key, conn.in_node_id, conn.out_node_id, conn.weight, conn.enabled) 
+                           for conn in pilot.genome.connections.values()]
         }
     
     @staticmethod
     def _create_pilot_from_data(pilot_data: Dict) -> NeuroPilot:
         """Create pilot from serialized data"""
-        # Create new genome from data
+        # Create new genome
         genome = neat.DefaultGenome(pilot_data['genome_id'])
-        if pilot_data['genome_data']:
-            genome.__setstate__(pilot_data['genome_data'])
+        
+        # Add nodes
+        for node_key, x, y in pilot_data['nodes']:
+            node = neat.DefaultGenome.create_node(genome.config, node_key)
+            node.x = x
+            node.y = y
+            genome.nodes[node_key] = node
+        
+        # Add connections
+        for conn_key, in_node, out_node, weight, enabled in pilot_data['connections']:
+            conn = neat.DefaultGenome.create_connection(genome.config, in_node, out_node, conn_key)
+            conn.weight = weight
+            conn.enabled = enabled
+            genome.connections[conn_key] = conn
         
         # Create pilot with existing config
         factory = NeuroPilotFactory("neat_config_minimal.txt")
