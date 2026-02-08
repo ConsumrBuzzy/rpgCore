@@ -169,7 +169,7 @@ class RacerState:
     finish_time: Optional[float] = None
     position: int = 0
     
-    def update_position(self, dt: float, terrain: TerrainType):
+    def update_position(self, dt: float, terrain: TerrainType, track):
         """Update racer position based on terrain and genetics"""
         if self.finished:
             return
@@ -178,48 +178,52 @@ class RacerState:
         base_speed = self.genome.calculate_speed_on_terrain(terrain)
         
         # Apply stamina effects
-        stamina_factor = max(0.3, self.stamina_remaining / 100.0)
+        stamina_factor = min(1.0, self.stamina_remaining / 100.0)
         effective_speed = base_speed * stamina_factor
         
-        # Apply intelligence (strategy)
-        intelligence_factor = 0.9 + (self.genome.intelligence * 0.1)
+        # Apply intelligence factor (terrain awareness)
+        intelligence_factor = 1.0 + (self.genome.intelligence - 1.0) * 0.2
         final_speed = effective_speed * intelligence_factor
         
         # Update position
-        if self.current_checkpoint < len(self.checkpoints) - 1:
-            target = self.checkpoints[self.current_checkpoint + 1]
+        if self.current_checkpoint < len(track.checkpoints) - 1:
+            target = track.checkpoints[self.current_checkpoint + 1]
             dx = target.x - self.x
             dy = target.y - self.y
             distance = math.sqrt(dx ** 2 + dy ** 2)
             
-            if distance > 0:
-                # Move towards next checkpoint
-                move_distance = final_speed * dt * 50  # Scale factor for visible movement
-                if move_distance >= distance:
-                    # Reached checkpoint
-                    self.x = target.x
-                    self.y = target.y
-                    self.current_checkpoint += 1
-                    self.distance_traveled += distance
-                else:
-                    # Move towards checkpoint
-                    ratio = move_distance / distance
-                    self.x += dx * ratio
-                    self.y += dy * ratio
-                    self.distance_traveled += move_distance
+            # Move towards target
+            move_distance = final_speed * dt
+            if move_distance >= distance:
+                # Reach checkpoint
+                self.x = target.x
+                self.y = target.y
+                self.current_checkpoint += 1
+                self.distance_traveled += distance
+            else:
+                # Move towards checkpoint
+                ratio = move_distance / distance
+                self.x += dx * ratio
+                self.y += dy * ratio
+                self.distance_traveled += move_distance
+        
+        # Update current speed
+        self.current_speed = final_speed
         
         # Update stamina
-        stamina_drain = self._calculate_stamina_drain(terrain)
-        self.stamina_remaining = max(0, self.stamina_remaining - stamina_drain * dt)
+        stamina_drain = 0.5 * dt  # Base stamina drain
+        if terrain == TerrainType.WATER:
+            stamina_drain *= 2.0  # Water drains more stamina
+        elif terrain == TerrainType.ROCKS:
+            stamina_drain *= 1.5  # Rocks drain more stamina
         
-        # Update current speed for display
-        self.current_speed = final_speed
+        self.stamina_remaining = max(0.0, self.stamina_remaining - stamina_drain)
         
         # Update race time
         self.race_time += dt
         
         # Check if finished
-        if self.current_checkpoint >= len(self.checkpoints) - 1:
+        if self.current_checkpoint >= len(track.checkpoints) - 1:
             self.finished = True
             self.finish_time = self.race_time
     
@@ -309,7 +313,7 @@ class RacingService:
             terrain = self.track.get_terrain_at(racer.x, racer.y)
             
             # Update position
-            racer.update_position(dt, terrain)
+            racer.update_position(dt, terrain, self.track)
         
         # Update positions (ranking)
         self._update_positions()
