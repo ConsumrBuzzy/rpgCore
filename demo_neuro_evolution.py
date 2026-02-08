@@ -276,6 +276,58 @@ class NeuroEvolutionArena:
         
         # Update status displays
         self.update_status_display()
+        self.update_commander_display()
+    
+    def handle_tactical_nudge(self, nudge: TacticalNudge):
+        """Handle tactical nudge from PPU input"""
+        logger.info(f"🎮 Tactical nudge received: {nudge.command.value}")
+        
+        if nudge.command.value == "set_priority":
+            # Set priority target for all ships
+            for pilot in self.pilots.values():
+                # This would update the pilot's targeting logic
+                pass  # Would implement priority targeting
+        
+        elif nudge.command.value == "set_rally_point":
+            # Set rally point for fleet
+            if nudge.target_x and nudge.target_y:
+                # This would update fleet movement logic
+                pass  # Would implement rally point movement
+        
+        elif nudge.command.value == "emergency_stop":
+            # Emergency stop all ships
+            for pilot in self.pilots.values():
+                pilot.last_action.thrust = 0.0
+                pilot.last_action.rotation = 0.0
+    
+    def update_commander_display(self):
+        """Update commander HUD display"""
+        if self.commander_service:
+            status = self.commander_service.get_fleet_status()
+            
+            # Update commander status
+            commander_text = (
+                f"Commander: {status['commander_name']} (Level {status['commander_level']}) | "
+                f"Credits: {status['credits']}"
+            )
+            self.commander_label.config(text=commander_text)
+            
+            # Update fleet status
+            fleet_text = (
+                f"Fleet: {status['fleet_size']}/{status['max_fleet_size']} | "
+                f"Battles: {status['total_battles']}"
+            )
+            self.fleet_label.config(text=fleet_text)
+            
+            # Show top performer if available
+            if status['top_performer']:
+                top_text = (
+                    f"Alpha: {status['top_performer'].pilot_name} | "
+                    f"Wins: {status['top_performer'].wins} | "
+                    f"K/D: {status['top_performer'].kd_ratio:.1f}"
+                )
+                # Could add a separate label for top performer
+                logger.info(f"🏆 Top performer: {top_text}")
     
     def _respawn_ships(self):
         """Respawn destroyed ships to keep battle running"""
