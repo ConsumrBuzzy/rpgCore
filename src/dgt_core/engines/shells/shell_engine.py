@@ -195,43 +195,49 @@ class ShellEngine:
         return self._perform_attack(actor, target)
     
     def _perform_attack(self, attacker: ShellEntity, target: ShellEntity) -> Dict[str, Any]:
-        """Perform attack action"""
+        """Perform attack action using D20 mechanics"""
         # Calculate attack roll
-        attack_roll = random.randint(1, 20) + attacker.shell.attack_bonus
-        target_ac = target.shell.armor_class
+        attack_roll = self.d20_core.roll_attack(attacker.shell.attack_bonus)
         
-        if attack_roll >= target_ac:
-            # Hit! Calculate damage
-            damage = attacker.get_attack_damage()
-            actual_damage = target.take_damage(damage)
-            
-            result = {
-                'damage_events': [{
-                    'attacker': attacker.entity_id,
-                    'target': target.entity_id,
-                    'damage': actual_damage,
-                    'attack_roll': attack_roll,
-                    'target_ac': target_ac
-                }]
-            }
-            
-            # Check for death
-            if not target.is_alive():
-                result['deaths'] = [target.entity_id]
-            
-            return result
+        # Calculate target AC
+        target_ac = self.d20_core.calculate_armor_class(
+            base_ac=10,
+            armor_bonus=0,  # Would come from equipment
+            dexterity_modifier=(target.shell.dexterity - 10) // 2
+        )
         
-        # Miss
-        return {
-            'damage_events': [{
-                'attacker': attacker.entity_id,
-                'target': target.entity_id,
-                'damage': 0.0,
-                'attack_roll': attack_roll,
-                'target_ac': target_ac,
-                'miss': True
-            }]
+        # Determine hit
+        hit = attack_roll.total >= target_ac
+        
+        result = {
+            "attacker_id": attacker.entity_id,
+            "target_id": target.entity_id,
+            "attack_roll": attack_roll.total,
+            "target_ac": target_ac,
+            "hit": hit,
+            "critical": attack_roll.is_critical,
+            "fumble": attack_roll.is_fumble
         }
+        
+        if hit:
+            # Calculate damage
+            damage_roll = self.d20_core.roll_damage(
+                dice_type=self.d20_core.DiceType.D8,
+                num_dice=1,
+                modifier=(attacker.shell.strength - 10) // 2,
+                critical=attack_roll.is_critical
+            )
+            
+            # Apply damage
+            actual_damage = self._apply_damage(target, damage_roll.total)
+            result["damage"] = actual_damage
+            result["damage_roll"] = damage_roll.total
+            
+            logger.info(f"🐢 {attacker.entity_id} hits {target.entity_id} for {actual_damage:.1f} damage")
+        else:
+            logger.debug(f"🐢 {attacker.entity_id} misses {target.entity_id} ({attack_roll.total} vs AC {target_ac})")
+        
+        return result
     
     def _perform_buff(self, supporter: ShellEntity, target: ShellEntity) -> Dict[str, Any]:
         """Perform buff action"""
