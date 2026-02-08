@@ -6596,3 +6596,4 @@ mode
 2026-02-07 19:51:34 | ERROR | dgt_core.simulation.infinite_tournament:_process_current_tournament:179 | ♾️ Error processing tournament: 'RacerState' object has no attribute 'checkpoints'
 2026-02-07 19:51:35 | ERROR | dgt_core.simulation.infinite_tournament:_process_current_tournament:179 | ♾️ Error processing tournament: 'RacerState' object has no attribute 'checkpoints'
 2026-02-07 19:51:36 | ERROR | dgt_core.simulation.infinite_tournament:_process_current_tournament:179 | ♾️ Error processing tournament: 'RacerState' object has no attribute 'checkpoints'
+2026-02-07 19:57:34 | ERROR | __main__:connect_to_services:214 | 🚀 Failed to connect to PPU services: No module named 'dgt_core.engines.base'
