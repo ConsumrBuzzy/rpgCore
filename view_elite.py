@@ -563,7 +563,7 @@ Examples:
     parser.add_argument('--duration', type=float, default=120.0,
                        help='Viewer duration in seconds (default: 120.0)')
     
-    args = parser.parse()
+    args = parser.parse_args()
     
     # Configure logging
     logger.add("logs/elite_viewer.log", rotation="10 MB", level="INFO")
