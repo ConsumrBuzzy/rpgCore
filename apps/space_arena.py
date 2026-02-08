@@ -319,7 +319,7 @@ class SpaceArenaPPU:
                 'space_debris': True
             },
             'frame': {
-                'count': frame_count,
+                'count': 0,  # Will be updated by caller
                 'fps': 30.0
             }
         }
