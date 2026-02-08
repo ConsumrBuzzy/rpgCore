@@ -77,7 +77,7 @@ class FleetMember:
 
 
 class CommanderService:
-    """Sovereign Fleet Commander Service - manages credits and fleet roster"""
+    """Sovereign Fleet Commander Service - manages credits and fleet roster with Elite Pilot integration"""
     
     def __init__(self):
         self.credits: int = 1000  # Starting credits
@@ -88,7 +88,149 @@ class CommanderService:
         self.total_battles: int = 0
         self.commander_name: str = "Admiral"
         
+        # Elite pilot integration
+        self.pilot_registry: Optional[PilotRegistry] = None
+        self.last_scout_time: float = 0.0
+        self.scout_interval: float = 30.0  # Scout every 30 seconds
+        self.new_ace_notification: Optional[Dict[str, Any]] = None
+        
+        # Initialize pilot registry
+        self._initialize_pilot_registry()
+        
         logger.info(f"🏆 Commander Service initialized: {self.credits} credits")
+    
+    def _initialize_pilot_registry(self):
+        """Initialize pilot registry and start scouting"""
+        try:
+            self.pilot_registry = initialize_pilot_registry()
+            logger.info("🎖️ Pilot registry connected")
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to initialize pilot registry: {e}")
+    
+    def scout_for_new_pilots(self) -> Optional[Dict[str, Any]]:
+        """Scout for new elite pilots (called periodically)"""
+        if not self.pilot_registry:
+            return None
+        
+        current_time = time.time()
+        if current_time - self.last_scout_time < self.scout_interval:
+            return None
+        
+        self.last_scout_time = current_time
+        
+        # Scan for new pilots
+        new_pilots = self.pilot_registry.scan_for_new_pilots()
+        
+        # Check for new ace notification
+        ace_notification = self.pilot_registry.get_new_ace_notification()
+        if ace_notification:
+            self.new_ace_notification = ace_notification
+            logger.info(f"🎖️ New Ace Pilot available: {ace_notification['call_sign']} - Fitness: {ace_notification['fitness']:.2f}")
+            return ace_notification
+        
+        return None
+    
+    def get_available_elite_pilots(self, ship_class: Optional[ShipRole] = None) -> List[ElitePilot]:
+        """Get available elite pilots for hire"""
+        if not self.pilot_registry:
+            return []
+        
+        # Filter by credits and availability
+        affordable_pilots = self.pilot_registry.get_affordable_pilots(self.credits)
+        
+        # Filter by ship class compatibility if specified
+        if ship_class:
+            affordable_pilots = [p for p in affordable_pilots 
+                                if p.calculate_compatibility(ship_class.value) > 0.7]
+        
+        return affordable_pilots
+    
+    def hire_elite_pilot(self, elite_pilot_id: str, ship_class: ShipRole) -> Tuple[bool, Optional[FleetMember]]:
+        """Hire an elite pilot"""
+        if not self.pilot_registry:
+            return False, None
+        
+        # Hire from registry
+        success, elite_pilot = self.pilot_registry.hire_pilot(elite_pilot_id, self.credits)
+        if not success:
+            return False, None
+        
+        # Create fleet member
+        fleet_member = FleetMember(
+            pilot_id=f"fleet_{elite_pilot.pilot_id}",
+            genome_id=elite_pilot.genome_id,
+            pilot_name=elite_pilot.call_sign,
+            ship_class=ship_class,
+            cost=elite_pilot.current_cost,
+            acquisition_time=time.time(),
+            elite_pilot_id=elite_pilot_id
+        )
+        
+        # Deduct credits and add to fleet
+        self.credits -= elite_pilot.current_cost
+        self.active_fleet.append(fleet_member)
+        
+        logger.info(f"🎖️ Hired elite pilot {elite_pilot.call_sign} for {elite_pilot.current_cost} credits")
+        return True, fleet_member
+    
+    def launch_audition(self, elite_pilot_id: str) -> bool:
+        """Launch test flight for elite pilot audition"""
+        if not self.pilot_registry:
+            return False
+        
+        elite_pilot = self.pilot_registry.elite_pilots.get(elite_pilot_id)
+        if not elite_pilot:
+            return False
+        
+        try:
+            # Launch view_elite.py in separate process
+            script_path = Path(__file__).parent.parent.parent / "view_elite.py"
+            genome_file = elite_pilot.metadata_file
+            
+            logger.info(f"🎬 Launching audition for {elite_pilot.call_sign}")
+            
+            # Run in background thread to avoid blocking
+            def run_audition():
+                try:
+                    subprocess.run([
+                        "python", str(script_path), 
+                        "--genome", genome_file,
+                        "--duration", "60"
+                    ], check=True, capture_output=True)
+                    logger.info(f"🎬 Audition completed for {elite_pilot.call_sign}")
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"❌ Audition failed for {elite_pilot.call_sign}: {e}")
+            
+            threading.Thread(target=run_audition, daemon=True).start()
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to launch audition: {e}")
+            return False
+    
+    def update_fleet_battle_records(self, battle_results: Dict[str, Dict[str, Any]]):
+        """Update fleet member battle records and elite pilot registry"""
+        for fleet_member_id, result in battle_results.items():
+            # Find fleet member
+            fleet_member = next((m for m in self.active_fleet if m.pilot_id == fleet_member_id), None)
+            if not fleet_member:
+                continue
+            
+            # Update fleet member stats
+            fleet_member.update_stats(result.get('won', False))
+            
+            # Update elite pilot registry if applicable
+            if fleet_member.elite_pilot_id and self.pilot_registry:
+                self.pilot_registry.update_pilot_battle_record(
+                    fleet_member.elite_pilot_id,
+                    result.get('won', False),
+                    result.get('kills', 0),
+                    result.get('damage_dealt', 0.0),
+                    result.get('damage_taken', 0.0),
+                    result.get('battle_time', 0.0)
+                )
+        
+        self.total_battles += 1
     
     def purchase_pilot(self, pilot_data: Dict[str, Any]) -> bool:
         """Purchase a new pilot and add to fleet"""
@@ -172,8 +314,9 @@ class CommanderService:
         return self.credits >= cost
     
     def get_fleet_status(self) -> Dict[str, Any]:
-        """Get comprehensive fleet status"""
-        return {
+        """Get comprehensive fleet status with elite pilot information"""
+        # Get basic status
+        base_status = {
             'commander_name': self.commander_name,
             'commander_level': self.commander_level,
             'credits': self.credits,
@@ -183,6 +326,56 @@ class CommanderService:
             'composition': self.get_fleet_composition(),
             'top_performer': self.get_top_performers(1)[0] if self.active_fleet else None
         }
+        
+        # Add elite pilot information
+        if self.pilot_registry:
+            available_pilots = len(self.pilot_registry.get_affordable_pilots(self.credits))
+            base_status.update({
+                'available_elite_pilots': available_pilots,
+                'total_elite_pilots': len(self.pilot_registry.elite_pilots),
+                'new_ace_notification': self.new_ace_notification
+            })
+        
+        # Add fleet member elite status
+        elite_members = [m for m in self.active_fleet if m.elite_pilot_id]
+        base_status['elite_fleet_members'] = len(elite_members)
+        
+        return base_status
+    
+    def get_fleet_neural_stats(self) -> List[Dict[str, Any]]:
+        """Get neural statistics for fleet members"""
+        neural_stats = []
+        
+        for member in self.active_fleet:
+            stats = {
+                'pilot_id': member.pilot_id,
+                'pilot_name': member.pilot_name,
+                'ship_class': member.ship_class.value,
+                'wins': member.wins,
+                'losses': member.losses,
+                'kd_ratio': member.kd_ratio,
+                'prestige_points': member.prestige_points,
+                'is_elite': member.elite_pilot_id is not None
+            }
+            
+            # Add elite pilot performance matrix if available
+            if member.elite_pilot_id and self.pilot_registry:
+                performance_matrix = self.pilot_registry.get_pilot_performance_matrix(member.elite_pilot_id)
+                stats['performance_matrix'] = performance_matrix
+                
+                # Get elite pilot details
+                elite_pilot = self.pilot_registry.elite_pilots.get(member.elite_pilot_id)
+                if elite_pilot:
+                    stats['elite_details'] = {
+                        'call_sign': elite_pilot.call_sign,
+                        'generation': elite_pilot.generation,
+                        'specialization': elite_pilot.specialization.value,
+                        'combat_rating': elite_pilot.stats.combat_rating()
+                    }
+            
+            neural_stats.append(stats)
+        
+        return neural_stats
     
     def promote_commander(self):
         """Promote commander level"""
