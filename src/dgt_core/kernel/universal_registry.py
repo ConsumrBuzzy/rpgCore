@@ -43,7 +43,7 @@ class UniversalPerformance:
 class UniversalRegistry(LegendaryRegistry):
     """Tracks performance across Space and Shell engines with cross-engine compatibility"""
     
-    def __init__(self, db_path: str = "roster.db"):
+    def __init__(self, db_path: str = "data/roster.db"):
         self.db_path = db_path
         self.conn = None
         self.graveyard_manager = GraveyardManager(db_path)

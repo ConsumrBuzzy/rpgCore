@@ -30,7 +30,7 @@ class BatchUpdateRequest:
 class ThreadSafeBatchProcessor:
     """Thread-safe batch processor for post-battle updates"""
     
-    def __init__(self, db_path: str, max_workers: int = 2):
+    def __init__(self, db_path: str = "data/roster.db", max_workers: int = 2):
         self.db_path = db_path
         self.max_workers = max_workers
         self._lock = threading.RLock()  # Reentrant lock for nested calls

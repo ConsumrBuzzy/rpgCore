@@ -56,7 +56,7 @@ class ShipPerformance:
 class LegendaryRegistry:
     """Handles the persistence of 'Ace' pilots and fleet prestige."""
     
-    def __init__(self, db_path: str = "roster.db"):
+    def __init__(self, db_path: str = "data/roster.db"):
         self.db_path = db_path
         self.conn = None
         self._init_db()
