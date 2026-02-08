@@ -133,7 +133,16 @@ class ElitePilot:
             self.stats.evasion = max(0.0, 1.0 - (damage_taken / (damage_dealt + 1)))
             self.stats.efficiency = min(1.0, damage_dealt / (damage_taken + 1))
     
-    def calculate_compatibility(self, ship_class: str) -> float:
+    def get_combat_rating(self) -> float:
+        """Overall combat rating (0-100)"""
+        return (
+            self.stats.fitness * 0.3 +
+            self.stats.accuracy * 20 +
+            self.stats.aggression * 15 +
+            self.stats.precision * 15 +
+            self.stats.evasion * 15 +
+            self.stats.efficiency * 15
+        ) / 100
         """Calculate pilot compatibility with ship class (0.0-1.0)"""
         compatibility_map = {
             "interceptor": {
