@@ -354,8 +354,8 @@ class RacingService:
                 'finish_time': racer.finish_time,
                 'distance_traveled': racer.distance_traveled,
                 'avg_speed': racer.distance_traveled / (racer.finish_time or 1.0),
-                'genetic_signature': racer.genome.genetic_signature,
-                'fitness_score': racer.genome.calculate_fitness()
+                'genetic_signature': racer.genome.genetic_signature if racer.genome else 'unknown',
+                'fitness_score': racer.genome.calculate_fitness() if racer.genome else 0.0
             }
             self.race_results.append(result)
         
@@ -425,8 +425,8 @@ class RacingService:
             'participants': [
                 {
                     'turtle_id': racer.turtle_id,
-                    'genetic_signature': racer.genome.genetic_signature,
-                    'fitness_score': racer.genome.calculate_fitness()
+                    'genetic_signature': racer.genome.genetic_signature if racer.genome else 'unknown',
+                    'fitness_score': racer.genome.calculate_fitness() if racer.genome else 0.0
                 }
                 for racer in self.racers.values()
             ],
