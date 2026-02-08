@@ -256,6 +256,9 @@ class SpaceShip:
     # Tactcs Inputs (Admiral Layer)
     tactical_target: Optional[Tuple[float, float]] = None # (x, y) of focus target
     fleet_center: Optional[Tuple[float, float]] = None   # (x, y) of formation center
+    
+    # Metadata
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     # Physics engine
     physics_engine: Optional[SpaceVoyagerEngine] = None
