@@ -177,6 +177,19 @@ class NeuroPilot:
     
     def apply_action(self, ship: SpaceShip, action: NeuroOutput, dt: float):
         """Apply neural network action to ship physics"""
+        # Track movement patterns
+        self.action_history.append(action)
+        self.position_history.append((ship.x, ship.y))
+        self.velocity_history.append((ship.velocity_x, ship.velocity_y))
+        
+        # Keep history manageable
+        if len(self.action_history) > 50:
+            self.action_history.pop(0)
+        if len(self.position_history) > 50:
+            self.position_history.pop(0)
+        if len(self.velocity_history) > 50:
+            self.velocity_history.pop(0)
+        
         # Apply rotation (from RogueAsteroid physics)
         if abs(action.rotation) > 0.1:  # Dead zone to prevent jitter
             rotation_amount = action.rotation * ROGUE_PHYSICS['SHIP_ROTATION_SPEED'] * dt
