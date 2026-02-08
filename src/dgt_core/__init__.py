@@ -10,25 +10,31 @@ This package provides the core "plumbing" for all DGT projects:
 
 Usage:
     from dgt_core.engines.ppu import PPUInputService
-    from dgt_core.simulation.kinetics import KineticBody
-    from dgt_core.genetics.neat_bridge import NeuroPilot
-    from dgt_core.utils.math_v2 import Vector2D
 """
 
 __version__ = "2.0.0"
 __author__ = "DGT Development Team"
 
 # Core imports for convenience
+from .kernel import *
 from .engines import *
-from .simulation import *
-from .genetics import *
+from .evolution import *
+from .tactics import *
+from .view import *
+from .orchestrator import *
 from .utils import *
+from .assets import *
 
 __all__ = [
-    # Version info
-    "__version__",
-    "__author__",
-    
+    # Core components
+    'kernel',
+    'engines', 
+    'evolution',
+    'tactics',
+    'view',
+    'orchestrator',
+    'utils',
+    'assets',
     # Engine components (Legacy + New)
     "TriModalEngine", "BodyEngine", "EngineConfig",
     "DisplayDispatcher", "DisplayMode", "RenderPacket",
