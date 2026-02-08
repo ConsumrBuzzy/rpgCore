@@ -79,6 +79,12 @@ class NeuroPilot:
         self.novelty_score = 0.0
         self.last_behavior = None
         
+        # Movement pattern memory
+        self.last_action = NeuroOutput()
+        self.action_history = []
+        self.position_history = []
+        self.velocity_history = []
+        
         # Combat statistics
         self.enemies_destroyed = 0
         self.accuracy = 0.0
@@ -127,29 +133,39 @@ class NeuroPilot:
         # Calculate inputs
         inputs = self.calculate_neural_inputs(ship, targets, threats)
         
-        # Convert to neural network input array
+        # Convert to neural network input array with enhanced features
         input_array = [
-            # Normalize inputs to [-1, 1] range
+            # Target information
             self._normalize_distance(inputs.target_distance, 0, 600),
             self._normalize_angle(inputs.target_angle),
             self._normalize_velocity(inputs.target_velocity_x),
             self._normalize_velocity(inputs.target_velocity_y),
+            
+            # Self state with enhanced movement awareness
             self._normalize_velocity(inputs.self_velocity_x),
             self._normalize_velocity(inputs.self_velocity_y),
             self._normalize_angle(inputs.self_heading),
             self._normalize_health(inputs.hull_integrity),
+            
+            # Tactical awareness
             self._normalize_distance(inputs.nearest_threat_distance, 0, 600),
-            self._normalize_angle(inputs.escape_angle)
+            self._normalize_angle(inputs.escape_angle),
+            
+            # Movement pattern memory (last action feedback)
+            0.0  # Will be updated with previous action
         ]
         
         # Feed through neural network
         output = self.net.activate(input_array)
         
-        # Convert neural outputs to actions
+        # Convert neural outputs to actions with enhanced control
         action = NeuroOutput()
         action.thrust = max(0.0, min(1.0, output[0]))  # Clamp to [0, 1]
         action.rotation = max(-1.0, min(1.0, output[1]))  # Clamp to [-1, 1]
         action.fire_weapon = max(0.0, min(1.0, output[2]))  # Clamp to [0, 1]
+        
+        # Add movement pattern memory
+        self.last_action = action
         
         # Track behavior for novelty scoring
         current_behavior = (action.thrust, action.rotation, action.fire_weapon)
