@@ -75,7 +75,7 @@ class NeuroEvolutionArena:
             self.root, 
             width=width, 
             height=height, 
-            bg="#000011",
+            bg="#000033",
             highlightthickness=0
         )
         self.canvas.pack()

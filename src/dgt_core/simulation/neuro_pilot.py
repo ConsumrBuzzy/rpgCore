@@ -429,8 +429,16 @@ class NeuroPilotFactory:
         for pilot in pilots:
             fitness_dict[pilot.genome.key] = pilot.fitness
         
-        # Evolve population
-        self.population.population = self.config.reproduction.reproduce(
+        # Evolve population using NEAT's built-in methods
+        self.population = neat.Population(self.config, self.population.population)
+        
+        # Set fitness for all genomes
+        for genome_key, fitness in fitness_dict.items():
+            if genome_key in self.population.population:
+                self.population.population[genome_key].fitness = fitness
+        
+        # Evolve to next generation
+        self.population.population = neat.reproduction.Reproduction.reproduce(
             self.config.species_set.species, self.config.genome_type, 
             self.config.species_set.species, self.config, fitness_dict
         )
