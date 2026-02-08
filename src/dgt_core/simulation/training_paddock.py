@@ -232,8 +232,8 @@ class TrainingPaddock:
         self.population_size = population_size
         self.num_processes = num_processes or min(mp.cpu_count(), 8)
         
-        # Initialize NEAT factory
-        self.pilot_factory = NeuroPilotFactory()
+        # Initialize NEAT factory with config
+        self.pilot_factory = NeuroPilotFactory("neat_config_minimal.txt")
         self.pilots = self.pilot_factory.create_population(population_size)
         
         # ELO ratings
