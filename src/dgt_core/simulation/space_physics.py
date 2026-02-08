@@ -187,6 +187,24 @@ class SpaceVoyagerEngine:
     
     def _apply_physics(self, ship: 'SpaceShip', dt: float):
         """Apply Newtonian physics and constraints"""
+        
+        # Apply manual thrust (if set)
+        if hasattr(ship, 'thrust_x') and hasattr(ship, 'thrust_y'):
+            # Thrust is assumed to be normalized (-1.0 to 1.0) scaled by max_thrust
+            # F = ma -> a = F/m
+            # We treat thrust_x/y as the FORCE fraction.
+            # Actual Force = input * max_thrust
+            
+            accel_x = (ship.thrust_x * ship.max_thrust) / ship.mass
+            accel_y = (ship.thrust_y * ship.max_thrust) / ship.mass
+            
+            ship.velocity_x += accel_x * dt
+            ship.velocity_y += accel_y * dt
+            
+            # Reset thrust after application (impulse-like for this frame)
+            # Or keep it? Usually AI sets it every frame.
+            # Let's NOT reset it, assuming the AI/Controller sets it continuously.
+        
         # Apply drag (space friction simulation)
         ship.velocity_x *= self.drag_coefficient
         ship.velocity_y *= self.drag_coefficient
@@ -259,6 +277,10 @@ class SpaceShip:
     
     # Metadata
     metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    # Manual Control Inputs
+    thrust_x: float = 0.0
+    thrust_y: float = 0.0
 
     # Physics engine
     physics_engine: Optional[SpaceVoyagerEngine] = None
