@@ -166,68 +166,24 @@ class PostBattleReporter:
             self.recent_skirmishes.pop(0)
     
     def record_skirmish_results(self, metrics: BattleMetrics) -> bool:
-        """Thread-safe batch recording of skirmish results to persistent storage"""
-        def batch_update():
-            try:
-                success = True
-                
-                # Batch update all ship performances
-                ship_updates = []
-                for ship_id, performance in metrics.ship_performances.items():
-                    won = metrics.outcome == SkirmishOutcome.VICTORY
-                    
-                    # Prepare update data
-                    update_data = {
-                        'ship_id': ship_id,
-                        'damage_dealt': performance["damage_dealt"],
-                        'damage_taken': performance["damage_taken"],
-                        'won': won,
-                        'accuracy': performance["accuracy"],
-                        'role': performance.get("role", "Fighter"),
-                        'generation': performance.get("generation", 1)
-                    }
-                    ship_updates.append(update_data)
-                
-                # Batch register ships
-                for update in ship_updates:
-                    legendary_registry.register_ship(
-                        update['ship_id'], 
-                        update['role'], 
-                        update['generation']
-                    )
-                
-                # Batch record skirmish results
-                for update in ship_updates:
-                    success &= legendary_registry.record_skirmish_results(
-                        ship_id=update['ship_id'],
-                        damage_dealt=update['damage_dealt'],
-                        damage_taken=update['damage_taken'],
-                        won=update['won'],
-                        accuracy=update['accuracy']
-                    )
-                
-                # Award MVP if applicable
-                if metrics.mvp_candidate:
-                    success &= legendary_registry.award_mvp(metrics.mvp_candidate)
-                
-                # Record skirmish in history
-                self._record_skirmish_history(metrics)
-                
-                logger.info(f"📊 Batch recorded skirmish: {metrics.skirmish_id}")
-                return success
-                
-            except Exception as e:
-                logger.error(f"📊 Batch recording failed: {e}")
-                return False
-        
-        # Execute batch update in thread to avoid blocking
-        with ThreadPoolExecutor(max_workers=1, thread_name_prefix="battle_reporter") as executor:
-            future = executor.submit(batch_update)
-            try:
-                return future.result(timeout=5.0)  # 5 second timeout
-            except Exception as e:
-                logger.error(f"📊 Thread-safe recording failed: {e}")
-                return False
+        """Thread-safe batch recording using dedicated batch processor"""
+        try:
+            # Convert metrics to batch update format
+            batch_data = create_batch_update_data(metrics)
+            
+            # Submit to batch processor for thread-safe execution
+            success = batch_processor.submit_batch_update(batch_data)
+            
+            if success:
+                logger.debug(f"📊 Submitted batch update: {metrics.skirmish_id}")
+            else:
+                logger.error(f"📊 Failed to submit batch update: {metrics.skirmish_id}")
+            
+            return success
+            
+        except Exception as e:
+            logger.error(f"📊 Batch submission failed: {e}")
+            return False
     
     def _record_skirmish_history(self, metrics: BattleMetrics):
         """Record skirmish in history table for analytics"""
