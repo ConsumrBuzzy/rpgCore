@@ -261,11 +261,11 @@ class ShipGenome(BaseModel):
                 new_value = new_data[trait] * mutation
                 
                 # Apply field constraints
-                if trait == 'plating_density' or trait == 'shield_frequency' or trait == 'structural_integrity':
+                if trait in ['plating_density', 'shield_frequency', 'structural_integrity', 'cooling_capacity']:
                     new_value = max(0.5, min(2.0, new_value))
                 elif trait in ['thruster_output', 'fuel_efficiency', 'weapon_damage', 'fire_rate', 'initiative', 'evasion']:
                     new_value = max(0.5, min(3.0, new_value))
-                elif trait == 'targeting_system' or trait == 'critical_chance':
+                elif trait in ['targeting_system', 'critical_chance']:
                     new_value = max(0.5, min(2.0, new_value))
                 
                 new_data[trait] = new_value
