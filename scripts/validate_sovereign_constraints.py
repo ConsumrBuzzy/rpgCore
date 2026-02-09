@@ -478,14 +478,26 @@ def main():
     
     # Save report
     report_path = Path(__file__).parent / "sovereign_constraints_report.md"
-    with open(report_path, 'w') as f:
-        f.write(report)
-    
-    print(f"\n📋 Report saved to: {report_path}")
+    try:
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(report)
+        print(f"\n📋 Report saved to: {report_path}")
+    except Exception as e:
+        print(f"\n❌ Failed to save report: {e}")
     
     # Determine exit code
-    total_violations = sum(1 for r in strategy_results.value.values() if not r.get("compliant", False))
-    total_violations += sum(1 for r in ppu_results.value.values() if not r.get("compliant", False))
+    total_violations = 0
+    
+    # Count strategy violations
+    for r in strategy_results.value.values():
+        if isinstance(r, dict) and not r.get("compliant", False):
+            total_violations += 1
+    
+    # Count PPU violations
+    if IMPORTS_AVAILABLE and isinstance(ppu_results.value, dict):
+        for r in ppu_results.value.values():
+            if isinstance(r, dict) and not r.get("compliant", False):
+                total_violations += 1
     
     if total_violations > 0:
         print(f"\n❌ Validation failed with {total_violations} violations")
