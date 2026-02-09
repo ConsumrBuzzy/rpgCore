@@ -81,7 +81,8 @@ class SpaceEntity:
             self._init_small_asteroid()
         elif self.entity_type == EntityType.BULLET:
             self._init_bullet()
-        # Note: SCRAP entities are handled by ScrapEntity class directly
+        elif self.entity_type == EntityType.SCRAP:
+            self._init_scrap()
     
     def _init_ship(self):
         """Initialize ship-specific properties"""
@@ -153,6 +154,12 @@ class SpaceEntity:
         # Velocity based on ship heading
         speed = 300.0  # Fast bullet speed
         self.velocity = Vector2.from_angle(self.heading, speed)
+    
+    def _init_scrap(self):
+        """Initialize scrap-specific properties"""
+        # Scrap properties are set by ScrapEntity class
+        # This method exists for completeness but doesn't override
+        pass
     
     def update(self, dt: float) -> Result[None]:
         """Update entity physics (60Hz main loop)"""
