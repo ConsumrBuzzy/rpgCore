@@ -5,6 +5,7 @@ Tests the loot-to-lore pipeline with simulated extraction results
 
 import sys
 import os
+import random
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from narrative_bridge import process_extraction_result, ExtractionResult, get_player_summary

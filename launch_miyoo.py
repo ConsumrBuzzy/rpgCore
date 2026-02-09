@@ -6,6 +6,7 @@ Optimized for handheld retro gaming with 1x scale display
 import asyncio
 import sys
 import os
+import time
 from pathlib import Path
 
 # Add src to path for imports
