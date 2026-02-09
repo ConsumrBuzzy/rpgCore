@@ -19,8 +19,8 @@ from loguru import logger
 
 try:
     # Import existing PPU components
-    from src.graphics.ppu_tk_native import NativeTkinterPPU, RenderLayer, CanvasEntity, RenderEntity
-    from tools.dithering_engine import DitheringEngine, TemplateGenerator
+    from src.engines.mind.dd_engine import NativeTkinterPPU, RenderLayer, CanvasEntity, RenderEntity
+    from src.tools.dithering_engine import DitheringEngine, TemplateGenerator
     PPU_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"⚠️ PPU components not available: {e}")
