@@ -13,11 +13,22 @@ import os
 from pathlib import Path
 from typing import Dict, List, Tuple, Any, Optional
 import traceback
+import time
 
 # Add src to path for imports
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
+
+# Try to import loguru, fallback to basic logging if not available
+try:
+    from loguru import logger
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info = lambda msg, **kwargs: print(f"INFO: {msg}")
+    logger.error = lambda msg, **kwargs: print(f"ERROR: {msg}")
+    logger.success = lambda msg, **kwargs: print(f"SUCCESS: {msg}")
 
 try:
     from src.interfaces.protocols import PPUProtocol, Result
@@ -27,6 +38,7 @@ try:
         EnhancedStrategy, HardwareBurnStrategy
     )
     from src.exceptions.core import PPUException
+    IMPORTS_AVAILABLE = True
 except ImportError as e:
     print(f"❌ Import Error: {e}")
     print("🔧 Attempting fallback validation...")
@@ -43,6 +55,27 @@ except ImportError as e:
             self.mode = mode
             self.width = width
             self.height = height
+    
+    class MockPPUMode:
+        MIYOO = "miyoo"
+        PHOSPHOR = "phosphor"
+        GAMEBOY = "gameboy"
+        ENHANCED = "enhanced"
+        HARDWARE_BURN = "hardware_burn"
+    
+    # Mock the imports
+    PPUProtocol = None
+    Result = MockResult
+    UnifiedPPU = None
+    PPUMode = MockPPUMode()
+    PPUConfig = MockPPUConfig
+    MiyooStrategy = None
+    PhosphorStrategy = None
+    GameBoyStrategy = None
+    EnhancedStrategy = None
+    HardwareBurnStrategy = None
+    PPUException = Exception
+    IMPORTS_AVAILABLE = False
 
 
 class SovereignConstraintValidator:
