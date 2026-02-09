@@ -287,4 +287,6 @@ def create_prompt_generator() -> LLMPromptGenerator:
 
 
 # Global instance
-prompt_generator = create_prompt_generator()
+# Global instance - DISABLED for verification
+# prompt_generator = create_prompt_generator()
+prompt_generator = None
