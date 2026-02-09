@@ -111,8 +111,8 @@ class FallbackLogger:
     def debug(self, msg, **kwargs):
         print(f"DEBUG: {msg}")
 
-# Use fallback logger
-logger = FallbackLogger()
+# Replace STANDARD_SCALE_BUCKETS with fallback
+STANDARD_SCALE_BUCKETS = FALLBACK_SCALE_BUCKETS
 
 
 class ViewportIntegrationTester:
