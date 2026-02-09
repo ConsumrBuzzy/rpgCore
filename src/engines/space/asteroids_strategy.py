@@ -27,6 +27,7 @@ from ....kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PI
 from .physics_body import PhysicsBody, PhysicsState
 from .space_entity import SpaceEntity, EntityType
 from .vector2 import Vector2
+from .scrap_entity import ScrapEntity
 
 
 class AsteroidsStrategy:
@@ -118,6 +119,8 @@ class AsteroidsStrategy:
                 self._render_bullet(entity)
             elif entity.entity_type in [EntityType.LARGE_ASTEROID, EntityType.MEDIUM_ASTEROID, EntityType.SMALL_ASTEROID]:
                 self._render_asteroid(entity)
+            elif entity.entity_type == EntityType.SCRAP:
+                self._render_scrap(entity)
     
     def _render_ship(self, ship: SpaceEntity) -> None:
         """Render the player ship as a triangle"""

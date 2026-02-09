@@ -12,9 +12,11 @@ Core Physics Laws:
 3. Toroidal Wrap: Screen wrapping with Newtonian ghosting
 4. Entity Splitting: Recursive spawning with divergent vectors
 
+Optimized for 60Hz update cycles with deterministic behavior.
+"""
+
 # Add missing imports
 import random
-"""
 
 from typing import List, Optional, Dict, Any, Tuple
 from dataclasses import dataclass
