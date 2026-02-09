@@ -337,6 +337,52 @@ python tools/prune_drift.py
 
 ---
 
+## ADR 193.1 Viewport Hardening - Industrial Grade Achievement
+
+### Boundary Case Resolution
+**Status**: ✅ COMPLETE  
+**Date**: February 8, 2026  
+**Impact**: Fragile → Industrial-Grade Transformation
+
+#### Critical Fixes Applied
+1. **Off-by-One Boundary Resolution**
+   - Changed `< 640` to `<= 640` for focus mode trigger
+   - Ensures Miyoo Mini Plus (640×480) correctly triggers Focus Mode
+   - Mathematical precision for handheld device parity
+
+2. **Fallback Resilience Implementation**
+   - FallbackViewportManager for graceful degradation
+   - Engine self-diagnosis and "Safe Mode" bootstrap capability
+   - Prevents cascade failures during component initialization
+
+3. **Data Access Hardening**
+   - getattr() and isinstance() defensive programming
+   - Prevents "Attribute Sprawl" crashes in fallback environments
+   - Robust error handling for partial system states
+
+#### Test Results
+- **Overall Status**: SUCCESS
+- **Environment**: Limited imports fallback mode
+- **Architecture**: Three-Tier decoupling validated
+- **Outcome**: Core logic operates independently of environmental noise
+
+### Phase 2: Strategy Migration Initiated
+**Current Directive**: Component Consolidation within Hardened Viewport
+
+#### PPU Strategy Registration Status
+- **UnifiedPPU**: ViewportManager integration ready
+- **PhosphorStrategy**: Left wing mapping for FHD (MFD) layout
+- **MiyooStrategy**: Center anchor mapping for Newtonian Radar
+- **Scale Buckets**: All four resolutions validated for center_anchor calculations
+
+#### Next Actions
+1. Formal strategy registration within UnifiedPPU
+2. Viewport-aware ppu_scale calculation implementation
+3. Sidecar component mapping verification
+4. Integration test validation for complete viewport system
+
+---
+
 ## Future Expansion Path
 
 ### Extensible Architecture
