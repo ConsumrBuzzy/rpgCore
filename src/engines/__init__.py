@@ -10,14 +10,10 @@ Each engine implements the Facade pattern for clean interfaces and
 complete decoupling between pillars.
 """
 
-from .world import WorldEngine, WorldEngineFactory, WorldEngineSync
 from .mind import DDEngine, DDEngineFactory, DDEngineSync
 from .body import GraphicsEngine, GraphicsEngineFactory, GraphicsEngineSync
 
 __all__ = [
-    # World Engine
-    "WorldEngine", "WorldEngineFactory", "WorldEngineSync",
-    
     # Mind Engine  
     "DDEngine", "DDEngineFactory", "DDEngineSync",
     
