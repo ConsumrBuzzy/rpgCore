@@ -188,6 +188,42 @@ class DisplayDispatcher:
         logger.success(f"🎭 Switched to {mode.value} mode")
         return True
     
+    def update_mfd_data(self, mfd_data: Dict[str, Any]) -> None:
+        """Update MFD data for current display body"""
+        if self.active_body and hasattr(self.active_body, 'update_mfd_data'):
+            self.active_body.update_mfd_data(mfd_data)
+    
+    def render_frame(self, physics_state) -> 'Result':
+        """Render frame using physics state"""
+        try:
+            # Create render packet from physics state
+            packet = self._create_packet_from_state(physics_state)
+            success = self.render(packet)
+            if success:
+                from foundation.types import Result
+                return Result(success=True, value=None)
+            else:
+                return Result(success=False, error="Render failed")
+        except Exception as e:
+            from foundation.types import Result
+            return Result(success=False, error=str(e))
+    
+    def _create_packet_from_state(self, physics_state) -> 'RenderPacket':
+        """Create render packet from physics state"""
+        # Simple implementation - create basic packet
+        layers = [RenderLayer(
+            depth=0,
+            type="dynamic",
+            id="game_state",
+            metadata={'state': physics_state}
+        )]
+        
+        hud = HUDData()
+        hud.line_1 = f"Score: {getattr(physics_state, 'score', 0)}"
+        hud.line_2 = f"Energy: {getattr(physics_state, 'energy', 100):.0f}"
+        
+        return RenderPacket(mode=self.current_mode, layers=layers, hud=hud)
+    
     def render(self, packet: RenderPacket) -> bool:
         """
         Render a packet using the current mode with strict enforcement
@@ -319,11 +355,6 @@ def create_ppu_packet(layers: list[Dict[str, Any]], hud_lines: list[str] = None)
             setattr(hud, f'line_{i+1}', line)
     
     return RenderPacket(mode=DisplayMode.PPU, layers=render_layers, hud=hud)
-
-    def update_mfd_data(self, mfd_data: Dict[str, Any]) -> None:
-        """Update MFD data for current display body"""
-        if self.active_body and hasattr(self.active_body, 'update_mfd_data'):
-            self.active_body.update_mfd_data(mfd_data)
 
 def create_terminal_packet(data: Dict[str, Any], title: str = "") -> RenderPacket:
     """Create a terminal render packet"""
