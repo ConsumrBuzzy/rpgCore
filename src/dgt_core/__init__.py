@@ -16,7 +16,9 @@ __version__ = "2.0.0"
 __author__ = "DGT Development Team"
 
 # Core imports for convenience
-from .kernel import *
+from .kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS
+from .kernel.models import AssetRegistry, ViewportLayout, ViewportLayoutMode
+from .kernel.viewport_manager import ViewportManager
 from .engines import *
 from .evolution import *
 from .tactics import *
