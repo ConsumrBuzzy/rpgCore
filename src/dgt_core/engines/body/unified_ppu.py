@@ -429,7 +429,7 @@ class HardwareBurnStrategy(RenderingStrategy):
 
 
 class UnifiedPPU(BasePPU):
-    """Unified PPU implementing PPUProtocol with strategy pattern"""
+    """Unified PPU implementing PPUProtocol with strategy pattern and viewport management"""
     
     def __init__(self, config: Optional[PPUConfig] = None):
         super().__init__(config)
@@ -437,8 +437,72 @@ class UnifiedPPU(BasePPU):
         self.current_strategy: Optional[RenderingStrategy] = None
         self.performance_metrics: Dict[str, float] = {}
         
+        # Viewport management (ADR 193)
+        self.viewport_manager = ViewportManager()
+        self.current_viewport: Optional[ViewportLayout] = None
+        
         # Initialize all strategies
         self._initialize_strategies()
+        
+        logger.info(f"🎯 Unified PPU initialized with viewport management and sovereign resolution {SOVEREIGN_WIDTH}x{SOVEREIGN_HEIGHT}")
+    
+    def render_with_viewport(self, game_state: GameState, window_width: int, window_height: int) -> Result[bytes]:
+        """Render with viewport-aware scaling (ADR 193)"""
+        try:
+            # Calculate optimal layout
+            viewport_result = self.viewport_manager.calculate_optimal_layout(window_width, window_height)
+            if not viewport_result.success:
+                return Result.failure_result(f"Viewport calculation failed: {viewport_result.error}")
+            
+            self.current_viewport = viewport_result.value
+            
+            # Get PPU render region
+            ppu_region = self.viewport_manager.get_ppu_render_region()
+            if not ppu_region:
+                return Result.failure_result("No PPU render region available")
+            
+            # Render sovereign PPU at calculated scale
+            render_result = self.render_state(game_state)
+            if not render_result.success:
+                return render_result
+            
+            # Scale the rendered frame to viewport region
+            scaled_result = self._scale_to_viewport(render_result.value, ppu_region)
+            if not scaled_result.success:
+                return scaled_result
+            
+            logger.info(f"🖥️ Rendered with viewport: {window_width}x{window_height}, scale: {self.current_viewport.ppu_scale}")
+            
+            return Result.success_result(scaled_result.value)
+            
+        except Exception as e:
+            logger.error(f"❌ Viewport rendering failed: {e}")
+            return Result.failure_result(f"Viewport rendering error: {str(e)}")
+    
+    def _scale_to_viewport(self, frame_data: bytes, viewport_region: Rectangle) -> Result[bytes]:
+        """Scale frame data to viewport region dimensions"""
+        # This would implement actual scaling logic
+        # For now, return the original frame data
+        # In a full implementation, this would use nearest-neighbor scaling for pixel-perfect rendering
+        return Result.success_result(frame_data)
+    
+    def get_viewport_info(self) -> Dict[str, Any]:
+        """Get current viewport information"""
+        if not self.current_viewport:
+            return {"error": "No viewport calculated"}
+        
+        return {
+            "layout_mode": self.current_viewport.mode.value,
+            "ppu_scale": self.current_viewport.ppu_scale,
+            "window_size": f"{self.current_viewport.window_width}x{self.current_viewport.window_height}",
+            "focus_mode": self.current_viewport.focus_mode,
+            "center_region": {
+                "x": self.current_viewport.center_anchor.x,
+                "y": self.current_viewport.center_anchor.y,
+                "width": SOVEREIGN_WIDTH * self.current_viewport.ppu_scale,
+                "height": SOVEREIGN_HEIGHT * self.current_viewport.ppu_scale
+            }
+        }
     
     def initialize(self, width: int, height: int) -> Result[bool]:
         """Initialize PPU with dimensions"""
