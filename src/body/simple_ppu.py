@@ -129,7 +129,7 @@ class SimplePPU:
         )
     
     def _draw_triangle(self, physics: PhysicsComponent) -> None:
-        """Draw player as a triangle (Sovereign Scout)"""
+        """Draw player as a triangle (Sovereign Scout) with ghosting"""
         if not self.canvas:
             return
         
@@ -149,12 +149,57 @@ class SimplePPU:
         # Color based on energy
         if physics.energy > 50:
             color = "#00ff00"  # Green
+            ghost_color = "#004400"  # Dark green ghost
         elif physics.energy > 25:
             color = "#ffff00"  # Yellow
+            ghost_color = "#444400"  # Dark yellow ghost
         else:
             color = "#ff0000"  # Red
+            ghost_color = "#440000"  # Dark red ghost
         
-        # Draw triangle
+        # Draw ghost if near screen edge (within 10%)
+        edge_threshold_x = self.LOGICAL_WIDTH * 0.1  # 16 pixels
+        edge_threshold_y = self.LOGICAL_HEIGHT * 0.1  # 14.4 pixels
+        
+        if physics.x < edge_threshold_x:
+            # Ghost on right edge
+            ghost_px = self.PHYSICAL_WIDTH - px
+            ghost_points = [
+                ghost_px, py - size,
+                ghost_px - size, py + size,
+                ghost_px + size, py + size
+            ]
+            self.canvas.create_polygon(ghost_points, fill=ghost_color, outline="", width=1, tags="ghost")
+        elif physics.x > self.LOGICAL_WIDTH - edge_threshold_x:
+            # Ghost on left edge
+            ghost_px = -px
+            ghost_points = [
+                ghost_px, py - size,
+                ghost_px - size, py + size,
+                ghost_px + size, py + size
+            ]
+            self.canvas.create_polygon(ghost_points, fill=ghost_color, outline="", width=1, tags="ghost")
+        
+        if physics.y < edge_threshold_y:
+            # Ghost on bottom edge
+            ghost_py = self.PHYSICAL_HEIGHT - py
+            ghost_points = [
+                px, ghost_py - size,
+                px - size, ghost_py + size,
+                px + size, ghost_py + size
+            ]
+            self.canvas.create_polygon(ghost_points, fill=ghost_color, outline="", width=1, tags="ghost")
+        elif physics.y > self.LOGICAL_HEIGHT - edge_threshold_y:
+            # Ghost on top edge
+            ghost_py = -py
+            ghost_points = [
+                px, ghost_py - size,
+                px - size, ghost_py + size,
+                px + size, ghost_py + size
+            ]
+            self.canvas.create_polygon(ghost_points, fill=ghost_color, outline="", width=1, tags="ghost")
+        
+        # Draw main triangle
         self.canvas.create_polygon(points, fill=color, outline="white", width=1, tags="player")
     
     def _draw_asteroids(self, asteroids: List[Dict[str, Any]]) -> None:
@@ -239,11 +284,12 @@ class SimplePPU:
         # Performance tracking
         start_time = time.time()
         
-        # Clear dynamic objects
+        # Clear dynamic objects including ghosts
         self.canvas.delete("player")
         self.canvas.delete("asteroid")
         self.canvas.delete("portal")
         self.canvas.delete("hud")
+        self.canvas.delete("ghost")
         
         # Render all components
         self._draw_triangle(dto.player_physics)
