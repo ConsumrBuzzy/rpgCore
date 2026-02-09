@@ -39,15 +39,30 @@ except ImportError as e:
 from .dispatcher import DisplayBody, RenderPacket, HUDData
 
 class TerminalBody(DisplayBody):
-    """Terminal display body using Rich for beautiful console output"""
+    """Terminal display body with Rich console and Phosphor CRT effects"""
     
-    def __init__(self):
+    def __init__(self, use_phosphor: bool = True):
         super().__init__("Terminal")
+        self.use_phosphor = use_phosphor and PHOSPHOR_AVAILABLE
+        
+        # Rich console components
         self.console = Console() if RICH_AVAILABLE else None
         self.live_display: Optional[Live] = None
         self.current_layout: Optional[Layout] = None
+        
+        # Phosphor terminal components
+        self.phosphor_terminal: Optional[PhosphorTerminal] = None
+        self.root_window: Optional[Any] = None
+        
+        # Shared configuration
         self.update_interval = 0.1  # 10Hz for terminal
         self.last_update = 0.0
+        
+        # Story drip state
+        self.story_queue = []
+        self.current_story = ""
+        
+        logger.info(f"📟 TerminalBody initialized - Phosphor: {self.use_phosphor}, Rich: {RICH_AVAILABLE}")
         
     def _setup(self):
         """Setup Rich console and layout"""
