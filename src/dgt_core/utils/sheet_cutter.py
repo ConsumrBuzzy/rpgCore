@@ -11,7 +11,7 @@ import yaml
 from pathlib import Path
 from loguru import logger
 from typing import Optional, Tuple, List, Dict, Set
-from rust_sprite_scanner import RustSpriteScanner
+from .rust_sprite_scanner import RustSpriteScanner
 
 
 class DGTSheetCutter:

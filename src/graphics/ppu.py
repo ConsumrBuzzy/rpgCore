@@ -21,7 +21,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 try:
     from ..engines.dd_engine import GameState, Effect
 except ImportError:
-    from engines.dd_engine import GameState, Effect
+    from src.engines.dd_engine import GameState, Effect
 
 
 class RenderLayer(Enum):
