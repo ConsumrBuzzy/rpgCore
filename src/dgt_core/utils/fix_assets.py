@@ -53,11 +53,11 @@ for yaml_file, corrections_data in corrections.items():
             with open(yaml_path, 'w') as f:
                 yaml.dump(metadata, f, default_flow_style=False, sort_keys=False)
             
-            print(f'✅ Fixed {yaml_file}: {metadata["object_type"]}')
+            logger.success(f'✅ Fixed {yaml_file}: {metadata["object_type"]}')
             
         except Exception as e:
-            print(f'⚠️ Error fixing {yaml_file}: {e}')
+            logger.warning(f'⚠️ Error fixing {yaml_file}: {e}')
     else:
-        print(f'❌ File not found: {yaml_file}')
+        logger.error(f'❌ File not found: {yaml_file}')
 
-print('🎯 Manual corrections complete!')
+logger.success('🎯 Manual corrections complete!')
