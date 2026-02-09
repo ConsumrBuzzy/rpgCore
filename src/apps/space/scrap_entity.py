@@ -24,8 +24,8 @@ import random
 import json
 from pathlib import Path
 
-from .space_entity import SpaceEntity, EntityType
-from .vector2 import Vector2
+from .entities.space_entity import SpaceEntity, EntityType
+from .entities.vector2 import Vector2
 from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
 
 
