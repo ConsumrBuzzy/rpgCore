@@ -31,13 +31,50 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
 try:
-    from src.engines.space.vector2 import Vector2
-    from src.engines.space.space_entity import SpaceEntity, EntityType
-    from src.engines.space.physics_body import PhysicsBody
-    from src.engines.space.asteroids_strategy import AsteroidsStrategy
-    from src.engines.space.scrap_entity import ScrapEntity, ScrapLocker, ScrapType
-    from src.engines.space.terminal_handshake import TerminalHandshake
+    # Use direct imports to avoid broader import chain issues
+    import importlib.util
+    
+    # Import Vector2
+    vector2_spec = importlib.util.spec_from_file_location('vector2', 'src/engines/space/vector2.py')
+    vector2_module = importlib.util.module_from_spec(vector2_spec)
+    vector2_spec.loader.exec_module(vector2_module)
+    Vector2 = vector2_module.Vector2
+    
+    # Import space_entity
+    space_entity_spec = importlib.util.spec_from_file_location('space_entity', 'src/engines/space/space_entity.py')
+    space_entity_module = importlib.util.module_from_spec(space_entity_spec)
+    space_entity_spec.loader.exec_module(space_entity_module)
+    SpaceEntity = space_entity_module.SpaceEntity
+    EntityType = space_entity_module.EntityType
+    
+    # Import scrap_entity
+    scrap_entity_spec = importlib.util.spec_from_file_location('scrap_entity', 'src/engines/space/scrap_entity.py')
+    scrap_entity_module = importlib.util.module_from_spec(scrap_entity_spec)
+    scrap_entity_spec.loader.exec_module(scrap_entity_module)
+    ScrapEntity = scrap_entity_module.ScrapEntity
+    ScrapLocker = scrap_entity_module.ScrapLocker
+    ScrapType = scrap_entity_module.ScrapType
+    
+    # Import physics_body
+    physics_body_spec = importlib.util.spec_from_file_location('physics_body', 'src/engines/space/physics_body.py')
+    physics_body_module = importlib.util.module_from_spec(physics_body_spec)
+    physics_body_spec.loader.exec_module(physics_body_module)
+    PhysicsBody = physics_body_module.PhysicsBody
+    
+    # Import asteroids_strategy
+    asteroids_strategy_spec = importlib.util.spec_from_file_location('asteroids_strategy', 'src/engines/space/asteroids_strategy.py')
+    asteroids_strategy_module = importlib.util.module_from_spec(asteroids_strategy_spec)
+    asteroids_strategy_spec.loader.exec_module(asteroids_strategy_module)
+    AsteroidsStrategy = asteroids_strategy_module.AsteroidsStrategy
+    
+    # Import terminal_handshake
+    terminal_handshake_spec = importlib.util.spec_from_file_location('terminal_handshake', 'src/engines/space/terminal_handshake.py')
+    terminal_handshake_module = importlib.util.module_from_spec(terminal_handshake_spec)
+    terminal_handshake_spec.loader.exec_module(terminal_handshake_module)
+    TerminalHandshake = terminal_handshake_module.TerminalHandshake
+    
     IMPORTS_AVAILABLE = True
+    print("✅ Direct imports successful")
 except ImportError as e:
     print(f"❌ Import Error: {e}")
     print("🔧 Running in fallback mode - basic scrap testing only")
