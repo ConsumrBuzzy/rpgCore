@@ -180,7 +180,20 @@ class DisplayDispatcher:
         return True
     
     def render(self, packet: RenderPacket) -> bool:
-        """Render a packet using the current mode"""
+        """
+        Render a packet using the current mode with strict enforcement
+        ADR 182: Strict Gatekeeper - only accepts valid RenderPacket objects
+        """
+        # === STRICT PACKET ENFORCEMENT ===
+        if not isinstance(packet, RenderPacket):
+            logger.error(f"❌ Strict Gatekeeper: Invalid packet type {type(packet)}. Expected RenderPacket.")
+            return False
+        
+        # Validate packet structure
+        if not hasattr(packet, 'mode') or not isinstance(packet.mode, DisplayMode):
+            logger.error("❌ Strict Gatekeeper: Packet missing valid DisplayMode")
+            return False
+        
         # Store packet in history
         self.packet_history.append(packet)
         if len(self.packet_history) > self.max_history:
@@ -189,13 +202,14 @@ class DisplayDispatcher:
         # Override mode if packet specifies different mode
         if packet.mode != self.current_mode:
             if not self.set_mode(packet.mode):
+                logger.error(f"❌ Failed to switch to mode {packet.mode.value}")
                 return False
         
         # Render with active body
         if self.active_body:
             return self.active_body.render(packet)
         else:
-            logger.error("❌ No active display body")
+            logger.error("❌ No active display body for mode {}".format(packet.mode.value))
             return False
     
     def render_state(self, state_data: Dict[str, Any], mode: Optional[DisplayMode] = None) -> bool:
