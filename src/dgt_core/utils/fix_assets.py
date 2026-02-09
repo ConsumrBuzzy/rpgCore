@@ -28,7 +28,9 @@ corrections = {
     }
 }
 
-print('🔧 Applying manual corrections to key assets...')
+from loguru import logger
+
+logger.info('🔧 Applying manual corrections to key assets...')
 
 for yaml_file, corrections_data in corrections.items():
     yaml_path = harvested_dir / yaml_file
