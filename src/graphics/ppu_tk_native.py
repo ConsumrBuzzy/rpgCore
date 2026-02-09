@@ -14,6 +14,8 @@ from enum import Enum
 from dataclasses import dataclass
 from loguru import logger
 
+from src.dgt_core.kernel.constants import TARGET_FPS
+from src.dgt_core.assets.loader import AssetLoader
 from .ppu_modes import PPUMode, PPULayouts, CombatPositions, AnimationFrames, PPUTransitionEffects
 
 # Viewport Constants (Game Boy Parity)
@@ -139,7 +141,8 @@ class NativeTkinterPPU:
         """Create procedural object sprites using PhotoImage"""
         object_types = [
             'tree', 'boulder', 'chest', 'door', 'campfire',
-            'crystal', 'fountain', 'altar', 'throne', 'signpost'
+            'crystal', 'fountain', 'altar', 'throne', 'signpost',
+            'asteroid', 'scrap'
         ]
         
         colors = {
@@ -152,29 +155,36 @@ class NativeTkinterPPU:
             'fountain': '#4682b4',
             'altar': '#dcdcdc',
             'throne': '#ffd700',
-            'signpost': '#8b4513'
+            'signpost': '#8b4513',
+            'asteroid': '#888888',
+            'scrap': '#555555'
         }
         
         for obj_type in object_types:
-            sprite = self._create_procedural_sprite(colors.get(obj_type, '#ffffff'))
+            shape = 'circle' if obj_type in ['asteroid', 'boulder', 'scrap'] else 'block'
+            sprite = self._create_procedural_sprite(colors.get(obj_type, '#ffffff'), shape=shape)
             self.sprites[f'object_{obj_type}'] = sprite
+            self.sprites[obj_type] = sprite
     
     def _create_actor_sprites(self) -> None:
         """Create procedural actor sprites using PhotoImage"""
-        actor_types = ['voyager', 'npc', 'creature', 'spirit']
+        actor_types = ['voyager', 'npc', 'creature', 'spirit', 'player']
         
         colors = {
-            'voyager': '#ff0000',
+            'voyager': '#00ff00',
+            'player': '#00ff00',
             'npc': '#0000ff', 
             'creature': '#800080',
             'spirit': '#ffffff'
         }
         
         for actor_type in actor_types:
-            sprite = self._create_procedural_sprite(colors.get(actor_type, '#ffffff'))
+            shape = 'triangle' if actor_type in ['voyager', 'player'] else 'block'
+            sprite = self._create_procedural_sprite(colors.get(actor_type, '#ffffff'), shape=shape)
             self.sprites[f'actor_{actor_type}'] = sprite
+            self.sprites[actor_type] = sprite
     
-    def _create_procedural_sprite(self, base_color: str) -> PhotoImage:
+    def _create_procedural_sprite(self, base_color: str, shape: str = 'block') -> PhotoImage:
         """Create an 8x8 procedural sprite using PhotoImage with display scaling"""
         # Create base sprite at tile size
         base_sprite = PhotoImage(width=TILE_SIZE_PIXELS, height=TILE_SIZE_PIXELS)
@@ -192,21 +202,40 @@ class NativeTkinterPPU:
         # Fill sprite with base color and add some variation
         for y in range(TILE_SIZE_PIXELS):
             for x in range(TILE_SIZE_PIXELS):
-                # Add some procedural variation
-                if (x + y) % 3 == 0:
-                    # Lighter variant
-                    r = min(255, r + 30)
-                    g = min(255, g + 30)
-                    b = min(255, b + 30)
-                elif (x + y) % 5 == 0:
-                    # Darker variant
-                    r = max(0, r - 30)
-                    g = max(0, g - 30)
-                    b = max(0, b - 30)
+                should_draw = False
                 
-                # Set pixel color
-                color_hex = f'#{r:02x}{g:02x}{b:02x}'
-                base_sprite.put(color_hex, (x, y))
+                if shape == 'block':
+                    should_draw = True
+                elif shape == 'circle':
+                    # Simple circle text
+                    cx, cy = TILE_SIZE_PIXELS / 2 - 0.5, TILE_SIZE_PIXELS / 2 - 0.5
+                    if (x - cx)**2 + (y - cy)**2 <= (TILE_SIZE_PIXELS / 2)**2:
+                        should_draw = True
+                elif shape == 'triangle':
+                    # Upward pointing triangle
+                    # Top point at x=3.5, y=0. Bottom base.
+                    # Simple check: y >= 2 * abs(x - center)
+                    center = TILE_SIZE_PIXELS / 2 - 0.5
+                    if y >= 1.5 * abs(x - center):
+                        should_draw = True
+                
+                if should_draw:
+                    # Add some procedural variation
+                    var_r, var_g, var_b = r, g, b
+                    if (x + y) % 3 == 0:
+                        # Lighter variant
+                        var_r = min(255, r + 30)
+                        var_g = min(255, g + 30)
+                        var_b = min(255, b + 30)
+                    elif (x + y) % 5 == 0:
+                        # Darker variant
+                        var_r = max(0, r - 30)
+                        var_g = max(0, g - 30)
+                        var_b = max(0, b - 30)
+                    
+                    # Set pixel color
+                    color_hex = f'#{var_r:02x}{var_g:02x}{var_b:02x}'
+                    base_sprite.put(color_hex, (x, y))
         
         # Scale sprite for display using zoom
         scaled_sprite = base_sprite.zoom(DISPLAY_SCALE, DISPLAY_SCALE)
