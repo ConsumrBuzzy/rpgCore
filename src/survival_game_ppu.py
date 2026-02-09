@@ -23,8 +23,7 @@ from enum import Enum
 # Add src to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-import logging
-logger = logging.getLogger(__name__)
+from loguru import logger
 
 try:
     # Import existing PPU components
