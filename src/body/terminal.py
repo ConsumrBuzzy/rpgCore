@@ -65,11 +65,47 @@ class TerminalBody(DisplayBody):
         logger.info(f"📟 TerminalBody initialized - Phosphor: {self.use_phosphor}, Rich: {RICH_AVAILABLE}")
         
     def _setup(self):
-        """Setup Rich console and layout"""
-        if not RICH_AVAILABLE:
-            logger.warning("⚠️ Rich not available, terminal body disabled")
-            return
-        
+        """Setup terminal display (Rich or Phosphor)"""
+        if self.use_phosphor and PHOSPHOR_AVAILABLE:
+            self._setup_phosphor()
+        elif RICH_AVAILABLE:
+            self._setup_rich()
+        else:
+            logger.warning("⚠️ Neither Rich nor Phosphor available, terminal body disabled")
+    
+    def _setup_phosphor(self):
+        """Setup Phosphor CRT terminal"""
+        try:
+            import tkinter as tk
+            
+            # Create root window for phosphor terminal
+            self.root_window = tk.Tk()
+            self.root_window.title("📟 Sovereign Scout Terminal")
+            self.root_window.resizable(False, False)
+            
+            # Create phosphor terminal
+            config = PhosphorConfig(
+                width=80,
+                height=24,
+                phosphor_color="#00FF00",
+                scanline_intensity=0.3,
+                flicker_rate=0.05,
+                typewriter_speed=0.05
+            )
+            
+            self.phosphor_terminal = PhosphorTerminal(self.root_window, config)
+            
+            logger.info("✅ Phosphor CRT terminal setup complete")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to setup Phosphor terminal: {e}")
+            self.use_phosphor = False
+            # Fallback to Rich if available
+            if RICH_AVAILABLE:
+                self._setup_rich()
+    
+    def _setup_rich(self):
+        """Setup Rich console display"""
         # Create console with optimized settings
         self.console = Console(
             width=120,
@@ -92,7 +128,7 @@ class TerminalBody(DisplayBody):
             Layout(name="sidebar", ratio=1)
         )
         
-        logger.info("🖥️ Terminal body setup complete")
+        logger.info("🖥️ Rich terminal setup complete")
     
     def _render_packet(self, packet: RenderPacket):
         """Render packet to terminal"""
