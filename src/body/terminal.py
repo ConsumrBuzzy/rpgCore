@@ -1,6 +1,6 @@
 """
-Terminal Body - Rich-based Console Display
-High-speed, low-overhead data logs and headless monitoring
+Terminal Body - Rich-based Console Display with Phosphor CRT Effects
+High-speed, low-overhead data logs and headless monitoring with retro aesthetics
 """
 
 import time
@@ -27,6 +27,14 @@ except ImportError:
     RICH_AVAILABLE = False
 
 from loguru import logger
+
+# Import phosphor terminal for CRT effects
+try:
+    from src.ui.phosphor_terminal import PhosphorTerminal, PhosphorConfig
+    PHOSPHOR_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"⚠️ Phosphor Terminal not available: {e}")
+    PHOSPHOR_AVAILABLE = False
 
 from .dispatcher import DisplayBody, RenderPacket, HUDData
 
