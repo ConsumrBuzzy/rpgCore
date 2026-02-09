@@ -114,6 +114,10 @@ class FallbackLogger:
 # Replace STANDARD_SCALE_BUCKETS with fallback
 STANDARD_SCALE_BUCKETS = FALLBACK_SCALE_BUCKETS
 
+# Fallback constants for testing without imports
+SOVEREIGN_WIDTH = 160
+SOVEREIGN_HEIGHT = 144
+
 # Use fallback logger
 logger = FallbackLogger()
 
