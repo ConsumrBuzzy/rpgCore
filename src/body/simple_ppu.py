@@ -303,12 +303,13 @@ class SimplePPU:
         # Performance tracking
         start_time = time.time()
         
-        # Clear dynamic objects including ghosts
+        # Clear dynamic objects including ghosts and trails
         self.canvas.delete("player")
         self.canvas.delete("asteroid")
         self.canvas.delete("portal")
         self.canvas.delete("hud")
         self.canvas.delete("ghost")
+        self.canvas.delete("trail")  # Clear velocity trails
         
         # Render all components
         self._draw_triangle(dto.player_physics)
