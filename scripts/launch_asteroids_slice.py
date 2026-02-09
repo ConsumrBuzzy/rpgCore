@@ -19,16 +19,19 @@ from pathlib import Path
 from typing import Optional
 
 # Add src to path for absolute imports
-src_path = Path(__file__).parent.parent / "src"
-sys_path = str(src_path.resolve())
-if sys_path not in sys.path:
-    sys.path.insert(0, sys_path)
+current_dir = Path.cwd()
+src_path = current_dir / 'src'
+if src_path.exists():
+    sys_path = str(src_path.resolve())
+    if sys_path not in sys.path:
+        sys.path.insert(0, sys_path)
 
-from src.apps.space.physics_body import PhysicsBody
-from src.apps.space.asteroids_strategy import AsteroidsStrategy
-from src.engines.body.tri_modal_engine import TriModalEngine, DisplayMode
-from src.engines.mind.genetic_pilot import GeneticPilot
-from src.foundation.types import Result
+# Now import without src prefix
+from apps.space.physics_body import PhysicsBody
+from apps.space.asteroids_strategy import AsteroidsStrategy
+from engines.body.tri_modal_engine import TriModalEngine, DisplayMode
+from engines.mind.genetic_pilot import GeneticPilot
+from foundation.types import Result
 from loguru import logger
 
 

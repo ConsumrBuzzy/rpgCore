@@ -22,7 +22,7 @@ from .protocols import (
     TerminalHandshakeProtocol,
 )
 
-from src.foundation.base import (
+from foundation.base import (
     BaseEngine,
     BaseRenderer,
     BaseStateManager,

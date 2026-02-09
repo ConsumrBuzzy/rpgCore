@@ -21,10 +21,10 @@ from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass
 import math
 
-from src.foundation.interfaces.protocols import RenderProtocol, Result
-from src.foundation.base import BasePPU
-from src.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS
-from src.engines.body.animation import SpriteAnimator, NewtonianGhostRenderer
+from foundation.interfaces.protocols import RenderProtocol, Result
+from foundation.base import BasePPU
+from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS
+from engines.body.animation import SpriteAnimator, NewtonianGhostRenderer
 from .physics_body import PhysicsBody, PhysicsState
 from .entities.space_entity import SpaceEntity, EntityType
 from .entities.vector2 import Vector2
