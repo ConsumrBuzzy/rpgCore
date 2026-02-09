@@ -211,8 +211,8 @@ class DIContainer(DIProtocol):
         with self._lock:
             return list(self._registrations.keys())
     
-    def _register_with_lifetime(self, interface: Type, implementation: Type, lifetime: LifetimeScope) -> Result[None]:
-        """Internal registration method with lifetime"""
+    def register_singleton(self, interface: Type, implementation: Type) -> Result[None]:
+        """Register singleton instance"""
         with self._lock:
             if interface in self._registrations:
                 return Result.failure_result(f"Interface {interface.__name__} already registered")
@@ -236,7 +236,7 @@ class DIContainer(DIProtocol):
             registration = DependencyRegistration(
                 interface=interface,
                 implementation=implementation,
-                lifetime=lifetime,
+                lifetime=LifetimeScope.SINGLETON,
                 dependencies=dependencies
             )
             
@@ -244,6 +244,12 @@ class DIContainer(DIProtocol):
             self._dependency_graph[interface] = dependencies
             
             return Result.success_result(None)
+    
+    def register_viewport_manager(self) -> Result[None]:
+        """Register ViewportManager as singleton (ADR 193)"""
+        from ..kernel.viewport_manager import ViewportManager
+        
+        return self.register_singleton(ViewportManager, ViewportManager)
     
     def _resolve_internal(self, interface: Type[T], visited: Set[Type]) -> Result[T]:
         """Internal resolution with circular dependency detection"""
