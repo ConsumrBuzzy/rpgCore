@@ -10,7 +10,8 @@ import os
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from dgt_core.orchestrator import create_shell_orchestrator, EngineType, ViewType
+from apps.rpg.dd_engine import DDEngine
+from apps.rpg.world_engine import WorldEngine
 from dgt_core.view.cli.logger_config import configure_logging
 
 

@@ -10,7 +10,8 @@ import os
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from dgt_core.orchestrator import create_space_orchestrator, EngineType, ViewType
+from apps.space.space_voyager_engine import SpaceVoyagerEngine
+from apps.space.asteroids_strategy import AsteroidsStrategy
 from dgt_core.view.cli.logger_config import configure_logging
 
 

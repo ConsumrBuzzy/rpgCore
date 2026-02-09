@@ -28,6 +28,7 @@ from loguru import logger
 # Import Tri-Modal Engine components
 try:
     from src.engines.body.tri_modal_engine import TriModalEngine, EngineConfig
+    from src.apps.space.asteroids_strategy import AsteroidsStrategy
     from dgt_core.kernel.models import DisplayMode, RenderPacket, RenderLayer, HUDData
     TRI_MODAL_AVAILABLE = True
 except ImportError as e:
