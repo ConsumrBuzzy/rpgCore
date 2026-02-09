@@ -165,7 +165,7 @@ class ViewportIntegrationTester:
     
     def test_scale_buckets(self) -> Dict[str, Any]:
         """Test scale bucket configuration"""
-        logger.info("🔍 Testing scale bucket configuration")
+        print("🔍 Testing scale bucket configuration")
         
         results = {
             "total_buckets": len(STANDARD_SCALE_BUCKETS),
