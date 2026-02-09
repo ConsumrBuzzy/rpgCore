@@ -286,6 +286,49 @@ class TriModalEngine:
             self.legacy_adapter.cleanup()
         
         logger.info("🧹 Tri-Modal Engine cleaned up")
+    
+    def register_strategy(self, name: str, strategy) -> 'Result':
+        """Register rendering strategy for compatibility"""
+        try:
+            # For now, just store the strategy
+            if not hasattr(self, 'strategies'):
+                self.strategies = {}
+            self.strategies[name] = strategy
+            return Result(success=True, value=None)
+        except Exception as e:
+            return Result(success=False, error=str(e))
+    
+    def render_frame(self, physics_state) -> 'Result':
+        """Render frame using current strategy"""
+        try:
+            if self.dispatcher:
+                # Use dispatcher to render
+                return self.dispatcher.render_frame(physics_state)
+            return Result(success=False, error="No dispatcher available")
+        except Exception as e:
+            return Result(success=False, error=str(e))
+    
+    def set_display_mode(self, mode) -> 'Result':
+        """Set display mode"""
+        try:
+            if self.dispatcher:
+                return self.dispatcher.set_mode(mode)
+            return Result(success=False, error="No dispatcher available")
+        except Exception as e:
+            return Result(success=False, error=str(e))
+    
+    def update_mfd_data(self, mfd_data: Dict[str, Any]) -> None:
+        """Update MFD data for display"""
+        if self.dispatcher:
+            self.dispatcher.update_mfd_data(mfd_data)
+    
+    def shutdown(self) -> 'Result':
+        """Shutdown engine"""
+        try:
+            self.cleanup()
+            return Result(success=True, value=None)
+        except Exception as e:
+            return Result(success=False, error=str(e))
 
 # Factory functions for easy migration
 def create_tri_modal_engine(config: Optional[EngineConfig] = None) -> TriModalEngine:

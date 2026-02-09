@@ -30,7 +30,7 @@ if src_path.exists():
 from apps.space.physics_body import PhysicsBody
 from apps.space.asteroids_strategy import AsteroidsStrategy
 from engines.body.tri_modal_engine import TriModalEngine, DisplayMode
-from engines.mind.genetic_pilot import GeneticPilot
+from engines.mind.dd_engine import GeneticPilot
 from foundation.types import Result
 from loguru import logger
 
