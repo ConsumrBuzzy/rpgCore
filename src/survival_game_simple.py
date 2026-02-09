@@ -23,6 +23,9 @@ from body.simple_ppu import SimplePPU, RenderDTO, create_simple_ppu
 from dgt_core.kernel.components import PhysicsComponent, EntityID
 from dgt_core.engines.space.space_physics import SpaceVoyagerEngine
 
+# Import narrative bridge for loot-to-lore pipeline
+from narrative_bridge import process_extraction_result, ExtractionResult, get_random_story_snippet
+
 
 class GameState(str, Enum):
     """Game state enumeration"""
