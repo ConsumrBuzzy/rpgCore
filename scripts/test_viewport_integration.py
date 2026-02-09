@@ -96,8 +96,23 @@ FALLBACK_SCALE_BUCKETS = [
     {"resolution": "QHD", "width": 2560, "height": 1440, "scale": 9, "mode": "sovereign", "wing_width": 560}
 ]
 
-# Replace STANDARD_SCALE_BUCKETS with fallback
-STANDARD_SCALE_BUCKETS = FALLBACK_SCALE_BUCKETS
+# Fallback logger for testing without imports
+class FallbackLogger:
+    """Fallback logger for testing without loguru"""
+    def info(self, msg, **kwargs):
+        print(f"INFO: {msg}")
+    
+    def success(self, msg, **kwargs):
+        print(f"SUCCESS: {msg}")
+    
+    def error(self, msg, **kwargs):
+        print(f"ERROR: {msg}")
+    
+    def debug(self, msg, **kwargs):
+        print(f"DEBUG: {msg}")
+
+# Use fallback logger
+logger = FallbackLogger()
 
 
 class ViewportIntegrationTester:
@@ -421,7 +436,7 @@ class ViewportIntegrationTester:
                     "step": i,
                     "resolution": f"{width}x{height}",
                     "status": "passed",
-                    "layout_mode": layout.mode.value,
+                    "layout_mode": layout.mode,
                     "ppu_scale": layout.ppu_scale,
                     "focus_mode": layout.focus_mode
                 }
@@ -465,7 +480,7 @@ class ViewportIntegrationTester:
                         "resolution": f"{width}x{height}",
                         "expected_focus": True,
                         "actual_focus": layout.focus_mode,
-                        "layout_mode": layout.mode.value,
+                        "layout_mode": layout.mode,
                         "passed": layout.focus_mode and layout.mode == ViewportLayoutMode.FOCUS
                     }
                     
@@ -486,7 +501,7 @@ class ViewportIntegrationTester:
                         "resolution": f"{width}x{height}",
                         "expected_focus": False,
                         "actual_focus": layout.focus_mode,
-                        "layout_mode": layout.mode.value,
+                        "layout_mode": layout.mode,
                         "passed": not layout.focus_mode and layout.mode != ViewportLayoutMode.FOCUS
                     }
                     
@@ -502,7 +517,7 @@ class ViewportIntegrationTester:
                 logger.error("❌ Focus mode test failed")
                 
         except Exception as e:
-            logger.error(f"💥 Focus mode test error: {e}")
+            print(f"💥 Focus mode test error: {e}")
             results["all_passed"] = False
             results["error"] = str(e)
         
