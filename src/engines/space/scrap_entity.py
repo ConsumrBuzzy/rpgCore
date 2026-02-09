@@ -26,7 +26,10 @@ from pathlib import Path
 
 from .space_entity import SpaceEntity, EntityType
 from .vector2 import Vector2
-from ....kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+
+# Use hardcoded constants to avoid import issues
+SOVEREIGN_WIDTH = 160
+SOVEREIGN_HEIGHT = 144
 
 
 class ScrapType:
