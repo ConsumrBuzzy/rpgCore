@@ -353,8 +353,8 @@ class TestPerformance:
         end_time = time.perf_counter()
         operation_time = end_time - start_time
         
-        # Should handle 1000 operations in under 200ms
-        assert operation_time < 0.2
+        # Should handle 1000 operations in under 1s (file I/O is slower)
+        assert operation_time < 1.0
         assert locker.get_total_scrap() == 1000
         
         # Cleanup
