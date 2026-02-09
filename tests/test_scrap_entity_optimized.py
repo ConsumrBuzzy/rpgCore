@@ -341,7 +341,9 @@ class TestPerformance:
     
     def test_locker_performance(self):
         """Test locker performance under load"""
-        locker = ScrapLocker(Path("test_performance_locker.json"))
+        import uuid
+        unique_id = str(uuid.uuid4())[:8]
+        locker = ScrapLocker(Path(f"test_performance_locker_{unique_id}.json"))
         
         start_time = time.perf_counter()
         
