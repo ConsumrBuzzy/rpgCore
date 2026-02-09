@@ -23,12 +23,13 @@ from enum import Enum
 # Add src to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-from loguru import logger
+import logging
+logger = logging.getLogger(__name__)
 
-# Import PPU components
 try:
-    from dgt_core.engines.body.ppu import PPUBody, SpriteConfig, RenderLayer
-    from dgt_core.engines.body.dispatcher import RenderPacket, HUDData
+    # Import existing PPU components
+    from src.graphics.ppu_tk_native import NativeTkinterPPU, RenderLayer, CanvasEntity, RenderEntity
+    from tools.dithering_engine import DitheringEngine, TemplateGenerator
     PPU_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"⚠️ PPU components not available: {e}")
