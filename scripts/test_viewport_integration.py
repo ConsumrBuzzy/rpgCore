@@ -242,9 +242,9 @@ class ViewportIntegrationTester:
                 results["test_cases"].append(test_case)
                 
                 if validation["valid"]:
-                    logger.success(f"✅ {name}: Responsive scaling passed")
+                    print(f"✅ {name}: Responsive scaling passed")
                 else:
-                    logger.error(f"❌ {name}: Responsive scaling failed - {validation['errors']}")
+                    print(f"❌ {name}: Responsive scaling failed - {validation['errors']}")
                     results["all_passed"] = False
                     
             except Exception as e:
