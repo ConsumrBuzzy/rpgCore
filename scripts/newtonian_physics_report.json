@@ -1,0 +1,38 @@
+{
+  "vector_math": {
+    "test_cases": [],
+    "all_passed": false,
+    "error": "name 'Vector2' is not defined"
+  },
+  "entity_physics": {
+    "status": "skipped",
+    "reason": "imports_unavailable"
+  },
+  "toroidal_wrap": {
+    "status": "skipped",
+    "reason": "imports_unavailable"
+  },
+  "newtonian_ghosting": {
+    "status": "skipped",
+    "reason": "imports_unavailable"
+  },
+  "entity_splitting": {
+    "status": "skipped",
+    "reason": "imports_unavailable"
+  },
+  "physics_integration": {
+    "status": "skipped",
+    "reason": "imports_unavailable"
+  },
+  "input_system": {
+    "status": "skipped",
+    "reason": "imports_unavailable"
+  },
+  "summary": {
+    "total_tests": 7,
+    "passed_tests": 0,
+    "failed_tests": 1,
+    "skipped_tests": 6,
+    "overall_status": "failed"
+  }
+}
