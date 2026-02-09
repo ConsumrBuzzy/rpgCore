@@ -10,7 +10,7 @@ import warnings
 # Shim to the new DGT SDK
 from src.dgt_core.engines.body.graphics_engine import (
     GraphicsEngine, RenderFrame, TileBank, Viewport,
-    GraphicsEngineFactory, GraphicsEngineSync
+    GraphicsEngineFactory, GraphicsEngineSync, RenderLayer
 )
 
 # Warn on import
