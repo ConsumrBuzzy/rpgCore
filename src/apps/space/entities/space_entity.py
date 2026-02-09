@@ -81,6 +81,7 @@ class SpaceEntity:
             self._init_small_asteroid()
         elif self.entity_type == EntityType.BULLET:
             self._init_bullet()
+        # Note: SCRAP entities are handled by ScrapEntity class directly
     
     def _init_ship(self):
         """Initialize ship-specific properties"""

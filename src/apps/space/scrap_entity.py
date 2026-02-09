@@ -104,7 +104,7 @@ class ScrapEntity(SpaceEntity):
         
         # Initialize as custom entity type
         super().__init__(
-            entity_type=EntityType.SHIP,  # Reuse ship entity type for now
+            entity_type=EntityType.SCRAP,  # Use proper scrap entity type
             position=position,
             velocity=Vector2.zero(),  # Scrap doesn't move initially
             heading=0.0,
