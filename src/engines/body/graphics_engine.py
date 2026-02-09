@@ -8,6 +8,7 @@ This shim ensures backward compatibility while the system migrates to the DGT SD
 import warnings
 
 # Shim to the new DGT SDK
+from foundation.constants import TARGET_FPS, FRAME_DELAY_MS
 from src.dgt_core.engines.body.graphics_engine import (
     GraphicsEngine, RenderFrame, TileBank, Viewport,
     GraphicsEngineFactory, GraphicsEngineSync, RenderLayer

@@ -31,7 +31,7 @@ from src.dgt_core.kernel.state import (
     TILE_SIZE_PIXELS, VIEWPORT_TILES_X, VIEWPORT_TILES_Y,
     RENDER_LAYERS, COLOR_PALETTE, RenderLayer
 )
-from src.dgt_core.kernel.constants import TARGET_FPS, FRAME_DELAY_MS
+from foundation.constants import TARGET_FPS, FRAME_DELAY_MS
 
 
 @dataclass
