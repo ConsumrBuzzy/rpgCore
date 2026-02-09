@@ -15,13 +15,13 @@ Entity Types:
 - BULLET: Player projectiles with limited lifetime
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, Dict, Any, List, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 import math
 
 from .vector2 import Vector2
-from ....kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from ...dgt_core.kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
 
 
 class EntityType(Enum):
