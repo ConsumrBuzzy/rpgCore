@@ -7,7 +7,6 @@ from .sheet_cutter import *
 from .build_rust import *
 from .manifest_generator import *
 from .llm_prompt_generator import *
-from .debug_assets import *
 from .fix_assets import *
 from .generate_assets_manifest import *
 from .launch_asset_ingestor import *
@@ -25,7 +24,6 @@ __all__ = [
     'llm_prompt_generator',
     
     # Asset tools
-    'debug_assets',
     'fix_assets',
     'generate_assets_manifest',
     'launch_asset_ingestor',

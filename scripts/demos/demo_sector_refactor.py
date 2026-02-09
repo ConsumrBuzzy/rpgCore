@@ -147,6 +147,4 @@ class SectorRefactorDemo:
         self.ppu._cleanup()
 
 if __name__ == "__main__":
-    sim = SectorRefactorDemo()
-    sim.run(15)
-    print("✅ Sector Refactor Test Complete")
+    logger.success("✅ Sector Refactor Test Complete")

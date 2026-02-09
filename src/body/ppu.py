@@ -25,6 +25,13 @@ try:
 except ImportError as e:
     logger.warning(f"⚠️ PPU components not available: {e}")
     PPU_AVAILABLE = False
+    
+    # Dummy classes for type hinting if PPU is missing
+    class RenderLayer:
+        BACKGROUND = 0
+        FRINGE = 1
+        EFFECTS = 2
+        UI = 3
 
 from .dispatcher import DisplayBody, RenderPacket, HUDData
 
