@@ -26,7 +26,7 @@ from pathlib import Path
 
 from .space_entity import SpaceEntity, EntityType
 from .vector2 import Vector2
-from ...dgt_core.kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
 
 
 class ScrapType:
