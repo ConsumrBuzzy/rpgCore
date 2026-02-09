@@ -82,7 +82,8 @@ class PhysicsBody:
             entity_type=EntityType.SHIP,
             position=Vector2(SOVEREIGN_WIDTH / 2, SOVEREIGN_HEIGHT / 2),
             velocity=Vector2.zero(),
-            heading=0.0  # Pointing right initially
+            heading=0.0,  # Pointing right initially
+            radius=4.0   # Ship radius
         )
         
         # Create initial asteroids (3 large rocks)
@@ -105,7 +106,8 @@ class PhysicsBody:
                 entity_type=EntityType.LARGE_ASTEROID,
                 position=pos,
                 velocity=Vector2.zero(),
-                heading=0.0
+                heading=0.0,
+                radius=12.0  # Large asteroid radius
             )
             self.entities.append(asteroid)
         
@@ -305,7 +307,8 @@ class PhysicsBody:
                 entity_type=EntityType.BULLET,
                 position=self.ship_entity.position + Vector2.from_angle(self.ship_entity.heading, 5),
                 velocity=Vector2.zero(),
-                heading=self.ship_entity.heading
+                heading=self.ship_entity.heading,
+                radius=1.0  # Bullet radius
             )
             
             self.entities.append(bullet)
