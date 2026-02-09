@@ -14,7 +14,7 @@ from enum import Enum
 from dataclasses import dataclass
 from loguru import logger
 
-from core.constants import TARGET_FPS
+from src.dgt_core.kernel.constants import TARGET_FPS
 from utils.asset_loader import AssetLoader
 from .ppu_modes import PPUMode, PPULayouts, CombatPositions, AnimationFrames, PPUTransitionEffects
 
