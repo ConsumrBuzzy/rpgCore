@@ -60,8 +60,8 @@ class FallbackViewportManager:
             success: bool = True
             center_anchor: Any = None
         
-        # Simple fallback logic
-        if window_width < 640 or window_height < 480:
+        # Simple fallback logic (ADR 193.1: Include boundary cases)
+        if window_width <= 640 or window_height <= 480:
             ppu_scale = min(window_width // self.SOVEREIGN_WIDTH, window_height // self.SOVEREIGN_HEIGHT)
             center_x = (window_width - (SOVEREIGN_WIDTH * ppu_scale)) // 2
             center_y = (window_height - (SOVEREIGN_HEIGHT * ppu_scale)) // 2
