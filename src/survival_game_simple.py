@@ -198,20 +198,14 @@ class SurvivalGameSimple:
         # This creates the "Slingshot" effect for heavy ships
     
     def _update_asteroids(self, dt: float) -> None:
-        """Update asteroid positions"""
+        """Update asteroid positions with Newtonian Screen Wrap"""
         for asteroid in self.asteroids:
             asteroid.x += asteroid.velocity_x * dt * 60
             asteroid.y += asteroid.velocity_y * dt * 60
             
-            # Bounce off bounds
-            if asteroid.x < 10 or asteroid.x > 150:
-                asteroid.velocity_x *= -1
-            if asteroid.y < 10 or asteroid.y > 130:
-                asteroid.velocity_y *= -1
-            
-            # Keep in bounds
-            asteroid.x = max(10.0, min(150.0, asteroid.x))
-            asteroid.y = max(10.0, min(130.0, asteroid.y))
+            # Apply Newtonian Screen Wrap to asteroids too
+            asteroid.x = asteroid.x % 160.0
+            asteroid.y = asteroid.y % 144.0
     
     def _check_collisions(self) -> None:
         """Check for collisions"""
