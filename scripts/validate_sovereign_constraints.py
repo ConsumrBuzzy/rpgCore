@@ -405,7 +405,7 @@ class SovereignConstraintValidator:
         report.append("## Detailed Results")
         
         for strategy_name, result in self.validation_results.items():
-            status = "✅ COMPLIANT" if result.get("compliant", False) else "❌ NON-COMPLIANT"
+            status = "PASS" if result.get("compliant", False) else "FAIL"
             report.append(f"### {strategy_name}: {status}")
             
             if not result.get("compliant", False):
@@ -424,7 +424,7 @@ class SovereignConstraintValidator:
         
         # Constraints Summary
         report.append("## Sovereign Constraints")
-        report.append(f"- Resolution: {self.SOVEREIGN_WIDTH}×{self.SOVEREIGN_HEIGHT}")
+        report.append(f"- Resolution: {self.SOVEREIGN_WIDTH}x{self.SOVEREIGN_HEIGHT}")
         report.append(f"- Total Pixels: {self.SOVEREIGN_PIXELS}")
         report.append(f"- Max Colors: {self.MAX_COLORS}")
         report.append(f"- Max FPS: {self.MAX_FPS}")
