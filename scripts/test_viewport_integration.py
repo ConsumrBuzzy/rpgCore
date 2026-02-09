@@ -445,7 +445,7 @@ class ViewportIntegrationTester:
     
     def test_focus_mode(self) -> Dict[str, Any]:
         """Test focus mode behavior"""
-        logger.info("🔍 Testing focus mode behavior")
+        print("🔍 Testing focus mode behavior")
         
         results = {
             "small_screen_tests": [],
