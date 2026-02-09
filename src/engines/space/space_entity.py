@@ -19,9 +19,16 @@ from typing import Optional, Dict, Any, List, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 import math
+import sys
+from pathlib import Path
 
-from .vector2 import Vector2
-from ...dgt_core.kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+# Add src to path for absolute imports
+src_path = Path(__file__).parent.parent.parent
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
+
+from engines.space.vector2 import Vector2
+from dgt_core.kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
 
 
 class EntityType(Enum):
