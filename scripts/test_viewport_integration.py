@@ -514,7 +514,7 @@ class ViewportIntegrationTester:
                         "expected_focus": False,
                         "actual_focus": layout.focus_mode,
                         "layout_mode": layout.mode,
-                        "passed": not layout.focus_mode and layout.mode != ViewportLayoutMode.FOCUS
+                        "passed": not layout.focus_mode and layout.mode != "focus"
                     }
                     
                     results["large_screen_tests"].append(test_result)

@@ -199,9 +199,9 @@
       {
         "resolution": "640x480",
         "expected_focus": true,
-        "actual_focus": false,
-        "layout_mode": "dashboard",
-        "passed": false
+        "actual_focus": true,
+        "layout_mode": "focus",
+        "passed": true
       }
     ],
     "large_screen_tests": [
@@ -227,7 +227,7 @@
         "passed": true
       }
     ],
-    "all_passed": false
+    "all_passed": true
   },
   "di_container": {
     "status": "skipped",
@@ -235,9 +235,9 @@
   },
   "summary": {
     "total_tests": 7,
-    "passed_tests": 2,
-    "failed_tests": 1,
+    "passed_tests": 3,
+    "failed_tests": 0,
     "skipped_tests": 3,
-    "overall_status": "mixed"
+    "overall_status": "success"
   }
 }
