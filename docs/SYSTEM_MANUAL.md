@@ -99,6 +99,78 @@ ENERGY_LEVELS = {
 }
 ```
 
+### **Energy-Based Font Switching System**
+
+The Phosphor Terminal implements a **hardcoded physical reality** where the UI responds directly to the ship's energy levels through font switching. This creates a visceral connection between player actions and visual feedback.
+
+```python
+# Energy Level → Font Color Mapping
+ENERGY_FONT_THRESHOLDS = {
+    100-75: {
+        'font': 'terminal_green',
+        'color': '#00FF00',      # Classic CRT green
+        'status': 'Systems Optimal',
+        'description': 'Full power, clear display'
+    },
+    75-50: {
+        'font': 'terminal_amber', 
+        'color': '#FFFF00',      # Warning amber
+        'status': 'Systems Degraded',
+        'description': 'Power drain, visible strain'
+    },
+    50-25: {
+        'font': 'terminal_red',
+        'color': '#FF8800',      # Critical orange
+        'status': 'Systems Critical',
+        'description': 'Severe power loss, display struggling'
+    },
+    25-0: {
+        'font': 'terminal_red',
+        'color': '#FF0000',      # Emergency red
+        'status': 'SYSTEMS FAILURE',
+        'description': 'Critical failure, barely functional'
+    }
+}
+```
+
+**Font System Architecture**:
+- **Sprite Sheets**: 256x256 PNG files with 16x16 character grids
+- **Character Mapping**: JSON atlases provide zero-guesswork lookups
+- **Energy Coupling**: Automatic font switching based on ship energy
+- **Physical Response**: Terminal browns out with ship systems
+
+**Implementation Details**:
+```python
+# Font Manager auto-switching
+def auto_switch_font(self, energy_level: float) -> str:
+    if energy_level > 75:
+        return 'terminal_green'
+    elif energy_level > 50:
+        return 'terminal_amber'
+    elif energy_level > 25:
+        return 'terminal_red'
+    else:
+        return 'terminal_red'  # Critical state
+
+# Character rendering with energy context
+glyph = font_manager.get_char_glyph('A', energy_level)
+terminal.render_glyph(x, y, glyph)
+```
+
+**Visual Impact**:
+- **Green → Amber**: Players see the system degrading as energy drops
+- **Amber → Red**: Urgent visual feedback for critical states
+- **Red Flicker**: System failure creates emergency visual alerts
+- **Smooth Transitions**: Font changes happen at exact energy thresholds
+
+**Performance Optimized**:
+- **Pre-generated Sprites**: No runtime font rendering overhead
+- **JSON Atlases**: Fast character position lookups
+- **VRAM Efficient**: 16x16 pixel blocks optimized for PPU blitting
+- **Zero Circular Dependencies**: Font system isolated from rendering
+
+---
+
 ### **CRT Effects Implementation**
 
 **Phosphor Afterimage System**:
