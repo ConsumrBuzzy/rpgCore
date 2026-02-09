@@ -14,6 +14,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from loguru import logger
+from foundation.types import Result
 
 # Import tri-modal components
 try:
