@@ -12,6 +12,13 @@ from .models import (
     ScaleBucket, STANDARD_SCALE_BUCKETS, OverlayComponent
 )
 from .viewport_manager import ViewportManager, create_viewport_manager, create_overlay_manager
+from .constants import (
+    # System constants
+    SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS,
+    # Viewport constants (ADR 193)
+    SCALE_BUCKETS, FOCUS_MODE_WIDTH_THRESHOLD, FOCUS_MODE_HEIGHT_THRESHOLD,
+    MIN_WING_WIDTH, MAX_PPU_SCALE, WING_ALPHA_DEFAULT
+)
 
 __all__ = [
     # Legacy models
@@ -33,5 +40,18 @@ __all__ = [
     # Viewport management
     "ViewportManager",
     "create_viewport_manager",
-    "create_overlay_manager"
+    "create_overlay_manager",
+    
+    # Sovereign resolution constants (ADR 192)
+    "SOVEREIGN_WIDTH",
+    "SOVEREIGN_HEIGHT", 
+    "SOVEREIGN_PIXELS",
+    
+    # Viewport scaling constants (ADR 193)
+    "SCALE_BUCKETS",
+    "FOCUS_MODE_WIDTH_THRESHOLD",
+    "FOCUS_MODE_HEIGHT_THRESHOLD",
+    "MIN_WING_WIDTH",
+    "MAX_PPU_SCALE",
+    "WING_ALPHA_DEFAULT"
 ]
