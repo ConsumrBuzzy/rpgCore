@@ -26,12 +26,15 @@ from loguru import logger
 from ....interfaces.protocols import PPUProtocol, Result, ValidationResult
 from ....abc.base import BasePPU
 from ....exceptions.core import PPUException, create_ppu_exception
+from ....kernel.models import ViewportLayout, ViewportLayoutMode, Rectangle, Point
+from ....kernel.viewport_manager import ViewportManager
+from ....kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS
 
 
-# Sovereign Resolution Constants (ADR 192)
-SOVEREIGN_WIDTH = 160
-SOVEREIGN_HEIGHT = 144
-SOVEREIGN_PIXELS = SOVEREIGN_WIDTH * SOVEREIGN_HEIGHT  # 23,040
+# Sovereign Resolution Constants (ADR 192) - Using centralized constants
+SOVEREIGN_WIDTH = SOVEREIGN_WIDTH
+SOVEREIGN_HEIGHT = SOVEREIGN_HEIGHT
+SOVEREIGN_PIXELS = SOVEREIGN_PIXELS
 
 
 class PPUMode(Enum):
