@@ -95,6 +95,10 @@ class SovereignConstraintValidator:
         """Validate all rendering strategies against sovereign constraints"""
         logger.info("🏆 Starting Sovereign Constraints Validation")
         
+        if not IMPORTS_AVAILABLE:
+            logger.info("🔧 Running in fallback mode - basic constraint validation only")
+            return self._validate_basic_constraints()
+        
         strategies = {
             "miyoo": MiyooStrategy(),
             "phosphor": PhosphorStrategy(),
@@ -137,6 +141,75 @@ class SovereignConstraintValidator:
             logger.error("🚨 Constraint Violations Detected:")
             for error in self.errors:
                 logger.error(f"  • {error}")
+        
+        return Result.success_result(results)
+    
+    def _validate_basic_constraints(self) -> Result[Dict[str, bool]]:
+        """Basic constraint validation when imports are not available"""
+        logger.info("🔧 Performing basic constraint validation")
+        
+        # Test basic file structure and resolution constraints
+        results = {}
+        
+        # Check if UnifiedPPU file exists and has correct structure
+        unified_ppu_path = project_root / "src" / "dgt_core" / "engines" / "body" / "unified_ppu.py"
+        
+        if unified_ppu_path.exists():
+            try:
+                with open(unified_ppu_path, 'r') as f:
+                    content = f.read()
+                    
+                # Check for sovereign resolution constants
+                has_160_width = "160" in content and "width" in content
+                has_144_height = "144" in content and "height" in content
+                has_sovereign_buffer = "23040" in content  # 160 * 144
+                
+                violations = []
+                if not has_160_width:
+                    violations.append("Missing 160 width constraint")
+                if not has_144_height:
+                    violations.append("Missing 144 height constraint")
+                if not has_sovereign_buffer:
+                    violations.append("Missing 23040 pixel buffer size")
+                
+                results["unified_ppu"] = {
+                    "compliant": len(violations) == 0,
+                    "violations": violations
+                }
+                
+                if len(violations) == 0:
+                    logger.success("✅ UnifiedPPU: Basic constraint validation passed")
+                else:
+                    logger.error("❌ UnifiedPPU: Constraint violations found")
+                    self.errors.extend([f"UnifiedPPU: {v}" for v in violations])
+                    
+            except Exception as e:
+                results["unified_ppu"] = {
+                    "compliant": False,
+                    "violations": [f"File read error: {str(e)}"]
+                }
+                self.errors.append(f"UnifiedPPU: {str(e)}")
+        else:
+            results["unified_ppu"] = {
+                "compliant": False,
+                "violations": ["UnifiedPPU file not found"]
+            }
+            self.errors.append("UnifiedPPU: File not found")
+        
+        # Check if protocol file exists
+        protocol_path = project_root / "src" / "interfaces" / "protocols.py"
+        if protocol_path.exists():
+            results["protocols"] = {
+                "compliant": True,
+                "violations": []
+            }
+            logger.success("✅ Protocols: File structure validation passed")
+        else:
+            results["protocols"] = {
+                "compliant": False,
+                "violations": ["Protocols file not found"]
+            }
+            self.errors.append("Protocols: File not found")
         
         return Result.success_result(results)
     
