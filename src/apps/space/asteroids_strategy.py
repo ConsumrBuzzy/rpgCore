@@ -24,9 +24,10 @@ import math
 from foundation.interfaces.protocols import RenderProtocol, Result
 from foundation.base import BasePPU
 from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS
+from engines.body.animation import SpriteAnimator, NewtonianGhostRenderer
 from .physics_body import PhysicsBody, PhysicsState
-from .space_entity import SpaceEntity, EntityType
-from .vector2 import Vector2
+from .entities.space_entity import SpaceEntity, EntityType
+from .entities.vector2 import Vector2
 from .scrap_entity import ScrapEntity
 
 
@@ -38,6 +39,10 @@ class AsteroidsStrategy:
         self.frame_buffer: Optional[bytearray] = None
         self.width = SOVEREIGN_WIDTH
         self.height = SOVEREIGN_HEIGHT
+        
+        # Animation systems
+        self.sprite_animator = SpriteAnimator()
+        self.ghost_renderer = NewtonianGhostRenderer(self.width, self.height)
         
         # Rendering properties
         self.clear_color = 0  # Black background
