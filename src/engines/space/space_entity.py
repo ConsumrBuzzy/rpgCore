@@ -31,6 +31,7 @@ class EntityType(Enum):
     MEDIUM_ASTEROID = "medium_asteroid"
     SMALL_ASTEROID = "small_asteroid"
     BULLET = "bullet"
+    SCRAP = "scrap"
 
 
 @dataclass

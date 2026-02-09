@@ -22,6 +22,7 @@ import time
 
 from .space_entity import SpaceEntity, EntityType
 from .vector2 import Vector2
+from .scrap_entity import ScrapEntity, ScrapLocker
 from ....kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
 from ....interfaces.protocols import Result
 
@@ -50,6 +51,10 @@ class PhysicsBody:
         self.max_ship_speed = 200.0  # Maximum ship velocity
         self.bullet_speed = 300.0  # Bullet velocity
         self.thrust_cost = 5.0  # Energy cost per second of thrust
+        
+        # Scrap system (ADR 196)
+        self.scrap_locker = ScrapLocker()
+        self.scrap_spawn_chance = 0.05  # 5% chance
         
         # Input state
         self.thrust_active = False
