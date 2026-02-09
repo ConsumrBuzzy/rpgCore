@@ -12,7 +12,8 @@ Core Physics Laws:
 3. Toroidal Wrap: Screen wrapping with Newtonian ghosting
 4. Entity Splitting: Recursive spawning with divergent vectors
 
-Optimized for 60Hz update cycles with deterministic behavior.
+# Add missing imports
+import random
 """
 
 from typing import List, Optional, Dict, Any, Tuple
@@ -376,6 +377,13 @@ class PhysicsBody:
         else:
             ship_info = {}
         
+        # Get scrap debug info
+        scrap_entities = [e for e in self.entities if e.entity_type == EntityType.SCRAP and e.active]
+        scrap_info = {
+            'active_scrap_count': len(scrap_entities),
+            'scrap_positions': [s.position.to_tuple() for s in scrap_entities[:5]]  # First 5 for debug
+        }
+        
         return {
             'game_active': self.game_active,
             'game_time': self.physics_state.game_time,
@@ -384,6 +392,19 @@ class PhysicsBody:
             'energy': self.physics_state.energy,
             'entity_count': len(self.entities),
             'ship': ship_info,
+            'scrap': scrap_info,
+            'scrap_locker': self.scrap_locker.get_locker_summary(),
             'performance': self.get_performance_stats(),
-            'entity_counts': self.get_entity_count()
+            'entity_counts': self.get_entity_count(),
+            'pending_notifications': getattr(self, 'pending_notifications', [])
         }
+    
+    def get_pending_notifications(self) -> List[Dict[str, Any]]:
+        """Get and clear pending notifications for terminal handshake"""
+        notifications = getattr(self, 'pending_notifications', [])
+        self.pending_notifications = []
+        return notifications
+    
+    def get_scrap_locker(self) -> ScrapLocker:
+        """Get scrap locker instance for external access"""
+        return self.scrap_locker
