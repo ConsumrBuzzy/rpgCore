@@ -288,6 +288,12 @@ class SurvivalGameSimple:
         if not self.ppu:
             return
         
+        # Add energy flicker effect when low
+        if self.player_physics.energy < 10.0:
+            # Random flicker for low energy
+            if random.random() < 0.3:  # 30% chance to flicker
+                return  # Skip this frame for flicker effect
+        
         # Convert asteroids to DTO format
         asteroid_dto_list = []
         for asteroid in self.asteroids:
@@ -317,6 +323,47 @@ class SurvivalGameSimple:
         
         # Send to SimplePPU - ZERO circular dependencies!
         self.ppu.render(dto)
+    
+    def _process_narrative_outcome(self) -> None:
+        """Process game outcome through narrative bridge"""
+        # Create extraction result
+        result = ExtractionResult(
+            success=(self.game_state == GameState.VICTORY),
+            final_mass=self.player_physics.mass,
+            energy_remaining=self.player_physics.energy,
+            distance_traveled=self.distance_traveled,
+            asteroid_hits=self.asteroid_hits,
+            survival_time=self.game_time,
+            clone_number=1  # Will be updated by narrative bridge on failures
+        )
+        
+        # Process through narrative bridge
+        outcome = process_extraction_result(result)
+        
+        if outcome["type"] == "success":
+            # VICTORY - Show loot summary and story
+            logger.success("🎉 EXTRACTION COMPLETE!")
+            logger.success(f"📊 Loot Summary:")
+            logger.success(f"   Scrap Collected: {outcome['scrap_collected']:.1f}")
+            logger.success(f"   Credits Earned: {outcome['credits_earned']}")
+            logger.success(f"   Total Extractions: {outcome['total_extractions']}")
+            
+            # Show unlocked stories
+            if outcome["new_stories"]:
+                logger.info(f"📖 New Stories Unlocked: {', '.join(outcome['new_stories'])}")
+            
+            # Show random story snippet
+            story_snippet = get_random_story_snippet()
+            if story_snippet:
+                logger.info("📚 Story Archive Entry:")
+                logger.info(f"   {story_snippet}")
+                
+        else:
+            # FAILURE - Show med-bay log
+            logger.error("💥 DE-SYNC DETECTED!")
+            logger.error(f"🏥 Med-Bay Log - Clone #{outcome['clone_number']}")
+            logger.error(f"   {outcome['med_bay_log']}")
+            logger.info("🔄 New clone activated. Return to the extraction zone.")
     
     async def run_game(self) -> None:
         """Run the game loop with SimplePPU"""
@@ -352,16 +399,11 @@ class SurvivalGameSimple:
             # Control frame rate
             await asyncio.sleep(1/60)  # 60 FPS
         
-        # Show final result
-        if self.game_state == GameState.VICTORY:
-            logger.success("🎉 VICTORY! Extraction complete!")
-            logger.success(f"📊 Final Stats: Time={self.game_time:.1f}s, Mass={self.player_physics.mass:.1f}, Energy={self.player_physics.energy:.1f}%")
-        elif self.game_state == GameState.FAILURE:
-            logger.error("💥 FAILURE! De-sync detected!")
-            logger.info("🏥 Returning to Med-Bay for repairs...")
+        # Process narrative outcome
+        self._process_narrative_outcome()
         
         # Keep window open for a moment to see final state
-        await asyncio.sleep(2.0)
+        await asyncio.sleep(3.0)
     
     def cleanup(self) -> None:
         """Clean up resources"""
