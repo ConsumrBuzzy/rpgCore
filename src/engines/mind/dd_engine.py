@@ -17,12 +17,11 @@ from collections import deque
 
 from loguru import logger
 
-from core.state import (
+from engines.kernel.state import (
     GameState, IntentType, Command, CommandResult, IntentValidation
 )
-from core.constants import INTENT_COOLDOWN_MS
-from core.system_config import MindConfig
-from utils.asset_loader import AssetLoader
+from foundation.constants import INTENT_COOLDOWN_MS
+from foundation.utils import AssetLoader
 from .combat_resolver import CombatResolver
 
 
