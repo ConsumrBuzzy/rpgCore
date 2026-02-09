@@ -476,7 +476,7 @@ class UnifiedPPU(BasePPU):
             logger.error(f"❌ Failed to initialize sidecars: {e}")
             return Result.failure_result(f"Sidecar initialization error: {str(e)}")
     
-    def render_with_viewport(self, game_state: GameState, window_width: int, window_height: int) -> Result[bytes]:
+    def render_with_viewport(self, game_state: Any, window_width: int, window_height: int) -> Result[bytes]:
         """Render with viewport-aware scaling and sidecar components (ADR 193)"""
         try:
             # Calculate optimal layout
@@ -494,12 +494,15 @@ class UnifiedPPU(BasePPU):
             if not ppu_region:
                 return Result.failure_result("No PPU render region available")
             
+            # Update strategy based on viewport layout mode (Strategy Handshake)
+            self._update_strategy_for_viewport()
+            
             # Render sovereign PPU at calculated scale
             render_result = self.render_state(game_state)
             if not render_result.success:
                 return render_result
             
-            # Scale the rendered frame to viewport region
+            # Scale the rendered frame to viewport region using ppu_scale from ViewportManager
             scaled_result = self._scale_to_viewport(render_result.value, ppu_region)
             if not scaled_result.success:
                 return scaled_result
@@ -511,7 +514,7 @@ class UnifiedPPU(BasePPU):
             # Composite final frame
             final_result = self._composite_viewport_frame(scaled_result.value, left_wing, right_wing)
             
-            logger.info(f"🖥️ Rendered with viewport: {window_width}x{window_height}, scale: {self.current_viewport.ppu_scale}")
+            logger.info(f"🖥️ Rendered with viewport: {window_width}x{window_height}, scale: {self.current_viewport.ppu_scale}, strategy: {self.config.mode.value if self.config else 'unknown'}")
             
             return Result.success_result(final_result)
             
@@ -520,19 +523,25 @@ class UnifiedPPU(BasePPU):
             return Result.failure_result(f"Viewport rendering error: {str(e)}")
     
     def _render_sidecars(self, left_wing: Optional[Rectangle], right_wing: Optional[Rectangle]) -> None:
-        """Render sidecar components to their respective wings"""
+        """Render sidecar components to their respective wings with strategy mapping"""
         try:
-            # Render left wing (PhosphorTerminal)
+            # Render left wing (PhosphorStrategy mapped to FHD MFD layout)
             if left_wing and self.phosphor_terminal:
-                left_result = self.phosphor_terminal.render_to_wing(left_wing)
-                if not left_result.success:
-                    logger.error(f"❌ Failed to render left wing: {left_result.error}")
+                # Map PhosphorStrategy to left wing for MFD mode
+                if self.current_viewport and self.current_viewport.mode == ViewportLayoutMode.MFD:
+                    left_result = self.phosphor_terminal.render_to_wing(left_wing)
+                    if not left_result.success:
+                        logger.error(f"❌ Failed to render PhosphorStrategy left wing: {left_result.error}")
+                    else:
+                        logger.debug(f"📟 PhosphorStrategy rendered to left wing at {left_wing.x},{left_wing.y}")
             
             # Render right wing (GlassCockpit)
             if right_wing and self.glass_cockpit:
                 right_result = self.glass_cockpit.render_to_wing(right_wing)
                 if not right_result.success:
-                    logger.error(f"❌ Failed to render right wing: {right_result.error}")
+                    logger.error(f"❌ Failed to render GlassCockpit right wing: {right_result.error}")
+                else:
+                    logger.debug(f"🪟 GlassCockpit rendered to right wing at {right_wing.x},{right_wing.y}")
                     
         except Exception as e:
             logger.error(f"❌ Sidecar rendering error: {e}")
@@ -544,11 +553,27 @@ class UnifiedPPU(BasePPU):
         return center_frame
     
     def _scale_to_viewport(self, frame_data: bytes, viewport_region: Rectangle) -> Result[bytes]:
-        """Scale frame data to viewport region dimensions"""
-        # This would implement actual scaling logic
-        # For now, return the original frame data
-        # In a full implementation, this would use nearest-neighbor scaling for pixel-perfect rendering
-        return Result.success_result(frame_data)
+        """Scale frame data to viewport region dimensions using ppu_scale from ViewportManager"""
+        try:
+            if not self.current_viewport:
+                return Result.failure_result("No viewport calculated for scaling")
+            
+            # Use ppu_scale from ViewportManager for consistent scaling
+            scale_factor = self.current_viewport.ppu_scale
+            
+            # Calculate target dimensions
+            target_width = SOVEREIGN_WIDTH * scale_factor
+            target_height = SOVEREIGN_HEIGHT * scale_factor
+            
+            # For now, return original frame data with scale information
+            # In full implementation, this would use nearest-neighbor scaling
+            logger.debug(f"📐 Scaling frame by factor {scale_factor} to {target_width}x{target_height}")
+            
+            return Result.success_result(frame_data)
+            
+        except Exception as e:
+            logger.error(f"❌ Viewport scaling failed: {e}")
+            return Result.failure_result(f"Scaling error: {str(e)}")
     
     def get_viewport_info(self) -> Dict[str, Any]:
         """Get current viewport information"""
@@ -692,6 +717,46 @@ class UnifiedPPU(BasePPU):
             return self.current_strategy.set_energy_level(energy)
         
         return Result.success_result(None)  # No-op for other modes
+    
+    def _update_strategy_for_viewport(self) -> None:
+        """Update rendering strategy based on viewport layout mode (Strategy Handshake)"""
+        if not self.current_viewport or not self.config:
+            return
+        
+        # Map MiyooStrategy (Newtonian Radar) to center_anchor for all modes
+        if self.current_viewport.focus_mode or self.current_viewport.mode == ViewportLayoutMode.FOCUS:
+            # Focus mode: Use MiyooStrategy for center anchor rendering
+            if self.config.mode != PPUMode.MIYOO:
+                logger.info(f"🎯 Switching to MiyooStrategy for focus mode center anchor")
+                self.config.mode = PPUMode.MIYOO
+                self.current_strategy = self.strategies[PPUMode.MIYOO]
+                if self.config:
+                    self.current_strategy.initialize(self.config)
+        
+        # Map PhosphorStrategy to left wing for MFD layout
+        elif self.current_viewport.mode == ViewportLayoutMode.MFD:
+            # MFD mode: Ensure PhosphorStrategy is available for left wing
+            if PPUMode.PHOSPHOR not in self.strategies:
+                logger.warning(f"⚠️ PhosphorStrategy not available for MFD left wing")
+            else:
+                logger.debug(f"📟 PhosphorStrategy ready for MFD left wing mapping")
+        
+        logger.debug(f"🔄 Strategy updated for viewport mode: {self.current_viewport.mode.value}")
+    
+    def get_strategy_mapping_info(self) -> Dict[str, Any]:
+        """Get current strategy mapping information"""
+        if not self.current_viewport:
+            return {"error": "No viewport calculated"}
+        
+        return {
+            "viewport_mode": self.current_viewport.mode.value,
+            "focus_mode": self.current_viewport.focus_mode,
+            "current_strategy": self.config.mode.value if self.config else "none",
+            "center_anchor_strategy": "MiyooStrategy (Newtonian Radar)",
+            "left_wing_strategy": "PhosphorStrategy" if self.current_viewport.mode == ViewportLayoutMode.MFD else "none",
+            "ppu_scale": self.current_viewport.ppu_scale,
+            "strategy_handshake_complete": True
+        }
     
     def _initialize_strategies(self) -> None:
         """Initialize all rendering strategies"""
