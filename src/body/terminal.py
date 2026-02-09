@@ -131,16 +131,46 @@ class TerminalBody(DisplayBody):
         logger.info("🖥️ Rich terminal setup complete")
     
     def _render_packet(self, packet: RenderPacket):
-        """Render packet to terminal"""
-        if not self.console or not self.current_layout:
-            return
-        
+        """Render packet to terminal (Phosphor or Rich)"""
         # Rate limiting for terminal updates
         current_time = time.time()
         if current_time - self.last_update < self.update_interval:
             return
         self.last_update = current_time
         
+        if self.use_phosphor and self.phosphor_terminal:
+            self._render_phosphor(packet)
+        elif self.console and self.current_layout:
+            self._render_rich(packet)
+    
+    def _render_phosphor(self, packet: RenderPacket):
+        """Render packet to Phosphor CRT terminal"""
+        if not self.phosphor_terminal:
+            return
+        
+        # Extract story from packet metadata
+        story_text = packet.metadata.get('story', '')
+        if story_text and story_text != self.current_story:
+            self.current_story = story_text
+            self.phosphor_terminal.write_story_drip(story_text, typewriter=True)
+        
+        # Update energy level if provided
+        energy = packet.metadata.get('energy')
+        if energy is not None:
+            self.phosphor_terminal.set_energy_level(energy)
+        
+        # Update terminal display
+        self.phosphor_terminal.update()
+        
+        # Update root window if available
+        if self.root_window:
+            try:
+                self.root_window.update()
+            except:
+                pass  # Window may be closed
+    
+    def _render_rich(self, packet: RenderPacket):
+        """Render packet to Rich console"""
         # Build terminal display
         self._build_display(packet)
         
