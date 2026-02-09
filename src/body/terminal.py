@@ -294,8 +294,19 @@ class TerminalBody(DisplayBody):
             self.live_display.stop()
             self.live_display = None
         
+        if self.phosphor_terminal:
+            self.phosphor_terminal = None
+        
+        if self.root_window:
+            try:
+                self.root_window.quit()
+                self.root_window.destroy()
+            except:
+                pass
+            self.root_window = None
+        
         if self.console:
-            self.console.print("🧹 Terminal display stopped", style="dim")
+            self.console.print("🧹 Phosphor Terminal stopped", style="dim")
     
     def render_table(self, title: str, data: Dict[str, Any], style: str = "default") -> bool:
         """Convenience method to render a table"""
