@@ -96,22 +96,22 @@ class ScrapEntity(SpaceEntity):
         if scrap_type is None:
             scrap_type = ScrapType.get_random_type()
         
-        # Initialize as custom entity type
-        super().__init__(
-            entity_type=EntityType.SHIP,  # Reuse ship entity type for now
-            position=position,
-            velocity=Vector2.zero(),  # Scrap doesn't move initially
-            heading=0.0
-        )
-        
         # Scrap-specific properties
         self.scrap_type = scrap_type
         self.scrap_value = ScrapType.get_value(scrap_type)
         self.scrap_color = ScrapType.get_color(scrap_type)
         self.scrap_size = ScrapType.get_size(scrap_type)
         
+        # Initialize as custom entity type
+        super().__init__(
+            entity_type=EntityType.SHIP,  # Reuse ship entity type for now
+            position=position,
+            velocity=Vector2.zero(),  # Scrap doesn't move initially
+            heading=0.0,
+            radius=float(self.scrap_size)
+        )
+        
         # Override entity properties for scrap
-        self.radius = float(self.scrap_size)
         self.mass = 0.1
         self.color = self.scrap_color
         
