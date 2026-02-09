@@ -313,7 +313,11 @@ class TriModalEngine:
         """Set display mode"""
         try:
             if self.dispatcher:
-                return self.dispatcher.set_mode(mode)
+                success = self.dispatcher.set_mode(mode)
+                if success:
+                    return Result(success=True, value=None)
+                else:
+                    return Result(success=False, error="Failed to set display mode")
             return Result(success=False, error="No dispatcher available")
         except Exception as e:
             return Result(success=False, error=str(e))

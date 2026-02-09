@@ -320,6 +320,11 @@ def create_ppu_packet(layers: list[Dict[str, Any]], hud_lines: list[str] = None)
     
     return RenderPacket(mode=DisplayMode.PPU, layers=render_layers, hud=hud)
 
+    def update_mfd_data(self, mfd_data: Dict[str, Any]) -> None:
+        """Update MFD data for current display body"""
+        if self.active_body and hasattr(self.active_body, 'update_mfd_data'):
+            self.active_body.update_mfd_data(mfd_data)
+
 def create_terminal_packet(data: Dict[str, Any], title: str = "") -> RenderPacket:
     """Create a terminal render packet"""
     layers = [RenderLayer(
