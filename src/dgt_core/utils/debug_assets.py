@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from graphics.ppu_tk_native import NativeTkinterPPU
-from core.system_config import create_default_config
+from src.dgt_core.kernel.config import create_default_config
 from assets.parser import AssetParser
 from assets.fabricator_tkinter import AssetFabricator
 from assets.registry import AssetRegistry
