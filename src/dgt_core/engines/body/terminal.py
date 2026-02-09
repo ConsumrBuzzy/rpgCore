@@ -25,6 +25,15 @@ try:
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
+    # Create fallback classes
+    Console = None
+    Table = None
+    Panel = None
+    Progress = None
+    Live = None
+    Layout = None
+    Text = None
+    Align = None
 
 from loguru import logger
 
