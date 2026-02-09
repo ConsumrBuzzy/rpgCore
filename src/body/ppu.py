@@ -17,21 +17,46 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from loguru import logger
 
+# Define fallback classes first
+@dataclass
+class RenderEntity:
+    """Fallback entity data for rendering"""
+    world_pos: Tuple[int, int]
+    sprite_id: str
+
+class RenderLayer:
+    """Fallback render layer enum"""
+    BACKGROUND = 0
+    FRINGE = 1
+    EFFECTS = 2
+    UI = 3
+
+class CanvasEntity:
+    """Fallback canvas entity"""
+    pass
+
+# Try to import real PPU components
 try:
-    # Import existing PPU components
-    from graphics.ppu_tk_native import NativeTkinterPPU, RenderEntity, RenderLayer, CanvasEntity
+    from graphics.ppu_tk_native import NativeTkinterPPU, RenderEntity as RealRenderEntity, RenderLayer as RealRenderLayer, CanvasEntity as RealCanvasEntity
     from tools.dithering_engine import DitheringEngine, TemplateGenerator
     PPU_AVAILABLE = True
+    # Use real classes
+    RenderEntity = RealRenderEntity
+    RenderLayer = RealRenderLayer
+    CanvasEntity = RealCanvasEntity
 except ImportError as e:
     logger.warning(f"⚠️ PPU components not available: {e}")
     PPU_AVAILABLE = False
     
-    # Dummy classes for type hinting if PPU is missing
-    class RenderLayer:
-        BACKGROUND = 0
-        FRINGE = 1
-        EFFECTS = 2
-        UI = 3
+    # Fallback classes already defined above
+    class DitheringEngine:
+        pass
+    
+    class TemplateGenerator:
+        pass
+    
+    class NativeTkinterPPU:
+        pass
 
 from .dispatcher import DisplayBody, RenderPacket, HUDData
 
