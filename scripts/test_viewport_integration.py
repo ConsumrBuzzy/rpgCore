@@ -89,10 +89,10 @@ class ViewportLayoutMode:
 
 # Fallback scale buckets
 FALLBACK_SCALE_BUCKETS = [
-    {"resolution": "Miyoo", "width": 320, "height": 240, "scale": 1, "mode": "focus"},
-    {"resolution": "HD", "width": 1280, "height": 720, "scale": 4, "mode": "dashboard"},
-    {"resolution": "FHD", "width": 1920, "height": 1080, "scale": 7, "mode": "mfd"},
-    {"resolution": "QHD", "width": 2560, "height": 1440, "scale": 9, "mode": "sovereign"}
+    {"resolution": "Miyoo", "width": 320, "height": 240, "scale": 1, "mode": "focus", "wing_width": 0},
+    {"resolution": "HD", "width": 1280, "height": 720, "scale": 4, "mode": "dashboard", "wing_width": 160},
+    {"resolution": "FHD", "width": 1920, "height": 1080, "scale": 7, "mode": "mfd", "wing_width": 360},
+    {"resolution": "QHD", "width": 2560, "height": 1440, "scale": 9, "mode": "sovereign", "wing_width": 560}
 ]
 
 # Replace STANDARD_SCALE_BUCKETS with fallback
