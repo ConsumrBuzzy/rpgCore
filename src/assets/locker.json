@@ -1,14 +1,47 @@
 {
   "player_stats": {
-    "total_scrap_collected": 0,
-    "successful_extractions": 0,
-    "failed_attempts": 0,
-    "clone_number": 1,
-    "highest_mass_achieved": 0.0,
-    "total_distance_traveled": 0.0,
-    "credits": 0
+    "total_scrap_collected": 16.5,
+    "successful_extractions": 3,
+    "failed_attempts": 1,
+    "clone_number": 2,
+    "highest_mass_achieved": 18.2,
+    "total_distance_traveled": 510.0,
+    "credits": 165
   },
-  "recent_extractions": [],
-  "unlocked_stories": [],
-  "med_bay_logs": []
+  "recent_extractions": [
+    {
+      "timestamp": 1770601838.8738582,
+      "mass": 12.5,
+      "scrap": 2.5,
+      "credits": 25,
+      "survival_time": 64.28837301536008,
+      "energy_remaining": 85.0
+    },
+    {
+      "timestamp": 1770601838.8858552,
+      "mass": 15.8,
+      "scrap": 5.800000000000001,
+      "credits": 58,
+      "survival_time": 63.6192822068588,
+      "energy_remaining": 92.0
+    },
+    {
+      "timestamp": 1770601838.8984804,
+      "mass": 18.2,
+      "scrap": 8.2,
+      "credits": 82,
+      "survival_time": 61.82812648697888,
+      "energy_remaining": 78.0
+    }
+  ],
+  "unlocked_stories": [
+    "first_extraction.md"
+  ],
+  "med_bay_logs": [
+    {
+      "timestamp": 1770601838.9109666,
+      "clone_number": 2,
+      "log": "Neural pathways recalibrated. Previous clone suffered de-sync at velocity 10.7."
+    }
+  ]
 }
