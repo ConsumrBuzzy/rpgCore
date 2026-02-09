@@ -25,7 +25,7 @@ from .logger import (
     log_function_calls, log_performance_metrics
 )
 
-from .asset_loader import AssetLoader, ObjectRegistry
+from .asset_loader import AssetLoader, ObjectRegistry, AssetDefinition
 
 __all__ = [
     # Persistence
@@ -40,5 +40,5 @@ __all__ = [
     "log_function_calls", "log_performance_metrics",
     
     # Asset Loader
-    "AssetLoader", "ObjectRegistry"
+    "AssetLoader", "ObjectRegistry", "AssetDefinition"
 ]
