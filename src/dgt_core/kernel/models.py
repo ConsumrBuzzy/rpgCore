@@ -447,3 +447,200 @@ def create_asset_registry(assets_dir: Optional[str] = None) -> AssetRegistry:
 
 # Global instance
 asset_registry = create_asset_registry()
+
+
+# === ADR 193: Sovereign Viewport Protocol ===
+# Context-Aware Scaling and Layout Management
+
+from typing import Optional
+from pydantic import BaseModel, Field, validator
+
+
+class Point(BaseModel):
+    """2D point coordinate"""
+    x: int
+    y: int
+
+
+class Rectangle(BaseModel):
+    """Rectangle region with position and dimensions"""
+    x: int
+    y: int
+    width: int
+    height: int
+    
+    @property
+    def center(self) -> Point:
+        """Get center point of rectangle"""
+        return Point(x=self.x + self.width // 2, y=self.y + self.height // 2)
+    
+    @property
+    def right(self) -> int:
+        """Get right edge coordinate"""
+        return self.x + self.width
+    
+    @property
+    def bottom(self) -> int:
+        """Get bottom edge coordinate"""
+        return self.y + self.height
+
+
+class ViewportLayoutMode(str, Enum):
+    """Viewport layout modes for different screen sizes"""
+    FOCUS = "focus"          # Center only (handheld)
+    DASHBOARD = "dashboard"  # HD display
+    MFD = "mfd"             # Full HD display
+    SOVEREIGN = "sovereign"  # Ultra-wide display
+
+
+class ViewportLayout(BaseModel):
+    """Viewport layout configuration in kernel - ADR 193"""
+    
+    # Layout regions
+    center_anchor: Point = Field(description="Center anchor point for PPU")
+    left_wing: Rectangle = Field(description="Left wing region")
+    right_wing: Rectangle = Field(description="Right wing region")
+    
+    # Scaling configuration
+    ppu_scale: int = Field(ge=1, le=16, description="Integer scale for sovereign PPU")
+    wing_scale: float = Field(ge=0.1, le=4.0, description="Flexible scale for sidecars")
+    
+    # Layout mode
+    mode: ViewportLayoutMode = Field(description="Current layout mode")
+    
+    # Responsive settings
+    focus_mode: bool = Field(default=False, description="Small screen overlay mode")
+    overlay_alpha: float = Field(default=0.8, ge=0.1, le=1.0, description="Overlay transparency")
+    
+    # Window dimensions
+    window_width: int = Field(description="Total window width")
+    window_height: int = Field(description="Total window height")
+    
+    class Config:
+        """Pydantic configuration"""
+        validate_assignment = True
+        use_enum_values = True
+    
+    @validator('window_width', 'window_height')
+    def validate_window_dimensions(cls, v):
+        """Validate window dimensions are positive"""
+        if v <= 0:
+            raise ValueError("Window dimensions must be positive")
+        return v
+    
+    @validator('ppu_scale')
+    def validate_ppu_scale(cls, v, values):
+        """Validate PPU scale fits in window"""
+        if 'window_height' in values:
+            max_scale = values['window_height'] // 144  # SOVEREIGN_HEIGHT
+            if v > max_scale:
+                raise ValueError(f"PPU scale {v} too large for window height {values['window_height']}")
+        return v
+    
+    def validate(self) -> bool:
+        """Validate layout configuration"""
+        # Check if center region fits in window
+        center_right = self.center_anchor.x + (160 * self.ppu_scale)  # SOVEREIGN_WIDTH
+        center_bottom = self.center_anchor.y + (144 * self.ppu_scale)  # SOVEREIGN_HEIGHT
+        
+        if center_right > self.window_width or center_bottom > self.window_height:
+            return False
+        
+        # Check if wings don't overlap center
+        if self.left_wing.right > self.center_anchor.x:
+            return False
+        
+        if self.right_wing.x < self.center_anchor.x + (160 * self.ppu_scale):
+            return False
+        
+        # Check if wings fit in window
+        if self.right_wing.right > self.window_width:
+            return False
+        
+        # Validate focus mode consistency
+        if self.mode == ViewportLayoutMode.FOCUS and not self.focus_mode:
+            return False
+        
+        return True
+    
+    def get_total_width(self) -> int:
+        """Get total width of all regions"""
+        return max(
+            self.window_width,
+            self.right_wing.right,
+            self.center_anchor.x + (160 * self.ppu_scale) + self.right_wing.width
+        )
+    
+    def get_total_height(self) -> int:
+        """Get total height of all regions"""
+        return max(
+            self.window_height,
+            max(self.left_wing.bottom, self.center_anchor.y + (144 * self.ppu_scale), self.right_wing.bottom)
+        )
+
+
+class ScaleBucket(BaseModel):
+    """Scale bucket for responsive design"""
+    
+    resolution: str = Field(description="Resolution name (e.g., 'HD', 'FHD')")
+    width: int = Field(description="Window width")
+    height: int = Field(description="Window height")
+    layout_mode: ViewportLayoutMode = Field(description="Recommended layout mode")
+    ppu_scale: int = Field(description="Recommended PPU scale")
+    wing_width: int = Field(description="Recommended wing width")
+    
+    class Config:
+        """Pydantic configuration"""
+        validate_assignment = True
+        use_enum_values = True
+
+
+# Standard scale buckets (ADR 193)
+STANDARD_SCALE_BUCKETS = [
+    ScaleBucket(
+        resolution="Miyoo",
+        width=320,
+        height=240,
+        layout_mode=ViewportLayoutMode.FOCUS,
+        ppu_scale=1,
+        wing_width=0
+    ),
+    ScaleBucket(
+        resolution="HD",
+        width=1280,
+        height=720,
+        layout_mode=ViewportLayoutMode.DASHBOARD,
+        ppu_scale=4,
+        wing_width=160
+    ),
+    ScaleBucket(
+        resolution="FHD",
+        width=1920,
+        height=1080,
+        layout_mode=ViewportLayoutMode.MFD,
+        ppu_scale=7,
+        wing_width=360
+    ),
+    ScaleBucket(
+        resolution="QHD",
+        width=2560,
+        height=1440,
+        layout_mode=ViewportLayoutMode.SOVEREIGN,
+        ppu_scale=9,
+        wing_width=560
+    )
+]
+
+
+class OverlayComponent(BaseModel):
+    """Overlay component for small screen focus mode"""
+    
+    name: str = Field(description="Overlay component name")
+    alpha: float = Field(default=0.8, ge=0.1, le=1.0, description="Overlay transparency")
+    z_index: int = Field(default=1000, description="Z-index for rendering order")
+    slide_animation: bool = Field(default=True, description="Enable slide animation")
+    visible: bool = Field(default=False, description="Overlay visibility")
+    
+    class Config:
+        """Pydantic configuration"""
+        validate_assignment = True
