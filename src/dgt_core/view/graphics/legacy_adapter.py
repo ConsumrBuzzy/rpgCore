@@ -25,7 +25,7 @@ from loguru import logger
 
 # === KERNEL BRIDGE IMPORTS ===
 # Importing from the new DGT Kernel instead of legacy src.core
-from src.dgt_core.kernel.state import (
+from engines.kernel.state import (
     GameState, TileType, BiomeType, SubtitleEvent, Entity,
     VIEWPORT_WIDTH_PIXELS, VIEWPORT_HEIGHT_PIXELS,
     TILE_SIZE_PIXELS, VIEWPORT_TILES_X, VIEWPORT_TILES_Y,

@@ -18,7 +18,7 @@ from .models import (
     ViewportLayout, ViewportLayoutMode, Rectangle, Point,
     ScaleBucket, STANDARD_SCALE_BUCKETS, OverlayComponent
 )
-from ..foundation.types import Result
+from foundation.interfaces.protocols import Result
 
 
 class ViewportManager:
