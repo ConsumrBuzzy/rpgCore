@@ -26,8 +26,8 @@ import time
 from .space_entity import SpaceEntity, EntityType
 from .vector2 import Vector2
 from .scrap_entity import ScrapEntity, ScrapLocker
-from ...dgt_core.kernel.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
-from ...dgt_core.foundation.types import Result
+from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from foundation.types import Result
 
 
 @dataclass
