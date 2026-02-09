@@ -35,17 +35,18 @@ try:
     from dgt_core.kernel.constants import TARGET_FPS, FRAME_DELAY_MS
 except ImportError as e:
     logger.warning(f"⚠️ Could not import DGT kernel state: {e}")
-    # Fallback imports
+    # Use foundation constants as fallback
     try:
-        from src.dgt_core.kernel.state import (
-            GameState, TileType, BiomeType, SubtitleEvent, Entity,
-            VIEWPORT_WIDTH_PIXELS, VIEWPORT_HEIGHT_PIXELS,
-            TILE_SIZE_PIXELS, VIEWPORT_TILES_X, VIEWPORT_TILES_Y,
-            RENDER_LAYERS, COLOR_PALETTE, RenderLayer
-        )
-        from src.dgt_core.kernel.constants import TARGET_FPS, FRAME_DELAY_MS
+        from src.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+        TARGET_FPS = 60
+        FRAME_DELAY_MS = 16
+        VIEWPORT_WIDTH_PIXELS = SOVEREIGN_WIDTH
+        VIEWPORT_HEIGHT_PIXELS = SOVEREIGN_HEIGHT
+        TILE_SIZE_PIXELS = 8
+        VIEWPORT_TILES_X = VIEWPORT_WIDTH_PIXELS // TILE_SIZE_PIXELS
+        VIEWPORT_TILES_Y = VIEWPORT_HEIGHT_PIXELS // TILE_SIZE_PIXELS
     except ImportError:
-        logger.error("❌ Could not import any kernel state components")
+        logger.error("❌ Could not import foundation constants")
         # Define fallback constants
         TARGET_FPS = 60
         FRAME_DELAY_MS = 16
