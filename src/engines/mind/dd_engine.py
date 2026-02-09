@@ -179,7 +179,7 @@ class BinaryROM:
         return self.interaction_triggers.get(position, [])
 
 
-class DD_Engine:
+class DDEngine:
     """Deterministic D20 logic and state management"""
     
     def __init__(self, assets_path: str, world_engine: Optional['WorldEngine'] = None):
