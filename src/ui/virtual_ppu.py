@@ -12,8 +12,8 @@ import time
 
 from loguru import logger
 
-from ui.pixel_renderer import PixelRenderer, Pixel
-from ui.tile_bank import TileBank, TileType
+from engines.graphics.pixel_renderer import PixelRenderer, Pixel
+from engines.graphics.tile_bank import TileBank, TileType
 from models.metasprite import Metasprite, MetaspriteConfig, CharacterRole
 from foundation.interfaces.visuals import AnimationState, SpriteCoordinate
 from ui.palette_manager import PaletteManager, PaletteType

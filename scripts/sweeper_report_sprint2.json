@@ -1,14 +1,14 @@
 {
   "summary": {
-    "total_modules": 214,
+    "total_modules": 218,
     "tier_distribution": {
       "application": 92,
-      "engine": 95,
+      "engine": 99,
       "foundation": 27
     },
     "tier_size_kb": {
-      "application": 1270.7,
-      "engine": 1126.5,
+      "application": 1236.2,
+      "engine": 1162.6,
       "foundation": 266.0
     }
   },
@@ -134,14 +134,6 @@
       "severity": "HAZARDOUS"
     },
     {
-      "source": "logic/animator.py",
-      "source_tier": "engine",
-      "target": "ui/tile_bank.py",
-      "target_tier": "application",
-      "import": "ui.tile_bank",
-      "severity": "HAZARDOUS"
-    },
-    {
       "source": "models/asset_loader.py",
       "source_tier": "engine",
       "target": "interfaces/__init__.py",
@@ -163,22 +155,6 @@
       "target": "interfaces/__init__.py",
       "target_tier": "application",
       "import": "interfaces",
-      "severity": "HAZARDOUS"
-    },
-    {
-      "source": "models/metasprite.py",
-      "source_tier": "engine",
-      "target": "ui/pixel_renderer.py",
-      "target_tier": "application",
-      "import": "ui.pixel_renderer",
-      "severity": "HAZARDOUS"
-    },
-    {
-      "source": "models/metasprite.py",
-      "source_tier": "engine",
-      "target": "ui/tile_bank.py",
-      "target_tier": "application",
-      "import": "ui.tile_bank",
       "severity": "HAZARDOUS"
     },
     {
@@ -385,7 +361,7 @@
       "module": "logic.animator",
       "path": "logic/animator.py",
       "tier": "engine",
-      "size_bytes": 16632,
+      "size_bytes": 16646,
       "line_count": 454
     },
     {
@@ -487,13 +463,6 @@
       "line_count": 384
     },
     {
-      "module": "engines.kernel.constants",
-      "path": "engines/kernel/constants.py",
-      "tier": "engine",
-      "size_bytes": 14349,
-      "line_count": 465
-    },
-    {
       "module": "ui.pixel_viewport",
       "path": "ui/pixel_viewport.py",
       "tier": "application",
@@ -543,6 +512,13 @@
       "line_count": 367
     },
     {
+      "module": "engines.body.tri_modal_engine",
+      "path": "engines/body/tri_modal_engine.py",
+      "tier": "engine",
+      "size_bytes": 13584,
+      "line_count": 364
+    },
+    {
       "module": "ui.phosphor_terminal",
       "path": "ui/phosphor_terminal.py",
       "tier": "application",
@@ -555,13 +531,6 @@
       "tier": "application",
       "size_bytes": 13562,
       "line_count": 404
-    },
-    {
-      "module": "engines.body.tri_modal_engine",
-      "path": "engines/body/tri_modal_engine.py",
-      "tier": "engine",
-      "size_bytes": 13554,
-      "line_count": 364
     },
     {
       "module": "assets.sovereign_schema",
@@ -872,13 +841,6 @@
       "line_count": 277
     },
     {
-      "module": "engines.kernel.config",
-      "path": "engines/kernel/config.py",
-      "tier": "engine",
-      "size_bytes": 9208,
-      "line_count": 249
-    },
-    {
       "module": "engines.kernel.batch_processor",
       "path": "engines/kernel/batch_processor.py",
       "tier": "engine",
@@ -1117,7 +1079,7 @@
       "module": "actors.voyager",
       "path": "actors/voyager.py",
       "tier": "application",
-      "size_kb": 32.1,
+      "size_kb": 32.2,
       "lines": 780,
       "classes": 3,
       "functions": 35,
@@ -1279,6 +1241,17 @@
       "imported_by_count": 0
     },
     {
+      "module": "engines.graphics.tile_bank",
+      "path": "engines/graphics/tile_bank.py",
+      "tier": "engine",
+      "size_kb": 22.9,
+      "lines": 638,
+      "classes": 3,
+      "functions": 29,
+      "imports_count": 5,
+      "imported_by_count": 4
+    },
+    {
       "module": "ui.palette_manager",
       "path": "ui/palette_manager.py",
       "tier": "application",
@@ -1299,17 +1272,6 @@
       "functions": 28,
       "imports_count": 14,
       "imported_by_count": 1
-    },
-    {
-      "module": "ui.tile_bank",
-      "path": "ui/tile_bank.py",
-      "tier": "application",
-      "size_kb": 22.2,
-      "lines": 637,
-      "classes": 3,
-      "functions": 29,
-      "imports_count": 5,
-      "imported_by_count": 5
     },
     {
       "module": "engines.body.graphics_engine",
@@ -1474,7 +1436,7 @@
       "classes": 32,
       "functions": 28,
       "imports_count": 4,
-      "imported_by_count": 4
+      "imported_by_count": 6
     },
     {
       "module": "ui.dashboard",

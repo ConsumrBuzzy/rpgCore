@@ -11,8 +11,8 @@ from enum import Enum
 
 from loguru import logger
 
-from ui.pixel_renderer import Pixel, ColorPalette
-from ui.tile_bank import TileBank, TileType
+from engines.graphics.pixel_renderer import Pixel, ColorPalette
+from engines.graphics.tile_bank import TileBank, TileType
 
 
 class SpriteTilePosition(Enum):

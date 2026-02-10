@@ -13,7 +13,7 @@ import time
 from loguru import logger
 
 from models.metasprite import Metasprite, MetaspriteConfig, CharacterRole
-from ui.tile_bank import TileBank, TileType
+from engines.graphics.tile_bank import TileBank, TileType
 from foundation.interfaces.visuals import AnimationState, SpriteCoordinate
 
 
