@@ -32,6 +32,11 @@ from .entity_protocol import (
     AsteroidEntityProtocol,
 )
 
+from .visuals import (
+    AnimationState,
+    SpriteCoordinate,
+)
+
 from foundation.base import (
     BaseEngine,
     BaseRenderer,
@@ -58,6 +63,10 @@ __all__ = [
     "ScrapEntityProtocol",
     "ShipEntityProtocol",
     "AsteroidEntityProtocol",
+    
+    # Visual Shared Types
+    "AnimationState",
+    "SpriteCoordinate",
     
     # Abstract Base Classes
     "BaseEngine",
