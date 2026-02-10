@@ -28,12 +28,12 @@ from engines.kernel.config import VoyagerConfig
 from narrative.chronos import ChronosEngine, ChronosEngineFactory
 
 # Body — pathfinding and navigation primitives
-from actors.voyager_navigation import (
+from actors.pawn_navigation import (
     NavigationGoal, PathfindingNode, PathfindingNavigator, IntentGenerator
 )
 
 
-class Voyager:
+class AIController:
     """Autonomous pathfinding and intent generation with STATE_PONDERING support"""
     
     def __init__(self, config_or_dd_engine, dd_engine=None, chronos_engine=None):
@@ -93,7 +93,7 @@ class Voyager:
         
         self.is_idle = False
 
-        logger.info("🚶 Voyager initialized - STATE_PONDERING support ready")
+        logger.info("🧠 AIController initialized - Industrialization Pivot active")
 
     # === FACADE INTERFACE ===
 
@@ -730,51 +730,51 @@ class Voyager:
 
 
 # Factory for creating Voyager instances
-class VoyagerFactory:
-    """Factory for creating Voyager instances"""
+class Spawner:
+    """Factory for creating AIController instances"""
     
     @staticmethod
-    def create_voyager(config_or_dd_engine, dd_engine=None, chronos_engine=None) -> Voyager:
-        """Create a Voyager with configuration or dependencies"""
+    def create_controller(config_or_dd_engine, dd_engine=None, chronos_engine=None) -> AIController:
+        """Create a AIController with configuration or dependencies"""
         if hasattr(config_or_dd_engine, 'seed'):
             # It's a VoyagerConfig object
             config = config_or_dd_engine
-            return Voyager(config, dd_engine, chronos_engine)
+            return AIController(config, dd_engine, chronos_engine)
         else:
             # Legacy mode - first arg is dd_engine
-            return Voyager(config_or_dd_engine, dd_engine, chronos_engine)
+            return AIController(config_or_dd_engine, dd_engine, chronos_engine)
     
     @staticmethod
-    def create_test_voyager(dd_engine) -> Voyager:
-        """Create a Voyager for testing"""
-        voyager = Voyager(dd_engine)
+    def create_test_controller(dd_engine) -> AIController:
+        """Create a AIController for testing"""
+        controller = AIController(dd_engine)
         # Add test-specific configuration
-        return voyager
+        return controller
 
 
 # === SYNCHRONOUS WRAPPER ===
 
-class VoyagerSync:
-    """Synchronous wrapper for Voyager (for compatibility)"""
+class AIControllerSync:
+    """Synchronous wrapper for AIController (for compatibility)"""
     
-    def __init__(self, voyager: Voyager):
-        self.voyager = voyager
+    def __init__(self, controller: AIController):
+        self.controller = controller
         self._loop = asyncio.new_event_loop()
     
     def generate_next_intent(self, game_state: GameState) -> Optional[Union[MovementIntent, InteractionIntent, PonderIntent]]:
         """Synchronous generate_next_intent"""
         return self._loop.run_until_complete(
-            self.voyager.generate_next_intent(game_state)
+            self.controller.generate_next_intent(game_state)
         )
     
     def generate_movement_intent(self, target_position: Tuple[int, int]) -> Optional[MovementIntent]:
         """Synchronous generate_movement_intent"""
         return self._loop.run_until_complete(
-            self.voyager.generate_movement_intent(target_position)
+            self.controller.generate_movement_intent(target_position)
         )
     
     def submit_intent(self, intent: Union[MovementIntent, InteractionIntent, PonderIntent]) -> bool:
         """Synchronous submit_intent"""
         return self._loop.run_until_complete(
-            self.voyager.submit_intent(intent)
+            self.controller.submit_intent(intent)
         )

@@ -62,10 +62,184 @@ except ImportError:
 
 # Import actor
 try:
-    from actors import Voyager, VoyagerFactory
+    from actors import AIController, Spawner
 except ImportError:
     # Fallback for development
-    from actors.voyager import Voyager, VoyagerFactory
+    from actors.ai_controller import AIController, Spawner
+
+# ...
+
+class DGTSystem:
+    """Main DGT Autonomous Movie System"""
+    
+    def __init__(self) -> None:
+        self.heartbeat: Optional[HeartbeatController] = None
+        self.running = False
+        
+        # Pillar instances
+        self.world_engine: Optional[WorldEngine] = None
+        self.dd_engine: Optional[DDEngine] = None
+        self.graphics_engine: Optional[GraphicsEngine] = None
+        self.ai_controller: Optional[AIController] = None
+        
+        # ...
+
+    async def initialize(self, config: SystemConfig) -> bool:
+        # ...
+            # Initialize AI Controller (Actor Pillar)
+            self.ai_controller = Spawner.create_controller(self.dd_engine, self.chronos_engine)
+            logger.info("🧠 AI Controller initialized")
+            
+            # Connect pillars with dependency injection
+            self.world_engine.set_chronos_engine(self.chronos_engine)
+        # ...
+    
+    async def _register_services(self) -> None:
+        # ...
+        # Register all services with heartbeat
+        self.heartbeat.register_services(
+            world_engine=self.world_engine,
+            dd_engine=self.dd_engine,
+            ai_controller=self.ai_controller,  # Renamed from voyager
+            graphics_engine=self.graphics_engine,
+            chronos_engine=self.chronos_engine,
+            persona_engine=self.persona_engine,
+            chronicler=None,  # Not implemented yet
+            persistence_manager=None  # Not implemented yet
+        )
+        # ...
+
+    async def _configure_tavern_scene(self) -> None:
+        """Configure tavern scene with autonomous navigation"""
+        if not self.ai_controller:
+            return
+        
+        # Set tavern-specific movie script
+        tavern_script = [
+            (10, 25),  # Forest edge
+            (10, 20),  # Town gate  
+            (10, 10),  # Town square
+            (20, 10),  # Tavern entrance
+            (25, 30),  # Tavern interior
+            (32, 32),  # Iron Chest (target)
+        ]
+        
+        # Update AIController's movie script
+        self.ai_controller.movie_script = tavern_script
+        self.ai_controller.current_script_index = 0
+        
+        # Set initial position
+        self.ai_controller.current_position = (10, 25)
+        
+        logger.info("🍺 Tavern scene configured - Iron Chest at (32, 32)")
+    
+    async def _configure_forest_scene(self) -> None:
+        """Configure forest scene"""
+        if not self.ai_controller:
+            return
+        
+        # Set forest-specific navigation
+        forest_script = [
+            (10, 25),  # Starting position
+            (15, 30),  # Forest clearing
+            (20, 35),  # Ancient tree
+            (25, 25),  # Hidden path
+        ]
+        
+        self.ai_controller.movie_script = forest_script
+        self.ai_controller.current_script_index = 0
+        
+        self.ai_controller.current_position = (10, 25)
+        
+        logger.info("🌲 Forest scene configured")
+
+    async def _run_simple_autonomous_loop(self) -> None:
+        # ...
+                # Generate next intent
+                if self.ai_controller:
+                    if self.performance_monitor:
+                        self.performance_monitor.start_pillar("ai_controller")
+                    
+                    try:
+                        intent = await self.circuit_manager.call_pillar(
+                            "ai_controller", self.ai_controller.generate_next_intent, state
+                        )
+                        if intent:
+                            success = await self.circuit_manager.call_pillar(
+                                "ai_controller", self.ai_controller.submit_intent, intent
+                            )
+                            logger.info(f"🎯 Intent: {intent.intent_type}, Success: {success}")
+                    except Exception as e:
+                        logger.error(f"💥 AIController failed: {e}")
+                    
+                    if self.performance_monitor:
+                        self.performance_monitor.end_pillar("ai_controller")
+        # ...
+
+    async def _run_tavern_chest_scenario(self) -> None:
+        """Run tavern chest opening scenario"""
+        if not self.ai_controller:
+            return
+        
+        # Navigate to tavern
+        logger.info("🍺 Navigating to tavern...")
+        await self.ai_controller.navigate_to_position((25, 30))
+        
+        # Navigate to chest
+        logger.info("📦 Navigating to iron chest...")
+        await self.ai_controller.navigate_to_position((32, 32))
+        
+        # Interact with chest
+        logger.info("🔓 Opening iron chest...")
+        await self.ai_controller.interact_with_entity("iron_chest", "open")
+
+    async def _run_forest_scenario(self) -> None:
+        """Run forest exploration scenario"""
+        if not self.ai_controller:
+            return
+        
+        # Explore forest locations
+        locations = [(15, 30), (20, 35), (25, 25), (30, 20)]
+        
+        for location in locations:
+            logger.info(f"🌲 Exploring location: {location}")
+            await self.ai_controller.navigate_to_position(location)
+            await asyncio.sleep(1)
+
+    async def _run_town_scenario(self) -> None:
+        """Run town navigation scenario"""
+        if not self.ai_controller:
+            return
+        
+        # Navigate town landmarks
+        landmarks = [
+            ((10, 10), "town_square"),
+            ((15, 15), "market"),
+            ((20, 10), "tavern_entrance"),
+            ((10, 20), "town_gate")
+        ]
+        
+        for position, name in landmarks:
+            logger.info(f"🏘️ Visiting: {name}")
+            await self.ai_controller.navigate_to_position(position)
+            await asyncio.sleep(1)
+    
+    def get_status(self) -> SystemStatus:
+        """Get system status"""
+        status = {
+            "running": self.running,
+            "heartbeat_active": self.heartbeat.is_running() if self.heartbeat else False,
+            "pillars": {
+                "world_engine": self.world_engine is not None,
+                "dd_engine": self.dd_engine is not None,
+                "graphics_engine": self.graphics_engine is not None,
+                "ai_controller": self.ai_controller is not None,
+                "chronos_engine": self.chronos_engine is not None,
+                "persona_engine": self.persona_engine is not None
+            },
+            "config": self.config
+        }
+        # ...
 
 # Import utilities
 try:

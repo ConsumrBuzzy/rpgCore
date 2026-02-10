@@ -67,8 +67,8 @@ class PersonaConfig:
 
 
 @dataclass
-class VoyagerConfig:
-    """Voyager Actor configuration"""
+class AIConfig:
+    """AI Controller configuration"""
     seed: str
     movement_range: int = 1
     pathfinding_timeout: float = 30.0
@@ -87,7 +87,7 @@ class SystemConfig:
     body: BodyConfig = field(default_factory=BodyConfig)
     chronos: ChronosConfig = field(default_factory=lambda: ChronosConfig(seed="SEED_ZERO"))
     persona: PersonaConfig = field(default_factory=lambda: PersonaConfig(seed="SEED_ZERO"))
-    voyager: VoyagerConfig = field(default_factory=lambda: VoyagerConfig(seed="SEED_ZERO"))
+    ai: AIConfig = field(default_factory=lambda: AIConfig(seed="SEED_ZERO"))
     
     # System settings
     target_fps: int = 60
@@ -108,7 +108,7 @@ class SystemConfig:
         self.mind.seed = self.seed
         self.chronos.seed = self.seed
         self.persona.seed = self.seed
-        self.voyager.seed = self.seed
+        self.ai.seed = self.seed
     
     @classmethod
     def from_yaml(cls, config_path: Path, seed: str) -> 'SystemConfig':
