@@ -9,7 +9,7 @@ from typing import Optional
 
 # Tri-Modal Display Suite
 from .dispatcher import DisplayDispatcher, DisplayMode, RenderPacket
-from .ppu import PPUBody, create_ppu_body
+from .unified_ppu import UnifiedPPU as PPUBody, create_unified_ppu as create_ppu_body
 from .terminal import TerminalBody, create_terminal_body
 from .cockpit import CockpitBody, create_cockpit_body
 

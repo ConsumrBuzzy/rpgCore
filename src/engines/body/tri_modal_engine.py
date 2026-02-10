@@ -22,7 +22,7 @@ try:
     from body.dispatcher import DisplayDispatcher, DisplayMode, RenderPacket
     from .terminal import create_terminal_body
     from .cockpit import create_cockpit_body
-    from .ppu import create_ppu_body
+    from .unified_ppu import create_unified_ppu as create_ppu_body
     TRI_MODAL_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"⚠️ Tri-Modal Display Suite not available: {e}")
