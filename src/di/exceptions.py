@@ -8,7 +8,7 @@ following the Result[T] pattern.
 """
 
 from typing import Optional, List, Tuple
-from ..interfaces.protocols import Result
+from foundation.interfaces.protocols import Result
 
 
 class DIError(Exception):

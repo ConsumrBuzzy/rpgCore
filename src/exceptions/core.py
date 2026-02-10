@@ -8,7 +8,7 @@ for predictable error handling across all components.
 """
 
 from typing import Optional, Dict, Any, List
-from ..interfaces.protocols import Result, ValidationResult
+from foundation.interfaces.protocols import Result, ValidationResult
 
 
 class DGTException(Exception):

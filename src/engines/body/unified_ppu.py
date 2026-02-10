@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 
 from loguru import logger
 
-from ....interfaces.protocols import PPUProtocol, Result, ValidationResult
+from foundation.interfaces.protocols import PPUProtocol, Result, ValidationResult
 from ....abc.base import BasePPU
 from ....exceptions.core import PPUException, create_ppu_exception
 from ....kernel.models import ViewportLayout, ViewportLayoutMode, Rectangle, Point

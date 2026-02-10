@@ -21,7 +21,7 @@ from enum import Enum
 import time
 
 from .asteroids_strategy import AsteroidsStrategy
-from ....interfaces.protocols import Result
+from foundation.interfaces.protocols import Result
 
 
 class InputKey(Enum):

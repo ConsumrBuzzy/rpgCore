@@ -18,7 +18,7 @@ if str(src_path) not in sys.path:
 
 from di.container import DIContainer, LifetimeScope
 from di.exceptions import DIError
-from interfaces.protocols import (
+from foundation.interfaces.protocols import (
     PhysicsProtocol, SpaceEntityProtocol, ScrapProtocol,
     TerminalHandshakeProtocol, Result
 )

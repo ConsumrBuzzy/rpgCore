@@ -14,7 +14,7 @@ import threading
 import inspect
 from collections import defaultdict, deque
 
-from ..interfaces.protocols import Result, DIProtocol
+from foundation.interfaces.protocols import Result, DIProtocol
 from .exceptions import (
     DIError, RegistrationError, ResolutionError, 
     CircularDependencyError, InitializationError, LifecycleError
