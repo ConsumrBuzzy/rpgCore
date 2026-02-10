@@ -26,7 +26,7 @@ from loguru import logger
 from engines.kernel.state import (
     GameState, InterestPoint, validate_position, BiomeType, InterestType
 )
-from dgt_core.kernel.config import ChronosConfig, SystemConfig
+from engines.kernel.config import ChronosConfig, SystemConfig
 from narrative.persona import PersonaEngine, FactionType
 
 
