@@ -373,12 +373,16 @@ PALETTE = {
 SCALE = 4  # 160×144 → 640×576
 
 
+from actors.asteroid_pilot import AsteroidPilot, SurvivalLog
+
+
 class VisualRunner:
     """Wraps AsteroidsSlice with a tkinter game loop and key input."""
 
-    def __init__(self, slice_sim: AsteroidsSlice) -> None:
+    def __init__(self, slice_sim: AsteroidsSlice, pilot: Optional[AsteroidPilot] = None) -> None:
         self.sim = slice_sim
         self.dt = 1.0 / 60.0
+        self.pilot = pilot  # If set, AI is in control
 
         # Input state (held keys)
         self._thrust = False
@@ -393,7 +397,10 @@ class VisualRunner:
         win_h = HEIGHT * SCALE
 
         self.root = tk.Tk()
-        self.root.title("Asteroids Stress Test — Kinetic Alignment")
+        title = "Asteroids — Kinetic Alignment"
+        if self.pilot:
+            title += " (AI AUTOPILOT)"
+        self.root.title(title)
         self.root.resizable(False, False)
         self.root.configure(bg="black")
 
@@ -427,7 +434,7 @@ class VisualRunner:
         self.root.bind("<KeyRelease-Up>", lambda e: self._set_thrust(False))
         self.root.bind("<Escape>", lambda e: self.root.destroy())
 
-        # Disable automatic waypoint navigation — player is in control
+        # Disable automatic waypoint navigation — player/pilot is in control
         self.sim.waypoint = None
 
         # Kick off the game loop
@@ -451,24 +458,40 @@ class VisualRunner:
         """One frame: input → physics → render → blit."""
         t0 = time.time()
 
-        # Apply player input to ship kinetics
-        rot_speed = 4.0  # rad/s
-        if self._rotate_left:
-            self.sim.ship.kinetics.angular_velocity = -rot_speed
-        elif self._rotate_right:
-            self.sim.ship.kinetics.angular_velocity = rot_speed
-        else:
-            self.sim.ship.kinetics.angular_velocity = 0.0
-
-        if self._thrust:
-            self.sim.ship.kinetics.set_thrust(
-                self.sim.ship.kinetics.max_velocity * 0.6
+        is_thrusting = False
+        
+        if self.pilot:
+            # AI Control
+            steering = self.pilot.compute_steering(
+                self.sim.ship.kinetics, 
+                self.sim.asteroids, 
+                (WIDTH, HEIGHT)
             )
+            # Apply using the helper that simulates turning + thrust
+            AsteroidPilot.apply_to_ship(steering, self.sim.ship.kinetics, self.dt)
+            
+            # Check if we are thrusting for VFX
+            # We assume if acceleration is significant, we are thrusting
+            is_thrusting = self.sim.ship.kinetics.acceleration.magnitude() > 10.0
+            
         else:
-            self.sim.ship.kinetics.acceleration = Vector2.zero()
+            # Manual Control
+            rot_speed = 4.0  # rad/s
+            if self._rotate_left:
+                self.sim.ship.kinetics.angular_velocity = -rot_speed
+            elif self._rotate_right:
+                self.sim.ship.kinetics.angular_velocity = rot_speed
+            else:
+                self.sim.ship.kinetics.angular_velocity = 0.0
 
-        # Override waypoint-based autopilot — manual mode
-        is_thrusting = self._thrust
+            if self._thrust:
+                self.sim.ship.kinetics.set_thrust(
+                    self.sim.ship.kinetics.max_velocity * 0.6
+                )
+            else:
+                self.sim.ship.kinetics.acceleration = Vector2.zero()
+
+            is_thrusting = self._thrust
 
         # Physics
         self.sim.ship.kinetics.update(self.dt)
@@ -490,10 +513,18 @@ class VisualRunner:
 
         # Collision
         self.sim._check_collisions()
+        
+        # Track AI collisions if pilot exists
+        if self.pilot and self.sim.collisions > self.pilot.log.total_collisions:
+             self.pilot.log.total_collisions = self.sim.collisions
 
         # Render to buffer
         self.sim._render_frame()
         self.sim.frame_count += 1
+        
+        # Draw explicit waypoint for AI visualization if present
+        if self.pilot and self.pilot.waypoint:
+            self.sim._draw_circle(self.pilot.waypoint, 2, color=3) # Amber waypoint
 
         # Blit to PhotoImage
         self._blit_frame()
@@ -502,14 +533,14 @@ class VisualRunner:
         elapsed_ms = (time.time() - t0) * 1000
         fps = 1000.0 / max(elapsed_ms, 0.001)
         particles = self.sim.exhaust.total_particles
+        
+        status = f"FPS: {fps:.0f} | Parts: {particles} | Hits: {self.sim.collisions}"
+        if self.pilot:
+            status += f" | AI: {self.pilot.log.frames_survived // 60}s"
+            
         self.canvas.itemconfig(
             self._hud,
-            text=(
-                f"FPS: {fps:.0f}  |  "
-                f"Particles: {particles}  |  "
-                f"Collisions: {self.sim.collisions}  |  "
-                f"Frame: {self.sim.frame_count}"
-            ),
+            text=status,
         )
 
         # Schedule next frame (16ms ≈ 60Hz)
@@ -540,17 +571,72 @@ class VisualRunner:
 # CLI entry point
 # ---------------------------------------------------------------------------
 
+def run_ai_headless(frames: int = 3600) -> None:
+    """Run a 60-second headless AI survival benchmark."""
+    print(f"🤖 AI AUTOPILOT ENGAGED — Surviving {frames} frames ({frames/60:.1f}s)...")
+    
+    sim = AsteroidsSlice(asteroid_count=50)
+    sim.spawn_asteroid_field()
+    sim.wire_exhaust()
+    
+    pilot = AsteroidPilot()
+    sim.waypoint = None # Disable standard autopilot
+    
+    dt = 1.0 / 60.0
+    
+    t0 = time.time()
+    
+    for _ in range(frames):
+        # AI decision
+        steering = pilot.compute_steering(sim.ship.kinetics, sim.asteroids, (WIDTH, HEIGHT))
+        AsteroidPilot.apply_to_ship(steering, sim.ship.kinetics, dt)
+        
+        # Physics
+        sim.ship.kinetics.update(dt)
+        for asteroid in sim.asteroids:
+            if asteroid.active:
+                asteroid.kinetics.update(dt)
+                
+        # Collisions
+        sim._check_collisions()
+        pilot.log.total_collisions = sim.collisions
+        
+    elapsed = time.time() - t0
+    
+    print("\n" + "=" * 60)
+    print("  🤖 AI SURVIVAL LOG")
+    print("=" * 60)
+    log = pilot.log.to_dict()
+    for k, v in log.items():
+        print(f"  {k:<25}: {v}")
+    print("-" * 60)
+    print(f"  Sim time: {elapsed:.3f}s ({(frames/elapsed):.1f} FPS)")
+    
+    if log["total_collisions"] == 0:
+        print("  ✅ SUCCESS — Zero collisions!")
+    else:
+        print(f"  ⚠️  FAIL — {log['total_collisions']} collisions detected.")
+    print("=" * 60)
+
+
 def main() -> None:
     """Run the Asteroids Stress Test.
 
     Usage:
         python -m apps.space.asteroids_slice            # headless benchmark
-        python -m apps.space.asteroids_slice --visual    # TK window
+        python -m apps.space.asteroids_slice --visual   # TK window
+        python -m apps.space.asteroids_slice --ai       # AI survival (headless)
+        python -m apps.space.asteroids_slice --ai --visual # AI survival (visual)
     """
     logger.remove()
     logger.add(sys.stderr, level="WARNING")
 
     visual = "--visual" in sys.argv
+    ai_mode = "--ai" in sys.argv
+
+    if ai_mode and not visual:
+        run_ai_headless()
+        return
 
     s = AsteroidsSlice(asteroid_count=50)
 
@@ -558,13 +644,16 @@ def main() -> None:
         # Setup entities but skip perf monitor (realtime mode)
         s.spawn_asteroid_field()
         s.wire_exhaust()
-        runner = VisualRunner(s)
+        
+        pilot = AsteroidPilot() if ai_mode else None
+        
+        runner = VisualRunner(s, pilot=pilot)
         runner.launch()
     else:
         report = s.run(frames=300)
 
         print("\n" + "=" * 60)
-        print("  ASTEROIDS STRESS TEST - PERFORMANCE REPORT")
+        print("  🚀 ASTEROIDS STRESS TEST — PERFORMANCE REPORT")
         print("=" * 60)
         print(f"  Frames rendered : {report['frames_rendered']}")
         print(f"  Total collisions: {report['total_collisions']}")
@@ -591,7 +680,3 @@ def main() -> None:
         else:
             print(f"  WARN - avg {report['avg_frame_time_ms']:.3f} ms exceeds {budget_ms:.1f} ms budget")
         print()
-
-
-if __name__ == "__main__":
-    main()
