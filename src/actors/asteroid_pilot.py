@@ -112,6 +112,108 @@ class AsteroidPilot:
         self.log = SurvivalLog()
         self._current_waypoint: Optional[Vector2] = None
 
+    def _get_toroidal_vector(self, source: Vector2, target: Vector2, bounds: Tuple[int, int]) -> Vector2:
+        """
+        Calculate the shortest vector from source to target in toroidal space.
+        ADR 195: Modular Arithmetic for Navigation.
+        """
+        width, height = bounds
+        dx = target.x - source.x
+        dy = target.y - source.y
+        
+        # Wrap X shortest path
+        if dx > width / 2:
+            dx -= width
+        elif dx < -width / 2:
+            dx += width
+            
+        # Wrap Y shortest path
+        if dy > height / 2:
+            dy -= height
+        elif dy < -height / 2:
+            dy += height
+            
+        return Vector2(dx, dy)
+
+    def _select_new_waypoint(
+        self,
+        ship_position: Vector2,
+        asteroids: List,
+        bounds: Tuple[int, int],
+    ) -> None:
+        """Pick a waypoint that is far from nearby asteroids, using toroidal distance."""
+        margin = self.config.waypoint_margin
+        safety = self.config.waypoint_safety_radius
+        w, h = bounds
+
+        best_wp = None
+        best_clearance = -1.0
+
+        # Try 10 random candidates, pick the safest
+        for _ in range(10):
+            candidate = Vector2(
+                random.uniform(margin, w - margin),
+                random.uniform(margin, h - margin),
+            )
+            # Minimum toroidal distance to any asteroid
+            min_dist = float("inf")
+            for asteroid in asteroids:
+                vec_to_ast = self._get_toroidal_vector(candidate, asteroid.kinetics.position, bounds)
+                d = vec_to_ast.magnitude()
+                if d < min_dist:
+                    min_dist = d
+
+            if min_dist > best_clearance:
+                best_clearance = min_dist
+                best_wp = candidate
+        
+        self._current_waypoint = best_wp or Vector2(w / 2, h / 2)
+
+
+    def _avoid(self, ship: KineticEntity, asteroids: List, bounds: Tuple[int, int]) -> Tuple[Vector2, float, bool]:
+        """Calculates repulsion vector from nearby threats (Toroidal aware)."""
+        avoid_vector = Vector2.zero()
+        nearest_dist = float('inf')
+        is_dodging = False
+        
+        # Standard constants for tuning (could move to config)
+        lookahead = self.config.avoid_radius # Pixels
+        
+        for asteroid in asteroids:
+            if not asteroid.active:
+                continue
+                
+            # Use toroidal vector for distance
+            vec_to_asteroid = self._get_toroidal_vector(ship.position, asteroid.kinetics.position, bounds)
+            dist = vec_to_asteroid.magnitude()
+            
+            # Account for asteroid radius
+            surface_dist = dist - asteroid.radius
+            if surface_dist < 0.1:
+                surface_dist = 0.1 # Prevent division by zero or negative
+            
+            nearest_dist = min(nearest_dist, surface_dist)
+            
+            # If threat is within lookahead
+            if surface_dist < lookahead:
+                # Calculate threat level (inverse square law for stronger close-range repulsion)
+                # Using the original urgency power for consistency
+                strength = 1.0 / (surface_dist ** self.config.avoid_urgency_power)
+                
+                # Direction AWAY from asteroid (normalized)
+                # vec_to_asteroid points AT the asteroid, so negate it
+                flee_dir = vec_to_asteroid.normalize() * -1
+                
+                # Weight by strength
+                avoid_vector += flee_dir * strength
+                is_dodging = True
+                
+        # Normalize result if any avoidance happened and apply overall avoid_weight
+        if is_dodging:
+            avoid_vector = avoid_vector.normalize() * self.config.avoid_weight
+            
+        return avoid_vector, nearest_dist, is_dodging
+
     # -- Core steering -------------------------------------------------------
 
     def compute_steering(
@@ -120,29 +222,30 @@ class AsteroidPilot:
         asteroids: List,  # List[Asteroid] — kept loose to avoid circular import
         bounds: Tuple[int, int] = (160, 144),
     ) -> Vector2:
-        """Compute the combined steering force for this frame.
-
-        Returns a Vector2 to be applied as the ship's acceleration.
         """
-        # Ensure we have a waypoint
+        Main decision loop: blend Seeking + Avoiding.
+        Returns: Steering force vector (truncated to max_force).
+        """
+        # 0. Update internal state if needed (e.g., select new waypoint)
         if self._current_waypoint is None:
-            self._current_waypoint = self._pick_safe_waypoint(
-                ship.position, asteroids, bounds
-            )
-
-        # Check if we've reached current waypoint
-        dist_to_wp = ship.position.distance_to(self._current_waypoint)
-        if dist_to_wp < self.config.arrival_radius:
+            self._select_new_waypoint(ship.position, asteroids, bounds)
+            
+        # Check waypoint arrival (using toroidal distance too for consistency)
+        vec_to_wp = self._get_toroidal_vector(ship.position, self._current_waypoint, bounds)
+        dist_to_wp = vec_to_wp.magnitude()
+            
+        if dist_to_wp < self.config.waypoint_tolerance:
             self.log.waypoints_reached += 1
-            self._current_waypoint = self._pick_safe_waypoint(
-                ship.position, asteroids, bounds
-            )
-
+            self._select_new_waypoint(ship.position, asteroids, bounds)
+            
         # 1. Seek — steer toward waypoint
-        seek_force = self._seek(ship, self._current_waypoint)
+        # Re-calculate with possibly new waypoint
+        seek_vector = self._get_toroidal_vector(ship.position, self._current_waypoint, bounds)
+        desired_velocity = seek_vector.normalize() * ship.max_velocity
+        seek_force = (desired_velocity - ship.velocity) * self.config.seek_weight
 
         # 2. Avoid — repulsion from nearby asteroids
-        avoid_force, nearest_dist, is_dodging = self._avoid(ship, asteroids)
+        avoid_force, nearest_dist, is_dodging = self._avoid(ship, asteroids, bounds)
 
         # Track closest call
         if nearest_dist < self.log.closest_call_distance:

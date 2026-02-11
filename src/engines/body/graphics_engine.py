@@ -37,7 +37,10 @@ except ImportError as e:
     logger.warning(f"⚠️ Could not import DGT kernel state: {e}")
     # Use foundation constants as fallback
     try:
-        from src.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+        try:
+            from src.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+        except ImportError:
+            from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
         TARGET_FPS = 60
         FRAME_DELAY_MS = 16
         VIEWPORT_WIDTH_PIXELS = SOVEREIGN_WIDTH
