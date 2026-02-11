@@ -19,6 +19,9 @@ from engines.body.kinetics import KineticEntity
 from foundation.vector import Vector2
 from .ship_genetics import ShipGenome, HullType, WeaponType, EngineType
 
+print("DEBUG: Importing apps.space.space_voyager_engine")
+import sys; sys.stdout.flush()
+
 
 # ---------------------------------------------------------------------------
 # SpaceShip — Tier 3 Entity composing Tier 2 KineticEntity
