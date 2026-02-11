@@ -68,11 +68,17 @@ class AsteroidsSlice:
     """
 
     def __init__(self, asteroid_count: int = 50) -> None:
+        import sys
+        print("DEBUG: AsteroidsSlice.__init__ start")
+        sys.stdout.flush()
+        
         self.asteroid_count = asteroid_count
 
         # Import SpaceShip lazily to avoid heavy import chains at module level
         from apps.space.space_voyager_engine import SpaceShip
         from apps.space.ship_genetics import ShipGenome
+        print("DEBUG: Lazy imports done")
+        sys.stdout.flush()
 
         # --- Entities ---
         ship_kinetics = KineticEntity(
@@ -80,15 +86,27 @@ class AsteroidsSlice:
             velocity=Vector2.zero(),
             wrap_bounds=(WIDTH, HEIGHT),
         )
+        
+        print("DEBUG: Creating ShipGenome...")
+        sys.stdout.flush()
+        genome = ShipGenome()
+        print("DEBUG: ShipGenome created")
+        sys.stdout.flush()
+
         self.ship: SpaceShip = SpaceShip(
             ship_id="player_001",
-            genome=ShipGenome(),
+            genome=genome,
             kinetics=ship_kinetics,
         )
+        print("DEBUG: SpaceShip created")
+        sys.stdout.flush()
+        
         self.asteroids: List[Asteroid] = []
 
         # --- VFX ---
         self.exhaust = ExhaustSystem()
+        print("DEBUG: ExhaustSystem created")
+        sys.stdout.flush()
 
         # --- Rendering ---
         self.frame_buffer = bytearray(WIDTH * HEIGHT)
@@ -103,6 +121,8 @@ class AsteroidsSlice:
             random.uniform(20, WIDTH - 20),
             random.uniform(20, HEIGHT - 20),
         )
+        print("DEBUG: AsteroidsSlice.__init__ complete")
+        sys.stdout.flush()
 
     # -- Setup ---------------------------------------------------------------
 
@@ -574,12 +594,14 @@ class VisualRunner:
 
 def run_ai_headless(frames: int = 3600) -> None:
     """Run a 60-second headless AI survival benchmark."""
+    import sys # Added for stdout.flush()
     print(f"🤖 AI AUTOPILOT ENGAGED — Surviving {frames} frames ({frames/60:.1f}s)...")
     
     try:
         sim = AsteroidsSlice(asteroid_count=50)
         sim.spawn_asteroid_field()
         print(f"DEBUG: Spawned {len(sim.asteroids)} asteroids.")
+        sys.stdout.flush()
         sim.wire_exhaust()
         
         pilot = AsteroidPilot()
@@ -615,19 +637,27 @@ def run_ai_headless(frames: int = 3600) -> None:
         
     elapsed = time.time() - t0
     
-    print("\n" + "=" * 60)
-    print("  🤖 AI SURVIVAL LOG")
-    print("=" * 60)
-    log = pilot.log.to_dict()
-    for k, v in log.items():
-        print(f"  {k:<25}: {v}")
-    print("-" * 60)
-    print(f"  Sim time: {elapsed:.3f}s ({(frames/elapsed):.1f} FPS)")
+    elapsed = time.time() - t0
     
-    if log["total_collisions"] == 0:
-        print("  ✅ SUCCESS — Zero collisions!")
-    else:
-        print(f"  ⚠️  FAIL — {log['total_collisions']} collisions detected.")
+    # Write to file to bypass console issues
+    with open("ai_telemetry_final.txt", "w", encoding="utf-8") as f:
+        f.write("=" * 60 + "\n")
+        f.write("  🤖 AI SURVIVAL LOG\n")
+        f.write("=" * 60 + "\n")
+        log = pilot.log.to_dict()
+        for k, v in log.items():
+            f.write(f"  {k:<25}: {v}\n")
+        f.write("-" * 60 + "\n")
+        f.write(f"  Sim time: {elapsed:.3f}s ({(frames/elapsed):.1f} FPS)\n")
+        
+        if log["total_collisions"] == 0:
+            f.write("  ✅ SUCCESS — Zero collisions!\n")
+        else:
+            f.write(f"  ⚠️  FAIL — {log['total_collisions']} collisions detected.\n")
+        f.write("=" * 60 + "\n")
+
+    print("\n" + "=" * 60)
+    print("  🤖 AI SURVIVAL LOG WRITTEN TO ai_telemetry_final.txt")
     print("=" * 60)
 
 
