@@ -575,31 +575,41 @@ def run_ai_headless(frames: int = 3600) -> None:
     """Run a 60-second headless AI survival benchmark."""
     print(f"🤖 AI AUTOPILOT ENGAGED — Surviving {frames} frames ({frames/60:.1f}s)...")
     
-    sim = AsteroidsSlice(asteroid_count=50)
-    sim.spawn_asteroid_field()
-    sim.wire_exhaust()
-    
-    pilot = AsteroidPilot()
-    sim.waypoint = None # Disable standard autopilot
-    
-    dt = 1.0 / 60.0
-    
-    t0 = time.time()
-    
-    for _ in range(frames):
-        # AI decision
-        steering = pilot.compute_steering(sim.ship.kinetics, sim.asteroids, (WIDTH, HEIGHT))
-        AsteroidPilot.apply_to_ship(steering, sim.ship.kinetics, dt)
+    try:
+        sim = AsteroidsSlice(asteroid_count=50)
+        sim.spawn_asteroid_field()
+        sim.wire_exhaust()
         
-        # Physics
-        sim.ship.kinetics.update(dt)
-        for asteroid in sim.asteroids:
-            if asteroid.active:
-                asteroid.kinetics.update(dt)
+        pilot = AsteroidPilot()
+        sim.waypoint = None # Disable standard autopilot
+        
+        dt = 1.0 / 60.0
+        
+        t0 = time.time()
+        
+        for i in range(frames):
+            if i % 600 == 0:
+                print(f"  Frame {i}/{frames}...")
                 
-        # Collisions
-        sim._check_collisions()
-        pilot.log.total_collisions = sim.collisions
+            # AI decision
+            steering = pilot.compute_steering(sim.ship.kinetics, sim.asteroids, (WIDTH, HEIGHT))
+            AsteroidPilot.apply_to_ship(steering, sim.ship.kinetics, dt)
+            
+            # Physics
+            sim.ship.kinetics.update(dt)
+            for asteroid in sim.asteroids:
+                if asteroid.active:
+                    asteroid.kinetics.update(dt)
+                    
+            # Collisions
+            sim._check_collisions()
+            pilot.log.total_collisions = sim.collisions
+            
+    except Exception as e:
+        print(f"❌ CRASH: {e}")
+        import traceback
+        traceback.print_exc()
+        return
         
     elapsed = time.time() - t0
     
