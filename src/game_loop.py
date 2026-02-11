@@ -117,14 +117,22 @@ class GameREPL:
         # Initialize Quartermaster (Logic)
         self.quartermaster = Quartermaster()
         
-        # Initialize Voyager (auto-play agent) if in auto mode
+        # Initialize AI Controller (Deterministic Auto-Play)
         self.auto_mode = auto_mode
-        self.voyager = None
+        self.ai_controller = None
         if auto_mode:
-            from voyager_sync import SyncVoyagerAgent
-            self.console.print(f"[magenta]Loading Voyager (Deterministic Auto-Play) with '{personality}' personality...[/magenta]")
-            # Model name is ignored by Deterministic Voyager
-            self.voyager = SyncVoyagerAgent(personality=personality, model_name="llama3.2:1b")
+            from actors import AIControllerSync, AIController, Spawner
+            self.console.print(f"[magenta]Loading AI Controller (Deterministic Auto-Play) with '{personality}' personality...[/magenta]")
+            
+            # Using the Sync wrapper for compatibility with the loop's synchronous nature
+            from engines.kernel.config import AIConfig
+            config = AIConfig(seed="SEED_ZERO") 
+            # We need to pass the dd_engine if available, but it's initialized inside GameState or separately?
+            # In this REPL, we have self.arbiter and self.chronicler. 
+            # The AIController needs access to game state, which is passed in decide_action methods.
+            
+            base_controller = Spawner.create_controller(config) # Minimal init
+            self.ai_controller = AIControllerSync(base_controller)
         
         self.turn_history: list[str] = []
         
@@ -570,26 +578,27 @@ class GameREPL:
                 room = self.state.rooms.get(self.state.current_room)
                 room_tags = room.tags if room else []
                 
-                self.console.print("\n[bold blue]⚙️ Voyager thinking (Deterministic)...[/bold blue]")
-                decision = self.voyager.decide_action_sync(
-                    scene_context=scene_context,
-                    player_stats=player_stats,
-                    turn_history=self.turn_history,
-                    room_tags=room_tags,
-                    goal_stack=self.state.goal_stack
-                )
+                self.console.print("\n[bold blue]⚙️ AI Controller thinking (Deterministic)...[/bold blue]")
                 
-                player_input = decision.action
+                # Adapting to AIControllerSync -> returns intent object
+                intent = self.ai_controller.generate_next_intent(self.state)
                 
-                # Stutter check
-                if self.turn_history and self.turn_history[-1] == player_input:
-                    self.console.print("[yellow]⚠️  Stutter detected! Forcing random variation...[/yellow]")
-                    player_input = "I look around the room carefully"
+                player_input = "wait" # Default
+                internal_monologue = "No intent generated."
+                
+                if intent:
+                    # simplistic adaptation: internal intent to text command
+                    if hasattr(intent, 'intent_type'):
+                        if intent.intent_type == 'movement':
+                            player_input = f"move to {intent.target_position}"
+                        elif intent.intent_type == 'interaction':
+                             player_input = f"interact with {intent.target_entity}"
+                        
+                    internal_monologue = f"Executing {intent}"
                 
                 # QA Trace
-                self.console.print(f"\n[bold green]🗣️  VOYAGER ({decision.selected_action_id})[/bold green]: \"{player_input}\"")
-                self.console.print(f"[dim]💭 Thought: {decision.internal_monologue}[/dim]")
-                self.console.print(f"[dim]🧠 Strategy: {decision.strategic_reasoning}[/dim]")
+                self.console.print(f"\n[bold green]🗣️  AI CONTROLLER[/bold green]: \"{player_input}\"")
+                self.console.print(f"[dim]💭 Thought: {internal_monologue}[/dim]")
                 
                 # Add to history
                 self.turn_history.append(player_input)
