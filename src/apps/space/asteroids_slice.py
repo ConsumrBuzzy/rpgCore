@@ -612,14 +612,15 @@ class VisualRunner:
 
 def run_ai_headless(frames: int = 3600) -> None:
     """Run a 60-second headless AI survival benchmark."""
-    import sys # Added for stdout.flush()
-    print(f"🤖 AI AUTOPILOT ENGAGED — Surviving {frames} frames ({frames/60:.1f}s)...")
+    import sys
+    from actors.asteroid_pilot import AsteroidPilot
+    
+    print(f"🤖 AI AUTOPILOT ENGAGED — Surviving {frames} frames ({frames/60:.1f}s)...", flush=True)
     
     try:
         sim = AsteroidsSlice(asteroid_count=50)
         sim.spawn_asteroid_field()
-        print(f"DEBUG: Spawned {len(sim.asteroids)} asteroids.")
-        sys.stdout.flush()
+        print(f"DEBUG: Spawned {len(sim.asteroids)} asteroids.", flush=True)
         sim.wire_exhaust()
         
         pilot = AsteroidPilot()
