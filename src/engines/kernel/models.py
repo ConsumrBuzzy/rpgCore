@@ -347,7 +347,28 @@ class AssetRegistry:
     """Registry for managing assets with type-safe contracts"""
     
     def __init__(self, assets_dir: Optional[str] = None):
-        self.assets_dir = Path(assets_dir) if assets_dir else Path("src/dgt_core/assets")
+        # Dynamic path resolution (The Systemic Fix)
+        # engines/kernel/models.py -> ../../../ -> src
+        # Then looking for "dgt_core/assets" or "assets" depending on migration state
+        
+        if assets_dir:
+            self.assets_dir = Path(assets_dir)
+        else:
+            # Try to find assets relative to this file
+            root = Path(__file__).resolve().parent.parent.parent
+            
+            # Check potential locations
+            candidates = [
+                root / "dgt_core" / "assets", # Legacy location
+                root / "assets",              # Foundation location
+                root.parent / "assets"        # Project root location
+            ]
+            
+            self.assets_dir = candidates[0] # Default to legacy for now
+            for path in candidates:
+                if path.exists():
+                    self.assets_dir = path
+                    break
         self.materials: Dict[str, MaterialAsset] = {}
         self.blueprints: Dict[str, EntityBlueprint] = {}
         self.stories: Dict[str, StoryFragment] = {}
