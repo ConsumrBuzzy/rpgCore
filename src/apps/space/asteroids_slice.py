@@ -20,7 +20,8 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Any, Optional
 from dataclasses import dataclass, field
 
-# Ensure src/ is importable when run as a script
+# Ensure src/ is importable (The Launcher Fix)
+# Calculate path to src: apps/space/asteroids_slice.py -> ../../.. -> src
 _src = Path(__file__).resolve().parent.parent.parent
 if str(_src) not in sys.path:
     sys.path.insert(0, str(_src))
