@@ -278,6 +278,8 @@ class AsteroidPilot(BaseController):
         """Get distance to nearest threat"""
         # This would be populated from world_data in actual implementation
         return float('inf')  # Placeholder
+    
+    def _update_memory(self, dt: float, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> None:
         """Update short-term memory with current frame"""
         # Get threat distance
         threat_distance = self._get_nearest_threat_distance()
