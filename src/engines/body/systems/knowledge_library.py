@@ -8,6 +8,7 @@ import time
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from pathlib import Path
+from loguru import logger
 from foundation.types import Result
 from engines.body.components.genetic_component import GeneticComponent
 
