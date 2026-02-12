@@ -166,11 +166,22 @@ class SimpleVisualAsteroids:
         self.game_time += self.dt
     
     def _fire_weapon(self) -> None:
-        """Fire weapon (placeholder)"""
+        """Fire weapon and create bullet"""
         if self.ship_energy >= 5:
             self.ship_energy -= 5
-            # Would create bullet here
-            logger.info("🔫 Weapon fired!")
+            
+            # Create bullet at ship position
+            bullet = {
+                'x': self.ship_x + 10 * math.cos(self.ship_angle),
+                'y': self.ship_y + 10 * math.sin(self.ship_angle),
+                'vx': self.bullet_speed * math.cos(self.ship_angle),
+                'vy': self.bullet_speed * math.sin(self.ship_angle),
+                'lifetime': self.bullet_lifetime,
+                'radius': 2
+            }
+            self.bullets.append(bullet)
+            
+            logger.info(f"🔫 Weapon fired! Total bullets: {len(self.bullets)}")
     
     def _check_collisions(self) -> None:
         """Check for collisions with asteroids"""
