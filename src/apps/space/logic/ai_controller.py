@@ -533,9 +533,10 @@ class HumanController(BaseController):
             self.fire_weapon = True
 
 
-def create_ai_controller(pilot_id: str = "AI_PILOT_001") -> AsteroidPilot:
+def create_ai_controller(controller_id: str = "AI_PILOT", use_neural_network: bool = False,
+                       neural_network: Optional[NeuralNetwork] = None) -> AsteroidPilot:
     """Factory function to create AI controller"""
-    return AsteroidPilot(pilot_id)
+    return AsteroidPilot(controller_id, use_neural_network, neural_network)
 
 
 def create_human_controller(controller_id: str = "HUMAN_PLAYER") -> HumanController:
