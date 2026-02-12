@@ -333,10 +333,14 @@ class AsteroidPilot(BaseController):
         # Clean old frames
         self.short_term_memory.clear_old_frames(self.survival_time)
     
-    def trigger_blackout(self, duration: float = 2.0) -> None:
-        """Trigger neural blackout penalty"""
+    def trigger_blackout(self, duration: float = 2.0, safe_position: Optional[Tuple[float, float]] = None) -> None:
+        """Trigger neural blackout penalty with safe respawn"""
         self.is_blackout = True
         self.blackout_end_time = self.survival_time + duration
+        
+        # Set safe respawn position if provided
+        if safe_position:
+            self.safe_respawn_position = safe_position
         
         # Record collision in memory
         self.short_term_memory.record_collision(self.survival_time)
@@ -347,6 +351,18 @@ class AsteroidPilot(BaseController):
             # This would be handled by the fitness calculator
         
         logger.info(f"⚫ AI Pilot {self.pilot_id} blackout triggered for {duration}s")
+    
+    def get_safe_respawn_position(self) -> Optional[Tuple[float, float]]:
+        """Get safe respawn position"""
+        return self.safe_respawn_position
+    
+    def is_in_ghost_phase(self) -> bool:
+        """Check if pilot is in ghost phase (invulnerable)"""
+        return self.is_ghost_phase
+    
+    def clear_safe_respawn(self) -> None:
+        """Clear safe respawn position after use"""
+        self.safe_respawn_position = None
     
     def get_stress_level(self) -> float:
         """Get current stress level from short-term memory"""
