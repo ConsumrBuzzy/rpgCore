@@ -96,13 +96,13 @@ class AsteroidPilot(BaseController):
         else:
             logger.info(f"🤖 AI Pilot initialized (rule-based): {controller_id}")
     
-    def update(self, dt: float, ship_state: Dict, asteroids: List[Dict]) -> Dict[str, Any]:
+    def update(self, dt: float, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> Result[ControlInput]:
         """Update AI pilot decision making"""
         try:
             # Update internal state
-            self.position = Vector2(ship_state.get('x', 0), ship_state.get('y', 0))
-            self.velocity = Vector2(ship_state.get('vx', 0), ship_state.get('vy', 0))
-            self.angle = ship_state.get('angle', 0)
+            self.position = Vector2(entity_state.get('x', 0), entity_state.get('y', 0))
+            self.velocity = Vector2(entity_state.get('vx', 0), entity_state.get('vy', 0))
+            self.angle = entity_state.get('angle', 0)
             self.survival_time += dt
             
             # Reset controls
@@ -110,43 +110,110 @@ class AsteroidPilot(BaseController):
             self.rotation = 0.0
             self.fire_weapon = False
             
-            # AI decision making
-            self._make_decisions(asteroids)
+            # Choose control method
+            if self.use_neural_network and self.neural_network:
+                self._neural_network_control(entity_state, world_data)
+            else:
+                self._rule_based_control(world_data)
             
-            # Return control inputs
-            return {
-                'thrust': self.thrust,
-                'rotation': self.rotation,
-                'fire': self.fire_weapon,
-                'state': self.state.value,
-                'target': self.target_asteroid['id'] if self.target_asteroid else None
-            }
-            
-        except Exception as e:
-            logger.error(f"AI Pilot update failed: {e}")
-            return {'thrust': 0, 'rotation': 0, 'fire': False, 'state': 'error', 'target': None}
-    
-    def update(self, dt: float, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> Result[ControlInput]:
-        """Update AI pilot for controller interface"""
-        try:
-            # Extract asteroids from world data
-            asteroids = world_data.get('asteroids', [])
-            
-            # Update using legacy interface
-            controls = self.update(dt, entity_state, asteroids)
-            
-            # Convert to ControlInput
+            # Create control input
             control_input = ControlInput(
-                thrust=controls['thrust'],
-                rotation=controls['rotation'],
-                fire_weapon=controls['fire_weapon'],
-                special_action=controls.get('special_action')
+                thrust=self.thrust,
+                rotation=self.rotation,
+                fire_weapon=self.fire_weapon,
+                special_action=None
             )
             
             return Result(success=True, value=control_input)
             
         except Exception as e:
-            return Result(success=False, error=f"AI Controller update failed: {e}")
+            return Result(success=False, error=f"AI Pilot update failed: {e}")
+    
+    def _neural_network_control(self, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> None:
+        """Control using neural network"""
+        if not self.neural_network:
+            return
+        
+        # Prepare neural network inputs
+        asteroids = world_data.get('asteroids', [])
+        inputs = self._prepare_neural_inputs(entity_state, asteroids)
+        
+        # Forward pass through neural network
+        outputs = self.neural_network.forward(inputs)
+        
+        # Interpret outputs as control actions
+        controls = self._interpret_neural_outputs(outputs)
+        
+        # Apply controls
+        self.thrust = controls['thrust']
+        self.rotation = controls['rotation']
+        self.fire_weapon = controls['fire_weapon']
+    
+    def _prepare_neural_inputs(self, entity_state: Dict[str, Any], asteroids: List[Dict]) -> List[float]:
+        """Prepare inputs for neural network"""
+        # Find nearest asteroid
+        nearest_asteroid = None
+        min_distance = float('inf')
+        
+        for asteroid in asteroids:
+            distance = math.sqrt((entity_state['x'] - asteroid['x'])**2 + 
+                               (entity_state['y'] - asteroid['y'])**2)
+            if distance < min_distance:
+                min_distance = distance
+                nearest_asteroid = asteroid
+        
+        if nearest_asteroid is None:
+            # No asteroids, return neutral inputs
+            return [0.0, 0.0, entity_state.get('vx', 0) / 100.0, 
+                   entity_state.get('vy', 0) / 100.0, math.sin(entity_state.get('angle', 0))]
+        
+        # Calculate inputs
+        dx = nearest_asteroid['x'] - entity_state['x']
+        dy = nearest_asteroid['y'] - entity_state['y']
+        distance = math.sqrt(dx**2 + dy**2)
+        
+        # Normalize inputs
+        # Input 1: Distance to nearest asteroid (normalized)
+        distance_input = min(distance / 100.0, 1.0)
+        
+        # Input 2: Angle to nearest asteroid (normalized to -1 to 1)
+        angle_to_asteroid = math.atan2(dy, dx)
+        angle_input = math.sin(angle_to_asteroid - entity_state.get('angle', 0))
+        
+        # Input 3: Ship velocity X (normalized)
+        vx_input = entity_state.get('vx', 0) / 100.0
+        
+        # Input 4: Ship velocity Y (normalized)
+        vy_input = entity_state.get('vy', 0) / 100.0
+        
+        # Input 5: Ship heading (normalized)
+        heading_input = math.sin(entity_state.get('angle', 0))
+        
+        return [distance_input, angle_input, vx_input, vy_input, heading_input]
+    
+    def _interpret_neural_outputs(self, outputs: List[float]) -> Dict[str, Any]:
+        """Interpret neural network outputs as control inputs"""
+        # Output 0: Thrust (-1 to 1)
+        thrust = max(-1.0, min(1.0, outputs[0]))
+        
+        # Output 1: Rotation (-1 to 1, negative = left, positive = right)
+        rotation = max(-1.0, min(1.0, outputs[1]))
+        
+        # Output 2: Fire weapon (0 to 1, threshold at 0.5)
+        fire_weapon = outputs[2] > 0.5
+        
+        return {
+            'thrust': thrust,
+            'rotation': rotation,
+            'fire_weapon': fire_weapon
+        }
+    
+    def _rule_based_control(self, world_data: Dict[str, Any]) -> None:
+        """Control using rule-based logic (original implementation)"""
+        asteroids = world_data.get('asteroids', [])
+        
+        # AI decision making
+        self._make_decisions(asteroids)
     
     def activate(self) -> Result[bool]:
         """Activate the AI controller"""
@@ -382,8 +449,16 @@ class AsteroidPilot(BaseController):
             'asteroids_collected': self.asteroids_collected,
             'threats_evaded': self.threats_evaded,
             'current_target': self.target_asteroid['id'] if self.target_asteroid else None,
-            'active_threats': len(self.threats)
+            'active_threats': len(self.threats),
+            'use_neural_network': self.use_neural_network,
+            'neural_network_active': self.neural_network is not None
         }
+    
+    def set_neural_network(self, network: NeuralNetwork) -> None:
+        """Set or update the neural network"""
+        self.neural_network = network
+        self.use_neural_network = True
+        logger.info(f"🧠 Neural network updated for AI Pilot {self.pilot_id}")
 
 
 class HumanController(BaseController):
