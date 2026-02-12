@@ -207,11 +207,13 @@ class TournamentMode:
             {'x': 30, 'y': 100, 'vx': 40, 'vy': -30, 'size': 2, 'radius': 4.0, 'health': 2, 'color': 'light_gray'},
         ]
         
+        noise_factor = 0.1  # 10% velocity variation
+        
         for asteroid in base_asteroids:
             # Apply environmental noise
             noisy_asteroid = asteroid.copy()
-            noisy_asteroid['vx'] *= (1.0 + random.uniform(-self.noise_factor, self.noise_factor))
-            noisy_asteroid['vy'] *= (1.0 + random.uniform(-self.noise_factor, self.noise_factor))
+            noisy_asteroid['vx'] *= (1.0 + random.uniform(-noise_factor, noise_factor))
+            noisy_asteroid['vy'] *= (1.0 + random.uniform(-noise_factor, noise_factor))
             self.asteroids.append(noisy_asteroid)
     
     def handle_events(self) -> None:
