@@ -79,28 +79,6 @@ class AsteroidsStrategy:
         
         setup_asteroids_collision_handlers(self.collision_system)
         
-        # Spawn initial entities
-        self._spawn_initial_entities()
-        
-        logger.info("✅ Component systems initialized")
-    
-    def _spawn_initial_entities(self) -> None:
-        """Spawn initial game entities"""
-        # Spawn player ship
-        ship_result = self.entity_manager.spawn_entity(
-            "ship",
-            x=SOVEREIGN_WIDTH // 2,
-            y=SOVEREIGN_HEIGHT // 2,
-            angle=0.0,
-            energy=100.0,
-            lives=3
-        )
-        
-        if ship_result.success:
-            logger.info("🚀 Player ship spawned")
-        else:
-            logger.error(f"Failed to spawn ship: {ship_result.error}")
-        
         # Spawn initial asteroids
         self.spawner.spawn_wave("asteroids", wave_number=1)
         
