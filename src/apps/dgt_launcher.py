@@ -32,6 +32,7 @@ class ApplicationMode(Enum):
     RPG_LAB = "rpg_lab"
     VALIDATION = "validation"
     DEPLOYMENT = "deployment"
+    WORKSPACE = "workspace"  # NEW: Flexible layout mode
 
 
 @dataclass
