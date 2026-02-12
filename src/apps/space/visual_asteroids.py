@@ -6,6 +6,7 @@ Graphical integration of AsteroidsStrategy with UnifiedPPU and Genetic Sprites
 import pygame
 import sys
 import time
+import math
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 
