@@ -419,10 +419,10 @@ class CombatantEvolution:
         """Spawn asteroids and scrap"""
         # Spawn asteroids
         base_asteroids = [
-            {'x': 50, 'y': 50, 'vx': 15, 'vy': 10, 'size': 3, 'radius': 8.0, 'health': 3, 'color': 'dark_gray'},
-            {'x': 120, 'y': 80, 'vx': -10, 'vy': 20, 'size': 2, 'radius': 4.0, 'health': 2, 'color': 'gray'},
-            {'x': 30, 'y': 100, 'vx': 25, 'vy': -15, 'size': 2, 'radius': 4.0, 'health': 2, 'color': 'light_gray'},
-            {'x': 90, 'y': 40, 'vx': -20, 'vy': 15, 'size': 1, 'radius': 2.0, 'health': 1, 'color': 'white'},
+            {'x': 50, 'y': 50, 'vx': 15, 'vy': 10, 'size': 3, 'radius': 8.0, 'health': 3, 'color': self.asteroid_color},
+            {'x': 120, 'y': 80, 'vx': -10, 'vy': 20, 'size': 2, 'radius': 4.0, 'health': 2, 'color': self.asteroid_color},
+            {'x': 30, 'y': 100, 'vx': 25, 'vy': -15, 'size': 2, 'radius': 4.0, 'health': 2, 'color': self.asteroid_color},
+            {'x': 90, 'y': 40, 'vx': -20, 'vy': 15, 'size': 1, 'radius': 2.0, 'health': 1, 'color': self.asteroid_color},
         ]
         
         for asteroid in base_asteroids:

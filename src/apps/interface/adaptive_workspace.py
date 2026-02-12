@@ -26,6 +26,7 @@ from foundation.persistence.successor_registry import create_successor_registry
 from engines.view.render_panel import RenderPanel, RenderPanelFactory
 from engines.mind.tri_brain import create_tri_brain, TriBrain
 from apps.interface.size_control_widget import create_size_control_widget
+from apps.interface.manual_control_widget import create_manual_control_widget
 from apps.space.combatant_evolution import CombatantEvolution, CombatantPilot
 
 
@@ -528,6 +529,9 @@ class AdaptiveWorkspace:
         self.size_control_widget = create_size_control_widget(right_frame, self.viewport.render_panel, self._on_size_change)
         
         # Manual control widget
+        self.manual_control_widget = create_manual_control_widget(right_frame, self._on_manual_toggle)
+        
+        # Manual control widget (legacy)
         self.control_widget = ControlWidget(right_frame, self.viewport)
         
         # Successor widget
@@ -559,6 +563,20 @@ class AdaptiveWorkspace:
         scrollbar = ttk.Scrollbar(stats_frame, orient=tk.VERTICAL, command=self.combat_stats_text.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.combat_stats_text.config(yscrollcommand=scrollbar.set)
+    
+    def _on_manual_toggle(self, active: bool, thrust: float = 0.0, rotation: float = 0.0, fire: bool = False) -> None:
+        """Handle manual control toggle"""
+        try:
+            if self.viewport.game:
+                # Update viewport manual control
+                self.viewport.set_manual_control(active)
+                if active:
+                    self.viewport.set_manual_inputs(thrust, rotation, fire)
+            
+            logger.info(f"🎮 Manual control: {active}")
+            
+        except Exception as e:
+            logger.error(f"Manual control toggle failed: {e}")
     
     def _on_size_change(self, new_size: str) -> None:
         """Handle size change from size control widget"""
