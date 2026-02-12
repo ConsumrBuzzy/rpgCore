@@ -185,8 +185,10 @@ class FractureSystem:
                         x: float, 
                         y: float, 
                         vx: float, 
-                        vy: float) -> AsteroidFragment:
-        """Create a new asteroid fragment"""
+                        vy: float,
+                        genetic_component: Optional[GeneticComponent] = None,
+                        genetic_id: str = "") -> AsteroidFragment:
+        """Create a new asteroid fragment with genetic traits"""
         config = self.size_configs[size]
         
         # Add slight position offset to prevent overlap
@@ -195,19 +197,39 @@ class FractureSystem:
         
         kinetic_body = create_asteroid(x + offset_x, y + offset_y, vx, vy)
         
+        # Apply genetic modifications if present
+        if genetic_component:
+            genetic_result = genetic_component.apply_to_kinetic_body(kinetic_body)
+            if genetic_result.success:
+                # Modify color based on genetics
+                base_color = config['color']
+                modified_color = genetic_component.get_modified_color(base_color)
+                
+                # Modify size based on genetics
+                modified_radius = config['radius'] * genetic_component.traits.size_modifier
+            else:
+                # Fallback to base values if genetic application fails
+                modified_color = config['color']
+                modified_radius = config['radius']
+        else:
+            modified_color = config['color']
+            modified_radius = config['radius']
+        
         return AsteroidFragment(
             kinetic_body=kinetic_body,
             size=size,
             health=config['health'],
-            radius=config['radius'],
-            color=config['color'],
-            point_value=config['points']
+            radius=modified_radius,
+            color=modified_color,
+            point_value=config['points'],
+            genetic_component=genetic_component,
+            genetic_id=genetic_id
         )
     
     def create_initial_asteroids(self, count: int, 
                                 safe_zone: Optional[Tuple[float, float, float]] = None) -> List[AsteroidFragment]:
         """
-        Create initial asteroids for a wave
+        Create initial asteroids for a wave with genetic traits
         
         Args:
             count: Number of asteroids to create
@@ -218,7 +240,7 @@ class FractureSystem:
         """
         asteroids = []
         
-        for _ in range(count):
+        for i in range(count):
             # Random position (avoiding safe zone if specified)
             if safe_zone:
                 x, y = self._find_safe_position(safe_zone)
@@ -234,7 +256,22 @@ class FractureSystem:
             size_weights = [3, 3, 2, 2, 1]  # More large/medium asteroids
             size = random.choice(size_weights)
             
-            asteroid = self._create_fragment(size, x, y, vx, vy)
+            # Create genetic component if enabled
+            genetic_component = None
+            genetic_id = f"asteroid_{i}_{random.randint(1000, 9999)}"
+            
+            if self.enable_genetics:
+                genetic_component = create_random_asteroid_genetics()
+                genetic_id = genetic_component.genetic_code.genetic_id
+                
+                # Store discovered pattern
+                self.discovered_genetic_patterns[genetic_id] = genetic_component
+            
+            asteroid = self._create_fragment(
+                size, x, y, vx, vy, 
+                genetic_component=genetic_component,
+                genetic_id=genetic_id
+            )
             asteroids.append(asteroid)
         
         return asteroids
@@ -322,16 +359,106 @@ class FractureSystem:
             'speed_multiplier': speed_multiplier,
             'size_weights': size_weights[weight_index]
         }
+    
+    def get_discovered_patterns(self) -> Dict[str, GeneticComponent]:
+        """Get all discovered genetic patterns"""
+        return self.discovered_genetic_patterns.copy()
+    
+    def get_genetic_lineage(self) -> Dict[str, List[str]]:
+        """Get genetic lineage mapping"""
+        return self.genetic_lineage.copy()
+    
+    def get_pattern_analytics(self) -> Dict[str, Any]:
+        """Get analytics about discovered genetic patterns"""
+        if not self.discovered_genetic_patterns:
+            return {
+                'total_patterns': 0,
+                'generations': {},
+                'trait_distribution': {},
+                'color_variety': {}
+            }
+        
+        generations = {}
+        trait_stats = {
+            'speed': [],
+            'mass': [],
+            'thrust': [],
+            'rotation': [],
+            'friction': [],
+            'aggression': [],
+            'curiosity': [],
+            'herd': []
+        }
+        colors = []
+        
+        for genetic_id, component in self.discovered_genetic_patterns.items():
+            gen = component.genetic_code.generation
+            generations[gen] = generations.get(gen, 0) + 1
+            
+            traits = component.genetic_code.traits
+            trait_stats['speed'].append(traits.speed_modifier)
+            trait_stats['mass'].append(traits.mass_modifier)
+            trait_stats['thrust'].append(traits.thrust_efficiency)
+            trait_stats['rotation'].append(traits.rotation_speed)
+            trait_stats['friction'].append(traits.friction_modifier)
+            trait_stats['aggression'].append(traits.aggression)
+            trait_stats['curiosity'].append(traits.curiosity)
+            trait_stats['herd'].append(traits.herd_mentality)
+            
+            colors.append(traits.color_shift)
+        
+        # Calculate averages
+        trait_averages = {}
+        for trait, values in trait_stats.items():
+            if values:
+                trait_averages[trait] = sum(values) / len(values)
+            else:
+                trait_averages[trait] = 1.0
+        
+        return {
+            'total_patterns': len(self.discovered_genetic_patterns),
+            'generations': generations,
+            'trait_averages': trait_averages,
+            'max_generation': max(generations.keys()) if generations else 1,
+            'color_variety': len(set(colors)),
+            'lineage_depth': self._calculate_lineage_depth()
+        }
+    
+    def _calculate_lineage_depth(self) -> int:
+        """Calculate maximum depth of genetic lineage"""
+        max_depth = 0
+        visited = set()
+        
+        def calculate_depth(genetic_id: str, depth: int = 0) -> int:
+            if genetic_id in visited:
+                return depth
+            visited.add(genetic_id)
+            
+            children = self.genetic_lineage.get(genetic_id, [])
+            if not children:
+                return depth
+            
+            return max(calculate_depth(child, depth + 1) for child in children)
+        
+        for genetic_id in self.discovered_genetic_patterns.keys():
+            max_depth = max(max_depth, calculate_depth(genetic_id))
+        
+        return max_depth
 
 
 # Factory functions for common configurations
 def create_classic_fracture_system() -> FractureSystem:
-    """Create classic arcade fracture system"""
-    return FractureSystem()
+    """Create classic arcade fracture system without genetics"""
+    return FractureSystem(enable_genetics=False)
+
+
+def create_genetic_fracture_system() -> FractureSystem:
+    """Create genetic fracture system with evolution enabled"""
+    return FractureSystem(enable_genetics=True)
 
 
 def create_hard_fracture_system() -> FractureSystem:
     """Create harder fracture system with more fragments"""
-    system = FractureSystem()
+    system = FractureSystem(enable_genetics=True)
     system.fragment_speed_range = (25.0, 60.0)  # Faster fragments
     return system
