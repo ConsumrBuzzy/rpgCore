@@ -52,14 +52,16 @@ class Vector2:
         return math.atan2(dy, dx)
 
 
-class AsteroidPilot:
+class AsteroidPilot(BaseController):
     """
     AI Pilot for autonomous asteroid navigation and collection
     Restored from legacy archive for Three-Tier Architecture
     """
     
-    def __init__(self, pilot_id: str = "AI_PILOT_001"):
-        self.pilot_id = pilot_id
+    def __init__(self, controller_id: str = "AI_PILOT", use_neural_network: bool = False, 
+                 neural_network: Optional[NeuralNetwork] = None):
+        super().__init__(controller_id)
+        self.pilot_id = controller_id
         self.state = PilotState.SCANNING
         self.position = Vector2(SOVEREIGN_WIDTH / 2, SOVEREIGN_HEIGHT / 2)
         self.velocity = Vector2(0, 0)
@@ -85,7 +87,14 @@ class AsteroidPilot:
         self.asteroids_collected = 0
         self.threats_evaded = 0
         
-        logger.info(f"🤖 AsteroidPilot initialized: {pilot_id}")
+        # NEAT neural network support
+        self.use_neural_network = use_neural_network
+        self.neural_network = neural_network
+        
+        if self.use_neural_network and self.neural_network:
+            logger.info(f"� AI Pilot initialized with neural network: {controller_id}")
+        else:
+            logger.info(f"🤖 AI Pilot initialized (rule-based): {controller_id}")
     
     def update(self, dt: float, ship_state: Dict, asteroids: List[Dict]) -> Dict[str, Any]:
         """Update AI pilot decision making"""
