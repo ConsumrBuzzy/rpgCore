@@ -272,6 +272,22 @@ class ShipEntity(Entity):
         # Update invulnerability
         if self.invulnerable_time > 0:
             self.invulnerable_time -= dt
+        
+        # Update fire cooldown
+        if self.fire_cooldown > 0:
+            self.fire_cooldown -= dt
+    
+    def can_fire(self) -> bool:
+        """Check if ship can fire based on cooldown"""
+        return self.fire_cooldown <= 0
+    
+    def fire_weapon(self) -> bool:
+        """Attempt to fire weapon"""
+        if self.can_fire():
+            self.fire_cooldown = self.fire_cooldown_max
+            self.last_fire_time = time.time()
+            return True
+        return False
 
 
 class AsteroidEntity(Entity):
