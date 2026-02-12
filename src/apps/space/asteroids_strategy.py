@@ -45,6 +45,15 @@ class AsteroidsStrategy:
         self.sprite_animator = SpriteAnimator()
         self.ghost_renderer = NewtonianGhostRenderer(self.width, self.height)
         
+        # Controller system
+        self.controller_manager = ControllerManager()
+        
+        # Game state
+        self.lives = 3
+        self.score = 0
+        self.invulnerable_time = 0.0
+        self.game_over = False
+        
         # Rendering properties
         self.clear_color = 0  # Black background
         self.ship_color = 1   # White ship
