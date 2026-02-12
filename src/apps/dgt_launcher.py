@@ -211,6 +211,8 @@ class DGTPlatformLauncher:
                 return self._launch_validation()
             elif self.config.mode == ApplicationMode.DEPLOYMENT:
                 return self._launch_deployment()
+            elif self.config.mode == ApplicationMode.WORKSPACE:
+                return self._launch_workspace()
             else:
                 return Result(success=False, error=f"Unknown mode: {self.config.mode}")
         
@@ -418,6 +420,24 @@ class DGTPlatformLauncher:
         
         except Exception as e:
             return Result(success=False, error=f"Validation launch failed: {str(e)}")
+    
+    def _launch_workspace(self) -> Result[bool]:
+        """Launch flexible workspace with game and UI separation"""
+        logger.info("🏛️ Launching Flexible Workspace")
+        
+        try:
+            # Import the dashboard
+            from apps.interface.dashboard import SovereignDashboard
+            
+            # Create and run dashboard
+            dashboard = SovereignDashboard()
+            dashboard.run()
+            
+            logger.info("✅ Flexible Workspace completed successfully")
+            return Result(success=True, value=True)
+            
+        except Exception as e:
+            return Result(success=False, error=f"Flexible Workspace launch failed: {str(e)}")
     
     def _launch_deployment(self) -> Result[bool]:
         """Launch deployment tools"""
