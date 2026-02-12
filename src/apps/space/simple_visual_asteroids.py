@@ -350,6 +350,7 @@ class SimpleVisualAsteroids:
             f"Lives: {self.ship_lives}",
             f"Score: {self.ship_score}",
             f"Energy: {int(self.ship_energy)}%",
+            f"Bullets: {len(self.bullets)}",
             f"Pos: ({int(self.ship_x)},{int(self.ship_y)})"
         ]
         
