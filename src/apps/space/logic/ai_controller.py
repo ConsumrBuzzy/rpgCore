@@ -107,6 +107,12 @@ class AsteroidPilot(BaseController):
         # Adaptive bias from learning
         self.adaptive_bias = {'thrust': 0.0, 'rotation': 0.0, 'fire_weapon': 0.0}
         
+        # Knowledge library integration
+        self.knowledge_library = create_knowledge_library()
+        self.use_shared_knowledge = True
+        self.last_technique_query_time = 0.0
+        self.technique_query_interval = 0.5  # Query library every 0.5 seconds
+        
         if self.use_neural_network and self.neural_network:
             logger.info(f"🧠 AI Pilot initialized with neural network: {controller_id}")
         else:
@@ -150,8 +156,16 @@ class AsteroidPilot(BaseController):
             # Apply adaptive bias from learning
             self._apply_adaptive_bias()
             
+            # Apply shared knowledge bias
+            if self.use_shared_knowledge:
+                self._apply_shared_knowledge_bias()
+            
             # Update short-term memory
             self._update_memory(dt, entity_state, world_data)
+            
+            # Add experience to knowledge library
+            if self.use_neural_network:
+                self._add_experience_to_library(entity_state, world_data)
             
             # Create control input
             control_input = ControlInput(
