@@ -505,7 +505,7 @@ class CombatantEvolution:
              'size': random.randint(1, 3), 
              'radius': random.uniform(2.0, 8.0), 
              'health': random.randint(1, 3), 
-             'color': random.choice(['dark_gray', 'gray', 'light_gray', 'white'])}
+             'color': self.asteroid_color}  # Use grey color
         ]
         
         for asteroid in new_asteroids:
