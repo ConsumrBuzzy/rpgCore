@@ -368,7 +368,7 @@ class EntitySpawner:
 
 # Factory functions for common spawn configurations
 def create_asteroid_spawn_config() -> SpawnConfig:
-    """Create default asteroid spawn configuration"""
+    """Create default asteroid spawn configuration with arcade-scale sizing"""
     return SpawnConfig(
         entity_type="asteroid",
         spawn_rate=0.5,  # 1 asteroid every 2 seconds
@@ -382,7 +382,7 @@ def create_asteroid_spawn_config() -> SpawnConfig:
             'vy': 20.0,
             'health': 2,
             'size': 2,
-            'radius': 15.0
+            'radius': 8.0  # Large asteroid (8px radius)
         }
     )
 
