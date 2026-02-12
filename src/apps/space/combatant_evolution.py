@@ -171,7 +171,7 @@ class CombatantPilot:
             self.combat_efficiency = self.shots_hit / self.shots_fired
     
     def _fire_weapon(self, asteroids: List[Dict]) -> None:
-        """Fire weapon at asteroids"""
+        """Fire weapon at asteroids with aggression incentive"""
         self.shots_fired += 1
         
         # Check for asteroid in crosshair and destroy it
@@ -199,8 +199,15 @@ class CombatantPilot:
                 self.shots_hit += 1
                 self.fitness += 15.0  # Combat bonus
                 
+                # Aggression incentive - reward for aiming and shooting
+                self.fitness += 2.0  # Small bonus for firing in right direction
+                
                 logger.debug(f"💥 {self.pilot_id} destroyed asteroid! Combat efficiency: {self.combat_efficiency:.2f}")
                 break
+        else:
+            # Missed shot - still give small aggression incentive for trying
+            if self.shots_fired % 10 == 0:  # Every 10 shots
+                self.fitness += 1.0  # Small reward for attempting to shoot
     
     def check_collisions(self, asteroids: List[Dict]) -> bool:
         """Check for collisions and trigger safe respawn"""
