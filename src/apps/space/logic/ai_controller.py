@@ -124,7 +124,7 @@ class AsteroidPilot(BaseController):
             logger.info(f"🤖 AI Pilot initialized (rule-based): {controller_id}")
     
     def update(self, dt: float, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> Result[ControlInput]:
-        """Update AI pilot decision making with active learning"""
+        """Update AI pilot decision making with active learning and safe respawn"""
         try:
             # Update internal state
             self.position = Vector2(entity_state.get('x', 0), entity_state.get('y', 0))
@@ -135,7 +135,14 @@ class AsteroidPilot(BaseController):
             # Update blackout state
             if self.is_blackout and self.survival_time >= self.blackout_end_time:
                 self.is_blackout = False
-                logger.debug(f"🔆 AI Pilot {self.pilot_id} blackout ended")
+                self.is_ghost_phase = True
+                self.ghost_phase_end_time = self.survival_time + 1.0  # 1 second ghost phase
+                logger.debug(f"� AI Pilot {self.pilot_id} entered ghost phase")
+            
+            # Update ghost phase state
+            if self.is_ghost_phase and self.survival_time >= self.ghost_phase_end_time:
+                self.is_ghost_phase = False
+                logger.debug(f"🔆 AI Pilot {self.pilot_id} ghost phase ended")
             
             # Reset controls
             self.thrust = 0.0
