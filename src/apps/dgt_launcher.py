@@ -610,6 +610,7 @@ def main():
     parser.add_argument("--headless", action="store_true", help="Run in headless mode")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("--miyoo", action="store_true", help="Optimize for Miyoo Mini")
+    parser.add_argument("--ai", action="store_true", help="Enable AI controller for Asteroids")
     
     args = parser.parse_args()
     
