@@ -159,6 +159,27 @@ class SimpleVisualAsteroids:
             asteroid['x'] = asteroid['x'] % SOVEREIGN_WIDTH
             asteroid['y'] = asteroid['y'] % SOVEREIGN_HEIGHT
         
+        # Update bullets
+        bullets_to_remove = []
+        for bullet_idx, bullet in enumerate(self.bullets):
+            # Update position
+            bullet['x'] += bullet['vx'] * self.dt
+            bullet['y'] += bullet['vy'] * self.dt
+            
+            # Update lifetime
+            bullet['lifetime'] -= self.dt
+            
+            # Remove if expired or out of bounds
+            if bullet['lifetime'] <= 0:
+                bullets_to_remove.append(bullet_idx)
+            elif (bullet['x'] < 0 or bullet['x'] > SOVEREIGN_WIDTH or 
+                  bullet['y'] < 0 or bullet['y'] > SOVEREIGN_HEIGHT):
+                bullets_to_remove.append(bullet_idx)
+        
+        # Remove expired bullets
+        for bullet_idx in sorted(bullets_to_remove, reverse=True):
+            del self.bullets[bullet_idx]
+        
         # Check collisions
         self._check_collisions()
         
