@@ -5,6 +5,8 @@ High-speed training environment for evolving autonomous asteroid navigation
 
 import time
 import sys
+import math
+import random
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
 from loguru import logger
