@@ -259,7 +259,7 @@ class ShipEntity(Entity):
         self.energy = 100.0
         self.lives = 3
         self.invulnerable_time = 0.0
-        self.radius = 5.0
+        self.radius = 3.0  # Tight hit-box for high-stakes navigation
     
     def update(self, dt: float) -> None:
         super().update(dt)
@@ -278,12 +278,14 @@ class AsteroidEntity(Entity):
         self.health = 1
         self.size = 1
         self.color = "gray"
+        self.radius = 4.0  # Default medium size
     
     def reset(self) -> None:
         super().reset()
         self.health = 1
         self.size = 1
         self.color = "gray"
+        self.radius = 4.0
 
 
 class BulletEntity(Entity):
