@@ -12,6 +12,7 @@ from loguru import logger
 
 from foundation.types import Result
 from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from engines.kernel.controller import BaseController, ControlInput
 
 
 class PilotState(Enum):
@@ -382,7 +383,7 @@ class HumanController(BaseController):
     """
     
     def __init__(self, controller_id: str = "HUMAN_PLAYER"):
-        self.controller_id = controller_id
+        super().__init__(controller_id)
         self.thrust = 0.0
         self.rotation = 0.0
         self.fire_weapon = False
@@ -392,17 +393,34 @@ class HumanController(BaseController):
         
         logger.info(f"👤 HumanController initialized: {controller_id}")
     
-    def update(self, dt: float, ship_state: Dict, asteroids: List[Dict]) -> Dict[str, Any]:
+    def update(self, dt: float, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> Result[ControlInput]:
         """Update human controller based on input"""
         # This would be connected to actual input system
         # For now, return neutral controls
-        return {
-            'thrust': self.thrust,
-            'rotation': self.rotation,
-            'fire': self.fire_weapon,
-            'state': 'human_control',
-            'target': None
-        }
+        control_input = ControlInput(
+            thrust=self.thrust,
+            rotation=self.rotation,
+            fire_weapon=self.fire_weapon
+        )
+        return Result(success=True, value=control_input)
+    
+    def activate(self) -> Result[bool]:
+        """Activate the human controller"""
+        try:
+            self.is_active = True
+            logger.info(f"👤 Human Controller {self.controller_id} activated")
+            return Result(success=True, value=True)
+        except Exception as e:
+            return Result(success=False, error=f"Failed to activate human controller: {e}")
+    
+    def deactivate(self) -> Result[bool]:
+        """Deactivate the human controller"""
+        try:
+            self.is_active = False
+            logger.info(f"👤 Human Controller {self.controller_id} deactivated")
+            return Result(success=True, value=True)
+        except Exception as e:
+            return Result(success=False, error=f"Failed to deactivate human controller: {e}")
     
     def handle_key_press(self, key: str) -> None:
         """Handle key press events"""
