@@ -164,7 +164,13 @@ class VisualAsteroids:
         hud_data = self.asteroids_strategy.get_hud_data()
         
         # Draw ship
-        self._draw_ship(hud_data['position'], hud_data['angle'], hud_data['invulnerable'])
+        try:
+            self._draw_ship(hud_data['position'], hud_data.get('angle', 0), hud_data['invulnerable'])
+        except Exception as e:
+            logger.error(f"Ship drawing failed: {e}")
+            # Draw fallback ship
+            pygame.draw.circle(self.game_surface, self.colors['white'], 
+                             (int(hud_data['position']['x']), int(hud_data['position']['y'])), 5)
         
         # Draw asteroids
         self._draw_asteroids()
