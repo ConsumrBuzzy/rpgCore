@@ -49,6 +49,13 @@ class PhysicsBody:
         self.ship_entity: Optional[SpaceEntity] = None
         self.physics_state = PhysicsState(entities=[], ship_entity=None)
         
+        # Position and velocity for direct control
+        self.position = Vector2(SOVEREIGN_WIDTH / 2, SOVEREIGN_HEIGHT / 2)
+        self.velocity = Vector2(0, 0)
+        self.angle = 0.0
+        self.mass = 10.0
+        self.energy = 100.0
+        
         # Physics constants (60Hz baseline)
         self.dt = 1.0 / 60.0  # 60 FPS physics timestep
         self.max_ship_speed = 200.0  # Maximum ship velocity
