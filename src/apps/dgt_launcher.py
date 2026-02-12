@@ -502,7 +502,7 @@ def main():
     parser.add_argument("--mode", choices=[mode.value for mode in ApplicationMode], 
                        help="Application mode to launch")
     parser.add_argument("--fps", type=float, default=60.0, help="Target FPS")
-    parser.add_argument("--cpu", type=float, default=80.0, help="Max CPU usage %")
+    parser.add_argument("--cpu", type=float, default=80.0, help="Max CPU usage percent")
     parser.add_argument("--headless", action="store_true", help="Run in headless mode")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("--miyoo", action="store_true", help="Optimize for Miyoo Mini")
