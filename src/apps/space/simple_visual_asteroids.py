@@ -48,11 +48,16 @@ class SimpleVisualAsteroids:
         self.ship_score = 0
         self.invulnerable_time = 0.0
         
+        # Bullets
+        self.bullets = []
+        self.bullet_speed = 300.0
+        self.bullet_lifetime = 1.0  # 1 second lifetime
+        
         # Asteroids
         self.asteroids = [
-            {'x': 50, 'y': 50, 'vx': 10, 'vy': 5, 'radius': 15, 'size': 2, 'color': 'gray'},
-            {'x': 120, 'y': 80, 'vx': -8, 'vy': 12, 'radius': 10, 'size': 1, 'color': 'light_gray'},
-            {'x': 30, 'y': 100, 'vx': 15, 'vy': -10, 'radius': 20, 'size': 3, 'color': 'dark_gray'}
+            {'x': 50, 'y': 50, 'vx': 10, 'vy': 5, 'radius': 15, 'size': 2, 'color': 'gray', 'health': 3},
+            {'x': 120, 'y': 80, 'vx': -8, 'vy': 12, 'radius': 10, 'size': 1, 'color': 'light_gray', 'health': 2},
+            {'x': 30, 'y': 100, 'vx': 15, 'vy': -10, 'radius': 20, 'size': 3, 'color': 'dark_gray', 'health': 4}
         ]
         
         # Game time
