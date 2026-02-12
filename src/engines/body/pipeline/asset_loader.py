@@ -54,6 +54,8 @@ class AssetLoader:
                 result = self._load_image(full_path)
             elif asset_type == 'building':
                 result = self._load_building_config(full_path)
+            elif asset_type == 'scenario':
+                result = self._load_scenario(full_path)
             elif asset_type == 'config':
                 result = self._load_config(full_path)
             else:
@@ -120,6 +122,50 @@ class AssetLoader:
             
         except Exception as e:
             return Result(success=False, error=f"Failed to load building config: {str(e)}")
+    
+    def _load_scenario(self, file_path: Path) -> Result[Dict[str, Any]]:
+        """Load and validate scenario configuration"""
+        try:
+            if file_path.suffix.lower() not in {'.json'}:
+                return Result(success=False, error=f"Scenarios must be JSON files")
+            
+            with open(file_path, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            
+            # Validate scenario structure
+            validation = self._validate_scenario_config(config)
+            if not validation.success:
+                return validation
+            
+            return Result(success=True, value=config)
+            
+        except Exception as e:
+            return Result(success=False, error=f"Failed to load scenario: {str(e)}")
+    
+    def _validate_scenario_config(self, config: Dict[str, Any]) -> ValidationResult:
+        """Validate scenario configuration structure"""
+        required_fields = ['player', 'position', 'world_time']
+        
+        for field in required_fields:
+            if field not in config:
+                return ValidationResult(success=False, error=f"Missing required field: {field}")
+        
+        # Validate player structure
+        player = config['player']
+        if not isinstance(player, dict):
+            return ValidationResult(success=False, error="Player must be a dictionary")
+        
+        player_fields = ['name', 'hp', 'max_hp', 'attributes']
+        for field in player_fields:
+            if field not in player:
+                return ValidationResult(success=False, error=f"Missing required player field: {field}")
+        
+        # Validate position
+        position = config['position']
+        if not isinstance(position, dict) or 'x' not in position or 'y' not in position:
+            return ValidationResult(success=False, error="Invalid position format")
+        
+        return ValidationResult(success=True)
     
     def _load_config(self, file_path: Path) -> Result[Dict[str, Any]]:
         """Load generic configuration file"""
