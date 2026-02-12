@@ -368,7 +368,7 @@ class AsteroidPilot(BaseController):
     
     def _prepare_neural_inputs(self, entity_state: Dict[str, Any], asteroids: List[Dict], 
                             scrap_entities: List[Dict] = None) -> List[float]:
-        """Prepare inputs for neural network with scrap awareness"""
+        """Prepare inputs for neural network with combat awareness"""
         # Find nearest asteroid
         nearest_asteroid = None
         min_asteroid_distance = float('inf')
@@ -392,6 +392,26 @@ class AsteroidPilot(BaseController):
                     min_scrap_distance = distance
                     nearest_scrap = scrap
         
+        # Check for asteroid in crosshair (NEW INPUT)
+        asteroid_in_crosshair = 0.0
+        if nearest_asteroid:
+            # Calculate angle to asteroid
+            dx = nearest_asteroid['x'] - entity_state['x']
+            dy = nearest_asteroid['y'] - entity_state['y']
+            angle_to_asteroid = math.atan2(dy, dx)
+            
+            # Check if asteroid is in front (within 45 degrees of ship heading)
+            ship_heading = entity_state.get('angle', 0)
+            angle_diff = abs(angle_to_asteroid - ship_heading)
+            
+            # Normalize angle difference to [0, π]
+            while angle_diff > math.pi:
+                angle_diff = abs(angle_diff - 2 * math.pi)
+            
+            # Check if within crosshair cone (45 degrees = π/4 radians)
+            if angle_diff < math.pi / 4 and min_asteroid_distance < 60.0:
+                asteroid_in_crosshair = 1.0
+        
         # Update mental vector for debugging
         if nearest_asteroid and (min_asteroid_distance < min_scrap_distance or not nearest_scrap):
             self.mental_vector = {
@@ -414,7 +434,7 @@ class AsteroidPilot(BaseController):
         if nearest_asteroid is None and nearest_scrap is None:
             # No targets, return neutral inputs
             return [0.0, 0.0, entity_state.get('vx', 0) / 100.0, 
-                   entity_state.get('vy', 0) / 100.0, math.sin(entity_state.get('angle', 0)), 0.0]
+                   entity_state.get('vy', 0) / 100.0, math.sin(entity_state.get('angle', 0)), 0.0, 0.0]
         
         # Determine primary target
         if nearest_asteroid and (min_asteroid_distance < min_scrap_distance or not nearest_scrap):
@@ -448,10 +468,13 @@ class AsteroidPilot(BaseController):
         # Input 5: Ship heading (normalized)
         heading_input = math.sin(entity_state.get('angle', 0))
         
-        # Input 6: Distance to nearest scrap (normalized) - NEW!
+        # Input 6: Distance to nearest scrap (normalized)
         scrap_input = scrap_distance_normalized
         
-        return [distance_input, angle_input, vx_input, vy_input, heading_input, scrap_input]
+        # Input 7: Asteroid in crosshair (NEW!) - 1.0 if in crosshair, 0.0 otherwise
+        crosshair_input = asteroid_in_crosshair
+        
+        return [distance_input, angle_input, vx_input, vy_input, heading_input, scrap_input, crosshair_input]
     
     def _interpret_neural_outputs(self, outputs: List[float]) -> Dict[str, Any]:
         """Interpret neural network outputs as control inputs"""
