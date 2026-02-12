@@ -91,6 +91,12 @@ class ValidationResult:
         self.message = message
         self.data = data
 
+# Debug and development flags
+DEBUG_MODE = False
+DEBUG_INFINITE_ENERGY = True  # Disable energy constraints for AI training
+DEBUG_NO_COLLISION = False
+DEBUG_GOD_MODE = False
+
 # === SYSTEM CONFIGURATION ===
 class SystemConfig:
     """System-wide configuration"""
