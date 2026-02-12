@@ -633,6 +633,8 @@ def main():
             debug=args.debug,
             miyoo_optimized=args.miyoo
         )
+        # Set AI mode flag
+        config.ai_mode = args.ai
     else:
         # Interactive mode
         launcher = DGTPlatformLauncher(LauncherConfig(mode=ApplicationMode.THEATER))
