@@ -299,12 +299,13 @@ class RenderPanelFactory:
         return panel
     
     @staticmethod
-    def create_minimap_viewport(parent_widget: tk.Widget, scale_factor: int = 2) -> RenderPanel:
+    def create_minimap_viewport(parent_widget: tk.Widget, scale_factor: int = 2, 
+                            size_option: str = "standard") -> RenderPanel:
         """Create a minimap viewport with fixed scaling"""
         width = SOVEREIGN_WIDTH * scale_factor
         height = SOVEREIGN_HEIGHT * scale_factor
         
-        panel = RenderPanel(parent_widget, width, height)
+        panel = RenderPanel(parent_widget, width, height, size_option)
         panel.scale_factor = scale_factor
         panel.display_width = width
         panel.display_height = height
@@ -316,17 +317,17 @@ class RenderPanelFactory:
         return panel
     
     @staticmethod
-    def create_fullscreen_viewport(parent_widget: tk.Widget) -> RenderPanel:
+    def create_fullscreen_viewport(parent_widget: tk.Widget, size_option: str = "adaptive") -> RenderPanel:
         """Create a fullscreen viewport that fills available space"""
         # Get parent dimensions
         parent_widget.update()
         width = parent_widget.winfo_width()
         height = parent_widget.winfo_height()
         
-        panel = RenderPanel(parent_widget, width, height)
+        panel = RenderPanel(parent_widget, width, height, size_option)
         panel.update_layout(width, height)
         
-        logger.info(f"🖥️ Fullscreen viewport created ({width}x{height})")
+        logger.info(f"🖥️ Fullscreen viewport created ({panel.size_name})")
         return panel
 
 

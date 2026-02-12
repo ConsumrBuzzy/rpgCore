@@ -25,6 +25,7 @@ from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, ADAPTIVE_WID
 from foundation.persistence.successor_registry import create_successor_registry
 from engines.view.render_panel import RenderPanel, RenderPanelFactory
 from engines.mind.tri_brain import create_tri_brain, TriBrain
+from apps.interface.size_control_widget import create_size_control_widget
 from apps.space.combatant_evolution import CombatantEvolution, CombatantPilot
 
 
@@ -43,8 +44,8 @@ class AdaptiveViewport:
         self.viewport_width = self.world_width * self.scale_factor
         self.viewport_height = self.world_height * self.scale_factor
         
-        # Create render panel with adaptive size
-        self.render_panel = RenderPanel(parent_frame, self.viewport_width, self.viewport_height)
+        # Create render panel with adaptive size (default to adaptive)
+        self.render_panel = RenderPanel(parent_frame, self.viewport_width, self.viewport_height, "adaptive")
         
         # Create game surface at adaptive resolution
         self.game_surface = pygame.Surface((self.world_width, self.world_height))
@@ -522,6 +523,9 @@ class AdaptiveWorkspace:
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, padx=(10, 0))
         right_frame.pack_propagate(False)
         
+        # Size control widget (top)
+        self.size_control_widget = create_size_control_widget(right_frame, self.viewport, self._on_size_change)
+        
         # Manual control widget
         self.control_widget = ControlWidget(right_frame, self.viewport)
         
@@ -554,6 +558,38 @@ class AdaptiveWorkspace:
         scrollbar = ttk.Scrollbar(stats_frame, orient=tk.VERTICAL, command=self.combat_stats_text.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.combat_stats_text.config(yscrollcommand=scrollbar.set)
+    
+    def _on_size_change(self, new_size: str) -> None:
+        """Handle size change from size control widget"""
+        try:
+            # Update workspace layout for new size
+            self._update_layout_for_new_size()
+            
+            logger.info(f"📏 Workspace adapted to {new_size} size")
+            
+        except Exception as e:
+            logger.error(f"Failed to adapt workspace layout: {e}")
+    
+    def _update_layout_for_new_size(self) -> None:
+        """Update workspace layout for new render panel size"""
+        try:
+            # Get current size info
+            size_info = self.viewport.render_panel.get_current_size_info()
+            
+            # Update viewport display size
+            new_display_width = size_info['display_width']
+            new_display_height = size_info['display_height']
+            
+            # Update canvas size
+            self.viewport.canvas.config(width=new_display_width, height=new_display_height)
+            
+            # Update workspace title
+            self.root.title(f"DGT Platform - Adaptive Workspace ({size_info['size_name']})")
+            
+            logger.info(f"🖥️ Workspace resized to {size_info['display_width']}x{size_info['display_height']}")
+            
+        except Exception as e:
+            logger.error(f"Failed to update layout: {e}")
     
     def initialize(self) -> Result[bool]:
         """Initialize workspace components"""
