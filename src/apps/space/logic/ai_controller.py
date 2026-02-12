@@ -115,6 +115,46 @@ class AsteroidPilot:
             logger.error(f"AI Pilot update failed: {e}")
             return {'thrust': 0, 'rotation': 0, 'fire': False, 'state': 'error', 'target': None}
     
+    def update(self, dt: float, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> Result[ControlInput]:
+        """Update AI pilot for controller interface"""
+        try:
+            # Extract asteroids from world data
+            asteroids = world_data.get('asteroids', [])
+            
+            # Update using legacy interface
+            controls = self.update(dt, entity_state, asteroids)
+            
+            # Convert to ControlInput
+            control_input = ControlInput(
+                thrust=controls['thrust'],
+                rotation=controls['rotation'],
+                fire_weapon=controls['fire_weapon'],
+                special_action=controls.get('special_action')
+            )
+            
+            return Result(success=True, value=control_input)
+            
+        except Exception as e:
+            return Result(success=False, error=f"AI Controller update failed: {e}")
+    
+    def activate(self) -> Result[bool]:
+        """Activate the AI controller"""
+        try:
+            self.is_active = True
+            logger.info(f"🤖 AI Controller {self.pilot_id} activated")
+            return Result(success=True, value=True)
+        except Exception as e:
+            return Result(success=False, error=f"Failed to activate AI controller: {e}")
+    
+    def deactivate(self) -> Result[bool]:
+        """Deactivate the AI controller"""
+        try:
+            self.is_active = False
+            logger.info(f"🤖 AI Controller {self.pilot_id} deactivated")
+            return Result(success=True, value=True)
+        except Exception as e:
+            return Result(success=False, error=f"Failed to deactivate AI controller: {e}")
+    
     def _make_decisions(self, asteroids: List[Dict]) -> None:
         """Core AI decision making logic"""
         # Scan for asteroids and threats
