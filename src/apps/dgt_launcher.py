@@ -34,6 +34,7 @@ class ApplicationMode(Enum):
     DEPLOYMENT = "deployment"
     WORKSPACE = "workspace"  # Flexible layout mode
     LARGE_WORKSPACE = "large_workspace"  # 1280x720 professional IDE
+    ADAPTIVE_WORKSPACE = "adaptive_workspace"  # 320x240 adaptive flight space
 
 
 @dataclass
@@ -216,6 +217,8 @@ class DGTPlatformLauncher:
                 return self._launch_workspace()
             elif self.config.mode == ApplicationMode.LARGE_WORKSPACE:
                 return self._launch_large_workspace()
+            elif self.config.mode == ApplicationMode.ADAPTIVE_WORKSPACE:
+                return self._launch_adaptive_workspace()
             else:
                 return Result(success=False, error=f"Unknown mode: {self.config.mode}")
         
@@ -460,6 +463,24 @@ class DGTPlatformLauncher:
         except Exception as e:
             return Result(success=False, error=f"Large Workspace launch failed: {str(e)}")
     
+    def _launch_adaptive_workspace(self) -> Result[bool]:
+        """Launch 320x240 adaptive workspace"""
+        logger.info("🌌 Launching Adaptive Workspace (320x240)")
+        
+        try:
+            # Import the adaptive workspace
+            from apps.interface.adaptive_workspace import AdaptiveWorkspace
+            
+            # Create and run workspace
+            workspace = AdaptiveWorkspace()
+            workspace.run()
+            
+            logger.info("✅ Adaptive Workspace completed successfully")
+            return Result(success=True, value=True)
+            
+        except Exception as e:
+            return Result(success=False, error=f"Adaptive Workspace launch failed: {str(e)}")
+    
     def _launch_deployment(self) -> Result[bool]:
         """Launch deployment tools"""
         logger.info("📦 Launching Deployment Tools")
@@ -614,11 +635,12 @@ class DGTPlatformLauncher:
         print("5. 📦 Deployment - Build Production Package")
         print("6. 🏛️ Workspace - Flexible Layout Dashboard")
         print("7. 🖥️ Large Workspace - 1280x720 Professional IDE")
+        print("8. 🌌 Adaptive Workspace - 320x240 Flight Space")
         print()
         
         while True:
             try:
-                choice = input("Enter choice (1-7): ").strip()
+                choice = input("Enter choice (1-8): ").strip()
                 
                 if choice == "1":
                     return ApplicationMode.THEATER
@@ -634,8 +656,10 @@ class DGTPlatformLauncher:
                     return ApplicationMode.WORKSPACE
                 elif choice == "7":
                     return ApplicationMode.LARGE_WORKSPACE
+                elif choice == "8":
+                    return ApplicationMode.ADAPTIVE_WORKSPACE
                 else:
-                    print("Invalid choice. Please enter 1-7.")
+                    print("Invalid choice. Please enter 1-8.")
             except KeyboardInterrupt:
                 print("\n👋 Exiting...")
                 sys.exit(0)
