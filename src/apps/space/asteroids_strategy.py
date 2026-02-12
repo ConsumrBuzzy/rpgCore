@@ -130,6 +130,16 @@ class AsteroidsStrategy:
                 return register_result
             
             set_result = self.controller_manager.set_active_controller(controller.controller_id)
+            
+            # Verify controller is actually active
+            if set_result.success:
+                active = self.controller_manager.get_active_controller()
+                if active and active.controller_id == controller.controller_id:
+                    logger.info(f"✅ Controller '{controller.controller_id}' is now active")
+                    return Result(success=True, value=True)
+                else:
+                    return Result(success=False, error="Controller registration succeeded but activation failed")
+            
             return set_result
             
         except Exception as e:
