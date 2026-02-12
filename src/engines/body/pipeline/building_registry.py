@@ -56,8 +56,18 @@ class BuildingRegistry:
         try:
             import yaml
             
+            # Safe YAML loader that ignores Python-specific tags
+            class SafeLoaderIgnorePython(yaml.SafeLoader):
+                def ignore_python_tags(self, node):
+                    return None
+            
+            SafeLoaderIgnorePython.add_constructor(
+                'tag:yaml.org,2002:python/tuple',
+                SafeLoaderIgnorePython.ignore_python_tags
+            )
+            
             with open(building_file, 'r', encoding='utf-8') as f:
-                building_data = yaml.safe_load(f)
+                building_data = yaml.load(f, SafeLoaderIgnorePython)
             
             # Validate building structure
             validation = self._validate_building_data(building_data)
