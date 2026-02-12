@@ -248,34 +248,27 @@ class DGTPlatformLauncher:
             return Result(success=False, error=f"Theater Mode launch failed: {str(e)}")
     
     def _launch_asteroids(self) -> Result[bool]:
-        """Launch Asteroids with Controller support"""
-        logger.info("🎮 Launching Asteroids")
+        """Launch Asteroids with visual integration"""
+        logger.info("🎮 Launching Visual Asteroids")
         
         try:
-            # Import controller systems
-            from apps.space.logic.ai_controller import create_ai_controller, create_human_controller
-            from apps.space.asteroids_strategy import AsteroidsStrategy
+            # Import visual asteroids game
+            from apps.space.visual_asteroids import VisualAsteroids
             
-            # Create game strategy
-            strategy = AsteroidsStrategy()
+            # Create visual game
+            game = VisualAsteroids(ai_mode=getattr(self.config, 'ai_mode', False))
             
-            # Check if AI mode is requested
-            if hasattr(self.config, 'ai_mode') and self.config.ai_mode:
-                # Create AI controller
-                ai_controller = create_ai_controller("AI_PILOT")
-                strategy.set_controller(ai_controller)
-                logger.info("🤖 AI Pilot activated")
+            # Run the game
+            result = game.run()
+            
+            if result.success:
+                logger.info("✅ Visual Asteroids completed successfully")
+                return Result(success=True, value=True)
             else:
-                # Create human controller
-                human_controller = create_human_controller("HUMAN_PLAYER")
-                strategy.set_controller(human_controller)
-                logger.info("👤 Human controller activated")
-            
-            # Run asteroids game loop
-            return self._run_asteroids_game(strategy)
+                return Result(success=False, error=f"Visual Asteroids failed: {result.error}")
             
         except Exception as e:
-            return Result(success=False, error=f"Asteroids launch failed: {str(e)}")
+            return Result(success=False, error=f"Visual Asteroids launch failed: {str(e)}")
     
     def _run_asteroids_game(self, strategy) -> Result[bool]:
         """Run the asteroids game loop"""
