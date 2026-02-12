@@ -305,11 +305,16 @@ class HighSpeedSimulation:
         except Exception as e:
             return Result(success=False, error=f"Simulation failed: {e}")
     
-    def _apply_controls(self, controls: Dict[str, Any], dt: float) -> None:
+    def _apply_controls(self, controls: ControlInput, dt: float) -> None:
         """Apply AI controls to ship"""
+        # Extract control values from ControlInput object
+        thrust = controls.thrust
+        rotation = controls.rotation
+        fire_weapon = controls.fire_weapon
+        
         # Apply thrust
-        if controls.get('thrust', 0) != 0:
-            thrust_magnitude = controls['thrust'] * 50.0
+        if thrust != 0:
+            thrust_magnitude = thrust * 50.0
             thrust_x = thrust_magnitude * math.cos(self.ship_angle)
             thrust_y = thrust_magnitude * math.sin(self.ship_angle)
             
@@ -319,13 +324,13 @@ class HighSpeedSimulation:
             # No energy drain in training mode (DEBUG_INFINITE_ENERGY)
         
         # Apply rotation
-        if controls.get('rotation', 0) != 0:
-            rotation_speed = controls['rotation'] * 3.0
+        if rotation != 0:
+            rotation_speed = rotation * 3.0
             self.ship_angle += rotation_speed * dt
             self.ship_angle = self.ship_angle % (2 * math.pi)
         
         # Handle weapon fire
-        if controls.get('fire_weapon', False):
+        if fire_weapon:
             self._fire_bullet()
     
     def _fire_bullet(self) -> None:
