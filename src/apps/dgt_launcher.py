@@ -248,29 +248,133 @@ class DGTPlatformLauncher:
             return Result(success=False, error=f"Theater Mode launch failed: {str(e)}")
     
     def _launch_asteroids(self) -> Result[bool]:
-        """Launch Asteroids game"""
+        """Launch Asteroids with Controller support"""
         logger.info("🎮 Launching Asteroids")
         
         try:
-            # Look for asteroids implementation
-            asteroids_script = self.src_dir / "apps" / "asteroids" / "main.py"
+            # Import controller systems
+            from apps.space.logic.ai_controller import create_ai_controller, create_human_controller
+            from apps.space.asteroids_strategy import AsteroidsStrategy
             
-            if not asteroids_script.exists():
-                # Fallback: create a simple asteroids demo
-                return self._create_asteroids_demo()
+            # Create game strategy
+            strategy = AsteroidsStrategy()
             
-            # Execute asteroids
-            import subprocess
-            result = subprocess.run([sys.executable, str(asteroids_script)], cwd=self.root_dir)
-            
-            if result.returncode == 0:
-                logger.info("✅ Asteroids completed successfully")
-                return Result(success=True, value=True)
+            # Check if AI mode is requested
+            if hasattr(self.config, 'ai_mode') and self.config.ai_mode:
+                # Create AI controller
+                ai_controller = create_ai_controller("AI_PILOT")
+                strategy.set_controller(ai_controller)
+                logger.info("🤖 AI Pilot activated")
             else:
-                return Result(success=False, error=f"Asteroids failed with code {result.returncode}")
-        
+                # Create human controller
+                human_controller = create_human_controller("HUMAN_PLAYER")
+                strategy.set_controller(human_controller)
+                logger.info("👤 Human controller activated")
+            
+            # Run asteroids game loop
+            return self._run_asteroids_game(strategy)
+            
         except Exception as e:
             return Result(success=False, error=f"Asteroids launch failed: {str(e)}")
+    
+    def _run_asteroids_game(self, strategy) -> Result[bool]:
+        """Run the asteroids game loop"""
+        try:
+            import time
+            
+            # Game setup
+            game_time = 0.0
+            dt = 1.0 / 60.0  # 60 FPS
+            max_duration = 30.0  # 30 seconds for AI test
+            
+            # Create mock world data
+            world_data = {
+                'asteroids': [
+                    {'x': 50, 'y': 50, 'vx': 10, 'vy': 5, 'radius': 15, 'size': 2},
+                    {'x': 120, 'y': 80, 'vx': -8, 'vy': 12, 'radius': 10, 'size': 1},
+                    {'x': 30, 'y': 100, 'vx': 15, 'vy': -10, 'radius': 20, 'size': 3}
+                ]
+            }
+            
+            print("🎮 Asteroids Game Starting")
+            print("========================")
+            print("🚀 Ship at center of screen")
+            print("☄️ Asteroids in motion")
+            print("🎯 Controller active")
+            print()
+            
+            # Game loop
+            while game_time < max_duration:
+                # Update game state
+                state_result = strategy.update_game_state(dt, world_data)
+                if not state_result.success:
+                    logger.error(f"Game state update failed: {state_result.error}")
+                    break
+                
+                game_state = state_result.value
+                
+                # Update asteroid positions
+                for asteroid in world_data['asteroids']:
+                    asteroid['x'] += asteroid['vx'] * dt
+                    asteroid['y'] += asteroid['vy'] * dt
+                    
+                    # Wrap around screen
+                    asteroid['x'] = asteroid['x'] % 160
+                    asteroid['y'] = asteroid['y'] % 144
+                
+                # Get HUD data
+                hud_data = strategy.get_hud_data()
+                
+                # Display status every 5 seconds
+                if int(game_time) % 5 == 0:
+                    print(f"⏰ Time: {game_time:.1f}s | "
+                          f"Position: ({hud_data['position']['x']:.0f}, {hud_data['position']['y']:.0f}) | "
+                          f"Energy: {hud_data['energy']:.0f}% | "
+                          f"Lives: {hud_data['lives']}")
+                
+                # Check game over
+                if game_state.get('game_over', False):
+                    print(f"💥 Game Over! Final score: {hud_data['score']}")
+                    break
+                
+                # Control frame rate
+                time.sleep(dt)
+                game_time += dt
+            
+            # Final status
+            final_hud = strategy.get_hud_data()
+            print(f"\n🏆 Game Complete!")
+            print(f"⏱️ Survival time: {game_time:.1f}s")
+            print(f"❤️ Lives remaining: {final_hud['lives']}")
+            print(f"⚡ Energy: {final_hud['energy']:.0f}%")
+            print(f"📍 Final position: ({final_hud['position']['x']:.0f}, {final_hud['position']['y']:.0f})")
+            
+            # Check AI performance if in AI mode
+            if hasattr(self.config, 'ai_mode') and self.config.ai_mode:
+                controller_status = strategy.controller_manager.get_controller_status()
+                if controller_status.get('active_controller') == 'AI_PILOT':
+                    ai_controller = strategy.controller_manager.controllers['AI_PILOT']
+                    ai_status = ai_controller.get_status()
+                    print(f"\n🤖 AI Pilot Performance:")
+                    print(f"   State: {ai_status['state']}")
+                    print(f"   Asteroids collected: {ai_status['asteroids_collected']}")
+                    print(f"   Threats evaded: {ai_status['threats_evaded']}")
+                    
+                    # Verify AI success criteria
+                    success = (game_time >= 30.0 and 
+                              ai_status['asteroids_collected'] >= 1 and
+                              final_hud['lives'] > 0)
+                    
+                    if success:
+                        print("✅ AI Pilot SUCCESS: Survived 30s and collected scrap!")
+                    else:
+                        print("❌ AI Pilot needs improvement")
+            
+            logger.info("✅ Asteroids game completed")
+            return Result(success=True, value=True)
+            
+        except Exception as e:
+            return Result(success=False, error=f"Asteroids game failed: {str(e)}")
     
     def _launch_rpg_lab(self) -> Result[bool]:
         """Launch RPG Lab"""
