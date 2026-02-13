@@ -21,7 +21,7 @@ from foundation.types.race import (
 from pydantic import BaseModel
 
 
-class RaceEventType(Enum):
+class RaceEventType(str, Enum):
     """Event types that the arbiter can emit"""
     RACE_STARTED = "race_started"
     RACE_FINISHED = "race_finished"
