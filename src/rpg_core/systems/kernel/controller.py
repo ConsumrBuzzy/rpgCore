@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
-from foundation.types import Result
+from rpg_core.foundation.types import Result
 
 
 @dataclass

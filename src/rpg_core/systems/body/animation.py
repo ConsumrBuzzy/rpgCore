@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from loguru import logger
-from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from rpg_core.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
 
 
 class AnimationState(str, Enum):
