@@ -17,15 +17,15 @@ from pydantic import ValidationError
 # Import the foundation components we're testing
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
+sys.path.append(str(Path(__file__).parent.parent.parent.parent / "src"))
 
-from foundation.genetics.genome_engine import (
+from src.foundation.genetics.genome_engine import (
     TurboGenome, 
     ShellPatternType, 
     BodyPatternType, 
     LimbShapeType
 )
-from foundation.types import Result, ValidationResult
+from src.foundation.types import Result, ValidationResult
 
 
 class TestTurboGenomeValidation:
@@ -289,7 +289,7 @@ class TestGenomeEngineIntegration:
     
     def test_genome_registration(self) -> None:
         """Test that genomes can be registered in the DGT registry"""
-        from foundation.registry import register_genome, get_genome, RegistryType
+        from src.foundation.registry import register_genome, get_genome, RegistryType
         
         # Create test genome
         genome = TurboGenome(
