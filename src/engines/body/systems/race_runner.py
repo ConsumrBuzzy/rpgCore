@@ -91,6 +91,9 @@ class RaceRunnerSystem(BaseSystem):
         self.track_direction = 0.0  # Angle in radians
         self.track_width = 20.0  # Track width
         
+        # Terrain engine integration
+        self.terrain_engine: Optional[TerrainEngine] = None
+        
         # Performance tracking
         self.update_count = 0
         self.last_snapshot_time = 0.0
