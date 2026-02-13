@@ -483,11 +483,11 @@ class DDEngineFactory:
     """Factory for creating D&D Engine instances"""
     
     @staticmethod
-    def create_engine(assets_path: str = "assets/", world_engine: Optional['WorldEngine'] = None) -> DD_Engine:
+    def create_engine(assets_path: str = "assets/", world_engine: Optional['WorldEngine'] = None) -> DDEngine:
         """Create a D&D Engine with default configuration"""
-        return DD_Engine(assets_path, world_engine)
+        return DDEngine(assets_path, world_engine)
     
     @staticmethod
-    def create_test_engine(world_engine: Optional['WorldEngine'] = None) -> DD_Engine:
+    def create_test_engine(world_engine: Optional['WorldEngine'] = None) -> DDEngine:
         """Create a D&D Engine for testing"""
-        return DD_Engine("test_assets/", world_engine)
+        return DDEngine("test_assets/", world_engine)
