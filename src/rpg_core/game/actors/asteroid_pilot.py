@@ -22,8 +22,8 @@ import time
 from typing import List, Tuple, Optional, Dict, Any
 from dataclasses import dataclass, field
 
-from foundation.vector import Vector2
-from engines.body.kinetics import KineticEntity
+from rpg_core.foundation.vector import Vector2
+from rpg_core.systems.body.kinetics import KineticEntity
 
 
 # ---------------------------------------------------------------------------
