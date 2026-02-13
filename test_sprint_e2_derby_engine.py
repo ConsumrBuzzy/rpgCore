@@ -76,6 +76,7 @@ def test_physics_handshake():
         from engines.body.systems.race_runner import RaceRunnerSystem, create_race_runner_system
         from apps.tycoon.entities.turtle import create_fast_turtle, create_heavy_turtle
         from foundation.registry import DGTRegistry
+        from foundation.vector import Vector2
         
         print("✅ Physics handshake imports successful")
         
@@ -135,6 +136,7 @@ def test_strategic_racing():
         from engines.body.systems.race_runner import RaceRunnerSystem, create_race_runner_system
         from apps.tycoon.entities.turtle import create_random_turtle
         from foundation.registry import DGTRegistry
+        from foundation.vector import Vector2
         
         print("✅ Strategic racing imports successful")
         
@@ -236,7 +238,7 @@ def test_terrain_visualization():
         print("✅ Terrain visualization test imports successful")
         
         # Create challenging terrain for visualization
-        terrain = create_challenging()
+        terrain = create_challenging_terrain()
         init_result = terrain.initialize()
         assert init_result.success, f"Terrain initialization failed: {init_result.error}"
         
