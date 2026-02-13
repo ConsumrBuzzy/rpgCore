@@ -117,9 +117,9 @@ class RaceArbiter(BaseSystem):
         self.current_leader: Optional[str] = None
         
         # Event callbacks
-        self.event_callbacks: Dict[str, List[Callable]] = {
-            event_type.value: [] for event_type in ArbiterEvent
-        }
+        self.event_callbacks: Dict[str, List[Callable]] = {}
+        for event_type in ArbiterEvent:
+            self.event_callbacks[event_type.value] = []
         
         # Previous state tracking
         self.previous_states: Dict[str, TurtleState] = {}
@@ -435,7 +435,7 @@ class RaceArbiter(BaseSystem):
         """Register a callback for specific events"""
         try:
             event_enum = ArbiterEvent(event_type)
-            self.event_callbacks[event_enum].append(callback)
+            self.event_callbacks[event_type].append(callback)
             
             self._get_logger().debug(f"Registered callback for {event_type}")
             return Result.success_result(None)
