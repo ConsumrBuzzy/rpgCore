@@ -114,7 +114,7 @@ def test_simple_race_simulation():
 def test_registry_centralization():
     """Test registry centralization functionality"""
     try:
-        from foundation.registry import DGTRegistry
+        from foundation.registry import DGTRegistry, RegistryType
         from foundation.protocols import WorldStateSnapshot, EntityStateSnapshot, EntityType
         from foundation.vector import Vector2
         
@@ -132,7 +132,7 @@ def test_registry_centralization():
         
         # Register all entities
         for entity in entities:
-            registry.register(entity.entity_id, entity, registry.RegistryType.ENTITY, {})
+            registry.register(entity.entity_id, entity, RegistryType.ENTITY, {})
         
         print("✅ Multiple entities registered")
         
