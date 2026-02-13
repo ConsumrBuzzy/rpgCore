@@ -87,7 +87,7 @@ class DGTRegistry:
         """Lazy logger initialization"""
         if self._logger is None:
             try:
-                from ..utils.logger import get_logger_manager
+                from foundation.utils.logger import get_logger_manager
                 self._logger = get_logger_manager().get_component_logger("registry")
             except Exception:
                 # Fallback to basic logging
