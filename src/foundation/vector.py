@@ -45,6 +45,10 @@ class Vector2:
         """Right scalar multiplication"""
         return self.__mul__(scalar)
     
+    def __truediv__(self, scalar: float) -> 'Vector2':
+        """Scalar division for acceleration calculations"""
+        return Vector2(self.x / scalar, self.y / scalar)
+    
     def magnitude(self) -> float:
         """Calculate vector magnitude (distance from origin)"""
         return math.sqrt(self.x * self.x + self.y * self.y)
