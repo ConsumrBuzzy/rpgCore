@@ -31,6 +31,7 @@ from rpg_core.foundation.vector import Vector2
 from rpg_core.foundation.constants import SOVEREIGN_WIDTH as WIDTH, SOVEREIGN_HEIGHT as HEIGHT
 from rpg_core.systems.body.kinetics import KineticEntity
 from rpg_core.systems.graphics.fx.exhaust_system import ExhaustSystem
+from rpg_core.game.actors.asteroid_pilot import AsteroidPilot
 
 if TYPE_CHECKING:
     from rpg_core.game.entities.asteroid import Asteroid
@@ -74,10 +75,7 @@ class AsteroidsSlice:
     frame buffer, and measures per-pillar frame times.
     """
 
-    def __init__(self, asteroid_count: int = 50) -> None:
-        import sys
-        print("DEBUG: AsteroidsSlice.__init__ start")
-        sys.stdout.flush()
+
     def __init__(self, asteroid_count: int = 50) -> None:
         import sys
         print("DEBUG: AsteroidsSlice.__init__ start")
@@ -657,9 +655,8 @@ def run_ai_headless(frames: int = 3600) -> None:
     """Run a 60-second headless AI survival benchmark."""
     import sys
     sys.stderr.write("DEBUG: Entered run_ai_headless\n")
-    from actors.asteroid_pilot import AsteroidPilot
-    from entities.asteroid import Asteroid
-    from engines.graphics.fx.exhaust_system import ExhaustSystem
+    
+    # Use module-level imports
     
     sys.stderr.write(f"🤖 AI AUTOPILOT ENGAGED — Surviving {frames} frames ({frames/60:.1f}s)...\n")
     
@@ -673,6 +670,9 @@ def run_ai_headless(frames: int = 3600) -> None:
         sim.waypoint = None # Disable standard autopilot
         
         dt = 1.0 / 60.0
+        
+        # Run simulation
+        pilot_log = pilot.log
         
         t0 = time.time()
         
@@ -692,7 +692,11 @@ def run_ai_headless(frames: int = 3600) -> None:
                     
             # Collisions
             sim._check_collisions()
-            pilot.log.total_collisions = sim.collisions
+            if sim.collisions > pilot_log.total_collisions:
+                pilot_log.total_collisions = sim.collisions
+            
+            # Telemetry
+            pilot_log.tick()
             
     except Exception as e:
         print(f"❌ CRASH: {e}")
@@ -702,24 +706,29 @@ def run_ai_headless(frames: int = 3600) -> None:
         
     elapsed = time.time() - t0
     
-    elapsed = time.time() - t0
-    
     # Write to file to bypass console issues
-    with open("ai_telemetry_final.txt", "w", encoding="utf-8") as f:
-        f.write("=" * 60 + "\n")
-        f.write("  🤖 AI SURVIVAL LOG\n")
-        f.write("=" * 60 + "\n")
-        log = pilot.log.to_dict()
-        for k, v in log.items():
-            f.write(f"  {k:<25}: {v}\n")
-        f.write("-" * 60 + "\n")
-        f.write(f"  Sim time: {elapsed:.3f}s ({(frames/elapsed):.1f} FPS)\n")
-        
-        if log["total_collisions"] == 0:
-            f.write("  ✅ SUCCESS — Zero collisions!\n")
-        else:
-            f.write(f"  ⚠️  FAIL — {log['total_collisions']} collisions detected.\n")
-        f.write("=" * 60 + "\n")
+    try:
+        with open("ai_telemetry_final.txt", "w", encoding="utf-8") as f:
+            f.write("=" * 60 + "\n")
+            f.write("  🤖 AI SURVIVAL LOG\n")
+            f.write("=" * 60 + "\n")
+            log = pilot.log.to_dict()
+            for k, v in log.items():
+                f.write(f"  {k:<25}: {v}\n")
+            f.write("-" * 60 + "\n")
+            f.write(f"  Sim time: {elapsed:.3f}s ({(frames/elapsed):.1f} FPS)\n")
+            
+            if log["total_collisions"] == 0:
+                f.write("  ✅ SUCCESS — Zero collisions!\n")
+            else:
+                f.write(f"  ⚠️  FAIL — {log['total_collisions']} collisions detected.\n")
+            f.write("=" * 60 + "\n")
+            
+        print(f"\n🏁 AI Run Complete. Log saved to ai_telemetry_final.txt")
+        print(f"   Survived: {pilot.log.frames_survived/60:.1f}s")
+        print(f"   Hits:     {pilot.log.total_collisions}")
+    except Exception as e:
+        print(f"Error writing telemetry: {e}")
 
     print("\n" + "=" * 60)
     print("  🤖 AI SURVIVAL LOG WRITTEN TO ai_telemetry_final.txt")
