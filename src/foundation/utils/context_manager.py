@@ -16,7 +16,7 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 
 from loguru import logger
-from game_state import GameState, Goal, NPC
+from foundation.protocols import WorldStateSnapshot, EntityStateProtocol
 
 
 @dataclass
