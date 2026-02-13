@@ -11,7 +11,7 @@ Each engine implements the Facade pattern for clean interfaces and
 complete decoupling between pillars.
 """
 
-from .mind import DDEngine, DDEngineFactory
+from .mind import DD_Engine, DDEngineFactory
 from .body import GraphicsEngine, GraphicsEngineFactory, GraphicsEngineSync
 from .race import (
     RacePhysicsEngine, PhysicsConstants, SubStepConfig, TurtlePhysics,
@@ -23,7 +23,7 @@ from .race import (
 
 __all__ = [
     # Mind Engine  
-    "DDEngine", "DDEngineFactory",
+    "DD_Engine", "DDEngineFactory",
     
     # Body Engine
     "GraphicsEngine", "GraphicsEngineFactory", "GraphicsEngineSync",
