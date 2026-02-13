@@ -106,7 +106,11 @@ def test_physics_handshake():
         # Simulate race crossing water terrain
         # Move both turtles to water terrain using teleport
         swimmer.teleport(Vector2(30, 80))  # Water terrain
-        climber.teleport(Vector2(30, 80))  # Same water terrain
+        climber.teleport(Vector2(35, 80))  # Same water terrain but slightly ahead
+        
+        # Give turtles a velocity to test genetic advantages
+        swimmer.kinetic_body.state.velocity = Vector2(10, 0)  # Fast swimmer
+        climber.kinetic_body.state.velocity = Vector2(8, 0)   # Slower climber
         
         # Update physics for several seconds
         for i in range(180):  # 3 seconds at 60Hz
