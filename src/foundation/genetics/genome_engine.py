@@ -8,13 +8,21 @@ enterprise-grade type safety.
 """
 
 import random
-from typing import Tuple, List, Optional, Dict, Any
-from pydantic import BaseModel, Field, validator
+from typing import Tuple, List, Optional, Dict, Any, Final
+from pydantic import BaseModel, Field, field_validator
 from enum import Enum
+
+from ..types import Result, ValidationResult
+from ..base import ComponentConfig
 
 
 class ShellPatternType(str, Enum):
-    """Shell pattern types from legacy system"""
+    """Shell pattern types from legacy system.
+    
+    Tier: Foundation
+    Dependencies: None
+    Memory Ownership: Immutable enum values
+    """
     HEX = "hex"
     SPOTS = "spots"
     STRIPES = "stripes"
@@ -22,7 +30,12 @@ class ShellPatternType(str, Enum):
 
 
 class BodyPatternType(str, Enum):
-    """Body pattern types from legacy system"""
+    """Body pattern types from legacy system.
+    
+    Tier: Foundation
+    Dependencies: None
+    Memory Ownership: Immutable enum values
+    """
     SOLID = "solid"
     MOTtLED = "mottled"
     SPECKLED = "speckled"
@@ -30,7 +43,12 @@ class BodyPatternType(str, Enum):
 
 
 class LimbShapeType(str, Enum):
-    """Limb shape types from legacy system"""
+    """Limb shape types from legacy system.
+    
+    Tier: Foundation
+    Dependencies: None
+    Memory Ownership: Immutable enum values
+    """
     FLIPPERS = "flippers"
     FEET = "feet"
     FINS = "fins"
