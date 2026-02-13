@@ -29,6 +29,10 @@ class Vector2:
         """Vector addition for velocity accumulation"""
         return Vector2(self.x + other.x, self.y + other.y)
     
+    def copy(self) -> 'Vector2':
+        """Create a copy of this vector"""
+        return Vector2(self.x, self.y)
+    
     def __sub__(self, other: 'Vector2') -> 'Vector2':
         """Vector subtraction for relative positioning"""
         return Vector2(self.x - other.x, self.y - other.y)
