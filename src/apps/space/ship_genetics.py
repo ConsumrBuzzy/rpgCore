@@ -5,7 +5,7 @@ With lazy __init__.py in apps.rpg, this can now use a clean import
 instead of an importlib proxy.
 """
 
-from apps.rpg.logic.ship_genetics import (
+from rpg_core.game_engine.ship_genetics import (
     HullType,
     WeaponType,
     EngineType,

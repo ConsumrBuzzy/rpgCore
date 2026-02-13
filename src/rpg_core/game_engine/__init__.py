@@ -30,6 +30,8 @@ _ENGINE_EXPORTS = {
     
     # From ship_genetics.py
     "ShipGenetics",
+    # From tri_brain.py
+    "TriBrain", "create_tri_brain",
 }
 
 __all__ = sorted(_ENGINE_EXPORTS)
@@ -55,6 +57,8 @@ def __getattr__(name: str) -> Any:
             from . import survival_game as _mod
         elif name == "ShipGenetics":
             from . import ship_genetics as _mod
+        elif name in {"TriBrain", "create_tri_brain"}:
+            from . import tri_brain as _mod
         else:
             raise AttributeError(f"Mapping missing for export: {name}")
             

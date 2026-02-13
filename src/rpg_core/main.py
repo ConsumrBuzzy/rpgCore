@@ -24,13 +24,13 @@ from rpg_core.utils import initialize_logging, get_logger_manager
 
 # Import pillar engines
 try:
-    from rpg_core.systems.world_engine import WorldEngine, WorldEngineFactory
-    from rpg_core.systems.mind import DDEngine, DDEngineFactory
+    from rpg_core.game_engine import WorldEngine, WorldEngineFactory
+    from rpg_core.game_engine import DDEngine
     from rpg_core.systems.body import GraphicsEngine, GraphicsEngineFactory
 except ImportError:
     # Fallback to local systems if package import fails
-    from rpg_core.systems.world_engine import WorldEngine, WorldEngineFactory
-    from rpg_core.systems.mind import DDEngine, DDEngineFactory
+    from rpg_core.game_engine import WorldEngine, WorldEngineFactory
+    from rpg_core.game_engine import DDEngine
     from rpg_core.systems.body import GraphicsEngine, GraphicsEngineFactory
 
 # Import narrative engines
@@ -43,9 +43,9 @@ except ImportError:
 
 # Import actor
 try:
-    from rpg_core.game.actors.ai_controller import AIController, Spawner
+    from rpg_core.game_engine.actors.ai_controller import AIController, Spawner
 except ImportError:
-    from rpg_core.game.actors.ai_controller import AIController, Spawner
+    from rpg_core.game_engine.actors.ai_controller import AIController, Spawner
 
 # Import utilities
 from rpg_core.utils.config_manager import (

@@ -31,11 +31,11 @@ from rpg_core.foundation.vector import Vector2
 from rpg_core.foundation.constants import SOVEREIGN_WIDTH as WIDTH, SOVEREIGN_HEIGHT as HEIGHT
 from rpg_core.systems.body.kinetics import KineticEntity
 from rpg_core.systems.graphics.fx.exhaust_system import ExhaustSystem
-from rpg_core.game.actors.asteroid_pilot import AsteroidPilot
+from rpg_core.game_engine.actors.asteroid_pilot import AsteroidPilot
 
 if TYPE_CHECKING:
-    from rpg_core.game.entities.asteroid import Asteroid
-    from rpg_core.game.actors.asteroid_pilot import AsteroidPilot
+    from rpg_core.game_engine.entities.asteroid import Asteroid
+    from rpg_core.game_engine.actors.asteroid_pilot import AsteroidPilot
     from rpg_core.systems.graphics.fx.exhaust_system import ExhaustSystem
 
 from rpg_core.foundation.utils.performance_monitor import (
