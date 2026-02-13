@@ -231,7 +231,7 @@ class RaceArbiter(BaseSystem):
             self.checkpoint_positions = checkpoint_positions or []
             
             # Emit race started event
-            self._emit_event(ArbiterEvent.RACE_STARTED, {
+            self._emit_event("race_started", {
                 'checkpoints': len(self.checkpoint_positions),
                 'start_time': self.race_metrics.start_time
             })
