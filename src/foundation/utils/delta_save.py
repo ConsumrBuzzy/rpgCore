@@ -26,12 +26,14 @@ import pickle
 
 from loguru import logger
 
-# Import DGT components
+# Import DGT components - Foundation only
 try:
-    from core.state import TileType, SurfaceState, validate_position
-    from engines.world import WorldEngine
+    from foundation.types import Result
+    from foundation.protocols import WorldStateSnapshot, EntityStateProtocol
 except ImportError as e:
-    logger.error(f"Failed to import DGT components: {e}")
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.error(f"Failed to import Foundation components: {e}")
 
 
 class ChangeType(Enum):

@@ -13,9 +13,9 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any, Tuple, TYPE_CHECKING
 
 from foundation.types import Result
+from foundation.protocols import Vector2Protocol
 
-if TYPE_CHECKING:
-    from apps.space.entities.vector2 import Vector2
+# No TYPE_CHECKING needed - we use Foundation protocols only
 
 
 class EntityProtocol(ABC):
@@ -44,7 +44,7 @@ class EntityProtocol(ABC):
     
     @property
     @abstractmethod
-    def position(self) -> Vector2:
+    def position(self) -> Vector2Protocol:
         """Entity position"""
         pass
 
@@ -94,7 +94,7 @@ class PhysicsProtocol(ABC):
     
     @property
     @abstractmethod
-    def velocity(self) -> Vector2:
+    def velocity(self) -> Vector2Protocol:
         """Current velocity"""
         pass
     
