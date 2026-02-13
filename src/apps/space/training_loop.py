@@ -371,51 +371,42 @@ class HighSpeedSimulation:
                 self.ship_last_fire_time = self.survival_time
                 self._fire_bullet()
     
+    def _get_toroidal_vector(self, x1, y1, x2, y2) -> Tuple[float, float, float]:
+        """Calculate shortest vector from p1 to p2 in a toroidal world"""
+        dx = x2 - x1
+        dy = y2 - y1
+        if abs(dx) > SOVEREIGN_WIDTH / 2: dx -= math.copysign(SOVEREIGN_WIDTH, dx)
+        if abs(dy) > SOVEREIGN_HEIGHT / 2: dy -= math.copysign(SOVEREIGN_HEIGHT, dy)
+        dist = math.sqrt(dx**2 + dy**2)
+        return dx, dy, dist
+
     def _fire_bullet(self) -> None:
-        """Fire bullet with raycast/cone check for training accuracy without full physics"""
+        """Fire bullet with toroidal raycast check"""
         self.bullets_fired += 1
-        
-        # Raycast/Cone check
-        # We check if any asteroid is within a narrow cone in front of the ship
-        shoot_range = 300.0  # Max shooting range
-        cone_angle = 0.1  # ~5.7 degrees tolerance
+        shoot_range = 300.0
+        cone_angle = 0.1
         
         hit_asteroid = None
         min_dist = float('inf')
         
         for asteroid in self.asteroids:
-            # Vector to asteroid
-            dx = asteroid['x'] - self.ship_x
-            dy = asteroid['y'] - self.ship_y
-            
-            # Distance check
-            dist = math.sqrt(dx*dx + dy*dy)
-            if dist > shoot_range:
-                continue
+            dx, dy, dist = self._get_toroidal_vector(self.ship_x, self.ship_y, asteroid['x'], asteroid['y'])
+            if dist > shoot_range: continue
                 
-            # Angle check
             angle_to_target = math.atan2(dy, dx)
             angle_diff = abs(angle_to_target - self.ship_angle)
+            while angle_diff > math.pi: angle_diff = abs(angle_diff - 2 * math.pi)
             
-            # Normalize angle difference
-            while angle_diff > math.pi:
-                angle_diff = abs(angle_diff - 2 * math.pi)
-            
-            # Check if within cone
             if angle_diff < cone_angle:
-                # We hit something! Find the closest one
                 if dist < min_dist:
                     min_dist = dist
                     hit_asteroid = asteroid
         
         if hit_asteroid:
             self.shots_hit += 1
-            self.time_since_hit = 0.0  # Reset combat timer
+            self.time_since_hit = 0.0
             self.asteroids_destroyed += 1
             self.asteroids.remove(hit_asteroid)
-            
-            # Respawn asteroid to keep the field populated
-            # This ensures constant target availability
             self._spawn_single_asteroid()
             
     def _spawn_single_asteroid(self) -> None:
@@ -486,18 +477,13 @@ class HighSpeedSimulation:
             asteroid['y'] = asteroid['y'] % SOVEREIGN_HEIGHT
     
     def _check_collisions(self) -> None:
-        """Check collisions (simplified for training speed)"""
+        """Check collisions (Toroidal awareness)"""
         ship_radius = 3.0
-        
         for asteroid in self.asteroids:
-            distance = math.sqrt((self.ship_x - asteroid['x'])**2 + (self.ship_y - asteroid['y'])**2)
-            collision_distance = ship_radius + asteroid['radius']
-            
-            if distance < collision_distance:
+            _, _, distance = self._get_toroidal_vector(self.ship_x, self.ship_y, asteroid['x'], asteroid['y'])
+            if distance < ship_radius + asteroid['radius']:
                 self.ship_lives -= 1
-                if self.ship_lives <= 0:
-                    break
-                # Remove asteroid after collision
+                if self.ship_lives <= 0: break
                 self.asteroids.remove(asteroid)
                 break
 

@@ -220,6 +220,9 @@ class TournamentMode:
         self.scrap_entities = []
         self._spawn_scrap()
         
+        # Projectiles and FX
+        self.explosions: List[Explosion] = []
+        
         # Asteroids
         self.asteroids = []
         self._spawn_asteroids()
@@ -252,6 +255,17 @@ class TournamentMode:
         
         for config in scrap_configs:
             self.scrap_entities.append(config.copy())
+
+    def _spawn_scrap_at(self, x: float, y: float) -> None:
+        """Spawn scrap at a specific location (from destroyed asteroid)"""
+        new_scrap = {
+            'x': x,
+            'y': y,
+            'value': random.randint(5, 15),
+            'radius': 3
+        }
+        self.scrap_entities.append(new_scrap)
+        logger.info(f"✨ Scrap spawned at ({x:.1f}, {y:.1f})")
     
     def _spawn_asteroids(self) -> None:
         """Spawn asteroids with environmental noise"""
@@ -300,14 +314,19 @@ class TournamentMode:
             self._update_pilot(pilot)
             
             # Update bullets
-            for bullet in pilot.bullets[:]:
+            for bullet in pilot.bullets:
                 bullet.update(self.dt)
                 # Wrap bullet position
                 bullet.x = bullet.x % SOVEREIGN_WIDTH
                 bullet.y = bullet.y % SOVEREIGN_HEIGHT
-                if not bullet.active:
-                    pilot.bullets.remove(bullet)
+            pilot.bullets = [b for b in pilot.bullets if b.active]
         
+        # Update explosions
+        for explosion in self.explosions[:]:
+            explosion.update(self.dt)
+            if not explosion.active:
+                self.explosions.remove(explosion)
+
         # Check collisions
         self._check_collisions()
         
@@ -390,31 +409,29 @@ class TournamentMode:
             for scrap_idx in sorted(scrap_to_remove, reverse=True):
                 del self.scrap_entities[scrap_idx]
                 
-            # Check bullet collisions
+        # Bullet collisions
+        for pilot in self.pilots:
             for bullet in pilot.bullets:
-                if not bullet.active:
-                    continue
-                    
-                for asteroid in self.asteroids[:]:
+                if not bullet.active: continue
+                
+                # Check asteroid hits
+                for asteroid in self.asteroids[:]: # Iterate over a copy to allow removal
                     dist = math.sqrt((bullet.x - asteroid['x'])**2 + (bullet.y - asteroid['y'])**2)
-                    if dist < asteroid['radius'] + 2:  # Bullet radius approx 2
-                        # Hit!
+                    if dist < asteroid['radius'] + 2: # Bullet radius approx 2
                         bullet.active = False
                         asteroid['health'] -= 1
+                        
+                        # Visual hit effect
+                        self.explosions.append(Explosion(bullet.x, bullet.y, (255, 200, 50)))
+                        
                         if asteroid['health'] <= 0:
-                            if asteroid in self.asteroids:
-                                # Spawn scrap from destroyed asteroid
-                                new_scrap = {
-                                    'x': asteroid['x'],
-                                    'y': asteroid['y'],
-                                    'value': asteroid['size'] * 5,  # Value based on size
-                                    'radius': max(3, asteroid['radius'] / 2)
-                                }
-                                self.scrap_entities.append(new_scrap)
-                                
-                                self.asteroids.remove(asteroid)
-                                pilot.asteroids_destroyed += 1
-                        break  # Bullet hit something, stop checking other asteroids
+                            pilot.asteroids_destroyed += 1
+                            # Explosion on destruction
+                            self.explosions.append(Explosion(asteroid['x'], asteroid['y'], (255, 255, 255)))
+                            # Spawn scrap
+                            self._spawn_scrap_at(asteroid['x'], asteroid['y'])
+                            self.asteroids.remove(asteroid)
+                        break # Bullet hit something, stop checking other asteroids
     
     def render_game(self) -> None:
         """Render tournament mode"""
@@ -433,6 +450,9 @@ class TournamentMode:
         # Draw pilots
         self._draw_pilots()
         
+        # Draw explosions
+        self._draw_explosions()
+
         # Draw mental vectors
         self._draw_mental_vectors()
         
@@ -623,6 +643,11 @@ class TournamentMode:
         except Exception as e:
             return Result(success=False, error=f"Tournament failed: {e}")
     
+    def _draw_explosions(self) -> None:
+        """Draw visual effects"""
+        for explosion in self.explosions:
+            explosion.draw(self.game_surface)
+
     def cleanup(self) -> None:
         """Clean up resources"""
         pygame.quit()
