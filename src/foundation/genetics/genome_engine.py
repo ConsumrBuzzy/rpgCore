@@ -166,8 +166,9 @@ class TurboGenome(BaseModel):
         description="Eye size scaling"
     )
     
-    @validator('shell_base_color', 'shell_pattern_color', 'body_base_color', 
+    @field_validator('shell_base_color', 'shell_pattern_color', 'body_base_color', 
                'body_pattern_color', 'head_color', 'leg_color', 'eye_color')
+    @classmethod
     def validate_rgb_colors(cls, v):
         """Validate RGB color tuples"""
         if not isinstance(v, tuple) or len(v) != 3:
@@ -179,9 +180,10 @@ class TurboGenome(BaseModel):
         
         return v
     
-    @validator('shell_pattern_density', 'shell_pattern_opacity', 'shell_size_modifier',
+    @field_validator('shell_pattern_density', 'shell_pattern_opacity', 'shell_size_modifier',
                'body_pattern_density', 'head_size_modifier', 'leg_length', 
                'leg_thickness_modifier', 'eye_size_modifier')
+    @classmethod
     def validate_continuous_ranges(cls, v):
         """Validate continuous trait ranges"""
         if not isinstance(v, (int, float)):
