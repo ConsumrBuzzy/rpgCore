@@ -178,6 +178,10 @@ def test_resize_log_verification():
         print(f"{width:4}x{height:<4}        | {physical_pos[0]:3},{physical_pos[1]:3}          | "
               f"({back_to_logical[0]:6.1f}, {back_to_logical[1]:6.1f})")
         
+        # Debug output for troubleshooting
+        print(f"         Expected: ({logical_turtle_pos[0]:6.1f}, {logical_turtle_pos[1]:6.1f})")
+        print(f"         Difference: ({abs(back_to_logical[0] - logical_turtle_pos[0]):6.1f}, {abs(back_to_logical[1] - logical_turtle_pos[1]):6.1f})")
+        
         # Verify logical position consistency (allowing for floating point precision)
         assert abs(back_to_logical[0] - logical_turtle_pos[0]) < 1.0
         assert abs(back_to_logical[1] - logical_turtle_pos[1]) < 1.0
