@@ -171,7 +171,7 @@ class AsteroidPilot(BaseController):
             
             # Apply shared knowledge bias
             if self.use_shared_knowledge:
-                self._apply_shared_knowledge_bias()
+                self._apply_shared_knowledge_bias(entity_state, world_data)
             
             # Update short-term memory
             self._update_memory(dt, entity_state, world_data)
@@ -218,7 +218,7 @@ class AsteroidPilot(BaseController):
             self.thrust = max(-1.0, min(1.0, self.thrust))
             self.rotation = max(-2.0, min(2.0, self.rotation))
     
-    def _apply_shared_knowledge_bias(self) -> None:
+    def _apply_shared_knowledge_bias(self, entity_state: Dict[str, Any], world_data: Dict[str, Any]) -> None:
         """Apply bias from shared knowledge library"""
         if not self.use_neural_network or not self.use_shared_knowledge:
             return
