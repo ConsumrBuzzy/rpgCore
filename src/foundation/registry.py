@@ -16,6 +16,7 @@ from pathlib import Path
 
 from .types import Result, ValidationResult
 from .base import ComponentConfig
+from .protocols import WorldStateSnapshot, EntityStateSnapshot, EntityType
 
 T = TypeVar('T')
 
