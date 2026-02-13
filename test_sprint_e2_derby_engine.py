@@ -104,13 +104,27 @@ def test_physics_handshake():
         assert start_result.success, f"Failed to start race: {start_result.error}"
         
         # Simulate race crossing water terrain
+        # Find actual water terrain coordinates
+        water_coords = None
+        for x in range(160):
+            for y in range(144):
+                terrain = race_runner.terrain_engine.get_terrain_at(x, y)
+                if terrain.terrain_type in [TerrainType.WATER, "water"]:
+                    water_coords = (x, y)
+                    break
+            if water_coords:
+                break
+        
+        assert water_coords is not None, "No water terrain found!"
+        print(f"Found water terrain at: {water_coords}")
+        
         # Move both turtles to water terrain using teleport
-        swimmer.teleport(Vector2(30, 80))  # Water terrain
-        climber.teleport(Vector2(35, 80))  # Same water terrain but slightly ahead
+        swimmer.teleport(Vector2(water_coords[0], water_coords[1]))
+        climber.teleport(Vector2(water_coords[0] + 1, water_coords[1]))
         
         # Check what terrain they're actually on
-        swimmer_terrain = race_runner.terrain_engine.get_terrain_at(30, 80)
-        climber_terrain = race_runner.terrain_engine.get_terrain_at(35, 80)
+        swimmer_terrain = race_runner.terrain_engine.get_terrain_at(water_coords[0], water_coords[1])
+        climber_terrain = race_runner.terrain_engine.get_terrain_at(water_coords[0] + 1, water_coords[1])
         print(f"Swimmer terrain: {swimmer_terrain.terrain_type}")
         print(f"Climber terrain: {climber_terrain.terrain_type}")
         
