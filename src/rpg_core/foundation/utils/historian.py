@@ -22,7 +22,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from loguru import logger
-from foundation.protocols import WorldStateSnapshot, EntityStateProtocol
+from rpg_core.foundation.protocols import WorldStateSnapshot, EntityStateProtocol
 
 
 class WorldEvent(Enum):

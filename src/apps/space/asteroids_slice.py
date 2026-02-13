@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     from rpg_core.game.actors.asteroid_pilot import AsteroidPilot
     from rpg_core.systems.graphics.fx.exhaust_system import ExhaustSystem
 
-from rpg_core.utils.performance_monitor import (
+from rpg_core.foundation.utils.performance_monitor import (
     PerformanceMonitor,
     initialize_performance_monitor,
     get_performance_monitor,

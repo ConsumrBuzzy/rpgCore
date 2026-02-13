@@ -28,8 +28,8 @@ from loguru import logger
 
 # Import DGT components - Foundation only
 try:
-    from foundation.types import Result
-    from foundation.protocols import WorldStateSnapshot, EntityStateProtocol
+    from rpg_core.foundation.types import Result
+    from rpg_core.foundation.protocols import WorldStateSnapshot, EntityStateProtocol
 except ImportError as e:
     import logging
     logger = logging.getLogger(__name__)
