@@ -69,7 +69,8 @@ class DGTRegistry:
             return
             
         self._initialized = True
-        self._logger = get_logger_manager().get_component_logger("registry")
+        # Lazy logger initialization to prevent circular dependency
+        self._logger = None
         
         # Type-specific registries
         self._registries: Dict[RegistryType, Dict[str, RegistryEntry[Any]]] = {
@@ -81,7 +82,19 @@ class DGTRegistry:
         self._total_operations = 0
         self._lock = threading.RLock()
         
-        self._logger.info("🔧 DGT Registry initialized")
+        self._get_logger().info("🔧 DGT Registry initialized")
+    
+    def _get_logger(self):
+        """Lazy logger initialization"""
+        if self._logger is None:
+            try:
+                from .utils.logger import get_logger_manager
+                self._logger = get_logger_manager().get_component_logger("registry")
+            except Exception:
+                # Fallback to basic logging
+                import logging
+                self._logger = logging.getLogger("registry")
+        return self._logger
     
     def register(self, item_id: str, item: Any, registry_type: RegistryType, 
                  metadata: Optional[Dict[str, Any]] = None) -> Result[None]:

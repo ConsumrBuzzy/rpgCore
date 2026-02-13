@@ -371,5 +371,5 @@ def auto_initialize() -> None:
         logger.error(f"Failed to initialize logging: {e}")
 
 
-# Auto-initialize on import
-auto_initialize()
+# Auto-initialize on import - DISABLED to prevent circular dependency deadlock
+# auto_initialize()
