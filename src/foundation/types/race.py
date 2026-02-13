@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field, validator
 from enum import Enum
 import time
 
-from foundation.types import Result
+from .result import Result
 
 
 class TerrainType(str, Enum):
