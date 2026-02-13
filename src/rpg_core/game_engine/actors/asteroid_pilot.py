@@ -211,37 +211,73 @@ class AsteroidPilot(BaseController):
             
     def compute_steering(self, ship, obstacles, world_size) -> Vector2:
         """Compute steering vector (for test compliance)"""
-        # Simple seek to waypoint if set
-        if self._current_waypoint:
-            dx = self._current_waypoint.x - ship.position.x
-            dy = self._current_waypoint.y - ship.position.y
-            steering = Vector2(dx, dy).normalize()
+        # Pick new waypoint if reached
+        if not self._current_waypoint or ship.position.distance_to(self._current_waypoint) < 5.0:
+            if self._current_waypoint:
+                self.log.waypoints_reached += 1
+            self._current_waypoint = Vector2(random.uniform(0, world_size[0]), random.uniform(0, world_size[1]))
             
-            # Simple avoidance
-            for obstacle in obstacles:
-                ox, oy = obstacle.position.x, obstacle.position.y
-                dist = ship.position.distance_to(obstacle.position)
-                if dist < 30.0:
-                    avoid = Vector2(ship.position.x - ox, ship.position.y - oy).normalize()
-                    steering.x += avoid.x * 2.0
-                    steering.y += avoid.y * 2.0
-            
-            self.steering = steering.normalize()
-            return self.steering
-        return Vector2(0, 0)
+        # Simple seek to waypoint
+        dx = self._current_waypoint.x - ship.position.x
+        dy = self._current_waypoint.y - ship.position.y
+        steering = Vector2(dx, dy).normalize()
         
-    def apply_to_ship(self, ship, steering_vector, dt):
-        """Apply steering to ship (for test compliance)"""
-        if not steering_vector:
+        # Simple avoidance
+        avoidance_triggered = False
+        for obstacle in obstacles:
+            # Handle both direct position and kinetics.position
+            if hasattr(obstacle, 'position'):
+                o_pos = obstacle.position
+            elif hasattr(obstacle, 'kinetics') and hasattr(obstacle.kinetics, 'position'):
+                o_pos = obstacle.kinetics.position
+            else:
+                continue
+                
+            ox, oy = o_pos.x, o_pos.y
+            dist = ship.position.distance_to(o_pos)
+            if dist < 30.0:
+                avoid = Vector2(ship.position.x - ox, ship.position.y - oy).normalize()
+                steering.x += avoid.x * 2.0
+                steering.y += avoid.y * 2.0
+                avoidance_triggered = True
+                
+                # Update closest call distance
+                if dist < self.log.closest_call_distance:
+                    self.log.closest_call_distance = dist
+        
+        if avoidance_triggered:
+            # Check cooldown
+            if self.survival_time - self.log.last_maneuver_time >= self.config.maneuver_cooldown:
+                self.log.avoidance_maneuvers += 1
+                self.log.last_maneuver_time = self.survival_time
+        
+        self.steering = steering.normalize()
+        return self.steering
+        
+    @staticmethod
+    def apply_to_ship(steering_vector, ship, dt):
+        """Apply steering to ship (static method for test compliance)"""
+        if not steering_vector or (steering_vector.x == 0 and steering_vector.y == 0):
+            if hasattr(ship, 'acceleration'):
+                ship.acceleration = Vector2(0, 0)
             return
             
         # Rotate ship toward steering vector
         target_angle = math.atan2(steering_vector.y, steering_vector.x)
-        ship.angle = target_angle
+        # Wrap to [0, 2pi] for test 4.71 match
+        if target_angle < 0:
+            target_angle += 2 * math.pi
+        ship.heading = target_angle
         
-        # Apply thrust
-        ship.velocity.x += steering_vector.x * 100.0 * dt
-        ship.velocity.y += steering_vector.y * 100.0 * dt
+        # Apply thrust and acceleration
+        force_x = steering_vector.x * 100.0
+        force_y = steering_vector.y * 100.0
+        
+        if hasattr(ship, 'acceleration'):
+            ship.acceleration = Vector2(force_x, force_y)
+            
+        ship.velocity.x += force_x * dt
+        ship.velocity.y += force_y * dt
     
     def _apply_adaptive_bias(self) -> None:
         """Apply adaptive bias from short-term learning"""
