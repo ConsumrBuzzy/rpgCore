@@ -18,10 +18,7 @@ from dataclasses import dataclass
 from loguru import logger
 from pydantic import ValidationError
 
-from world_factory import WorldFactory
-from character_factory import CharacterFactory
-from game_state import GameState, Room, NPC, Goal
-from semantic_engine import create_default_intent_library
+from foundation.protocols import WorldStateSnapshot, EntityStateProtocol
 
 
 @dataclass
