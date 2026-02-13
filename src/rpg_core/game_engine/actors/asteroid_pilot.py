@@ -73,7 +73,7 @@ class SurvivalLog:
     total_survival_time: float = 0.0
     asteroids_destroyed: int = 0
     scrap_collected: int = 0
-    last_maneuver_time: float = 0.0
+    last_maneuver_time: float = -1.0
 
 class AsteroidPilot(BaseController):
     """
