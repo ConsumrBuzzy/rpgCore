@@ -18,8 +18,8 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
 
 from loguru import logger
-from engines.body.kinetics import KineticEntity
-from foundation.vector import Vector2
+from rpg_core.systems.body.kinetics import KineticEntity
+from rpg_core.foundation.vector import Vector2
 from .ship_genetics import ShipGenome, HullType, WeaponType, EngineType
 
 
