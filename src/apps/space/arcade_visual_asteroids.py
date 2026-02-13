@@ -12,9 +12,9 @@ from pathlib import Path
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from foundation.types import Result
-from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
-from foundation.system_clock import SystemClock
+from rpg_core.foundation.types import Result
+from rpg_core.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from rpg_core.foundation.system_clock import SystemClock
 from loguru import logger
 
 

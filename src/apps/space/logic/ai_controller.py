@@ -10,10 +10,10 @@ from dataclasses import dataclass
 from enum import Enum
 from loguru import logger
 
-from foundation.types import Result
-from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, DEBUG_INFINITE_ENERGY
-from engines.kernel.controller import BaseController, ControlInput
-from engines.mind.neat.neat_engine import NeuralNetwork
+from rpg_core.foundation.types import Result
+from rpg_core.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, DEBUG_INFINITE_ENERGY
+from rpg_core.systems.kernel.controller import BaseController, ControlInput
+from rpg_core.systems.mind.neat.neat_engine import NeuralNetwork
 from .short_term_memory import create_short_term_memory
 from .knowledge_library import create_knowledge_library
 
