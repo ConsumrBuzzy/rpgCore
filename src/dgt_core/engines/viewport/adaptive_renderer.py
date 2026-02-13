@@ -9,7 +9,7 @@ from enum import Enum
 import logging
 
 from .logical_viewport import LogicalViewport, ViewportManager
-from ..rendering.unified_ppu import UnifiedPPU
+# from ..rendering.unified_ppu import UnifiedPPU  # Commented out for testing
 
 
 class RenderProfile(Enum):
