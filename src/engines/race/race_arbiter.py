@@ -12,9 +12,9 @@ from dataclasses import dataclass
 from enum import Enum
 import time
 
-from engines.base import BaseSystem, SystemConfig
-from foundation.types import Result
-from foundation.types.race import (
+from ..base import BaseSystem, SystemConfig
+from ...foundation.types import Result
+from ...foundation.types.race import (
     TurtleState, RaceSnapshot, RaceResult, TurtleStatus,
     TerrainType, create_turtle_state
 )
