@@ -445,6 +445,88 @@ class DGTRegistry:
             
             return Result.success_result(None)
 
+    def register_system(self, system_id: str, system: 'BaseSystem', metadata: Optional[Dict[str, Any]] = None) -> Result[None]:
+        """
+        Register a system with the registry.
+        
+        Args:
+            system_id: Unique system identifier
+            system: System instance to register
+            metadata: Additional system metadata
+            
+        Returns:
+            Result indicating registration success
+        """
+        return self.register(f"system_{system_id}", system, RegistryType.SYSTEM, metadata)
+    
+    def get_system(self, system_id: str) -> Result[Optional['BaseSystem']]:
+        """
+        Get a system from the registry.
+        
+        Args:
+            system_id: Unique system identifier
+            
+        Returns:
+            Result containing system or None if not found
+        """
+        return self.get(f"system_{system_id}", RegistryType.SYSTEM)
+    
+    def list_systems(self) -> Result[List[str]]:
+        """
+        List all registered systems.
+        
+        Returns:
+            Result containing list of system IDs
+        """
+        system_ids = self.list_items(RegistryType.SYSTEM)
+        return Result.success_result([sid.replace("system_", "") for sid in system_ids.value])
+    
+    def get_all_system_states(self) -> Result[Dict[str, Dict[str, Any]]]:
+        """
+        Get states for all registered systems.
+        
+        Returns:
+            Result containing dictionary of system states
+        """
+        try:
+            system_states = {}
+            system_ids = self.list_items(RegistryType.SYSTEM).value
+            
+            for system_id in system_ids:
+                system_result = self.get(system_id, RegistryType.SYSTEM)
+                if system_result.success and system_result.value:
+                    system_states[system_id.replace("system_", "")] = system_result.value.get_state()
+            
+            return Result.success_result(system_states)
+            
+        except Exception as e:
+            return Result.failure_result(f"Failed to get system states: {str(e)}")
+    
+    def update_system_metrics(self, system_id: str, metrics: Dict[str, Any]) -> Result[None]:
+        """
+        Update system metrics in registry metadata.
+        
+        Args:
+            system_id: System identifier
+            metrics: Updated metrics
+            
+        Returns:
+            Result indicating update success
+        """
+        try:
+            system_result = self.get(f"system_{system_id}", RegistryType.SYSTEM)
+            if system_result.success and system_result.value:
+                # Update metadata with new metrics
+                entry = self._registries[RegistryType.SYSTEM][f"system_{system_id}"]
+                entry.metadata['metrics'] = metrics
+                entry.touch()
+                return Result.success_result(None)
+            else:
+                return Result.failure_result(f"System {system_id} not found")
+                
+        except Exception as e:
+            return Result.failure_result(f"Failed to update system metrics: {str(e)}")
+
 
 # === GLOBAL REGISTRY ACCESS ===
 
