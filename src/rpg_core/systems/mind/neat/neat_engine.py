@@ -151,8 +151,11 @@ class Genome:
 class NEATEngine:
     """NEAT evolution engine for training AI pilots"""
     
-    def __init__(self, population_size: int = 50):
+    def __init__(self, population_size: int = 50, num_inputs: int = 7, num_outputs: int = 3):
         self.population_size = population_size
+        self.num_inputs = num_inputs
+        self.num_outputs = num_outputs
+        
         self.population: List[Genome] = []
         self.generation = 0
         self.best_genome: Optional[Genome] = None
@@ -163,7 +166,7 @@ class NEATEngine:
         self.mutation_strength = 0.5
         self.elitism_count = 2  # Keep top 2 genomes
         
-        logger.info(f"🧠 NEATEngine initialized with population size {population_size}")
+        logger.info(f"🧠 NEATEngine initialized with population size {population_size}, inputs {num_inputs}")
     
     def initialize_population(self) -> Result[bool]:
         """Initialize random population"""
@@ -171,7 +174,7 @@ class NEATEngine:
             self.population = []
             
             for _ in range(self.population_size):
-                network = NeuralNetwork(num_inputs=7, num_hidden=8, num_outputs=3)
+                network = NeuralNetwork(num_inputs=self.num_inputs, num_hidden=8, num_outputs=self.num_outputs)
                 genome = Genome(network, fitness=0.0)
                 genome.generation = 0
                 self.population.append(genome)
@@ -359,8 +362,8 @@ class NEATEngine:
 
 
 # Factory function
-def create_neat_engine(population_size: int = 50) -> NEATEngine:
+def create_neat_engine(population_size: int = 50, num_inputs: int = 7, num_outputs: int = 3) -> NEATEngine:
     """Create NEAT engine with default parameters"""
-    engine = NEATEngine(population_size)
+    engine = NEATEngine(population_size, num_inputs, num_outputs)
     engine.initialize_population()
     return engine

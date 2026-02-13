@@ -1,0 +1,302 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created": "2026-02-12",
+    "description": "Shared Knowledge Library for AI Pilots - Epigenetic Learning",
+    "total_techniques": 5,
+    "last_updated": null
+  },
+  "techniques": [
+    {
+      "id": "tech_50499",
+      "name": "Far Boost TurnRight",
+      "description": "Long range approach | Aggressive thrust | Sharp turn",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vx": {
+          "avg": 0.11890168847588843,
+          "variance": 0.6962335192706992,
+          "min": -0.9993258483473074,
+          "max": 0.999977986969064,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": 0.7158099446251253,
+          "consistency": 0.8516268724407263,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "rotation": {
+          "avg": 0.6313138579532441,
+          "consistency": 0.8615021160586599,
+          "min": 0.19043760396067377,
+          "max": 1.0,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 0.0,
+          "consistency": 1.0,
+          "min": 0.0,
+          "max": 0.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far Boost TurnRight Fire",
+      "description": "Long range approach | Aggressive thrust | Sharp turn | Weapon fire",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vx": {
+          "avg": -0.06567748961089302,
+          "variance": 0.10797461905930869,
+          "min": -0.5920436826592882,
+          "max": 0.9250461598378535,
+          "significant": true
+        },
+        "vy": {
+          "avg": 0.16666666666666666,
+          "variance": 0.1388888888888889,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": 0.9266564288346466,
+          "consistency": 0.9883125389813932,
+          "min": 0.6310695544895817,
+          "max": 1.0,
+          "significant": true
+        },
+        "rotation": {
+          "avg": 0.8707581912571375,
+          "consistency": 0.9884634346817982,
+          "min": 0.5904037523702561,
+          "max": 1.0,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 0.65,
+          "consistency": 0.7725,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far TurnRight",
+      "description": "Long range approach | Sharp turn",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vy": {
+          "avg": 0.4666666666666667,
+          "variance": 0.24888888888888888,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": 0.1402775559499631,
+          "consistency": 0.9683842344422432,
+          "min": 0.0,
+          "max": 0.44242741137765973,
+          "significant": true
+        },
+        "rotation": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far Fire",
+      "description": "Long range approach | Weapon fire",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vy": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": 0.0,
+          "consistency": 1.0,
+          "min": 0.0,
+          "max": 0.0,
+          "significant": true
+        },
+        "rotation": {
+          "avg": 0.0,
+          "consistency": 1.0,
+          "min": 0.0,
+          "max": 0.0,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far Boost TurnRight Fire",
+      "description": "Long range approach | Aggressive thrust | Sharp turn | Weapon fire",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vy": {
+          "avg": 0.8333333333333334,
+          "variance": 0.1388888888888889,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "rotation": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    }
+  ],
+  "success_vectors": {
+    "avoidance_patterns": [],
+    "collection_patterns": [],
+    "navigation_patterns": []
+  },
+  "learning_statistics": {
+    "total_extractions": 0,
+    "successful_applications": 0,
+    "failed_applications": 0,
+    "average_success_rate": 0.0
+  }
+}
