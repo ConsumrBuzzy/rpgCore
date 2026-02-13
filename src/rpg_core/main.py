@@ -20,105 +20,65 @@ import time
 from pathlib import Path
 from typing import Dict, Any, Optional, TypedDict, Union, Callable, Awaitable, NotRequired
 
-from loguru import logger
-
-# Import core components
-try:
-    from core import (
-        HeartbeatController, get_heartbeat, initialize_heartbeat,
-        get_environment, is_development, is_production
-    )
-except ImportError:
-    # Fallback for development
-    sys.path.append(str(Path(__file__).parent))
-    from core import (
-        HeartbeatController, get_heartbeat, initialize_heartbeat,
-        get_environment, is_development, is_production
-    )
+from rpg_core.utils import initialize_logging, get_logger_manager
 
 # Import pillar engines
 try:
-    from engines import (
-        WorldEngine, WorldEngineFactory,
-        DDEngine, DDEngineFactory,
-        GraphicsEngine, GraphicsEngineFactory
-    )
+    from rpg_core.systems.world_engine import WorldEngine, WorldEngineFactory
+    from rpg_core.systems.mind import DDEngine, DDEngineFactory
+    from rpg_core.systems.body import GraphicsEngine, GraphicsEngineFactory
 except ImportError:
-    # Fallback for development
-    from engines.world import WorldEngine, WorldEngineFactory
-    from engines.mind import DDEngine, DDEngineFactory
-    from engines.body import GraphicsEngine, GraphicsEngineFactory
+    # Fallback to local systems if package import fails
+    from rpg_core.systems.world_engine import WorldEngine, WorldEngineFactory
+    from rpg_core.systems.mind import DDEngine, DDEngineFactory
+    from rpg_core.systems.body import GraphicsEngine, GraphicsEngineFactory
 
 # Import narrative engines
 try:
-    from narrative import (
-        ChronosEngine, ChronosEngineFactory,
-        PersonaEngine, PersonaEngineFactory
-    )
+    from rpg_core.engine.chronos import ChronosEngine, ChronosEngineFactory
+    from rpg_core.narrative.persona import PersonaEngine, PersonaEngineFactory
 except ImportError:
-    # Fallback for development
-    from narrative.chronos import ChronosEngine, ChronosEngineFactory
-    from narrative.persona import PersonaEngine, PersonaEngineFactory
+    from rpg_core.engine.chronos import ChronosEngine, ChronosEngineFactory
+    from rpg_core.narrative.persona import PersonaEngine, PersonaEngineFactory
 
 # Import actor
 try:
-    from actors import AIController, Spawner
+    from rpg_core.game.actors.ai_controller import AIController, Spawner
 except ImportError:
-    # Fallback for development
-    from actors.ai_controller import AIController, Spawner
+    from rpg_core.game.actors.ai_controller import AIController, Spawner
 
 # Import utilities
-try:
-    from utils import initialize_logging, get_logger_manager
-except ImportError:
-    # Fallback for development
-    from utils.logger import initialize_logging, get_logger_manager
-
-# Import configuration management
-try:
-    from utils.config_manager import (
-        setup_configuration_management, load_system_config,
-        SystemConfigModel, ConfigurationManager
-    )
-except ImportError:
-    # Fallback for development
-    from utils.config_manager import (
-        setup_configuration_management, load_system_config,
-        SystemConfigModel, ConfigurationManager
-    )
+from rpg_core.utils.config_manager import (
+    setup_configuration_management, load_system_config,
+    SystemConfigModel, ConfigurationManager
+)
 
 # Import circuit breaker
-try:
-    from utils.circuit_breaker import (
-        get_circuit_manager, circuit_breaker, CircuitBreakerConfig,
-        CircuitBreakerManager
-    )
-except ImportError:
-    # Fallback for development
-    from utils.circuit_breaker import (
-        get_circuit_manager, circuit_breaker, CircuitBreakerConfig,
-        CircuitBreakerManager
-    )
+from rpg_core.utils.circuit_breaker import (
+    get_circuit_manager, circuit_breaker, CircuitBreakerConfig,
+    CircuitBreakerManager
+)
 
 # Import performance monitoring
-try:
-    from utils.performance_monitor import (
-        initialize_performance_monitor, get_performance_monitor,
-        PerformanceMonitor
-    )
-except ImportError:
-    # Fallback for development
-    from utils.performance_monitor import (
-        initialize_performance_monitor, get_performance_monitor,
-        PerformanceMonitor
-    )
+from rpg_core.utils.performance_monitor import (
+    initialize_performance_monitor, get_performance_monitor,
+    PerformanceMonitor
+)
 
 # Import developer console
 try:
-    from tools import DeveloperConsole
+    from rpg_core.tools.developer_console import DeveloperConsole
 except ImportError:
-    # Fallback for development
-    from tools.developer_console import DeveloperConsole
+    from rpg_core.tools.developer_console import DeveloperConsole
+
+# Heartbeat Controller - Placeholder for missing core module
+HeartbeatController = None
+initialize_heartbeat = None
+get_heartbeat = None
+get_environment = lambda: "development"
+is_development = lambda: True
+is_production = lambda: False
+
 
 
 class SystemConfig(TypedDict):
