@@ -90,8 +90,10 @@ def test_legacy_ui_context():
     assert moved_rect.legacy_y == rect1.legacy_y + 20
     
     inflated_rect = rect1.inflate(20, 10)
-    assert inflated_rect.width == rect1.width + 20
-    assert inflated_rect.height == rect1.height + 10
+    # Note: inflate operates on legacy coordinates, then converts to logical
+    # So the logical width/height will be different from original + dx
+    assert inflated_rect.legacy_width == rect1.legacy_width + 20
+    assert inflated_rect.legacy_height == rect1.legacy_height + 10
     
     # Test collision detection
     assert rect1.collidepoint((100, 150))  # Point inside
@@ -112,6 +114,7 @@ def test_legacy_ui_context():
     
     # Test theme access
     assert 'SELECTION_GLOW' in context.theme_colors
+    assert 'BUTTON_TEXT_COLOR' in context.theme_colors
     assert 'PARENT_SLOT_OFFSET_X' in context.layout
     print("✅ Theme constants accessible")
     
