@@ -11,8 +11,7 @@ from typing import Dict, List, Tuple, Optional, Any, TYPE_CHECKING
 from dataclasses import dataclass
 from enum import Enum
 
-if TYPE_CHECKING:
-    from models.metasprite import Metasprite
+# No TYPE_CHECKING needed - we use Foundation protocols only
 
 
 # ---------------------------------------------------------------------------

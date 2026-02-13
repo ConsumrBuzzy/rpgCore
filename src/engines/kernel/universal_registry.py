@@ -13,8 +13,7 @@ from enum import Enum
 
 from loguru import logger
 from .persistence import LegendaryRegistry
-from .models import asset_registry
-from ..tactics.graveyard_manager import GraveyardManager
+from foundation.protocols import WorldStateSnapshot, EntityStateProtocol
 
 
 class EngineType(str, Enum):
