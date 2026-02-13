@@ -689,3 +689,4 @@ class OverlayComponent(BaseModel):
     class Config:
         """Pydantic configuration"""
         validate_assignment = True
+        use_enum_values = True
