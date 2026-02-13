@@ -171,7 +171,7 @@ class NEATEngine:
             self.population = []
             
             for _ in range(self.population_size):
-                network = NeuralNetwork(num_inputs=5, num_hidden=8, num_outputs=3)
+                network = NeuralNetwork(num_inputs=7, num_hidden=8, num_outputs=3)
                 genome = Genome(network, fitness=0.0)
                 genome.generation = 0
                 self.population.append(genome)
