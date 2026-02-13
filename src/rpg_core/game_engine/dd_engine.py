@@ -17,9 +17,12 @@ from collections import deque
 
 from loguru import logger
 
-from rpg_core.systems.kernel.state.models import (
-    GameState, IntentType, Command, CommandResult, IntentValidation
+from rpg_core.systems.kernel.state.models import GameState, WorldDelta
+from rpg_core.systems.kernel.state.enums import IntentType, ValidationResult
+from rpg_core.systems.kernel.state.intents import (
+    Command, CommandResult, IntentValidation, MovementIntent, InteractionIntent, PonderIntent
 )
+from rpg_core.systems.kernel.state.validation import validate_intent
 from rpg_core.foundation.constants import INTENT_COOLDOWN_MS
 from rpg_core.systems.body.pipeline.asset_loader import AssetLoader
 from .combat_resolver import CombatResolver

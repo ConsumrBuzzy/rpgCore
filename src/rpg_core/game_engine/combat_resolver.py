@@ -12,7 +12,8 @@ from dataclasses import dataclass
 from enum import Enum
 
 from loguru import logger
-from rpg_core.systems.kernel.state.models import WorldDelta
+from rpg_core.systems.kernel.state.models import WorldDelta, GameState
+from rpg_core.systems.kernel.state.intents import Command, CommandResult
 from rpg_core.systems.body.pipeline.asset_loader import AssetDefinition
 
 
