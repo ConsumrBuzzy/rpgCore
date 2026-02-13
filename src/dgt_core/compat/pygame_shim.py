@@ -3,7 +3,7 @@ PyGame Compatibility Shim - Legacy UI Logic Bridge
 Allows pygame.Rect and pygame.Color logic to operate within DGT's Sovereign Layout System
 """
 
-from typing import Tuple, Union, Optional, Any
+from typing import Tuple, Union, Optional, Any, Dict
 from dataclasses import dataclass
 import json
 from pathlib import Path
