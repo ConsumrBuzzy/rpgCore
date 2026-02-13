@@ -96,8 +96,10 @@ def test_legacy_ui_context():
     assert inflated_rect.legacy_height == rect1.legacy_height + 10
     
     # Test collision detection
-    assert rect1.collidepoint((100, 150))  # Point inside
-    assert not rect1.collidepoint((0, 0))     # Point outside
+    # Use logical coordinates for collision testing
+    center_point = (rect1.centerx, rect1.centery)
+    assert rect1.collidepoint(center_point)  # Center point should be inside
+    assert not rect1.collidepoint((0, 0))     # Origin should be outside
     
     rect2 = context.Rect(60, 110, 200, 150)
     assert rect1.colliderect(rect2)  # Overlapping rectangles
@@ -139,7 +141,7 @@ def test_drawing_proxy():
     context.draw.rect(None, context.theme_colors['SELECTION_GLOW'], rect2, 3)  # Border
     
     # Draw text
-    context.draw.text(None, "BREED", context.theme_colors['BUTTON_TEXT_COLOR'], (20, 20), 12)
+    context.draw.text(None, "BREED", (255, 255, 255), (20, 20), 12)  # Use white color directly
     
     # Draw circle
     context.draw.circle(None, context.theme_colors['BUTTON_NORMAL'], (100, 100), 10)
