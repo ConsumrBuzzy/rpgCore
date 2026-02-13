@@ -169,6 +169,9 @@ class KnowledgeLibrary:
             # Add new technique
             self.techniques.append(technique)
             logger.info(f"📚 Added new technique: {technique.name}")
+            
+            # Auto-save library
+            self.save_library()
     
     def _find_similar_technique(self, technique: TechniqueTemplate) -> Optional[TechniqueTemplate]:
         """Find similar existing technique"""

@@ -64,8 +64,9 @@ class TrainingLoop:
             metrics = result.value
             
             # Return survival time and asteroids destroyed for fitness calculation
-            # Apply camping penalty to survival score
-            effective_survival = max(0.0, metrics['survival_time'] - metrics['camping_penalty'])
+            # Apply camping penalty and engagement penalty to survival score
+            total_penalty = metrics['camping_penalty'] + metrics.get('engagement_penalty', 0.0)
+            effective_survival = max(0.0, metrics['survival_time'] - total_penalty)
             return Result(success=True, value=(effective_survival, metrics['asteroids_destroyed']))
             
         except Exception as e:
@@ -223,7 +224,14 @@ class HighSpeedSimulation:
         self.camping_anchor = (self.ship_x, self.ship_y)
         self.camping_timer = 0.0
         self.camping_radius = 100.0
+        self.camping_radius = 100.0
         self.max_camping_time = 3.0
+        
+        # Engagement tracking
+        self.time_since_scrap = 0.0
+        self.time_since_hit = 0.0
+        self.max_idle_time = 5.0  # Time before penalty kicks in
+        self.engagement_penalty = 0.0
         
         # Simplified asteroids
         self.asteroids = []
@@ -271,6 +279,10 @@ class HighSpeedSimulation:
             self.camping_anchor = (self.ship_x, self.ship_y)
             self.camping_timer = 0.0
             
+            self.time_since_scrap = 0.0
+            self.time_since_hit = 0.0
+            self.engagement_penalty = 0.0
+            
             # Reset asteroids
             self.asteroids = []
             self._spawn_test_asteroids()
@@ -315,6 +327,7 @@ class HighSpeedSimulation:
             metrics = {
                 'survival_time': self.survival_time,
                 'camping_penalty': self.camping_penalty,
+                'engagement_penalty': self.engagement_penalty,
                 'asteroids_destroyed': self.asteroids_destroyed,
                 'bullets_fired': self.bullets_fired,
                 'shots_hit': self.shots_hit,
@@ -397,6 +410,7 @@ class HighSpeedSimulation:
         
         if hit_asteroid:
             self.shots_hit += 1
+            self.time_since_hit = 0.0  # Reset combat timer
             self.asteroids_destroyed += 1
             self.asteroids.remove(hit_asteroid)
             
@@ -447,6 +461,16 @@ class HighSpeedSimulation:
             # Moved enough, reset anchor
             self.camping_timer = 0.0
             self.camping_anchor = (self.ship_x, self.ship_y)
+            
+        # Check engagement (Scrap & Combat)
+        self.time_since_scrap += dt
+        self.time_since_hit += dt
+        
+        if self.time_since_scrap > self.max_idle_time:
+            self.engagement_penalty += 10.0 * dt  # -10 fitness per second for no scrap
+            
+        if self.time_since_hit > self.max_idle_time:
+            self.engagement_penalty += 5.0 * dt   # -5 fitness per second for no combat
         
         # Apply drag
         self.ship_vx *= 0.999
