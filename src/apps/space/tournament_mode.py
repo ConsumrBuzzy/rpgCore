@@ -359,6 +359,23 @@ class TournamentMode:
             # Remove collected scrap
             for scrap_idx in sorted(scrap_to_remove, reverse=True):
                 del self.scrap_entities[scrap_idx]
+                
+            # Check bullet collisions
+            for bullet in pilot.bullets:
+                if not bullet.active:
+                    continue
+                    
+                for asteroid in self.asteroids[:]:
+                    dist = math.sqrt((bullet.x - asteroid['x'])**2 + (bullet.y - asteroid['y'])**2)
+                    if dist < asteroid['radius'] + 2:  # Bullet radius approx 2
+                        # Hit!
+                        bullet.active = False
+                        asteroid['health'] -= 1
+                        if asteroid['health'] <= 0:
+                            if asteroid in self.asteroids:
+                                self.asteroids.remove(asteroid)
+                                pilot.asteroids_destroyed += 1
+                        break  # Bullet hit something, stop checking other asteroids
     
     def render_game(self) -> None:
         """Render tournament mode"""
@@ -370,6 +387,9 @@ class TournamentMode:
         
         # Draw asteroids
         self._draw_asteroids()
+        
+        # Draw bullets
+        self._draw_bullets()
         
         # Draw pilots
         self._draw_pilots()
@@ -399,6 +419,18 @@ class TournamentMode:
             ]
             pygame.draw.polygon(self.game_surface, self.colors['yellow'], points)
             pygame.draw.polygon(self.game_surface, self.colors['orange'], points, 1)
+    
+    def _draw_bullets(self) -> None:
+        """Draw projectiles"""
+        for pilot in self.pilots:
+            for bullet in pilot.bullets:
+                if bullet.active:
+                    # Draw bullet trace
+                    end_x = bullet.x - bullet.vx * 0.05
+                    end_y = bullet.y - bullet.vy * 0.05
+                    pygame.draw.line(self.game_surface, self.colors['white'],
+                                   (int(bullet.x), int(bullet.y)),
+                                   (int(end_x), int(end_y)), 1)
     
     def _draw_asteroids(self) -> None:
         """Draw asteroids"""
