@@ -9,17 +9,17 @@ import math
 
 from rpg_core.foundation.interfaces.protocols import RenderProtocol
 from rpg_core.foundation.types import Result
-from foundation.base import BasePPU
-from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS
-from engines.body.animation import SpriteAnimator, NewtonianGhostRenderer
-from engines.kernel.controller import BaseController, ControlInput, ControllerManager
-from engines.body.systems.entity_manager import EntityManager, ShipEntity, AsteroidEntity, BulletEntity
-from engines.body.systems.spawner import EntitySpawner, create_asteroid_spawn_config, create_wave_configs
-from engines.body.systems.collision import CollisionSystem, create_asteroids_collision_groups, setup_asteroids_collision_handlers
-from engines.body.systems.status_manager import StatusManager, setup_asteroids_status_manager
+from rpg_core.foundation.base import BasePPU
+from rpg_core.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT, SOVEREIGN_PIXELS
+from rpg_core.systems.body.animation import SpriteAnimator, NewtonianGhostRenderer
+from rpg_core.systems.kernel.controller import BaseController, ControlInput, ControllerManager
+from rpg_core.systems.body.systems.entity_manager import EntityManager, ShipEntity, AsteroidEntity, BulletEntity
+from rpg_core.systems.body.systems.spawner import EntitySpawner, create_asteroid_spawn_config, create_wave_configs
+from rpg_core.systems.body.systems.collision import CollisionSystem, create_asteroids_collision_groups, setup_asteroids_collision_handlers
+from rpg_core.systems.body.systems.status_manager import StatusManager, setup_asteroids_status_manager
 from .physics_body import PhysicsBody, PhysicsState
 from .entities.space_entity import SpaceEntity, EntityType
-from foundation.vector import Vector2
+from rpg_core.foundation.vector import Vector2
 from .scrap_entity import ScrapEntity
 
 
