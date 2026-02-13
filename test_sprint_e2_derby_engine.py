@@ -73,7 +73,7 @@ def test_terrain_system():
 def test_physics_handshake():
     """Test terrain physics handshake with turtle entities"""
     try:
-        from engines.body.systems.race_runner import RaceRunner, create_race_runner_system
+        from engines.body.systems.race_runner import RaceRunnerSystem, create_race_runner_system
         from apps.tycoon.entities.turtle import create_fast_turtle, create_heavy_turtle
         from foundation.registry import DGTRegistry
         
@@ -132,7 +132,7 @@ def test_physics_handshake():
 def test_strategic_racing():
     """Test strategic racing with terrain variety"""
     try:
-        from engines.body.systems.race_runner import RaceRunner, create_race_runner_system
+        from engines.body.systems.race_runner import RaceRunnerSystem, create_race_runner_system
         from apps.tycoon.entities.turtle import create_random_turtle
         from foundation.registry import DGTRegistry
         

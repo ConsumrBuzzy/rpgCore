@@ -142,6 +142,7 @@ class EntityType(Enum):
     SCRAP = "scrap"
     BULLET = "bullet"
     POWERUP = "powerup"
+    TURTLE = "turtle"
 
 
 @dataclass
