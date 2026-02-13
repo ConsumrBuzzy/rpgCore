@@ -314,7 +314,7 @@ class TestGenomeEngineIntegration:
     
     def test_genome_registry_validation(self) -> None:
         """Test that registry validates genome integrity"""
-        from foundation.registry import get_dgt_registry
+        from src.foundation.registry import get_dgt_registry
         
         registry = get_dgt_registry()
         
