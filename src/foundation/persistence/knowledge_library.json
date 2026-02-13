@@ -3,7 +3,7 @@
     "version": "1.0",
     "created": "2026-02-12",
     "description": "Shared Knowledge Library for AI Pilots - Epigenetic Learning",
-    "total_techniques": 5,
+    "total_techniques": 10,
     "last_updated": null
   },
   "techniques": [
@@ -271,6 +271,286 @@
           "consistency": 1.0,
           "min": 1.0,
           "max": 1.0,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far TurnLeft",
+      "description": "Long range approach | Sharp turn",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vx": {
+          "avg": 0.14192646040958826,
+          "variance": 0.7464038815712323,
+          "min": -0.9959070509804001,
+          "max": 0.9984173263632643,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": 0.3918844409870706,
+          "consistency": 0.9079513263610074,
+          "min": 0.00302194899133386,
+          "max": 0.6793232457408409,
+          "significant": true
+        },
+        "rotation": {
+          "avg": -0.5560967856081118,
+          "consistency": 0.9862333305922265,
+          "min": -0.7019790374933297,
+          "max": -0.36284020683266116,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 0.0,
+          "consistency": 1.0,
+          "min": 0.0,
+          "max": 0.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far Boost TurnLeft Fire",
+      "description": "Long range approach | Aggressive thrust | Sharp turn | Weapon fire",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vy": {
+          "avg": 0.2833333333333333,
+          "variance": 0.20305555555555557,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": 0.5441535307877479,
+          "consistency": 0.9254777669777761,
+          "min": 0.06472258818647501,
+          "max": 0.7550052570562642,
+          "significant": true
+        },
+        "rotation": {
+          "avg": -0.8373347205135285,
+          "consistency": 0.9943627999489028,
+          "min": -0.9187599660624303,
+          "max": -0.692804634164579,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far Brake TurnRight",
+      "description": "Long range approach | Reverse thrust | Sharp turn",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vx": {
+          "avg": 0.3667179973990659,
+          "variance": 0.34568467249962076,
+          "min": -0.9872126804233429,
+          "max": 0.9973446119959632,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": -0.9806957617361796,
+          "consistency": 0.999808673703232,
+          "min": -0.9982185002696761,
+          "max": -0.9500156974854511,
+          "significant": true
+        },
+        "rotation": {
+          "avg": 0.9999274852251426,
+          "consistency": 0.9999999947697351,
+          "min": 0.9997801009622934,
+          "max": 0.9999788547719946,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far TurnLeft Fire",
+      "description": "Long range approach | Sharp turn | Weapon fire",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vy": {
+          "avg": 0.75,
+          "variance": 0.1875,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": -0.38322055926867554,
+          "consistency": 0.9842932902773883,
+          "min": -0.5447849634340884,
+          "max": -0.12428045940454913,
+          "significant": true
+        },
+        "rotation": {
+          "avg": -0.6851746303769308,
+          "consistency": 0.9892894964221659,
+          "min": -0.8702632661087593,
+          "max": -0.6138240622826733,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 1.0,
+          "consistency": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far Brake TurnLeft Fire",
+      "description": "Long range approach | Reverse thrust | Sharp turn | Weapon fire",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vx": {
+          "avg": -0.39483878522633165,
+          "variance": 0.2955805028539934,
+          "min": -0.9926797771220367,
+          "max": 0.990968397448889,
+          "significant": true
+        },
+        "vy": {
+          "avg": 0.13333333333333333,
+          "variance": 0.11555555555555556,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": -0.8630728708954895,
+          "consistency": 0.9851167447294477,
+          "min": -0.9833718422285943,
+          "max": -0.5302208911135775,
+          "significant": true
+        },
+        "rotation": {
+          "avg": -0.951285035714789,
+          "consistency": 0.9991839913349357,
+          "min": -0.9985579803607697,
+          "max": -0.9229359837174999,
           "significant": true
         },
         "fire_weapon": {

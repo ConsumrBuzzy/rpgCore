@@ -478,14 +478,15 @@ class TournamentMode:
                 bar_x = pilot.visual_x - bar_width // 2
                 bar_y = pilot.visual_y - 10
                 
-                # Background
-                pygame.draw.rect(self.game_surface, self.colors['dark_gray'], 
-                               (int(bar_x), int(bar_y), bar_width, bar_height))
-                
-                # Progress (Yellow)
-                fill_width = int(bar_width * recharge_pct)
-                pygame.draw.rect(self.game_surface, self.colors['yellow'], 
-                               (int(bar_x), int(bar_y), fill_width, bar_height))
+            # Background
+            pygame.draw.rect(self.game_surface, self.colors['dark_gray'], 
+                           (int(bar_x), int(bar_y), bar_width, bar_height))
+            
+            # Progress 
+            color = self.colors['green'] if recharge_pct >= 1.0 else self.colors['yellow']
+            fill_width = int(bar_width * recharge_pct)
+            pygame.draw.rect(self.game_surface, color, 
+                           (int(bar_x), int(bar_y), fill_width, bar_height))
     
     def _draw_mental_vectors(self) -> None:
         """Draw mental vectors for debugging"""

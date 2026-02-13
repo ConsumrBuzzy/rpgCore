@@ -31,8 +31,9 @@ class NeuralNetwork:
         self.bias_hidden = [random.uniform(-1, 1) for _ in range(num_hidden)]
         self.bias_output = [random.uniform(-1, 1) for _ in range(num_outputs)]
         
-        # Activation function (ReLU)
-        self.activation = lambda x: max(0, x)
+        # Activation functions
+        self.activation_hidden = lambda x: max(0, x)  # ReLU for hidden
+        self.activation_output = lambda x: math.tanh(x)  # Tanh for control outputs
     
     def forward(self, inputs: List[float]) -> List[float]:
         """Forward pass through the network"""
@@ -45,7 +46,7 @@ class NeuralNetwork:
             weighted_sum = self.bias_hidden[i]
             for j in range(self.num_inputs):
                 weighted_sum += inputs[j] * self.weights_input_hidden[j][i]
-            hidden.append(self.activation(weighted_sum))
+            hidden.append(self.activation_hidden(weighted_sum))
         
         # Output layer
         outputs = []
@@ -53,65 +54,99 @@ class NeuralNetwork:
             weighted_sum = self.bias_output[i]
             for j in range(self.num_hidden):
                 weighted_sum += hidden[j] * self.weights_hidden_output[j][i]
-            outputs.append(self.activation(weighted_sum))
+            outputs.append(self.activation_output(weighted_sum))
         
         return outputs
     
     def mutate(self, mutation_rate: float = 0.1, mutation_strength: float = 0.5) -> None:
-        """Mutate network weights"""
-        # Mutate input-hidden weights
+        """Mutate the network weights and biases"""
+        # Weights
         for i in range(self.num_inputs):
             for j in range(self.num_hidden):
                 if random.random() < mutation_rate:
-                    self.weights_input_hidden[i][j] += random.uniform(-mutation_strength, mutation_strength)
+                    self.weights_input_hidden[i][j] += random.uniform(-1, 1) * mutation_strength
         
-        # Mutate hidden-output weights
         for i in range(self.num_hidden):
             for j in range(self.num_outputs):
                 if random.random() < mutation_rate:
-                    self.weights_hidden_output[i][j] += random.uniform(-mutation_strength, mutation_strength)
+                    self.weights_hidden_output[i][j] += random.uniform(-1, 1) * mutation_strength
         
-        # Mutate biases
+        # Biases
         for i in range(self.num_hidden):
             if random.random() < mutation_rate:
-                self.bias_hidden[i] += random.uniform(-mutation_strength, mutation_strength)
+                self.bias_hidden[i] += random.uniform(-1, 1) * mutation_strength
         
         for i in range(self.num_outputs):
             if random.random() < mutation_rate:
-                self.bias_output[i] += random.uniform(-mutation_strength, mutation_strength)
+                self.bias_output[i] += random.uniform(-1, 1) * mutation_strength
+
+    def mutate_structure(self, chance: float = 0.05) -> bool:
+        """Structural mutation: Add a new hidden node (5% default chance)"""
+        if random.random() > chance:
+            return False
+            
+        # Add a new hidden node
+        self.num_hidden += 1
+        
+        # New input->hidden weights (initially 0 to avoid chaos)
+        for i in range(self.num_inputs):
+            self.weights_input_hidden[i].append(0.0)
+            
+        # New hidden->output weights
+        self.weights_hidden_output.append([random.uniform(-0.1, 0.1) for _ in range(self.num_outputs)])
+        
+        # New bias
+        self.bias_hidden.append(0.0)
+        
+        logger.info(f"🧬 Brain Evolution: Added new hidden node. Current complexity: {self.num_hidden}")
+        return True
     
     def crossover(self, other: 'NeuralNetwork') -> 'NeuralNetwork':
-        """Create offspring through crossover with another network"""
-        child = NeuralNetwork(self.num_inputs, self.num_hidden, self.num_outputs)
+        """Create offspring through structural alignment crossover"""
+        # Determine child size (take the more complex one)
+        num_hidden = max(self.num_hidden, other.num_hidden)
+        child = NeuralNetwork(self.num_inputs, num_hidden, self.num_outputs)
         
         # Crossover input-hidden weights
         for i in range(self.num_inputs):
-            for j in range(self.num_hidden):
-                if random.random() < 0.5:
+            for j in range(num_hidden):
+                has_self = j < self.num_hidden
+                has_other = j < other.num_hidden
+                
+                if has_self and has_other:
+                    child.weights_input_hidden[i][j] = self.weights_input_hidden[i][j] if random.random() < 0.5 else other.weights_input_hidden[i][j]
+                elif has_self:
                     child.weights_input_hidden[i][j] = self.weights_input_hidden[i][j]
-                else:
+                else: # has_other must be true
                     child.weights_input_hidden[i][j] = other.weights_input_hidden[i][j]
         
         # Crossover hidden-output weights
-        for i in range(self.num_hidden):
+        for i in range(num_hidden):
             for j in range(self.num_outputs):
-                if random.random() < 0.5:
+                has_self = i < self.num_hidden
+                has_other = i < other.num_hidden
+                
+                if has_self and has_other:
+                    child.weights_hidden_output[i][j] = self.weights_hidden_output[i][j] if random.random() < 0.5 else other.weights_hidden_output[i][j]
+                elif has_self:
                     child.weights_hidden_output[i][j] = self.weights_hidden_output[i][j]
                 else:
                     child.weights_hidden_output[i][j] = other.weights_hidden_output[i][j]
         
         # Crossover biases
-        for i in range(self.num_hidden):
-            if random.random() < 0.5:
+        for i in range(num_hidden):
+            has_self = i < self.num_hidden
+            has_other = i < other.num_hidden
+            
+            if has_self and has_other:
+                child.bias_hidden[i] = self.bias_hidden[i] if random.random() < 0.5 else other.bias_hidden[i]
+            elif has_self:
                 child.bias_hidden[i] = self.bias_hidden[i]
             else:
                 child.bias_hidden[i] = other.bias_hidden[i]
         
         for i in range(self.num_outputs):
-            if random.random() < 0.5:
-                child.bias_output[i] = self.bias_output[i]
-            else:
-                child.bias_output[i] = other.bias_output[i]
+            child.bias_output[i] = self.bias_output[i] if random.random() < 0.5 else other.bias_output[i]
         
         return child
     
@@ -140,8 +175,9 @@ class Genome:
         self.fitness = survival_time + (asteroids_destroyed * 10.0)
     
     def mutate(self, mutation_rate: float = 0.1, mutation_strength: float = 0.5) -> None:
-        """Mutate the genome's neural network"""
+        """Mutate the genome's neural network (parameters + structure)"""
         self.network.mutate(mutation_rate, mutation_strength)
+        self.network.mutate_structure(chance=0.05)  # 5% chance to grow brain
     
     def copy(self) -> 'Genome':
         """Create a deep copy of the genome"""
