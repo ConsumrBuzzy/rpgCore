@@ -15,7 +15,7 @@ import time
 import math
 import random
 
-from ..base import BaseSystem, SystemConfig, SystemStatus
+from ...base import BaseSystem, SystemConfig, SystemStatus
 from foundation.types import Result
 from foundation.protocols import (
     WorldStateSnapshot, EntityStateSnapshot, EntityType, Vector2Protocol
