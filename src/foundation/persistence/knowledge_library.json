@@ -3,7 +3,7 @@
     "version": "1.0",
     "created": "2026-02-12",
     "description": "Shared Knowledge Library for AI Pilots - Epigenetic Learning",
-    "total_techniques": 10,
+    "total_techniques": 11,
     "last_updated": null
   },
   "techniques": [
@@ -558,6 +558,62 @@
           "consistency": 1.0,
           "min": 1.0,
           "max": 1.0,
+          "significant": true
+        }
+      },
+      "fitness_score": 50.00833333333178,
+      "usage_count": 0,
+      "success_rate": 1.0,
+      "last_used": 50.499999999998415,
+      "generation_created": 0
+    },
+    {
+      "id": "tech_50499",
+      "name": "Far Brake TurnLeft",
+      "description": "Long range approach | Reverse thrust | Sharp turn",
+      "input_pattern": {
+        "distance": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "vy": {
+          "avg": 0.21666666666666667,
+          "variance": 0.16972222222222222,
+          "min": 0.0,
+          "max": 1.0,
+          "significant": true
+        },
+        "heading": {
+          "avg": 1.0,
+          "variance": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "significant": true
+        }
+      },
+      "output_action": {
+        "thrust": {
+          "avg": -0.7361286165772668,
+          "consistency": 0.990884993031087,
+          "min": -0.8791197300707583,
+          "max": -0.5703759438585638,
+          "significant": true
+        },
+        "rotation": {
+          "avg": -0.9418395556237643,
+          "consistency": 0.9998479886047849,
+          "min": -0.9574133776824627,
+          "max": -0.9174121033803169,
+          "significant": true
+        },
+        "fire_weapon": {
+          "avg": 0.0,
+          "consistency": 1.0,
+          "min": 0.0,
+          "max": 0.0,
           "significant": true
         }
       },
