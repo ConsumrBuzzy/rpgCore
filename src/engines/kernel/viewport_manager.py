@@ -14,11 +14,8 @@ import math
 
 from loguru import logger
 
-from .models import (
-    ViewportLayout, ViewportLayoutMode, Rectangle, Point,
-    ScaleBucket, STANDARD_SCALE_BUCKETS, OverlayComponent
-)
 from foundation.interfaces.protocols import Result
+from foundation.protocols import Vector2Protocol
 
 
 class ViewportManager:
