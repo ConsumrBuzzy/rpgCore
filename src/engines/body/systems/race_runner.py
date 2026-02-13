@@ -22,6 +22,7 @@ from foundation.protocols import (
 )
 from foundation.vector import Vector2
 from foundation.registry import DGTRegistry
+from .terrain_engine import TerrainEngine
 
 
 @dataclass
