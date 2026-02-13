@@ -20,7 +20,7 @@ from loguru import logger
 from rich.console import Console
 from rich.logging import RichHandler
 
-from foundation.constants import (
+from .constants import (
     LOG_LEVEL_DEFAULT, LOG_FORMAT
 )
 

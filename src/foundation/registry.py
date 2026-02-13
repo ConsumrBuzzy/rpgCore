@@ -14,8 +14,8 @@ import threading
 import time
 from pathlib import Path
 
-from foundation.types import Result, ValidationResult
-from foundation.base import ComponentConfig
+from .types import Result, ValidationResult
+from .base import ComponentConfig
 
 T = TypeVar('T')
 
@@ -87,7 +87,7 @@ class DGTRegistry:
         """Lazy logger initialization"""
         if self._logger is None:
             try:
-                from foundation.utils.logger import get_logger_manager
+                from .utils.logger import get_logger_manager
                 self._logger = get_logger_manager().get_component_logger("registry")
             except Exception:
                 # Fallback to basic logging
