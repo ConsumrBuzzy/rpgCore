@@ -392,15 +392,23 @@ class TournamentMode:
             
             # Update fitness
             pilot.update_fitness(self.game_time, pilot.asteroids_destroyed, pilot.scrap_collected)
-    
+
+    def _get_toroidal_vector(self, x1: float, y1: float, x2: float, y2: float) -> Tuple[float, float, float]:
+        """Calculate shortest vector from p1 to p2 in a toroidal world"""
+        dx = x2 - x1
+        dy = y2 - y1
+        if abs(dx) > SOVEREIGN_WIDTH / 2: dx -= math.copysign(SOVEREIGN_WIDTH, dx)
+        if abs(dy) > SOVEREIGN_HEIGHT / 2: dy -= math.copysign(SOVEREIGN_HEIGHT, dy)
+        dist = math.sqrt(dx**2 + dy**2)
+        return dx, dy, dist
+
     def _check_collisions(self) -> None:
-        """Check collisions for all pilots"""
+        """Check collisions for all pilots and bullets using toroidal awareness"""
+        # Scrap collection
         for pilot in self.pilots:
-            # Check scrap collection
             scrap_to_remove = []
             for scrap_idx, scrap in enumerate(self.scrap_entities):
-                distance = math.sqrt((pilot.visual_x - scrap['x'])**2 + 
-                                   (pilot.visual_y - scrap['y'])**2)
+                _, _, distance = self._get_toroidal_vector(pilot.visual_x, pilot.visual_y, scrap['x'], scrap['y'])
                 if distance < scrap['radius'] + 3:  # Ship radius
                     scrap_to_remove.append(scrap_idx)
                     pilot.scrap_collected += scrap['value']
@@ -416,7 +424,7 @@ class TournamentMode:
                 
                 # Check asteroid hits
                 for asteroid in self.asteroids[:]: # Iterate over a copy to allow removal
-                    dist = math.sqrt((bullet.x - asteroid['x'])**2 + (bullet.y - asteroid['y'])**2)
+                    _, _, dist = self._get_toroidal_vector(bullet.x, bullet.y, asteroid['x'], asteroid['y'])
                     if dist < asteroid['radius'] + 2: # Bullet radius approx 2
                         bullet.active = False
                         asteroid['health'] -= 1
@@ -522,21 +530,25 @@ class TournamentMode:
             time_since_fire = self.game_time - pilot.last_fire_time
             recharge_pct = min(1.0, time_since_fire / pilot.fire_cooldown)
             
-            if recharge_pct < 1.0:
-                bar_width = 12
-                bar_height = 2
-                bar_x = pilot.visual_x - bar_width // 2
-                bar_y = pilot.visual_y - 10
-                
+            bar_width = 12
+            bar_height = 2
+            bar_x = pilot.visual_x - bar_width // 2
+            bar_y = pilot.visual_y - 10
+            
             # Background
             pygame.draw.rect(self.game_surface, self.colors['dark_gray'], 
                            (int(bar_x), int(bar_y), bar_width, bar_height))
             
             # Progress 
-            color = self.colors['green'] if recharge_pct >= 1.0 else self.colors['yellow']
-            fill_width = int(bar_width * recharge_pct)
-            pygame.draw.rect(self.game_surface, color, 
-                           (int(bar_x), int(bar_y), fill_width, bar_height))
+            if recharge_pct < 1.0:
+                color = self.colors['yellow']
+                fill_width = int(bar_width * recharge_pct)
+                pygame.draw.rect(self.game_surface, color, 
+                               (int(bar_x), int(bar_y), fill_width, bar_height))
+            else:
+                # Fully charged
+                pygame.draw.rect(self.game_surface, self.colors['green'], 
+                               (int(bar_x), int(bar_y), bar_width, bar_height))
     
     def _draw_mental_vectors(self) -> None:
         """Draw mental vectors for debugging"""
