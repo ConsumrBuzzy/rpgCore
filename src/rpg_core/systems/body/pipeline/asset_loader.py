@@ -11,8 +11,8 @@ from dataclasses import dataclass, asdict
 from PIL import Image
 from loguru import logger
 
-from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
-from foundation.types import Result, ValidationResult
+from rpg_core.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from rpg_core.foundation.types import Result, ValidationResult
 
 
 @dataclass
