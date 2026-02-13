@@ -9,7 +9,7 @@ This is the "Referee" - ensures fair play and tracks race progress.
 
 from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass
-from enum import Enum, StrEnum
+from enum import Enum
 import time
 
 from engines.base import BaseSystem, SystemConfig
@@ -21,7 +21,7 @@ from foundation.types.race import (
 from pydantic import BaseModel
 
 
-class RaceEventType(str, StrEnum):
+class RaceEventType(str, Enum):
     """Event types that the arbiter can emit"""
     RACE_STARTED = "race_started"
     RACE_FINISHED = "race_finished"
