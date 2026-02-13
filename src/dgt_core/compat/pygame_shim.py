@@ -285,6 +285,10 @@ class SovereignColor:
         """Return as tuple (pygame.Color compatibility)"""
         return (self.r, self.g, self.b, self.a)
     
+    def __iter__(self):
+        """Make color iterable"""
+        return iter((self.r, self.g, self.b, self.a))
+    
     def __str__(self) -> str:
         """String representation"""
         return f"(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
