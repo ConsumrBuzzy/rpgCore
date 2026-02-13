@@ -8,7 +8,8 @@ from dataclasses import dataclass
 from enum import Enum
 import logging
 
-from .logical_viewport import LogicalViewport, ViewportManager
+from .logical_viewport import LogicalViewport
+from ...engines.kernel.viewport_manager import ViewportManager
 # from ..rendering.unified_ppu import UnifiedPPU  # Commented out for testing
 
 
@@ -41,6 +42,9 @@ class AdaptiveRenderer:
         self.current_profile = RenderProfile.RETRO
         self.render_configs = self._create_default_configs()
         self.logger = logging.getLogger(__name__)
+        
+        # Initialize primary viewport for compatibility
+        self.primary_viewport = LogicalViewport()
         
         # Performance monitoring
         self.frame_times = []
