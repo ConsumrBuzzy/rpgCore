@@ -16,7 +16,7 @@ from .technique_extractor import TechniqueTemplate, create_technique_extractor
 class KnowledgeLibrary:
     """Shared knowledge library for epigenetic learning between AI generations"""
     
-    def __init__(self, library_path: str = "src/foundation/persistence/knowledge_library.json"):
+    def __init__(self, library_path: str = "data/knowledge_library.json"):
         self.library_path = Path(library_path)
         self.techniques: List[TechniqueTemplate] = []
         self.success_vectors = {
