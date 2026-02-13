@@ -12,8 +12,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any, Tuple, TYPE_CHECKING
 
-from foundation.types import Result
-from foundation.protocols import Vector2Protocol
+from rpg_core.foundation.types import Result
+from rpg_core.foundation.protocols import Vector2Protocol
 
 # No TYPE_CHECKING needed - we use Foundation protocols only
 
