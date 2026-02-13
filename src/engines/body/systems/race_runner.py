@@ -106,7 +106,13 @@ class RaceRunnerSystem(BaseSystem):
             self._initialize_race_track()
             self._create_default_participants()
             
-            self._get_logger().info("🏁 Race Runner System initialized")
+            # Initialize terrain engine
+            self.terrain_engine = TerrainEngine()
+            terrain_init_result = self.terrain_engine.initialize()
+            if not terrain_init_result.success:
+                return Result.failure_result(f"Terrain engine initialization failed: {terrain_init_result.error}")
+            
+            self._get_logger().info("�️ Race Runner initialized with terrain engine")
             return Result.success_result(True)
             
         except Exception as e:
@@ -119,10 +125,16 @@ class RaceRunnerSystem(BaseSystem):
             if self.race_active:
                 self.stop_race()
             
+            # Shutdown terrain engine
+            if self.terrain_engine:
+                terrain_shutdown_result = self.terrain_engine.shutdown()
+                if not terrain_shutdown_result.success:
+                    self._get_logger().warning(f"Terrain engine shutdown failed: {terrain_shutdown_result.error}")
+            
             # Clear participants
             self.participants.clear()
             
-            self._get_logger().info("🏁 Race Runner System shutdown")
+            self._get_logger().info("🏁 Race Runner shutdown")
             return Result.success_result(None)
             
         except Exception as e:
