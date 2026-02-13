@@ -1,11 +1,11 @@
 {
-  "current_day": 2,
+  "current_day": 3,
   "player_wallet": 1000.0,
   "owned_turtles": [],
   "wild_turtles": [
-    "wild_day2_0",
-    "wild_day2_1",
-    "wild_day2_2"
+    "wild_day3_0",
+    "wild_day3_1",
+    "wild_day3_2"
   ],
-  "timestamp": 1770963340.625578
+  "timestamp": 1770963349.923239
 }

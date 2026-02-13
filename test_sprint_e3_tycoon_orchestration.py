@@ -262,7 +262,7 @@ def test_3_day_simulation():
         turtle_stats = stats_result.value
         
         print(f"✅ Day 2 Complete: Wallet ${day2_wallet:.2f}")
-        print(f"✅ Turtle stats: {turtle_stats['race_count']} races, {turtle_stats['wins']} wins, {turtle_stats['current_stamina']:.1f} stamina")
+        print(f"✅ Turtle stats: {turtle_stats.get('race_count', 0)} races, {turtle_stats.get('wins', 0)} wins, {turtle_stats.get('current_stamina', 0):.1f} stamina")
         
         # === DAY 3: Verify persistence ===
         print("\n📅 DAY 3: Persistence Verification")
