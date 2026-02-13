@@ -28,13 +28,14 @@ from loguru import logger
 try:
     # Modern Architecture (Tier 2/3)
     # Modern Architecture (Tier 2/3)
-    from engines.kernel.state import (
-        GameState, TileType, BiomeType, SubtitleEvent, Entity,
-        VIEWPORT_WIDTH_PIXELS, VIEWPORT_HEIGHT_PIXELS,
-        TILE_SIZE_PIXELS, VIEWPORT_TILES_X, VIEWPORT_TILES_Y,
-        RENDER_LAYERS, COLOR_PALETTE, RenderLayer,
-        TARGET_FPS, FRAME_DELAY_MS
-    )
+# from engines.kernel.state import (
+    #     GameState, TileType, BiomeType, SubtitleEvent, Entity,
+    #     VIEWPORT_WIDTH_PIXELS, VIEWPORT_HEIGHT_PIXELS,
+    #     TILE_SIZE_PIXELS, VIEWPORT_TILES_X, VIEWPORT_TILES_Y,
+    #     RENDER_LAYERS, COLOR_PALETTE, RenderLayer,
+    #     TARGET_FPS, FRAME_DELAY_MS
+    # )
+    raise ImportError("Legacy kernel not found")
 except ImportError as e:
     logger.warning(f"⚠️ Could not import DGT kernel state: {e}")
     # Use foundation constants as fallback

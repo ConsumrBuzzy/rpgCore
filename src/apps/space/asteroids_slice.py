@@ -500,7 +500,7 @@ class VisualRunner:
 
     def _tick(self) -> None:
         """One frame: input → physics → render → blit."""
-        from actors.asteroid_pilot import AsteroidPilot
+        from rpg_core.game.actors.asteroid_pilot import AsteroidPilot
         
         t0 = time.time()
 
