@@ -4,6 +4,7 @@ Handles loading and validation of all game assets
 """
 
 import json
+import time
 import yaml
 from pathlib import Path
 from typing import Dict, List, Optional, Union, Any
@@ -333,3 +334,30 @@ class AssetLoader:
                 stats['total_size_mb'] += pixels * 4 / (1024 * 1024)  # Assume 4 bytes per pixel
         
         return stats
+
+class ObjectRegistry:
+    """Registry for spawnable game objects"""
+    
+    def __init__(self, asset_loader: AssetLoader):
+        self.asset_loader = asset_loader
+        self.registered_objects: Dict[str, Any] = {}
+        logger.info("📦 ObjectRegistry initialized")
+    
+    def register_object(self, name: str, object_def: Any) -> None:
+        """Register an object definition"""
+        self.registered_objects[name] = object_def
+        logger.info(f"📝 Registered object: {name}")
+    
+    def spawn_object(self, asset_id: str, position: Tuple[int, int]) -> Optional[Any]:
+        """Spawn an object at position"""
+        # Logic to spawn object would go here
+        # For now, return a simple dict representation or look up in registered objects
+        logger.debug(f"✨ Spawning {asset_id} at {position}")
+        return {
+            "id": asset_id,
+            "position": position,
+            "spawned_at": time.time()
+        }
+
+    def get_registered_objects(self) -> List[str]:
+         return list(self.registered_objects.keys())
