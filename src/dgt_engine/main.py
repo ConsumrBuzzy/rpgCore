@@ -20,6 +20,7 @@ import time
 from pathlib import Path
 from typing import Dict, Any, Optional, TypedDict, Union, Callable, Awaitable, NotRequired
 
+from loguru import logger
 from dgt_engine.foundation.utils.logger import initialize_logging, get_logger_manager
 
 # Import pillar engines
