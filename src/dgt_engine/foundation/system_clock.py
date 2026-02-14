@@ -127,7 +127,7 @@ class SystemClock:
             
             # Check if we need to process this frame
             if elapsed >= self.target_frame_time:
-                self._process_frame(current_time)
+                self._process_frame(current_time, elapsed)
                 self.last_frame_time = current_time
             else:
                 # Sleep for the remaining time to avoid CPU pegging
@@ -135,7 +135,7 @@ class SystemClock:
                 if sleep_time > 0.001:  # Only sleep if more than 1ms
                     time.sleep(sleep_time)
     
-    def _process_frame(self, current_time: float) -> None:
+    def _process_frame(self, current_time: float, elapsed: float) -> None:
         """Process a single frame"""
         frame_start = current_time
         
@@ -147,15 +147,15 @@ class SystemClock:
             logger.error(f"⚠️ Frame callback error: {e}")
         
         # Update metrics
-        self._update_metrics(frame_start, time.perf_counter())
+        self._update_metrics(frame_start, time.perf_counter(), elapsed)
     
-    def _update_metrics(self, frame_start: float, frame_end: float) -> None:
+    def _update_metrics(self, frame_start: float, frame_end: float, elapsed: float) -> None:
         """Update performance metrics"""
-        frame_time = frame_end - frame_start
-        frame_time_ms = frame_time * 1000
+        frame_execution_time = frame_end - frame_start
+        frame_execution_ms = frame_execution_time * 1000
         
-        # Update frame time history
-        self.frame_times.append(frame_time)
+        # Update frame time history (use elapsed time between frames for FPS)
+        self.frame_times.append(elapsed)
         if len(self.frame_times) > self.max_frame_history:
             self.frame_times.pop(0)
         
@@ -167,7 +167,7 @@ class SystemClock:
             self.metrics.actual_fps = self.target_fps
         
         # Update other metrics
-        self.metrics.frame_time_ms = frame_time_ms
+        self.metrics.frame_time_ms = frame_execution_ms
         self.metrics.total_frames += 1
         
         # Estimate CPU usage (simplified)
@@ -244,7 +244,7 @@ class SystemClock:
                 return Result(success=False, error="No frame callback set")
             
             current_time = time.perf_counter()
-            self._process_frame(current_time)
+            self._process_frame(current_time, self.target_frame_time)
             
             return Result(success=True, value=True)
             
