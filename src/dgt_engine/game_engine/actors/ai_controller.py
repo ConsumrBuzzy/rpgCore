@@ -29,7 +29,7 @@ from dgt_engine.systems.kernel.config import VoyagerConfig
 from dgt_engine.engine.chronos import ChronosEngine
 
 # Body — pathfinding and navigation primitives
-from actors.pawn_navigation import (
+from dgt_engine.game_engine.actors.pawn_navigation import (
     NavigationGoal, PathfindingNode, PathfindingNavigator, IntentGenerator
 )
 
