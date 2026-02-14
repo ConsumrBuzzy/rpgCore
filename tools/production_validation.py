@@ -71,19 +71,19 @@ class ThreeTierProductionValidator:
         try:
             # Check Tier 1 Foundation
             foundation_files = [
-                "src/foundation/constants.py",
-                "src/foundation/types.py", 
-                "src/foundation/system_clock.py",
-                "src/foundation/assets/ml/intent_vectors.safetensors"
+                "src/dgt_engine/foundation/constants.py",
+                "src/dgt_engine/foundation/types.py", 
+                "src/dgt_engine/foundation/system_clock.py",
+                "src/dgt_engine/foundation/assets/ml/intent_vectors.safetensors"
             ]
             
             foundation_complete = all((src_path.parent / f).exists() for f in foundation_files)
             
             # Check Tier 2 Engines
             engine_files = [
-                "src/engines/body/cinematics/movie_engine.py",
-                "src/engines/body/pipeline/asset_loader.py",
-                "src/engines/mind/neat_config.txt"
+                "src/dgt_engine/systems/body/cinematics/movie_engine.py",
+                "src/dgt_engine/systems/body/pipeline/asset_loader.py",
+                "src/dgt_engine/systems/mind/neat_config.txt"
             ]
             
             engines_complete = all((src_path.parent / f).exists() for f in engine_files)
@@ -126,9 +126,9 @@ class ThreeTierProductionValidator:
             
             # Test Tier 1 imports (should work independently)
             try:
-                from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
-                from foundation.types import Result, ValidationResult
-                from foundation.system_clock import SystemClock
+                from dgt_engine.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+                from dgt_engine.foundation.types import Result, ValidationResult
+                from dgt_engine.foundation.system_clock import SystemClock
                 
                 tier1_imports_work = True
                 logger.info("✅ Tier 1 imports working")
@@ -138,8 +138,8 @@ class ThreeTierProductionValidator:
             
             # Test Tier 2 imports (can import from Tier 1)
             try:
-                from engines.body.cinematics.movie_engine import MovieEngine
-                from engines.body.pipeline.asset_loader import AssetLoader
+                from dgt_engine.systems.body.cinematics.movie_engine import MovieEngine
+                from dgt_engine.systems.body.pipeline.asset_loader import AssetLoader
                 
                 tier2_imports_work = True
                 logger.info("✅ Tier 2 imports working")
@@ -185,7 +185,7 @@ class ThreeTierProductionValidator:
             import sys
             sys.path.insert(0, str(src_path))
             
-            from foundation.system_clock import SystemClock
+            from dgt_engine.foundation.system_clock import SystemClock
             
             # Test SystemClock creation and configuration
             clock = SystemClock(target_fps=60.0, max_cpu_usage=80.0)
@@ -237,13 +237,13 @@ class ThreeTierProductionValidator:
             sys.path.insert(0, str(src_path))
             
             # Import Tier 1
-            from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
-            from foundation.types import Result
-            from foundation.system_clock import SystemClock
+            from dgt_engine.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+            from dgt_engine.foundation.types import Result
+            from dgt_engine.foundation.system_clock import SystemClock
             
             # Import Tier 2
-            from engines.body.cinematics.movie_engine import MovieEngine
-            from engines.body.pipeline.asset_loader import AssetLoader
+            from dgt_engine.systems.body.cinematics.movie_engine import MovieEngine
+            from dgt_engine.systems.body.pipeline.asset_loader import AssetLoader
             
             import_time = (time.time() - start_time) * 1000
             
@@ -292,9 +292,9 @@ class ThreeTierProductionValidator:
             import sys
             sys.path.insert(0, str(src_path))
             
-            from foundation.system_clock import SystemClock
-            from engines.body.cinematics.movie_engine import MovieEngine
-            from engines.body.pipeline.asset_loader import AssetLoader
+            from dgt_engine.foundation.system_clock import SystemClock
+            from dgt_engine.systems.body.cinematics.movie_engine import MovieEngine
+            from dgt_engine.systems.body.pipeline.asset_loader import AssetLoader
             
             # Initialize components
             clock = SystemClock(target_fps=60.0)
@@ -335,8 +335,8 @@ class ThreeTierProductionValidator:
             import sys
             sys.path.insert(0, str(src_path))
             
-            from foundation.system_clock import SystemClock
-            from engines.body.cinematics.movie_engine import MovieEngine
+            from dgt_engine.foundation.system_clock import SystemClock
+            from dgt_engine.systems.body.cinematics.movie_engine import MovieEngine
             
             # Test battery optimization at different levels
             clock = SystemClock(target_fps=60.0)
@@ -397,8 +397,8 @@ class ThreeTierProductionValidator:
             import sys
             sys.path.insert(0, str(src_path))
             
-            from engines.body.pipeline.asset_loader import AssetLoader
-            from engines.body.pipeline.building_registry import BuildingRegistry
+            from dgt_engine.systems.body.pipeline.asset_loader import AssetLoader
+            from dgt_engine.systems.body.pipeline.building_registry import BuildingRegistry
             
             # Test AssetLoader creation
             asset_loader = AssetLoader()
@@ -446,7 +446,7 @@ class ThreeTierProductionValidator:
             import sys
             sys.path.insert(0, str(src_path))
             
-            from engines.body.cinematics.movie_engine import MovieEngine
+            from dgt_engine.systems.body.cinematics.movie_engine import MovieEngine
             
             # Test MovieEngine creation with SystemClock
             movie_engine = MovieEngine(seed="CINEMATIC_TEST", target_fps=60.0)
