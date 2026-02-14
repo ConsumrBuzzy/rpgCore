@@ -9,10 +9,10 @@ import os
 from pathlib import Path
 
 # Add src to path
-sys.path.append(str(Path(__file__).parent / 'src'))
+sys.path.append(str(Path(__file__).parent.parent / 'src'))
 
-from engines.body.cinematics.movie_engine import MovieEngine, EventType
-from engines.body.pipeline.asset_loader import AssetLoader
+from dgt_engine.systems.body.cinematics.movie_engine import MovieEngine, EventType
+from dgt_engine.systems.body.pipeline.asset_loader import AssetLoader
 
 
 def test_theater_mode():
@@ -126,8 +126,8 @@ def test_three_tier_compliance():
     
     # Test Tier 1 Foundation imports
     try:
-        from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
-        from foundation.types import Result, ValidationResult
+        from dgt_engine.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+        from dgt_engine.foundation.types import Result, ValidationResult
         print("✅ Tier 1 Foundation imports successful")
         print(f"   Sovereign constraints: {SOVEREIGN_WIDTH}x{SOVEREIGN_HEIGHT}")
     except ImportError as e:
@@ -136,8 +136,8 @@ def test_three_tier_compliance():
     
     # Test Tier 2 Engine imports
     try:
-        from engines.body.cinematics.movie_engine import MovieEngine
-        from engines.body.pipeline.asset_loader import AssetLoader
+        from dgt_engine.systems.body.cinematics.movie_engine import MovieEngine
+        from dgt_engine.systems.body.pipeline.asset_loader import AssetLoader
         print("✅ Tier 2 Engine imports successful")
     except ImportError as e:
         print(f"❌ Tier 2 Engine import failed: {e}")

@@ -193,8 +193,15 @@ class ThreeTierProductionValidator:
             # Test clock metrics
             metrics = clock.get_metrics()
             
+            # Start clock for health check
+            clock.set_frame_callback(lambda: None)
+            clock.start()
+            time.sleep(0.1)  # specific wait to let it establish metrics
+            
             # Test health check
             is_healthy = clock.is_healthy()
+            
+            clock.stop()
             
             # Test battery optimization
             battery_result = clock.adjust_for_battery(0.3)  # 30% battery
