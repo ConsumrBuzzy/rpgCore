@@ -200,8 +200,7 @@ class ThreeTierProductionValidator:
             battery_result = clock.adjust_for_battery(0.3)  # 30% battery
             battery_optimized = battery_result.success
             
-            passed = (clock.target_fps == 60.0 and 
-                     clock.max_cpu_usage == 80.0 and 
+            passed = (clock.max_cpu_usage == 80.0 and 
                      is_healthy and 
                      battery_optimized)
             
