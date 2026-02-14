@@ -8,7 +8,45 @@ to be composed together.
 Depends on: game_engine.core
 """
 
+from game_engine.foundation.base_system import (
+    BaseSystem,
+    BaseComponent,
+    SystemConfig,
+    SystemStatus,
+    PerformanceMetrics,
+)
+from game_engine.foundation.protocols import (
+    Vector2Protocol,
+    Vector3Protocol,
+    EntityProtocol,
+    GameStateProtocol,
+    ClockProtocol,
+    RenderPacketProtocol,
+    ConfigProtocol,
+)
+from game_engine.foundation.registry import (
+    DGTRegistry,
+    RegistryType,
+    RegistryEntry,
+)
+
 __all__ = [
-    # BaseSystem, BaseComponent, DGTRegistry, UniversalRegistry
-    # Will be populated as foundation modules are migrated
+    # Base classes
+    "BaseSystem",
+    "BaseComponent",
+    "SystemConfig",
+    "SystemStatus",
+    "PerformanceMetrics",
+    # Protocols
+    "Vector2Protocol",
+    "Vector3Protocol",
+    "EntityProtocol",
+    "GameStateProtocol",
+    "ClockProtocol",
+    "RenderPacketProtocol",
+    "ConfigProtocol",
+    # Registry
+    "DGTRegistry",
+    "RegistryType",
+    "RegistryEntry",
 ]
