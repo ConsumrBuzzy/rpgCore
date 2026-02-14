@@ -27,7 +27,9 @@
       "Bash(./build_and_run.bat)",
       "Bash(dotnet build:*)",
       "Bash(for f in Interfaces/*.cs)",
-      "Bash(do sed -i '/^using Godot;/a using rpgCore.Godot.Models;' \"$f\")"
+      "Bash(do sed -i '/^using Godot;/a using rpgCore.Godot.Models;' \"$f\")",
+      "Bash(pytest:*)",
+      "Bash(powershell -Command:*)"
     ]
   }
 }

@@ -343,6 +343,100 @@ class EntityManager(BaseSystem):
 
         return status
 
+    # --- Template-based spawning ---
+
+    def set_template_registry(self, template_registry) -> None:
+        """
+        Set the EntityTemplateRegistry for template-based spawning.
+
+        Args:
+            template_registry: An EntityTemplateRegistry instance
+        """
+        self._template_registry = template_registry
+
+    def spawn_from_template(self, template_id: str, **overrides) -> Result:
+        """
+        Spawn an entity from a registered template.
+
+        Looks up the template by ID, spawns an entity of the template's
+        entity_type, and applies template properties plus any overrides.
+
+        Args:
+            template_id: ID of the template in the template registry
+            **overrides: Property overrides (e.g., x=100, y=200)
+
+        Returns:
+            Result containing the spawned Entity on success
+        """
+        try:
+            registry = getattr(self, '_template_registry', None)
+            if registry is None:
+                return Result(success=False, error="No template registry set. Call set_template_registry() first.")
+
+            template = registry.get(template_id)
+            if template is None:
+                return Result(success=False, error=f"Template not found: {template_id}")
+
+            entity_type = template.entity_type
+            self._ensure_entity_type_registered(entity_type)
+
+            result = self.spawn_entity(entity_type)
+            if not result.success:
+                return result
+
+            entity = result.value
+            self._apply_template_properties(entity, template)
+            self._apply_property_overrides(entity, overrides)
+
+            return Result(success=True, value=entity)
+
+        except Exception as e:
+            return Result(success=False, error=f"Failed to spawn from template: {e}")
+
+    def spawn_from_config(self, config_dict: Dict[str, Any]) -> Result:
+        """
+        Spawn an entity from a configuration dictionary.
+
+        The dict must contain 'entity_type' and may contain any
+        entity properties as key-value pairs.
+
+        Args:
+            config_dict: Dictionary with entity_type and properties
+
+        Returns:
+            Result containing the spawned Entity on success
+        """
+        try:
+            entity_type = config_dict.get("entity_type")
+            if not entity_type:
+                return Result(success=False, error="Config dict must contain 'entity_type'")
+
+            self._ensure_entity_type_registered(entity_type)
+            props = {k: v for k, v in config_dict.items() if k != "entity_type"}
+            return self.spawn_entity(entity_type, **props)
+
+        except Exception as e:
+            return Result(success=False, error=f"Failed to spawn from config: {e}")
+
+    def batch_spawn_from_template(self, template_id: str, count: int, **overrides) -> List:
+        """
+        Spawn multiple entities from the same template.
+
+        Args:
+            template_id: ID of the template
+            count: Number of entities to spawn
+            **overrides: Property overrides applied to all entities
+
+        Returns:
+            List of spawned Entity objects (only successful spawns)
+        """
+        entities = []
+        for _ in range(count):
+            result = self.spawn_from_template(template_id, **overrides)
+            if result.success:
+                entities.append(result.value)
+        return entities
+
 
 # Specialized entity types for specific game types
 
