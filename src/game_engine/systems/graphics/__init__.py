@@ -33,6 +33,15 @@ from .tile_bank import (
     create_minimal_tile_bank,
 )
 
+from .fx_system import (
+    FXSystem,
+    Particle,
+    ParticleEmitter,
+    create_default_fx_system,
+    create_large_fx_system,
+    create_minimal_fx_system,
+)
+
 __all__ = [
     # PixelRenderer classes
     'PixelRenderer',
