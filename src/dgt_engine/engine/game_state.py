@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from enum import Enum
 import uuid
 
-from world_ledger import Coordinate, WorldChunk
+from dgt_engine.game_engine.world_ledger import Coordinate, WorldChunk
 from logic.orientation import Orientation
 from loot_system import Item
 

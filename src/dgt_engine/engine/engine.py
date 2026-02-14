@@ -18,7 +18,7 @@ from rich.panel import Panel
 from rich.live import Live
 
 from game_state import GameState
-from world_ledger import WorldLedger, Coordinate
+from dgt_engine.game_engine.world_ledger import WorldLedger, Coordinate
 from logic.faction_system import FactionSystem
 from logic.orientation import OrientationManager
 from ui.dashboard import UnifiedDashboard, DashboardLayout
