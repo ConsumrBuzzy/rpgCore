@@ -17,11 +17,11 @@ import heapq
 
 from loguru import logger
 
-from engines.kernel.state import (
+from dgt_engine.systems.kernel.state import (
     GameState, VoyagerState, MovementIntent, InteractionIntent, PonderIntent,
     InterestPoint, validate_position, DIRECTION_VECTORS
 )
-from engines.kernel.constants import (
+from dgt_engine.systems.kernel.constants import (
     MOVEMENT_RANGE_TILES, INTENT_COOLDOWN_MS, PERSISTENCE_INTERVAL_TURNS,
     PATHFINDING_MAX_ITERATIONS, VOYAGER_INTERACTION_RANGE
 )
