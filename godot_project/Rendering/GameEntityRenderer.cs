@@ -181,24 +181,18 @@ namespace rpgCore.Godot.Rendering
             Color hudColor = Colors.White;
 
             // Top-left: Score
-            if (!string.IsNullOrEmpty(hud.Score))
-            {
-                DrawString(hudFont, new Vector2(10, 10), $"SCORE: {hud.Score}", HorizontalAlignment.Left, -1, (int)fontSize, hudColor);
-            }
+            // Top-left: Score
+            DrawString(hudFont, new Vector2(10, 10), $"SCORE: {hud.Score}", HorizontalAlignment.Left, -1, (int)fontSize, hudColor);
 
             // Top-right: Lives
-            if (!string.IsNullOrEmpty(hud.Lives))
-            {
-                var livesText = $"LIVES: {hud.Lives}";
-                DrawString(hudFont, new Vector2(630, 10), livesText, HorizontalAlignment.Right, -1, (int)fontSize, hudColor);
-            }
+            // Top-right: Lives
+            var livesText = $"LIVES: {hud.Lives}";
+            DrawString(hudFont, new Vector2(630, 10), livesText, HorizontalAlignment.Right, -1, (int)fontSize, hudColor);
 
             // Top-center: Wave
-            if (!string.IsNullOrEmpty(hud.Wave))
-            {
-                var waveText = $"WAVE: {hud.Wave}";
-                DrawString(hudFont, new Vector2(320, 10), waveText, HorizontalAlignment.Center, -1, (int)fontSize, hudColor);
-            }
+            // Top-center: Wave
+            var waveText = $"WAVE: {hud.Wave}";
+            DrawString(hudFont, new Vector2(320, 10), waveText, HorizontalAlignment.Center, -1, (int)fontSize, hudColor);
 
             // Bottom: Status message
             if (!string.IsNullOrEmpty(hud.Status))

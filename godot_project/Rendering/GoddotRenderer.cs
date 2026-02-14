@@ -144,7 +144,7 @@ namespace rpgCore.Godot.Rendering {
         private void DrawGenericEntity(EntityDTO entity) {
             var pos = entity.GetPosition() * scale;
             var radius = entity.Radius * scale;
-            var color = GetColorForPalette(entity.Color);
+            var color = GetColorForPalette(entity.Color.GetValueOrDefault());
 
             canvas.DrawCircle(pos, radius, color);
             canvas.DrawCircle(pos, radius, ColorOutline, false, 1.0f);
