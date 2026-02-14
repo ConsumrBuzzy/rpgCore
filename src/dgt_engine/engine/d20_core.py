@@ -17,10 +17,10 @@ from dataclasses import dataclass
 from enum import Enum
 
 from loguru import logger
-from game_state import GameState, PlayerStats
-from world_ledger import Coordinate
-from logic.faction_system import FactionSystem, FactionRelation
-from quartermaster import DC_TABLE
+from dgt_engine.engine.game_state import GameState, PlayerStats
+from dgt_engine.game_engine.world_ledger import Coordinate
+from dgt_engine.logic.faction_system import FactionSystem, FactionRelation
+from dgt_engine.game_engine.quartermaster import DC_TABLE
 
 
 @dataclass

@@ -15,8 +15,8 @@ from enum import Enum
 import uuid
 
 from dgt_engine.game_engine.world_ledger import Coordinate, WorldChunk
-from logic.orientation import Orientation
-from loot_system import Item
+from dgt_engine.logic.orientation import Orientation
+from dgt_engine.game_engine.loot_system import Item
 
 class Goal(BaseModel):
     """A narrative objective for the player/agent."""

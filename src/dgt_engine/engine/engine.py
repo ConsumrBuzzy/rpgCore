@@ -19,9 +19,9 @@ from rich.live import Live
 
 from game_state import GameState
 from dgt_engine.game_engine.world_ledger import WorldLedger, Coordinate
-from logic.faction_system import FactionSystem
-from logic.orientation import OrientationManager
-from ui.dashboard import UnifiedDashboard, DashboardLayout
+from dgt_engine.logic.faction_system import FactionSystem
+from dgt_engine.logic.orientation import OrientationManager
+from dgt_engine.ui.dashboard import UnifiedDashboard, DashboardLayout
 from chronos import ChronosEngine
 from utils.historian import Historian, WorldSeed
 from ui.renderer_3d import ASCIIDoomRenderer
