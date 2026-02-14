@@ -27,12 +27,14 @@ def main():
     print()
 
     # Create game
+    # Create game
     game = AsteroidsNEATGame(
         population_size=5,
-        target_fps=60,
+        target_fps=30,  # Lower FPS for terminal rendering
         godot_host='localhost',
         godot_port=9001,
-        max_episode_time=30.0
+        max_episode_time=30.0,
+        renderer='terminal'
     )
 
     print("[Initializing...]")
@@ -48,20 +50,13 @@ def main():
     print(f"  Population Size: {game.population_size} pilots")
     print(f"  Target FPS: {game.target_fps}")
     print(f"  Episode Duration: {game.max_episode_time}s")
-    print(f"  Active Pilots: {len(game.active_pilots)}")
-    print(f"  Entities: {len(game.entities)}")
-    print()
-
-    print("[Network]")
-    print(f"  Listening on: {game.sdk.host}:{game.sdk.port}")
-    print("  Status: Ready for Godot connection")
+    print(f"  Renderer: TERMINAL (Unicode)")
     print()
 
     print("[Instructions]")
-    print("  1. Open another terminal")
-    print("  2. Run: godot --path src/game_engine/godot")
-    print("  3. Click Play (F5) in Godot Editor")
-    print("  4. Watch AI pilots learn Asteroids!")
+    print(f"  1. Watch the game render below")
+    print(f"  2. Press Ctrl+C to stop")
+    print()
     print()
 
     print("[Running Demo]")

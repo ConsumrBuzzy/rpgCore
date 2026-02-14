@@ -20,6 +20,7 @@ from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, field
 
 from .asteroids_clone_sdk import AsteroidsSDK
+from ..engines.terminal_bridge import TerminalBridge
 from .input_handler import InputHandler, InputCommandType
 from .asteroids_game import GameState, GameStats, AsteroidsGame
 
@@ -192,15 +193,23 @@ class AsteroidsNEATGame:
         target_fps: int = 60,
         godot_host: str = "localhost",
         godot_port: int = 9001,
-        max_episode_time: float = 30.0
+        max_episode_time: float = 30.0,
+        renderer: str = "terminal"
     ):
         self.population_size = population_size
         self.target_fps = target_fps
         self.frame_time = 1.0 / target_fps
         self.max_episode_time = max_episode_time
+        self.renderer_type = renderer
 
         # Game systems
-        self.sdk = AsteroidsSDK(host=godot_host, port=godot_port)
+        if renderer == "godot":
+            self.sdk = AsteroidsSDK(host=godot_host, port=godot_port)
+        elif renderer == "terminal":
+            self.sdk = TerminalBridge(width=80, height=40)
+        else:
+            raise ValueError(f"Unknown renderer: {renderer}")
+            
         self.input_handler = InputHandler()
 
         # Game state
