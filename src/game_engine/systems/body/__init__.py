@@ -25,6 +25,13 @@ from game_engine.systems.body.entity_manager import (
     RPGEntity,
     TycoonEntity,
 )
+from game_engine.systems.body.collision_system import (
+    CollisionSystem,
+    CollisionInfo,
+    CollisionGroup,
+    CollisionType,
+    create_space_combat_collision_groups,
+)
 
 __all__ = [
     # Core ECS
@@ -36,4 +43,10 @@ __all__ = [
     "SpaceEntity",
     "RPGEntity",
     "TycoonEntity",
+    # Collision System
+    "CollisionSystem",
+    "CollisionInfo",
+    "CollisionGroup",
+    "CollisionType",
+    "create_space_combat_collision_groups",
 ]
