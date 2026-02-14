@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 from loguru import logger
 from typing import Literal, Optional, Dict, Any
 
-from world_ledger import Coordinate
+from dgt_engine.game_engine.world_ledger import Coordinate
 from logic.artifacts import ArtifactGenerator, Artifact, ArtifactRarity
 
 class Item(BaseModel):
