@@ -300,15 +300,21 @@ class GodotBridge:
                 break
 
     def _send_message_raw(self, message: BridgeMessage) -> None:
-        """Send message through socket."""
+        """Send message through socket with length prefix."""
         if not self.socket:
             return
 
         try:
-            json_data = message.to_json() + '\n'
-            self.socket.sendall(json_data.encode('utf-8'))
+            json_data = message.to_json()
+            encoded_data = json_data.encode('utf-8')
+            
+            # Send 4-byte length prefix (Network Byte Order / Big Endian)
+            length_prefix = len(encoded_data).to_bytes(4, byteorder='big')
+            
+            self.socket.sendall(length_prefix + encoded_data)
+            
             self.messages_sent += 1
-            self.bytes_sent += len(json_data)
+            self.bytes_sent += len(length_prefix) + len(encoded_data)
         except Exception as e:
             logger.error(f"GodotBridge raw send error: {e}")
             raise

@@ -175,68 +175,74 @@ namespace rpgCore.Godot.Server
         /// Receive messages from Python engine using byte-level scanning.
         /// This ensures robust splitting of newline-delimited JSON messages regardless of packet fragmentation or merging.
         /// </summary>
+        /// <summary>
+        /// Receive messages from Python engine using length-prefix framing.
+        /// Protocol: [4 bytes length (Big Endian)] [N bytes payload]
+        /// </summary>
         private void ReceiveLoop()
         {
-            // Buffer for incoming raw bytes
-            byte[] readBuffer = new byte[65536];
-            // Accumulator for processing message streams
-            List<byte> streamBuffer = new List<byte>(65536);
+            byte[] lengthBuffer = new byte[4];
 
             while (_isRunning && _isConnected && _stream != null)
             {
                 try
                 {
-                    if (!_stream.DataAvailable)
+                    // 1. Read 4-byte length prefix
+                    int bytesRead = 0;
+                    while (bytesRead < 4 && _isRunning && _isConnected)
                     {
-                        Thread.Sleep(1); // Yield if no data to prevent tight loop
+                        int read = _stream.Read(lengthBuffer, bytesRead, 4 - bytesRead);
+                        if (read == 0)
+                        {
+                            _isConnected = false;
+                            return;
+                        }
+                        bytesRead += read;
+                    }
+
+                    if (bytesRead < 4) break;
+
+                    // Convert Big Endian length to integer
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        Array.Reverse(lengthBuffer);
+                    }
+                    int messageLength = BitConverter.ToInt32(lengthBuffer, 0);
+
+                    // Sanity check
+                    if (messageLength <= 0 || messageLength > 10 * 1024 * 1024)
+                    {
+                        GD.PrintErr($"[GameServer] Invalid message length: {messageLength}");
                         continue;
                     }
 
-                    int bytesRead = _stream.Read(readBuffer, 0, readBuffer.Length);
+                    // 2. Read exact payload length
+                    byte[] payloadBuffer = new byte[messageLength];
+                    int totalPayloadRead = 0;
 
-                    if (bytesRead == 0)
+                    while (totalPayloadRead < messageLength && _isRunning && _isConnected)
                     {
-                        // Connection closed gracefully
-                        _isConnected = false;
-                        break;
-                    }
-
-                    // Append read bytes to our stream buffer
-                    for (int i = 0; i < bytesRead; i++)
-                    {
-                        streamBuffer.Add(readBuffer[i]);
-                    }
-
-                    // Process buffer for delimiters
-                    int newlineIndex;
-                    while ((newlineIndex = streamBuffer.IndexOf((byte)'\n')) != -1)
-                    {
-                        // Extract the complete message (count = newlineIndex because 0-based index)
-                        // If newline is at 5, we want bytes 0,1,2,3,4. (5 bytes)
-                        if (newlineIndex > 0)
+                        int read = _stream.Read(payloadBuffer, totalPayloadRead, messageLength - totalPayloadRead);
+                        if (read == 0)
                         {
-                            byte[] messageBytes = streamBuffer.GetRange(0, newlineIndex).ToArray();
-                            string message = Encoding.UTF8.GetString(messageBytes);
-
-                            if (!string.IsNullOrWhiteSpace(message))
-                            {
-                                lock (_receiveLock)
-                                {
-                                    _receiveQueue.Enqueue(message);
-                                }
-                            }
+                            _isConnected = false;
+                            return;
                         }
+                        totalPayloadRead += read;
+                    }
 
-                        // Remove processed message AND the newline delimiter (index + 1)
-                        if (newlineIndex + 1 <= streamBuffer.Count)
+                    // 3. Process message
+                    string jsonMessage = Encoding.UTF8.GetString(payloadBuffer);
+                    if (!string.IsNullOrWhiteSpace(jsonMessage))
+                    {
+                        lock (_receiveLock)
                         {
-                            streamBuffer.RemoveRange(0, newlineIndex + 1);
+                            _receiveQueue.Enqueue(jsonMessage);
                         }
                     }
                 }
                 catch (IOException)
                 {
-                    // Stream closed
                     _isConnected = false;
                     break;
                 }
