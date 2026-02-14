@@ -20,7 +20,7 @@ import time
 from pathlib import Path
 from typing import Dict, Any, Optional, TypedDict, Union, Callable, Awaitable, NotRequired
 
-from dgt_engine.utils import initialize_logging, get_logger_manager
+from dgt_engine.foundation.utils.logger import initialize_logging, get_logger_manager
 
 # Import pillar engines
 try:
@@ -48,19 +48,19 @@ except ImportError:
     from dgt_engine.game_engine.actors.ai_controller import AIController, Spawner
 
 # Import utilities
-from dgt_engine.utils.config_manager import (
+from dgt_engine.foundation.utils.config_manager import (
     setup_configuration_management, load_system_config,
     SystemConfigModel, ConfigurationManager
 )
 
 # Import circuit breaker
-from dgt_engine.utils.circuit_breaker import (
+from dgt_engine.foundation.utils.circuit_breaker import (
     get_circuit_manager, circuit_breaker, CircuitBreakerConfig,
     CircuitBreakerManager
 )
 
 # Import performance monitoring
-from dgt_engine.utils.performance_monitor import (
+from dgt_engine.foundation.utils.performance_monitor import (
     initialize_performance_monitor, get_performance_monitor,
     PerformanceMonitor
 )
@@ -72,7 +72,11 @@ from dgt_engine.foundation.system_clock import get_system_clock, SystemClock
 try:
     from dgt_engine.tools.developer_console import DeveloperConsole
 except ImportError:
-    from dgt_engine.tools.developer_console import DeveloperConsole
+    # try foundation tools
+    try:
+        from dgt_engine.foundation.utils.developer_console import DeveloperConsole
+    except ImportError:
+         DeveloperConsole = None
 
 # Heartbeat Controller - Placeholder for missing core module
 HeartbeatController = None
