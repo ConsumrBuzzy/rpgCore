@@ -15,8 +15,8 @@ from datetime import datetime
 
 from loguru import logger
 from dgt_engine.game_engine.world_ledger import WorldLedger, Coordinate, WorldChunk
-from game_state import GameState, NPC
-from logic.faction_system import FactionSystem
+from dgt_engine.engine.game_state import GameState, NPC
+from dgt_engine.logic.faction_system import FactionSystem
 
 
 @dataclass
