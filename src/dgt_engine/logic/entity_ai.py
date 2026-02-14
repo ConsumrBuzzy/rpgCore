@@ -16,8 +16,8 @@ from pathlib import Path
 import json
 
 from loguru import logger
-from world_ledger import WorldLedger, Coordinate
-from game_state import GameState, NPC
+from dgt_engine.game_engine.world_ledger import WorldLedger, Coordinate
+from dgt_engine.engine.game_state import GameState, NPC
 
 
 class EntityState(Enum):

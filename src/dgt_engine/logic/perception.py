@@ -13,9 +13,9 @@ from enum import Enum
 import math
 
 from loguru import logger
-from world_ledger import WorldLedger, Coordinate, WorldChunk
-from game_state import GameState
-from logic.entity_ai import EntityAI, Entity
+from dgt_engine.game_engine.world_ledger import WorldLedger, Coordinate, WorldChunk
+from dgt_engine.engine.game_state import GameState
+from dgt_engine.logic.entity_ai import EntityAI, Entity
 
 
 class PerceptionTier(Enum):
