@@ -171,46 +171,81 @@ namespace rpgCore.Godot.Server
         /// <summary>
         /// Receive messages from Python engine using StreamReader for robust line reading.
         /// </summary>
+        /// <summary>
+        /// Receive messages from Python engine using byte-level scanning.
+        /// This ensures robust splitting of newline-delimited JSON messages regardless of packet fragmentation or merging.
+        /// </summary>
         private void ReceiveLoop()
         {
-            try
+            // Buffer for incoming raw bytes
+            byte[] readBuffer = new byte[65536];
+            // Accumulator for processing message streams
+            List<byte> streamBuffer = new List<byte>(65536);
+
+            while (_isRunning && _isConnected && _stream != null)
             {
-                // Use StreamReader to handle buffering and line splitting correctly
-                using (var reader = new StreamReader(_stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, bufferSize: 65536, leaveOpen: true))
+                try
                 {
-                    while (_isRunning && _isConnected && _stream != null)
+                    if (!_stream.DataAvailable)
                     {
-                        string? line = reader.ReadLine();
-                        
-                        if (line == null)
+                        Thread.Sleep(1); // Yield if no data to prevent tight loop
+                        continue;
+                    }
+
+                    int bytesRead = _stream.Read(readBuffer, 0, readBuffer.Length);
+
+                    if (bytesRead == 0)
+                    {
+                        // Connection closed gracefully
+                        _isConnected = false;
+                        break;
+                    }
+
+                    // Append read bytes to our stream buffer
+                    for (int i = 0; i < bytesRead; i++)
+                    {
+                        streamBuffer.Add(readBuffer[i]);
+                    }
+
+                    // Process buffer for delimiters
+                    int newlineIndex;
+                    while ((newlineIndex = streamBuffer.IndexOf((byte)'\n')) != -1)
+                    {
+                        // Extract the complete message (count = newlineIndex because 0-based index)
+                        // If newline is at 5, we want bytes 0,1,2,3,4. (5 bytes)
+                        if (newlineIndex > 0)
                         {
-                            // End of stream
-                            _isConnected = false;
-                            break;
+                            byte[] messageBytes = streamBuffer.GetRange(0, newlineIndex).ToArray();
+                            string message = Encoding.UTF8.GetString(messageBytes);
+
+                            if (!string.IsNullOrWhiteSpace(message))
+                            {
+                                lock (_receiveLock)
+                                {
+                                    _receiveQueue.Enqueue(message);
+                                }
+                            }
                         }
 
-                        if (!string.IsNullOrWhiteSpace(line))
+                        // Remove processed message AND the newline delimiter (index + 1)
+                        if (newlineIndex + 1 <= streamBuffer.Count)
                         {
-                            lock (_receiveLock)
-                            {
-                                _receiveQueue.Enqueue(line);
-                            }
+                            streamBuffer.RemoveRange(0, newlineIndex + 1);
                         }
                     }
                 }
-            }
-            catch (IOException ioEx)
-            {
-                // Expected when stream closes
-                if (_isRunning)
-                    GD.Print($"[GameServer] Connection closed: {ioEx.Message}");
-                _isConnected = false;
-            }
-            catch (Exception e)
-            {
-                if (_isRunning && _isConnected)
-                    GD.PrintErr($"[GameServer] Receive error: {e.Message}");
-                _isConnected = false;
+                catch (IOException)
+                {
+                    // Stream closed
+                    _isConnected = false;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    if (_isRunning && _isConnected)
+                        GD.PrintErr($"[GameServer] Receive error: {e.Message}");
+                    break;
+                }
             }
         }
 
