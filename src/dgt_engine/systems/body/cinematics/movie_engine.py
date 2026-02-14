@@ -10,9 +10,9 @@ from dataclasses import dataclass
 from enum import Enum
 from loguru import logger
 
-from foundation.types import Result
-from foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
-from foundation.system_clock import SystemClock
+from dgt_engine.foundation.types import Result
+from dgt_engine.foundation.constants import SOVEREIGN_WIDTH, SOVEREIGN_HEIGHT
+from dgt_engine.foundation.system_clock import SystemClock
 
 
 class EventType(Enum):
