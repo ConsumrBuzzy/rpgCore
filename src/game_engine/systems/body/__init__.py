@@ -32,6 +32,14 @@ from game_engine.systems.body.collision_system import (
     CollisionType,
     create_space_combat_collision_groups,
 )
+from game_engine.systems.body.projectile_system import (
+    ProjectileSystem,
+    ProjectileStats,
+    ProjectileState,
+    create_arcade_projectile_system,
+    create_rapid_fire_system,
+    create_heavy_weapon_system,
+)
 
 __all__ = [
     # Core ECS
@@ -49,4 +57,11 @@ __all__ = [
     "CollisionGroup",
     "CollisionType",
     "create_space_combat_collision_groups",
+    # Projectile System
+    "ProjectileSystem",
+    "ProjectileStats",
+    "ProjectileState",
+    "create_arcade_projectile_system",
+    "create_rapid_fire_system",
+    "create_heavy_weapon_system",
 ]
