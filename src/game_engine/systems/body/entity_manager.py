@@ -345,7 +345,9 @@ class EntityManager(BaseSystem):
 
     # --- Template-based spawning ---
 
-    def set_template_registry(self, template_registry) -> None:
+    # --- Template-based spawning ---
+
+    def set_template_registry(self, template_registry: Any) -> None:
         """
         Set the EntityTemplateRegistry for template-based spawning.
 
@@ -354,7 +356,34 @@ class EntityManager(BaseSystem):
         """
         self._template_registry = template_registry
 
-    def spawn_from_template(self, template_id: str, **overrides) -> Result:
+    def _ensure_entity_type_registered(self, entity_type: str) -> None:
+        """Ensure entity type is registered, otherwise auto-register base Entity."""
+        if entity_type not in self.pools:
+            # Auto-register default Entity if not found, to prevent crash on simple templates
+            # In production, you might want to log a warning or error here.
+            from game_engine.systems.body.entity_manager import Entity
+            self.register_entity_type(entity_type, Entity)
+
+    def _apply_template_properties(self, entity: Entity, template: Any) -> None:
+        """Apply properties from template to entity."""
+        # 1. Apply base properties
+        for key, value in template.base_properties.items():
+            if hasattr(entity, key):
+                setattr(entity, key, value)
+        
+        # 2. Add components
+        # Note: In a real ECS, we'd look up Component classes by name. 
+        # For now, we stub this or assume the component strings map to logic elsewhere.
+        # This implementation assumes components are managed externally or simple tags for now across Phase E.
+        pass
+
+    def _apply_property_overrides(self, entity: Entity, overrides: Dict[str, Any]) -> None:
+        """Apply override properties."""
+        for key, value in overrides.items():
+            if hasattr(entity, key):
+                setattr(entity, key, value)
+
+    def spawn_from_template(self, template_id: str, **overrides) -> Result[Entity]:
         """
         Spawn an entity from a registered template.
 
@@ -373,7 +402,7 @@ class EntityManager(BaseSystem):
             if registry is None:
                 return Result(success=False, error="No template registry set. Call set_template_registry() first.")
 
-            template = registry.get(template_id)
+            template = registry.get_template(template_id)
             if template is None:
                 return Result(success=False, error=f"Template not found: {template_id}")
 
@@ -393,7 +422,7 @@ class EntityManager(BaseSystem):
         except Exception as e:
             return Result(success=False, error=f"Failed to spawn from template: {e}")
 
-    def spawn_from_config(self, config_dict: Dict[str, Any]) -> Result:
+    def spawn_from_config(self, config_dict: Dict[str, Any]) -> Result[Entity]:
         """
         Spawn an entity from a configuration dictionary.
 
@@ -418,7 +447,7 @@ class EntityManager(BaseSystem):
         except Exception as e:
             return Result(success=False, error=f"Failed to spawn from config: {e}")
 
-    def batch_spawn_from_template(self, template_id: str, count: int, **overrides) -> List:
+    def batch_spawn_from_template(self, template_id: str, count: int, **overrides) -> List[Entity]:
         """
         Spawn multiple entities from the same template.
 
