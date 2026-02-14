@@ -12,10 +12,10 @@ from typing import Dict, List, Optional, Any
 from pydantic import BaseModel
 
 from loguru import logger
-from world_ledger import WorldLedger, Coordinate, WorldChunk
-from utils.historian import Historian, WorldSeed, Faction
+from dgt_engine.game_engine.world_ledger import WorldLedger, Coordinate, WorldChunk
+from dgt_engine.foundation.utils.historian import Historian, WorldSeed, Faction
 
-from game_state import Room, NPC, GameState
+from dgt_engine.engine.game_state import Room, NPC, GameState
 
 
 class LocationTemplate(BaseModel):
