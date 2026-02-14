@@ -21,6 +21,7 @@ from dataclasses import dataclass, field
 
 from .asteroids_clone_sdk import AsteroidsSDK
 from ..engines.terminal_bridge import TerminalBridge
+from ..engines.pygame_bridge import PyGameBridge
 from .input_handler import InputHandler, InputCommandType
 from .asteroids_game import GameState, GameStats, AsteroidsGame
 
@@ -207,6 +208,8 @@ class AsteroidsNEATGame:
             self.sdk = AsteroidsSDK(host=godot_host, port=godot_port)
         elif renderer == "terminal":
             self.sdk = TerminalBridge(width=80, height=40)
+        elif renderer == "pygame":
+            self.sdk = PyGameBridge(width=800, height=600, caption="NEAT Asteroids (PyGame)")
         else:
             raise ValueError(f"Unknown renderer: {renderer}")
             

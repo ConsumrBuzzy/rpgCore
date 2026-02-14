@@ -27,14 +27,23 @@ def main():
     print()
 
     # Create game
+    # Select renderer
+    try:
+        import pygame
+        renderer = 'pygame'
+        print("[Renderer: PyGame]")
+    except ImportError:
+        renderer = 'terminal'
+        print("[Renderer: Terminal (PyGame not found)]")
+
     # Create game
     game = AsteroidsNEATGame(
         population_size=5,
-        target_fps=30,  # Lower FPS for terminal rendering
+        target_fps=60,  # 60 FPS for PyGame
         godot_host='localhost',
         godot_port=9001,
         max_episode_time=30.0,
-        renderer='terminal'
+        renderer=renderer
     )
 
     print("[Initializing...]")
@@ -50,12 +59,16 @@ def main():
     print(f"  Population Size: {game.population_size} pilots")
     print(f"  Target FPS: {game.target_fps}")
     print(f"  Episode Duration: {game.max_episode_time}s")
-    print(f"  Renderer: TERMINAL (Unicode)")
+    print(f"  Renderer: {renderer.upper()}")
     print()
 
     print("[Instructions]")
-    print(f"  1. Watch the game render below")
-    print(f"  2. Press Ctrl+C to stop")
+    if renderer == 'pygame':
+        print("  1. Watch the game window")
+        print("  2. Close window to stop")
+    else:
+        print("  1. Watch the game render below")
+        print("  2. Press Ctrl+C to stop")
     print()
     print()
 
