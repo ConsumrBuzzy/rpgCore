@@ -119,7 +119,7 @@ class ThreeTierValidator:
         """Validate Tier 3 Applications"""
         try:
             # Check for Theater Mode test
-            theater_test = Path(__file__).parent.parent / "test_theater_mode.py"
+            theater_test = Path(__file__).parent.parent.parent / "tests" / "test_theater_mode.py"
             if not theater_test.exists():
                 self.warnings.append("Theater Mode test script not found")
             

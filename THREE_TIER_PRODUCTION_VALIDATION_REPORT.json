@@ -1,5 +1,5 @@
 {
-  "validation_timestamp": "2026-02-13 21:53:17",
+  "validation_timestamp": "2026-02-13 21:53:38",
   "wave": "3_production_hardening",
   "architecture": "three_tier",
   "total_checks": 9,
@@ -63,11 +63,11 @@
     {
       "check_name": "Boot Performance",
       "passed": true,
-      "details": "Import: 0.02ms, Init: 0.57ms",
+      "details": "Import: 0.04ms, Init: 1.00ms",
       "metrics": {
-        "import_time_ms": 0.0247955322265625,
-        "init_time_ms": 0.5674362182617188,
-        "total_boot_time_ms": 0.5922317504882812,
+        "import_time_ms": 0.035762786865234375,
+        "init_time_ms": 1.0037422180175781,
+        "total_boot_time_ms": 1.0395050048828125,
         "target_import_ms": 5000,
         "target_init_ms": 1000
       }
@@ -77,8 +77,8 @@
       "passed": true,
       "details": "Memory increase: 0.00MB",
       "metrics": {
-        "baseline_memory_mb": 86.46875,
-        "loaded_memory_mb": 86.46875,
+        "baseline_memory_mb": 86.1953125,
+        "loaded_memory_mb": 86.1953125,
         "memory_increase_mb": 0.0,
         "target_increase_mb": 100
       }
