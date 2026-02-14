@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from game_engine.systems.graphics.fx_system import (
+from game_engine.systems.graphics.fx import (
     FXSystem, Particle, ParticleEmitter,
     create_default_fx_system,
     create_large_fx_system,

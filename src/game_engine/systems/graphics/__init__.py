@@ -33,13 +33,32 @@ from .tile_bank import (
     create_minimal_tile_bank,
 )
 
-from .fx_system import (
+from .fx import (
     FXSystem,
     Particle,
     ParticleEmitter,
     create_default_fx_system,
     create_large_fx_system,
     create_minimal_fx_system,
+    ParticleEffect,
+    EffectPreset,
+    get_preset_effect,
+    PRESET_EFFECTS,
+    create_explosion_emitter,
+    create_smoke_emitter,
+    create_spark_emitter,
+    create_electric_spark_emitter,
+    create_fire_emitter,
+    create_dust_emitter,
+    create_blood_emitter,
+    create_frost_emitter,
+    create_rain_emitter,
+    ExhaustSystem,
+    ExhaustTrail,
+    ThrusterType,
+    create_default_exhaust_system,
+    create_high_intensity_exhaust_system,
+    create_minimal_exhaust_system,
 )
 
 __all__ = [
@@ -61,4 +80,34 @@ __all__ = [
     'create_default_tile_bank',
     'create_large_tile_bank',
     'create_minimal_tile_bank',
+    # FXSystem classes
+    'FXSystem',
+    'Particle',
+    'ParticleEmitter',
+    # FXSystem factories
+    'create_default_fx_system',
+    'create_large_fx_system',
+    'create_minimal_fx_system',
+    # ParticleEffects
+    'ParticleEffect',
+    'EffectPreset',
+    'get_preset_effect',
+    'PRESET_EFFECTS',
+    'create_explosion_emitter',
+    'create_smoke_emitter',
+    'create_spark_emitter',
+    'create_electric_spark_emitter',
+    'create_fire_emitter',
+    'create_dust_emitter',
+    'create_blood_emitter',
+    'create_frost_emitter',
+    'create_rain_emitter',
+    # ExhaustSystem classes
+    'ExhaustSystem',
+    'ExhaustTrail',
+    'ThrusterType',
+    # ExhaustSystem factories
+    'create_default_exhaust_system',
+    'create_high_intensity_exhaust_system',
+    'create_minimal_exhaust_system',
 ]
