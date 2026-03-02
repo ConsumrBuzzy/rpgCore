@@ -95,8 +95,8 @@ class SaveManager:
     
     @classmethod
     def _serialize_roster(cls, roster: Roster) -> Dict[str, Any]:
-        """Serialize roster using the newer entries format"""
-        return roster.to_dict()
+        """Serialize roster using the full RosterSlime format for complete data preservation"""
+        return roster.to_dict()  # This includes full slimes data
     
     @classmethod
     def auto_save(cls, context) -> bool:

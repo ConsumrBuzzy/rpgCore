@@ -84,12 +84,8 @@ class SceneContext:
         return False
     
     def save_roster(self) -> bool:
-        """Save roster to file"""
-        if self.roster:
-            from src.shared.teams.roster_save import save_roster
-            try:
-                save_roster(self.roster)
-                return True
-            except Exception:
-                return False
+        """Save roster and session to file using SaveManager"""
+        if self.roster and self.game_session:
+            from src.shared.persistence.save_manager import SaveManager
+            return SaveManager.save(self.roster, self.game_session)
         return False

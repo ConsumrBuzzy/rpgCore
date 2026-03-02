@@ -28,12 +28,26 @@ def create_app() -> SceneManager:
         spec=SPEC_720
     )
     
+    # Try to load existing save
+    from src.shared.persistence.save_manager import SaveManager
+    save_result = SaveManager.load()
+    
+    if save_result:
+        # Load from save file
+        roster_data, session_data = save_result
+        roster = Roster.from_dict(roster_data)
+        game_session = GameSession.from_dict(session_data)
+        logger.info(f"Loaded save: {len(roster.entries)} slimes, {len(game_session.resources)} resources")
+    else:
+        # Create new game
+        game_session = GameSession.new_game()
+        roster = load_roster()  # Fallback to existing roster.json
+        logger.info("Starting new game")
+    
     # Create shared systems
-    game_session = GameSession.new_game()
     dispatch_system = DispatchSystem()
     
-    # Create shared entity registry from existing roster
-    roster = load_roster()
+    # Create shared entity registry from roster
     entity_registry = EntityRegistry.from_roster(roster)
     
     # Register scenes
