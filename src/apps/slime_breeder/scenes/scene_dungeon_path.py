@@ -148,7 +148,12 @@ class DungeonPathScene(Scene):
         if zone and zone.squad:
             print(f"[DEBUG] Path scene - Squad: {zone.squad.name}")
             for i, member in enumerate(zone.squad.members):
-                print(f"[DEBUG]   Member {i}: {member.name}, genome colors: {member.genome.base_color}")
+                # Get the actual slime from roster to access genome
+                slime = self.roster.get_slime(member.slime_id) if hasattr(member, 'slime_id') else None
+                if slime:
+                    print(f"[DEBUG]   Member {i}: {member.name}, genome colors: {slime.genome.base_color}")
+                else:
+                    print(f"[DEBUG]   Member {i}: {member.name}, genome not accessible")
         
         # Push to combat scene
         self.manager.push("dungeon_combat", 
@@ -228,9 +233,14 @@ class DungeonPathScene(Scene):
         dot_y = m_top + minimap_height // 2
         
         # Cluster of dots for party
-        for i, slime in enumerate(self.team[:4]):
+        for i, entry in enumerate(self.team[:4]):
             offset = (i - 1.5) * 4
-            color = slime.genome.base_color
+            # Get the actual slime from roster to access genome
+            slime = self.roster.get_slime(entry.slime_id)
+            if slime:
+                color = slime.genome.base_color
+            else:
+                color = (100, 100, 100)  # Default color if slime not found
             pygame.draw.circle(surface, color, (dot_x, dot_y + int(offset)), 3)
             pygame.draw.circle(surface, (255, 255, 255), (dot_x, dot_y + int(offset)), 3, width=1)
 
