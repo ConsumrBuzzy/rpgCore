@@ -69,6 +69,8 @@ class DispatchSystem:
                 # Move to completed
                 self.active_dispatches.remove(dispatch)
                 self.completed_dispatches.append(dispatch)
+                # Mark as completed (not resolved yet)
+                dispatch.status = "complete"  # Direct status update for completion
                 completed.append(dispatch)
         
         return completed
