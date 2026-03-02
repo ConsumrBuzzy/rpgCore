@@ -107,16 +107,7 @@ class TeamScene(Scene):
             Panel(racing_slot_rect, self.spec, variant="surface", border=True, theme=DEFAULT_THEME).add_to(self.ui_components)
             Label("EMPTY", (racing_slot_rect.centerx, racing_slot_rect.centery), self.spec, centered=True, size="lg", theme=DEFAULT_THEME).add_to(self.ui_components)
         
-        # 6. Available Slimes (Right Panel)
-        Label("AVAILABLE SLIMES", (self.layout.right_panel.x + 20, self.layout.right_panel.y + 10), 
-               self.spec, size="md", bold=True).add_to(self.ui_components)
-        
-        # Team assignment rules
-        rules_y = self.layout.right_panel.y + self.layout.right_panel.height - 80
-        Label("ASSIGNMENT RULES:", (self.layout.right_panel.x + 20, rules_y), self.spec, size="sm", bold=True).add_to(self.ui_components)
-        Label("• Dungeon: 4 slimes, locked during runs", (self.layout.right_panel.x + 20, rules_y + 20), self.spec, size="xs", color=(140, 140, 160)).add_to(self.ui_components)
-        Label("• Racing: 1 slime, speed determines performance", (self.layout.right_panel.x + 20, rules_y + 35), self.spec, size="xs", color=(140, 140, 160)).add_to(self.ui_components)
-        
+                
         # Available slimes list
         unassigned = self.roster.unassigned()
         for i, slime in enumerate(unassigned):
