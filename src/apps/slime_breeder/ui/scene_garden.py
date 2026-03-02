@@ -479,6 +479,52 @@ class GardenScene(GardenSceneBase):
         # Clean up old indicators
         self._cleanup_resource_indicators(dt)
 
+    def _create_resource_indicator(self, pos: Tuple[float, float], resource_type: str, amount: int):
+        """Create a visual indicator for resource generation"""
+        # Add floating text indicator
+        indicator = {
+            'pos': list(pos),
+            'resource_type': resource_type,
+            'amount': amount,
+            'lifetime': 2.0,  # 2 seconds
+            'velocity': [0, -20]  # Float upward
+        }
+        self.resource_indicators.append(indicator)
+    
+    def _cleanup_resource_indicators(self, dt: float):
+        """Update and clean up resource indicators"""
+        for indicator in self.resource_indicators[:]:  # Copy list to avoid modification during iteration
+            indicator['lifetime'] -= dt
+            indicator['pos'][1] += indicator['velocity'][1] * dt  # Move upward
+            
+            if indicator['lifetime'] <= 0:
+                self.resource_indicators.remove(indicator)
+    
+    def _render_resource_indicators(self, surface: pygame.Surface):
+        """Render floating resource indicators"""
+        for indicator in self.resource_indicators:
+            # Calculate alpha based on lifetime
+            alpha = min(255, int(indicator['lifetime'] * 255))
+            
+            # Resource colors
+            colors = {
+                'gold': (255, 215, 0),
+                'food': (139, 69, 19),
+                'scrap': (128, 128, 128)
+            }
+            color = colors.get(indicator['resource_type'], (255, 255, 255))
+            
+            # Create text surface
+            font = pygame.font.Font(None, 16)
+            text = f"+{indicator['amount']} {indicator['resource_type'].title()}"
+            text_surface = font.render(text, True, color)
+            
+            # Apply alpha
+            text_surface.set_alpha(alpha)
+            
+            # Render at position
+            surface.blit(text_surface, indicator['pos'])
+
     def render_garden(self, surface: pygame.Surface):
         # Render environmental elements before slimes
         if self.garden_renderer:
