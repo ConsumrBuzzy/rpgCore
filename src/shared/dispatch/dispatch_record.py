@@ -76,10 +76,10 @@ class DispatchRecord:
     
     def __str__(self) -> str:
         """String representation"""
-        return f"Dispatch[{self.dispatch_id[:8]}]: {self.zone_type.value} - {self.status} ({len(self.slim_ids)} slimes)"
+        return f"Dispatch[{self.dispatch_id[:8]}]: {self.zone_type.value} - {self.status} ({len(self.slime_ids)} slimes)"
     
     def __repr__(self) -> str:
         """Detailed representation"""
         return (f"DispatchRecord(id={self.dispatch_id[:8]}, zone={self.zone_type.value}, "
-                f"status={self.status}, slimes={len(self.slim_ids)}, "
+                f"status={self.status}, slimes={len(self.slime_ids)}, "
                 f"tick={self.dispatch_tick}->{self.return_tick})")
