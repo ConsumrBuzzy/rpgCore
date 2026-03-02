@@ -47,9 +47,6 @@ class GardenScene(GardenSceneBase):
         self.game_session = kwargs.get('game_session')
         self.dispatch_system = kwargs.get('dispatch_system')
         
-        # Input handlers for the router
-        self._setup_input_handlers()
-        
         # Garden area (center of screen, excluding right panel)
         self.garden_rect = pygame.Rect(
             0,
@@ -145,6 +142,9 @@ class GardenScene(GardenSceneBase):
         btn_y = self.actions_rect.y + 10
         btn_w = self.actions_rect.width - 20
         btn_h = 40
+
+        # Input handlers for the router (set up after all initialization)
+        self._setup_input_handlers()
 
     def _setup_input_handlers(self):
         """Set up input handlers for the InputRouter"""
