@@ -199,12 +199,12 @@ class GardenScene(GardenSceneBase):
                     
                     # Check if clicking on dungeon status area
                     if hasattr(scene, 'dungeon_status_area') and scene.dungeon_status_area.collidepoint(mouse_pos):
-                        scene.request_scene("team")
+                        scene.request_scene("teams")
                         return True
                     
                     # Check if clicking on racing status area  
                     if hasattr(scene, 'racing_status_area') and scene.racing_status_area.collidepoint(mouse_pos):
-                        scene.request_scene("team")
+                        scene.request_scene("teams")
                         return True
                     
                     # Handle slime selection
@@ -1008,12 +1008,12 @@ class GardenScene(GardenSceneBase):
             
             # Check if clicking on dungeon status area
             if hasattr(self, 'dungeon_status_area') and self.dungeon_status_area.collidepoint(mouse_pos):
-                self.request_scene("team")
+                self.request_scene("teams")
                 return
             
             # Check if clicking on racing status area  
             if hasattr(self, 'racing_status_area') and self.racing_status_area.collidepoint(mouse_pos):
-                self.request_scene("team")
+                self.request_scene("teams")
                 return
             
             # Handle slime selection
