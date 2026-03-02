@@ -102,11 +102,17 @@ class BreedingScene(Scene):
         Panel(self.layout.right_panel, self.spec, variant="surface", theme=DEFAULT_THEME).add_to(self.ui_components)
         Label("AVAILABLE PARTNERS", (self.layout.right_panel.x + 20, self.layout.right_panel.y + 10), self.spec, bold=True, theme=DEFAULT_THEME).add_to(self.ui_components)
         
+        # Get breeding candidates - show more slimes
         slimes = [s for s in self.roster.slimes if s.alive and s != self.parent_a]
+        
+        # Calculate how many slimes can fit in the panel
+        panel_height = self.layout.right_panel.height - 60  # 60px for header and padding
+        slime_height = 90  # Height per slime entry
+        max_visible = max(1, panel_height // slime_height)
+        
         self.cards = []
-        for i, slime in enumerate(slimes):
-            if i >= 6: break
-            row_y = self.layout.right_panel.y + 40 + (i * 90)
+        for i, slime in enumerate(slimes[:max_visible]):
+            row_y = self.layout.right_panel.y + 40 + (i * slime_height)
             card = ProfileCard(slime, (self.layout.right_panel.x + 20, row_y), self.spec, theme=DEFAULT_THEME).add_to(self.ui_components)
             self.cards.append(card)
             
@@ -116,6 +122,12 @@ class BreedingScene(Scene):
             else:
                 Button("Select", pygame.Rect(card.rect.right - 70, card.rect.y + 10, 60, 30),
                        lambda s=slime: self.handle_card_click(s), self.spec, variant="primary", theme=DEFAULT_THEME).add_to(self.ui_components)
+        
+        # If there are more slimes than can fit, show indicator
+        if len(slimes) > max_visible:
+            Label(f"... and {len(slimes) - max_visible} more partners", 
+                  (self.layout.right_panel.x + 20, self.layout.right_panel.bottom - 25), 
+                  self.spec, size="sm", color=self.spec.color_text_dim, theme=DEFAULT_THEME).add_to(self.ui_components)
 
     def _setup_preview_view(self):
         # Show both parents in side panels, preview in center
