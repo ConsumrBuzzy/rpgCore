@@ -12,6 +12,8 @@ from src.apps.dungeon_crawler.ui.scene_dungeon_combat import DungeonCombatScene
 from src.apps.dungeon_crawler.ui.scene_inventory import InventoryOverlay
 from src.shared.engine.scene_manager import SceneManager
 from src.shared.ui.spec import SPEC_720
+from src.shared.state.entity_registry import EntityRegistry
+from src.shared.teams.roster_save import load_roster
 
 def create_app() -> SceneManager:
     """Create and configure the Slime Breeder app."""
@@ -24,16 +26,21 @@ def create_app() -> SceneManager:
         spec=SPEC_720
     )
     
-    manager.register("garden", GardenScene)
-    manager.register("teams", TeamScene)
-    manager.register("breeding", BreedingScene)
-    manager.register("racing", RaceScene)
-    manager.register("tower_defense", TowerDefenseScene)
-    manager.register("dungeon", TheRoomScene)
-    manager.register("dungeon_room", DungeonRoomScene)
-    manager.register("dungeon_path", DungeonPathScene)
-    manager.register("dungeon_combat", DungeonCombatScene)
-    manager.register("inventory", InventoryOverlay)
+    # Create shared entity registry from existing roster
+    roster = load_roster()
+    entity_registry = EntityRegistry.from_roster(roster)
+    
+    # Register scenes with shared registry
+    manager.register("garden", GardenScene, entity_registry=entity_registry)
+    manager.register("teams", TeamScene, entity_registry=entity_registry)
+    manager.register("breeding", BreedingScene, entity_registry=entity_registry)
+    manager.register("racing", RaceScene, entity_registry=entity_registry)
+    manager.register("tower_defense", TowerDefenseScene, entity_registry=entity_registry)
+    manager.register("dungeon", TheRoomScene, entity_registry=entity_registry)
+    manager.register("dungeon_room", DungeonRoomScene, entity_registry=entity_registry)
+    manager.register("dungeon_path", DungeonPathScene, entity_registry=entity_registry)
+    manager.register("dungeon_combat", DungeonCombatScene, entity_registry=entity_registry)
+    manager.register("inventory", InventoryOverlay, entity_registry=entity_registry)
     
     return manager
 
