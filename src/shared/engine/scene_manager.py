@@ -145,6 +145,10 @@ class SceneManager:
         """Register a scene class by name."""
         self._scenes[name] = scene_class
 
+    def set_shared_state(self, **kwargs) -> None:
+        """Set shared state that gets passed to all scenes."""
+        self._shared_state.update(kwargs)
+
     def switch_to(self, name: str, **kwargs) -> None:
         """Switch to a registered scene. Calls lifecycle methods."""
         if name not in self._scenes:
@@ -179,9 +183,12 @@ class SceneManager:
             self._active_scene.status = SystemStatus.PAUSED
             self._scene_stack.append(self._active_scene)
 
+        # Merge shared state with scene-specific kwargs
+        merged_kwargs = {**self._shared_state, **kwargs}
+        
         scene_class = self._scenes[name]
         logger.info(f"Pushing scene: {name}")
-        self._active_scene = scene_class(self, self.spec, **kwargs)
+        self._active_scene = scene_class(self, self.spec, **merged_kwargs)
         
         if not self._active_scene.initialize():
             logger.error(f"Failed to initialize pushed scene: {name}")
