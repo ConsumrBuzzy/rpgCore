@@ -20,13 +20,28 @@ class TeamScene(Scene):
     def __init__(self, manager, spec: UISpec, **kwargs):
         super().__init__(manager, spec, **kwargs)
         self.layout = SelectionLayout(spec)
-        self.roster = None
+        
+        # Use shared roster from kwargs or create SceneContext
+        self.roster = kwargs.get('roster')
+        if not self.roster:
+            # Create SceneContext to get shared roster
+            from src.shared.engine.scene_context import SceneContext
+            context = SceneContext(
+                entity_registry=kwargs.get('entity_registry'),
+                game_session=kwargs.get('game_session'),
+                dispatch_system=kwargs.get('dispatch_system'),
+                roster=None,  # Will load from file if not provided
+                theme=None
+            )
+            self.set_context(context)
+            self.roster = context.roster
+        
         self.dungeon_team = None
         self.racing_team = None
         self.ui_components = []
 
     def on_enter(self) -> None:
-        self.roster = load_roster()
+        # Use existing roster, don't reload
         self.dungeon_team = self.roster.get_dungeon_team()
         self.racing_team = self.roster.get_racing_team()
         self._setup_ui()

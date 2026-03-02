@@ -108,7 +108,7 @@ class GardenScene(GardenSceneBase):
             
         # Respect injected roster if provided (for UI Review)
         if not hasattr(self, "roster") or not self.roster:
-            self.roster = load_roster()
+            self.roster = self.context.roster if self.context else load_roster()
             
         self._sync_roster_with_garden()
         
