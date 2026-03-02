@@ -214,6 +214,5 @@ class TestStatsPanelExtensions:
         personality_y = culture_y + 45
         assert personality_y == 255
         
-        # Both should fit within the extended height (200)
-        # Note: This might need adjustment if sections overlap
+        # Both should fit within the extended height (220)
         assert personality_y < self.stats_panel.HEIGHT

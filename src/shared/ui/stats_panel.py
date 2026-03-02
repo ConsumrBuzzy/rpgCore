@@ -11,7 +11,7 @@ class StatsPanel(UIComponent):
     """
     def __init__(self, slime: RosterSlime, position: Tuple[int, int], width: int = 200):
         self.WIDTH = width
-        self.HEIGHT = 200  # Extended height for new sections
+        self.HEIGHT = 220  # Extended height for new sections
         self.PADDING = 10
         
         rect = pygame.Rect(position[0], position[1], self.WIDTH, self.HEIGHT)
