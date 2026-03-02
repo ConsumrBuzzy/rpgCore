@@ -7,6 +7,7 @@ class CulturalBase(Enum):
     CRYSTAL = "crystal"
     MOSS    = "moss"
     COASTAL = "coastal"
+    TIDE    = "tide"      # NEW: Lightning/Charisma culture
     VOID    = "void"
     MIXED   = "mixed"
 
@@ -59,6 +60,15 @@ CULTURAL_PARAMETERS: Dict[CulturalBase, CulturalParameters] = {
         attack_modifier        = 1.0,
         speed_modifier         = 1.0,
         rare_trait_chance      = 0.06,
+    ),
+    CulturalBase.TIDE: CulturalParameters(
+        body_roundness_range   = (0.3, 0.6),   # flowing
+        primary_hue_range      = (240, 270),   # electric blue-yellow
+        wobble_frequency_range = (2.0, 3.5),   # energetic
+        hp_modifier            = 1.0,
+        attack_modifier        = 1.0,
+        speed_modifier         = 1.2,
+        rare_trait_chance      = 0.07,
     ),
     CulturalBase.VOID: CulturalParameters(
         body_roundness_range   = (0.1, 0.9),   # unpredictable

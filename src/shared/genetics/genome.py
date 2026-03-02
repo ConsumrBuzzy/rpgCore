@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Tuple, Dict, Optional, List
+import uuid
 
 from .cultural_base import CulturalBase
 
@@ -27,6 +28,119 @@ class SlimeGenome:
 
     # Cultural identity
     cultural_base: CulturalBase = CulturalBase.MIXED
+    
+    # NEW: Extended genetics fields
+    culture_expression: Dict[str, float] = field(default_factory=dict)  # Six culture weights
+    parent_ids: Optional[Tuple[str, str]] = None  # UUID strings of parents
+    mutations: List[Dict] = field(default_factory=list)  # Mutation history
+    
+    # Hexagon adjacency map for tier calculation
+    HEXAGON_ADJACENCY = {
+        'ember': ['gale', 'marsh'],  # Adjacent to gale and marsh
+        'gale': ['ember', 'tundra'],   # Adjacent to ember and tundra
+        'crystal': ['gale', 'tide'],  # Adjacent to gale and tide
+        'marsh': ['ember', 'tide'],    # Adjacent to ember and tide
+        'tide': ['crystal', 'marsh'],  # Adjacent to crystal and marsh
+        'tundra': ['gale', 'marsh'],   # Adjacent to gale and marsh
+    }
+    
+    def __post_init__(self):
+        """Initialize derived fields after construction"""
+        # Only initialize culture_expression if it's empty
+        # This allows manual setting after construction
+        if not self.culture_expression:
+            if self.cultural_base == CulturalBase.MIXED:
+                # Mixed culture gets equal distribution
+                self.culture_expression = {
+                    'ember': 0.167, 'gale': 0.167, 'crystal': 0.167,
+                    'marsh': 0.167, 'tide': 0.167, 'tundra': 0.167
+                }
+            elif self.cultural_base == CulturalBase.VOID:
+                # Void gets equal distribution (same as mixed for now)
+                self.culture_expression = {
+                    'ember': 0.167, 'gale': 0.167, 'crystal': 0.167,
+                    'marsh': 0.167, 'tide': 0.167, 'tundra': 0.167
+                }
+            else:
+                # Pure culture gets 1.0 on that culture
+                culture_name = self.cultural_base.value
+                self.culture_expression = {
+                    'ember': 0.0, 'gale': 0.0, 'crystal': 0.0,
+                    'marsh': 0.0, 'tide': 0.0, 'tundra': 0.0
+                }
+                if culture_name in self.culture_expression:
+                    self.culture_expression[culture_name] = 1.0
+    
+    @property
+    def tier(self) -> int:
+        """Calculate genetic tier based on culture expression"""
+        # Count cultures with expression >= 0.05
+        active_cultures = [
+            culture for culture, expr in self.culture_expression.items()
+            if expr >= 0.05
+        ]
+        culture_count = len(active_cultures)
+        
+        if culture_count == 1:
+            return 1  # Blooded
+        elif culture_count == 2:
+            # Check adjacency for Tier 2/3/4
+            c1, c2 = active_cultures
+            if c2 in self.HEXAGON_ADJACENCY.get(c1, []):
+                return 2  # Bordered (adjacent)
+            elif self._are_opposite(c1, c2):
+                return 3  # Sundered (opposite)
+            else:
+                return 4  # Drifted (skip-one)
+        elif culture_count == 3:
+            return 5  # Threaded
+        elif culture_count == 4:
+            return 6  # Convergent
+        elif culture_count == 5:
+            return 7  # Liminal
+        elif culture_count == 6:
+            return 8  # Void
+        else:
+            return 1  # Default to Blooded
+    
+    @property
+    def tier_name(self) -> str:
+        """Get tier name from tier number"""
+        tier_names = {
+            1: 'Blooded',
+            2: 'Bordered', 
+            3: 'Sundered',
+            4: 'Drifted',
+            5: 'Threaded',
+            6: 'Convergent',
+            7: 'Liminal',
+            8: 'Void'
+        }
+        return tier_names.get(self.tier, 'Blooded')
+    
+    @property
+    def personality_axes(self) -> Dict[str, float]:
+        """Map to 6-axis personality system"""
+        return {
+            'aggression': self.culture_expression.get('ember', 0.0),
+            'curiosity': self.culture_expression.get('gale', 0.0) + self.curiosity * 0.1,
+            'patience': self.culture_expression.get('marsh', 0.0),
+            'caution': self.culture_expression.get('crystal', 0.0),
+            'independence': self.culture_expression.get('tundra', 0.0),
+            'sociability': self.culture_expression.get('tide', 0.0),
+        }
+    
+    def _are_opposite(self, culture1: str, culture2: str) -> bool:
+        """Check if two cultures are opposite on hexagon"""
+        opposites = {
+            'ember': 'crystal',
+            'crystal': 'ember',
+            'gale': 'tundra',
+            'tundra': 'gale',
+            'marsh': 'tide',
+            'tide': 'marsh'
+        }
+        return opposites.get(culture1) == culture2
 
 def calculate_race_stats(genome) -> dict:
     """Calculate racing-specific stats from genome."""
