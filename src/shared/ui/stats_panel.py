@@ -7,10 +7,11 @@ from src.shared.teams.stat_calculator import calculate_hp, calculate_attack, cal
 class StatsPanel(UIComponent):
     """
     Unified stats panel to be reused in Profile, Breeding, and Racing scenes.
+    Extended to show culture expression and personality axes.
     """
     def __init__(self, slime: RosterSlime, position: Tuple[int, int], width: int = 200):
         self.WIDTH = width
-        self.HEIGHT = 120
+        self.HEIGHT = 200  # Extended height for new sections
         self.PADDING = 10
         
         rect = pygame.Rect(position[0], position[1], self.WIDTH, self.HEIGHT)

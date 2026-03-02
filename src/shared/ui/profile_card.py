@@ -85,7 +85,23 @@ class ProfileCard(UIComponent):
             fill_rect = pygame.Rect(xp_rect.x, xp_rect.y, int(xp_rect.width * xp_pct), xp_rect.height)
             pygame.draw.rect(surface, (100, 200, 100), fill_rect)
 
-        # Team & Culture badges (below XP bar)
+        # Stage + Tier compact row (above existing badges)
+        stage_y = y + 60
+        self._render_stage_tier_row(surface, text_x, stage_y)
+        
+        # Stage modifier (if non-standard)
+        stage_modifier = getattr(self.slime.genome, 'stage_modifier', 'standard')
+        if stage_modifier != 'standard':
+            modifier_color = (120, 120, 120)  # dim grey
+            render_text(surface, stage_modifier.replace('_', ' '), 
+                       (text_x, stage_y + 18), size=10, color=modifier_color, italic=True)
+
+        # Capability flags row
+        capability_y = stage_y + (28 if stage_modifier != 'standard' else 18)
+        self._render_capability_flags(surface, text_x, capability_y)
+
+        # Team & Culture badges (below capability flags)
+        badge_y = capability_y + 18
         team_color = {
             TeamRole.DUNGEON:    (180, 60,  60),
             TeamRole.UNASSIGNED: (80,  80,  80),
@@ -100,7 +116,7 @@ class ProfileCard(UIComponent):
             team_color = (60, 60, 60)
             
         render_badge(surface, team_label, 
-                    (text_x, y + 60), team_color)
+                    (text_x, badge_y), team_color)
         
         # Culture badge
         culture_color = {
@@ -113,7 +129,7 @@ class ProfileCard(UIComponent):
         }.get(self.slime.genome.cultural_base.value, (140, 140, 140))
         
         render_badge(surface, self.slime.genome.cultural_base.value.upper(),
-                    (text_x + 70, y + 60), culture_color)
+                    (text_x + 70, badge_y), culture_color)
         
         # Stats panel anchored to RIGHT edge of card
         card_rect = pygame.Rect(x, y, self.WIDTH, self.HEIGHT)
@@ -138,13 +154,68 @@ class ProfileCard(UIComponent):
             render_badge(surface, breeding_status, 
                         (x + self.PADDING + trait_width + 8, y + self.HEIGHT - 20), age_color)
 
+    def _render_stage_tier_row(self, surface: pygame.Surface, x: int, y: int):
+        """Render stage and tier badges in a compact row"""
+        # Stage badge (left)
+        stage = getattr(self.slime.genome, 'stage', 'Unknown')
+        stage_colors = {
+            'Hatchling': (255, 182, 193),  # soft pink
+            'Juvenile':  (173, 216, 230),  # light blue
+            'Young':     (144, 238, 144),  # green
+            'Prime':     (255, 215, 0),    # gold
+            'Veteran':   (100, 149, 237),  # deep blue
+            'Elder':     (147, 112, 219),  # purple
+        }
+        stage_color = stage_colors.get(stage, (140, 140, 140))
+        render_badge(surface, stage.upper(), (x, y), stage_color)
+        
+        # Tier badge (right of stage)
+        tier = getattr(self.slime.genome, 'tier', 1)
+        tier_name = getattr(self.slime.genome, 'tier_name', '')
+        tier_text = f"T{tier} {tier_name}" if tier_name else f"T{tier}"
+        
+        tier_colors = {
+            1: (200, 200, 200),  # white/grey
+            2: (200, 200, 200),  # white/grey
+            3: (144, 238, 144),  # green
+            4: (144, 238, 144),  # green
+            5: (100, 149, 237),  # blue
+            6: (100, 149, 237),  # blue
+            7: (147, 112, 219),  # purple
+            8: (255, 215, 0),    # gold
+        }
+        tier_color = tier_colors.get(tier, (200, 200, 200))
+        
+        # Position tier badge after stage badge
+        stage_width = len(stage) * 8 + 16  # Approximate
+        render_badge(surface, tier_text, (x + stage_width + 8, y), tier_color)
+
+    def _render_capability_flags(self, surface: pygame.Surface, x: int, y: int):
+        """Render capability flags as small indicators"""
+        capabilities = [
+            ('⚔', 'Dispatch', getattr(self.slime.genome, 'can_dispatch', False)),
+            ('♥', 'Breed', getattr(self.slime.genome, 'can_breed', False)),
+            ('★', 'Mentor', getattr(self.slime.genome, 'can_mentor', False))
+        ]
+        
+        flag_x = x
+        flag_spacing = 70
+        
+        for icon, label, enabled in capabilities:
+            color = (200, 200, 200) if enabled else (80, 80, 80)  # full color or grey
+            text = f"{icon} {label}"
+            render_text(surface, text, (flag_x, y), size=10, color=color)
+            flag_x += flag_spacing
+
 # --- Local Rendering Helpers ---
 
-def render_text(surface, text, pos, size=14, color=(255, 255, 255), bold=False, center=False):
+def render_text(surface, text, pos, size=14, color=(255, 255, 255), bold=False, center=False, italic=False):
     try:
         font = pygame.font.Font(None, size)
         if bold:
             font.set_bold(True)
+        if italic:
+            font.set_italic(True)
         img = font.render(text, True, color)
         if center:
             pos = (pos[0] - img.get_width() // 2, pos[1] - img.get_height() // 2)
