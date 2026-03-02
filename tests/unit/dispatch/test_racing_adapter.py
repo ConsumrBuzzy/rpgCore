@@ -66,11 +66,12 @@ class TestRacingAdapter:
     
     def test_resolve_racing_dispatch_deferred(self):
         """Test racing dispatch resolution is deferred"""
+        from src.shared.dispatch.zone_types import ZoneType
         from src.shared.dispatch.dispatch_record import DispatchRecord
         
         dispatch = DispatchRecord(
             slime_ids=["racing_slime_001"],
-            zone_type="racing"  # Using string to test flexibility
+            zone_type=ZoneType.RACING  # Use ZoneType enum
         )
         dispatch.outcome = {
             'track_config': self.track_config,
@@ -90,11 +91,12 @@ class TestRacingAdapter:
     
     def test_resolve_racing_dispatch_no_outcome(self):
         """Test racing dispatch resolution with no stored outcome"""
+        from src.shared.dispatch.zone_types import ZoneType
         from src.shared.dispatch.dispatch_record import DispatchRecord
         
         dispatch = DispatchRecord(
             slime_ids=["racing_slime_001"],
-            zone_type="racing"
+            zone_type=ZoneType.RACING
         )
         # No outcome set
         
