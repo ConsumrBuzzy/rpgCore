@@ -506,6 +506,7 @@ class GardenScene(GardenSceneBase):
             self.game_session.current_tick += 1
             
             # Update active dispatches
+            # TODO:SYSTEM: Move dispatch resolution logic to DispatchSystem
             self.dispatch_system.current_tick = self.game_session.current_tick
             for dispatch in self.dispatch_system.active_dispatches[:]:  # Copy list to avoid modification during iteration
                 if dispatch.end_tick <= self.game_session.current_tick:
@@ -550,6 +551,7 @@ class GardenScene(GardenSceneBase):
                 continue
             
             # Simple resource generation for idle zones
+            # TODO:SYSTEM: Move resource generation logic to ResourceSystem
             # In a full implementation, this would check zone type and generate appropriate resources
             resource_generation_rate = 0.1  # Resources per second
             
