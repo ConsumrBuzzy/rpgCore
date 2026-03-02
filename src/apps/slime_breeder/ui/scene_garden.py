@@ -274,27 +274,30 @@ class GardenScene(GardenSceneBase):
     def _assign_to_dungeon(self):
         if len(self.selected_entities) == 1:
             s = self.selected_entities[0]
-            rs = next((r for r in self.roster.slimes if r.name == s.name), None)
-            if rs:
-                if self.roster.get_dungeon_team().assign(rs):
+            slime_id = s.name.lower().replace(" ", "_")
+            entry = next((e for e in self.roster.entries if e.slime_id == slime_id), None)
+            if entry:
+                if self.roster.get_dungeon_team().assign(entry):
                     save_roster(self.roster)
                     self.on_selection_changed()
 
     def _assign_to_racing(self):
         if len(self.selected_entities) == 1:
             s = self.selected_entities[0]
-            rs = next((r for r in self.roster.slimes if r.name == s.name), None)
-            if rs:
-                if self.roster.get_racing_team().assign(rs):
+            slime_id = s.name.lower().replace(" ", "_")
+            entry = next((e for e in self.roster.entries if e.slime_id == slime_id), None)
+            if entry:
+                if self.roster.get_racing_team().assign(entry):
                     save_roster(self.roster)
                     self.on_selection_changed()
 
     def _remove_from_team(self):
         if len(self.selected_entities) == 1:
             s = self.selected_entities[0]
-            rs = next((r for r in self.roster.slimes if r.name == s.name), None)
-            if rs and rs.team != TeamRole.UNASSIGNED:
-                if self.roster.teams[rs.team].remove(rs.slime_id):
+            slime_id = s.name.lower().replace(" ", "_")
+            entry = next((e for e in self.roster.entries if e.slime_id == slime_id), None)
+            if entry and entry.team != TeamRole.UNASSIGNED:
+                if self.roster.teams[entry.team].remove(entry.slime_id):
                     save_roster(self.roster)
                     self.on_selection_changed()
 
