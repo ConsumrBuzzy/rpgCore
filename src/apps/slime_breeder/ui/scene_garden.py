@@ -242,14 +242,16 @@ class GardenScene(GardenSceneBase):
         
         if len(self.selected_entities) == 1:
             s = self.selected_entities[0]
-            rs = next((r for r in self.roster.slimes if r.name == s.name), None)
-            if rs:
+            # Find roster entry for this slime
+            slime_id = s.name.lower().replace(" ", "_")
+            entry = next((e for e in self.roster.entries if e.slime_id == slime_id), None)
+            if entry:
                 # Update Action Buttons based on state
                 btn_y = self.actions_rect.y + 12
-                if rs.locked:
+                if entry.locked:
                     self.mission_btn.set_visible(True)
                     self.mission_btn.set_enabled(False)
-                elif rs.team == TeamRole.UNASSIGNED:
+                elif entry.team == TeamRole.UNASSIGNED:
                     self.dungeon_btn.set_visible(True)
                     self.dungeon_btn.rect.y = btn_y
                     self.dungeon_btn.set_enabled(not self.roster.get_dungeon_team().is_full())
@@ -259,8 +261,8 @@ class GardenScene(GardenSceneBase):
                     self.racing_btn.set_enabled(not self.roster.get_racing_team().is_full())
                 else:
                     # Already on a team
-                    label = "✓ Dungeon Team" if rs.team == TeamRole.DUNGEON else "✓ Racing Team"
-                    btn = self.dungeon_btn if rs.team == TeamRole.DUNGEON else self.racing_btn
+                    label = "✓ Dungeon Team" if entry.team == TeamRole.DUNGEON else "✓ Racing Team"
+                    btn = self.dungeon_btn if entry.team == TeamRole.DUNGEON else self.racing_btn
                     btn.text = label
                     btn.set_visible(True)
                     btn.set_enabled(False)
