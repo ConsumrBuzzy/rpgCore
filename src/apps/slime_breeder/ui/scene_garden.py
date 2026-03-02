@@ -5,6 +5,7 @@ from typing import Optional, List, Tuple
 from src.shared.engine.scene_templates.garden_scene import GardenSceneBase
 from src.shared.ui.label import Label
 from src.shared.ui.button import Button
+from src.shared.ui.layouts import HubLayout
 from src.apps.slime_breeder.garden.garden_state import GardenState
 from src.apps.slime_breeder.entities.slime import Slime
 from src.shared.rendering.slime_renderer import SlimeRenderer
@@ -29,8 +30,8 @@ class GardenScene(GardenSceneBase):
         self.garden_rect = pygame.Rect(
             0,
             self.layout.top_bar.height,
-            self.spec.screen_width - self.layout.right_panel.width,
-            self.spec.screen_height - self.layout.top_bar.height - self.layout.team_bar.height
+            self.spec.screen_width - self.layout.side_panel.width,
+            self.spec.screen_height - self.layout.top_bar.height - self.layout.status_bar.height
         )
         
         # Initialize garden state
@@ -81,7 +82,7 @@ class GardenScene(GardenSceneBase):
         screen_w = self.spec.screen_width
         screen_h = self.spec.screen_height
         
-        self.right_panel_rect = pygame.Rect(right_x, 48, screen_w - right_x, screen_h - 48 - 36)
+        self.right_panel_rect = pygame.Rect(self.layout.side_panel.x, self.layout.side_panel.y, self.layout.side_panel.width, self.layout.side_panel.height)
         
         profile_w = int(self.right_panel_rect.width * 0.55)
         stats_w = self.right_panel_rect.width - profile_w - padding * 3
