@@ -418,6 +418,93 @@ class RenderingContextComponent:
 
 ---
 
+## 12. Personality System Specifications
+
+### 12.1 Personality Architecture
+```python
+@dataclass
+class PersonalityComponent:
+    """Personality state and experience tracking"""
+    base_traits: dict[str, float]           # Derived from culture expression
+    experience_delta: dict[str, float]      # Accumulated life experience
+    notable_experiences: list[PersonalityEvent]
+    
+    def get_current_traits(self) -> dict[str, float]:
+        """Get current personality traits with experience modifications"""
+
+@dataclass
+class PersonalityEvent:
+    """Record of personality-affecting experience"""
+    axis: str
+    delta: float
+    description: str
+    timestamp: float
+```
+
+### 12.2 Six Personality Axes
+| Axis | Culture | High Expression | Low Expression |
+|------|---------|-----------------|----------------|
+| Aggression | Ember | Dominant, initiates conflict | Passive, yields |
+| Curiosity | Gale | Explores, investigates | Stays close, routine |
+| Patience | Marsh | Waits, endures | Impulsive, immediate |
+| Caution | Crystal | Defensive, trust-slow | Reckless, open |
+| Independence | Tundra | Self-sufficient, reserved | Dependent, expressive |
+| Sociability | Tide | Engages others, adapts | Isolated, consistent |
+
+### 12.3 Personality Derivation
+```python
+def derive_personality(culture_expression: dict[str, float]) -> dict[str, float]:
+    """Direct mapping from culture expression to personality axes"""
+    return {
+        'aggression':    culture_expression.get('ember', 0.0),
+        'curiosity':     culture_expression.get('gale', 0.0),
+        'patience':      culture_expression.get('marsh', 0.0),
+        'caution':       culture_expression.get('crystal', 0.0),
+        'independence':  culture_expression.get('tundra', 0.0),
+        'sociability':   culture_expression.get('tide', 0.0),
+    }
+```
+
+### 12.4 Experience Modification
+| Event | Axis Modified | Direction | Magnitude |
+|-------|--------------|-----------|-----------|
+| Won sumo matches (3+) | aggression | + | small |
+| Lost sumo matches (3+) | aggression | - | small |
+| Completed dangerous dispatch | curiosity | + | small |
+| Lost on dispatch | caution | + | small |
+| Extended garden idle time | patience | + | very small |
+| Mentored by Elder | caution | + | small |
+| Relationship depth | sociability | + | small |
+| Isolation | independence | + | small |
+
+### 12.5 Personality Expression Contexts
+| Context | Personality Influence | Implementation |
+|---------|---------------------|-------------|
+| Idle Behavior | Movement patterns, clustering | BehaviorComponent weights |
+| Combat & Sumo | Engagement timing, risk tolerance | Combat decision weights |
+| Dispatch Preference | Zone type affinity | Soft suggestion weights |
+| Visual Novel | Dialogue style, expression | Conversation response generation |
+
+### 12.6 Tier × Personality Interactions
+- **Tier 3 Sundered**: Opposing axes both high (aggression+patience, curiosity+independence)
+- **Tier 8 Void**: All axes balanced (~0.167) - adaptable, unreadable
+- **Tier 2 Bordered**: Adjacent culture traits create harmonious personalities
+- **Tier 6 Convergent**: Complex personalities with multiple moderate traits
+
+### 12.7 ECS Integration
+- **PersonalitySystem**: Trait derivation and experience tracking
+- **PersonalityBehaviorSystem**: Integration with existing BehaviorComponent
+- **PersonalityExperienceSystem**: Event recording and trait modification
+- **ConversationSystem**: Personality-driven dialogue generation
+
+### 12.8 Performance Specifications
+- **Memory**: ~150 bytes per slime personality data
+- **Computation**: <0.1ms derivation, <0.2ms behavior evaluation
+- **Evaluation Frequency**: On state transitions only (not per frame)
+- **Storage**: Compact JSON format for save files
+
+---
+
 ## 🎯 Implementation Priority
 
 ### Phase 1: Core Geography
