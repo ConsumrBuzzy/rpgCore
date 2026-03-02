@@ -30,24 +30,24 @@ def create_app() -> SceneManager:
     roster = load_roster()
     entity_registry = EntityRegistry.from_roster(roster)
     
-    # Register scenes with shared registry
-    manager.register("garden", GardenScene, entity_registry=entity_registry)
-    manager.register("teams", TeamScene, entity_registry=entity_registry)
-    manager.register("breeding", BreedingScene, entity_registry=entity_registry)
-    manager.register("racing", RaceScene, entity_registry=entity_registry)
-    manager.register("tower_defense", TowerDefenseScene, entity_registry=entity_registry)
-    manager.register("dungeon", TheRoomScene, entity_registry=entity_registry)
-    manager.register("dungeon_room", DungeonRoomScene, entity_registry=entity_registry)
-    manager.register("dungeon_path", DungeonPathScene, entity_registry=entity_registry)
-    manager.register("dungeon_combat", DungeonCombatScene, entity_registry=entity_registry)
-    manager.register("inventory", InventoryOverlay, entity_registry=entity_registry)
+    # Register scenes
+    manager.register("garden", GardenScene)
+    manager.register("teams", TeamScene)
+    manager.register("breeding", BreedingScene)
+    manager.register("racing", RaceScene)
+    manager.register("tower_defense", TowerDefenseScene)
+    manager.register("dungeon", TheRoomScene)
+    manager.register("dungeon_room", DungeonRoomScene)
+    manager.register("dungeon_path", DungeonPathScene)
+    manager.register("dungeon_combat", DungeonCombatScene)
+    manager.register("inventory", InventoryOverlay)
     
-    return manager
+    return manager, entity_registry
 
 def main():
     logger.info("🚀 Launching Slime Breeder...")
-    app = create_app()
-    app.run("garden")
+    app, entity_registry = create_app()
+    app.run("garden", entity_registry=entity_registry)
 
 if __name__ == "__main__":
     main()

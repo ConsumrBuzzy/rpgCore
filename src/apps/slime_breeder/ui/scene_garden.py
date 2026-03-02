@@ -49,6 +49,9 @@ class GardenScene(GardenSceneBase):
         except Exception:
             self.garden_level = 0
         
+        # Initialize slime renderer
+        self.renderer = SlimeRenderer()
+        
         try:
             self.garden_renderer = GardenRenderer(self.garden_rect, session_id="garden_session")
         except Exception as e:
