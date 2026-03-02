@@ -8,6 +8,7 @@ from src.shared.ui.button import Button
 from src.apps.slime_breeder.garden.garden_state import GardenState
 from src.apps.slime_breeder.entities.slime import Slime
 from src.shared.rendering.slime_renderer import SlimeRenderer
+from src.shared.rendering.garden_renderer import GardenRenderer
 from src.shared.genetics import generate_random, breed
 from src.shared.teams.roster import Roster, RosterSlime, TeamRole
 from src.shared.teams.roster_save import load_roster, save_roster
@@ -20,6 +21,24 @@ class GardenScene(GardenSceneBase):
     def on_garden_enter(self, **kwargs) -> None:
         self.garden_state = GardenState()
         self.renderer = SlimeRenderer()
+        
+        # Initialize garden renderer with level
+        self.garden_level = 0
+        try:
+            # Try to get garden level from GameSession
+            # This is a graceful attempt - if it fails, we default to level 0
+            from src.shared.session.game_session import GameSession
+            # In a real implementation, this would come from scene manager or global state
+            # For now, we'll default to level 0
+            self.garden_level = 0
+        except Exception:
+            self.garden_level = 0
+        
+        try:
+            self.garden_renderer = GardenRenderer(self.garden_rect, session_id="garden_session")
+        except Exception as e:
+            logger.warning(f"Failed to initialize garden renderer: {e}")
+            self.garden_renderer = None
         
         # Banner state
         self._banner_msg = ""
