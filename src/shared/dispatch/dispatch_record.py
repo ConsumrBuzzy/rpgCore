@@ -42,7 +42,7 @@ class DispatchRecord:
     @property
     def squad_size(self) -> int:
         """Get number of slimes in squad"""
-        return len(self.slim_ids)
+        return len(self.slime_ids)
     
     def mark_active(self, current_tick: int):
         """Mark dispatch as active"""
