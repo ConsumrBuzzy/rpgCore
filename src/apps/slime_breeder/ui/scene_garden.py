@@ -143,6 +143,26 @@ class GardenScene(GardenSceneBase):
         btn_w = self.actions_rect.width - 20
         btn_h = 40
 
+        # Create team buttons
+        self.dungeon_btn = Button("→ Dungeon Team", pygame.Rect(self.actions_rect.x + 10, btn_y, btn_w, btn_h), self._assign_to_dungeon, self.spec)
+        self.racing_btn = Button("→ Racing Team", pygame.Rect(self.actions_rect.x + 10, btn_y + btn_h + 8, btn_w, btn_h), self._assign_to_racing, self.spec)
+        self.remove_btn = Button("Remove", pygame.Rect(self.actions_rect.x + 10, btn_y + btn_h + 8, btn_w, btn_h), self._remove_from_team, self.spec, variant="danger")
+        self.mission_btn = Button("ON MISSION", pygame.Rect(self.actions_rect.x + 10, btn_y, btn_w, btn_h), None, self.spec, variant="warning")
+        
+        # Hide initially
+        self.dungeon_btn.set_visible(False)
+        self.racing_btn.set_visible(False)
+        self.remove_btn.set_visible(False)
+        self.mission_btn.set_visible(False)
+        
+        # Store for on_garden_enter
+        self._pending_buttons = [
+            self.dungeon_btn,
+            self.racing_btn, 
+            self.remove_btn,
+            self.mission_btn
+        ]
+
         # Input handlers for the router (set up after all initialization)
         self._setup_input_handlers()
 
