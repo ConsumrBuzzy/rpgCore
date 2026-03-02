@@ -155,8 +155,8 @@ class DungeonPathScene(Scene):
         if zone and zone.squad:
             print(f"[DEBUG] Path scene - Squad: {zone.squad.name}")
             for i, member in enumerate(zone.squad.members):
-                # Get the actual slime from roster to access genome
-                slime = self.roster.get_creature(member.slime_id) if hasattr(member, 'slime_id') else None
+                # Get the actual slime from entity registry
+                slime = self.entity_registry.get(member.slime_id) if self.entity_registry and hasattr(member, 'slime_id') else None
                 if slime:
                     print(f"[DEBUG]   Member {i}: {member.name}, genome colors: {slime.genome.base_color}")
                 else:
