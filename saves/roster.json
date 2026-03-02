@@ -1,3 +1,40 @@
 {
-  "slimes": []
+  "slimes": [
+    {
+      "slime_id": "s0",
+      "name": "Slime 0",
+      "team": "dungeon",
+      "locked": false,
+      "alive": true,
+      "genome": {
+        "shape": "round",
+        "size": "medium",
+        "base_color": [
+          100,
+          200,
+          100
+        ],
+        "pattern": "spotted",
+        "pattern_color": [
+          50,
+          50,
+          50
+        ],
+        "accessory": "none",
+        "curiosity": 0.8,
+        "energy": 0.2,
+        "affection": 0.1,
+        "shyness": 0.1,
+        "cultural_base": "mixed",
+        "base_hp": 20.0,
+        "base_atk": 5.0,
+        "base_spd": 5.0,
+        "generation": 1
+      },
+      "level": 1,
+      "experience": 0,
+      "breeding_lock_level": 0,
+      "current_hp": 20.0
+    }
+  ]
 }

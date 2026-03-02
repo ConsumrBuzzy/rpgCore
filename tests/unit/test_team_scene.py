@@ -31,11 +31,10 @@ def sample_roster():
     return roster
 
 def test_team_scene_initialization(mock_manager, sample_roster, monkeypatch):
-    # Mock load_roster
-    monkeypatch.setattr("src.apps.slime_breeder.scenes.team_scene.load_roster", lambda: sample_roster)
-    monkeypatch.setattr("src.apps.slime_breeder.scenes.team_scene.save_roster", lambda r: None)
+    # Mock save_roster for the context
+    monkeypatch.setattr("src.apps.slime_breeder.scenes.team_scene.save_roster", MagicMock())
     
-    scene = TeamScene(mock_manager, SPEC_720)
+    scene = TeamScene(mock_manager, SPEC_720, roster=sample_roster)
     scene.on_enter()
     
     assert scene.roster == sample_roster

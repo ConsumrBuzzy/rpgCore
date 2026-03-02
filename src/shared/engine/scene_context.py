@@ -30,6 +30,7 @@ class SceneContext:
     
     def __post_init__(self):
         """Ensure roster is available in context for all scenes"""
+        # Only load roster if none was provided
         if self.roster is None:
             from src.shared.teams.roster_save import load_roster
             self.roster = load_roster()
