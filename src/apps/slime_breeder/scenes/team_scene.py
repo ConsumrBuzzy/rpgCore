@@ -5,10 +5,11 @@ from src.shared.engine.scene_manager import Scene
 from src.shared.ui.panel import Panel
 from src.shared.ui.button import Button
 from src.shared.ui.label import Label
+from src.shared.ui.tabbed_panel import TabbedPanel, TabDef
+from src.shared.ui.theme import DEFAULT_THEME
 from src.shared.ui.spec import UISpec
 from src.shared.ui.layouts import SelectionLayout
 from src.shared.ui.profile_card import ProfileCard
-from src.shared.ui.theme import DEFAULT_THEME
 from src.shared.teams.roster import Roster, TeamRole, RosterSlime
 from src.shared.teams.roster_save import load_roster, save_roster
 
