@@ -10,6 +10,7 @@ class Slime:
         self.genome = genome
         self.level = level
         self.age = 0  # ticks lived
+        self.team = None  # Team assignment: None, 'dungeon', 'racing', 'garden'
         
         # Physics
         self.kinematics = Kinematics(
