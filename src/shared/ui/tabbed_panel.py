@@ -35,22 +35,22 @@ class TabbedPanel(UIComponent):
         self.content_rect = pygame.Rect(rect.x, rect.y + self.tab_height, rect.width, rect.height - self.tab_height)
         
         # Tab button rectangles (calculated equally)
-        self.tab_rects = self._calculate_tab_rects()
+        self.tab_rects = self._calculate_tab_rects(rect)
         
         super().__init__(rect, self.theme)
     
-    def _calculate_tab_rects(self) -> List[pygame.Rect]:
+    def _calculate_tab_rects(self, rect: pygame.Rect) -> List[pygame.Rect]:
         """Calculate equal-width tab rectangles"""
         if not self.tabs:
             return []
         
-        tab_width = self.rect.width // len(self.tabs)
+        tab_width = rect.width // len(self.tabs)
         tab_rects = []
         
         for i, tab in enumerate(self.tabs):
             tab_rect = pygame.Rect(
-                self.rect.x + i * tab_width,
-                self.rect.y,
+                rect.x + i * tab_width,
+                rect.y,
                 tab_width,
                 self.tab_height
             )

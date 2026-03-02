@@ -10,6 +10,17 @@ from src.shared.ui.theme import DEFAULT_THEME
 
 class TestTabbedPanel:
     
+    @classmethod
+    def setup_class(cls):
+        """Initialize pygame for font rendering"""
+        pygame.init()
+        pygame.font.init()
+    
+    @classmethod
+    def teardown_class(cls):
+        """Clean up pygame"""
+        pygame.quit()
+    
     def test_tabbed_panel_initialization(self):
         """Test TabbedPanel initialization with tabs"""
         rect = pygame.Rect(0, 0, 400, 300)
