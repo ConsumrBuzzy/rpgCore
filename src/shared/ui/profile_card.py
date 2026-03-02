@@ -60,13 +60,14 @@ class ProfileCard(UIComponent):
                 return True
         return False
 
-    def render(self, surface: pygame.Surface):
+    def render(self, surface: pygame.Surface, data: Any = None) -> None:
+        """Render the profile card using theme colors."""
         x, y = self.position
         
-        # Background
+        # Background - use theme colors
         card_rect = pygame.Rect(x, y, self.WIDTH, self.HEIGHT)
-        bg_color = self.spec.color_surface_alt if self.slime.is_elder else self.spec.color_surface
-        border_color = self.spec.color_accent if self.slime.is_elder else self.spec.color_border
+        bg_color = self.theme.panel_colors['card']['bg'] if self.slime.is_elder else self.theme.panel_colors['surface']['bg']
+        border_color = self.theme.panel_colors['card']['border'] if self.slime.is_elder else self.theme.panel_colors['surface']['border']
         border_w = 2
         
         pygame.draw.rect(surface, bg_color, card_rect, border_radius=8)
@@ -81,9 +82,9 @@ class ProfileCard(UIComponent):
         render_text(surface, self.slime.name, 
                    (text_x, y + 12), size=16, bold=True)
         render_text(surface, f"Lv.{self.slime.level}",
-                   (text_x, y + 26), size=14, color=(200, 200, 100))
+                   (text_x, y + 26), size=14, color=self.theme.text_accent)
         render_text(surface, f"Gen {self.slime.generation}",
-                    (text_x, y + 40), size=12, color=(160, 160, 180))
+                    (text_x, y + 40), size=12, color=self.theme.text_secondary)
         
         # XP Bar (constrained to text area)
         xp_rect = pygame.Rect(text_x, y + 50, self.TEXT_AREA_WIDTH // 2, 4)
@@ -91,7 +92,7 @@ class ProfileCard(UIComponent):
         xp_pct = min(1.0, self.slime.experience / self.slime.xp_to_next_level)
         if xp_pct > 0:
             fill_rect = pygame.Rect(xp_rect.x, xp_rect.y, int(xp_rect.width * xp_pct), xp_rect.height)
-            pygame.draw.rect(surface, (100, 200, 100), fill_rect)
+            pygame.draw.rect(surface, self.theme.success, fill_rect)
 
         # Stage + Tier compact row (above existing badges)
         stage_y = y + 60
@@ -100,7 +101,7 @@ class ProfileCard(UIComponent):
         # Stage modifier (if non-standard)
         stage_modifier = getattr(self.slime.genome, 'stage_modifier', 'standard')
         if stage_modifier != 'standard':
-            modifier_color = (120, 120, 120)  # dim grey
+            modifier_color = self.theme.text_dim
             render_text(surface, stage_modifier.replace('_', ' '), 
                        (text_x, stage_y + 18), size=10, color=modifier_color, italic=True)
 
@@ -111,30 +112,26 @@ class ProfileCard(UIComponent):
         # Team & Culture badges (below capability flags)
         badge_y = capability_y + 18
         team_color = {
-            TeamRole.DUNGEON:    (180, 60,  60),
-            TeamRole.UNASSIGNED: (80,  80,  80),
-        }.get(self.slime.team, (80, 80, 80))
+            TeamRole.DUNGEON:    self.theme.danger,
+            TeamRole.UNASSIGNED: self.theme.text_dim,
+        }.get(self.slime.team, self.theme.text_dim)
         
         team_label = self.slime.team.value.upper()
         if self.slime.locked:
             team_label = "ON MISSION"
-            team_color = (200, 140, 0)
+            team_color = self.theme.warning
         if not self.slime.alive:
             team_label = "FALLEN"
-            team_color = (60, 60, 60)
+            team_color = self.theme.text_dim
             
         render_badge(surface, team_label, 
                     (text_x, badge_y), team_color)
         
-        # Culture badge
-        culture_color = {
-            "ember":   (200, 80, 40),
-            "crystal": (140, 200, 255),
-            "moss":    (80, 180, 80),
-            "coastal": (80, 140, 180),
-            "void":    (100, 40, 140),
-            "mixed":   (140, 140, 140)
-        }.get(self.slime.genome.cultural_base.value, (140, 140, 140))
+        # Culture badge - use theme colors
+        culture_color = self.theme.culture_colors.get(
+            self.slime.genome.cultural_base.value, 
+            self.theme.culture_colors.get('mixed', (140, 140, 140))
+        )
         
         render_badge(surface, self.slime.genome.cultural_base.value.upper(),
                     (text_x + 70, badge_y), culture_color)
@@ -157,7 +154,7 @@ class ProfileCard(UIComponent):
         
         # Age badge if not breedable
         if breeding_status:
-            age_color = (200, 140, 60)  # Orange for young
+            age_color = self.theme.warning  # Orange for young
             trait_width = len(trait_hint) * 8 + 16  # Approximate badge width
             render_badge(surface, breeding_status, 
                         (x + self.PADDING + trait_width + 8, y + self.HEIGHT - 20), age_color)
