@@ -47,11 +47,11 @@ class StatsPanel(UIComponent):
         self._render_truncated_text(surface, f"DNA: {dominance}", (x + self.PADDING, y + 90), max_dna_width, size=12, color=(140, 140, 160))
         
         # Culture expression chart
-        culture_y = y + 110
+        culture_y = y + 100
         self._render_culture_expression(surface, x + self.PADDING, culture_y)
         
         # Personality axes
-        personality_y = culture_y + 45
+        personality_y = culture_y + 40
         self._render_personality_axes(surface, x + self.PADDING, personality_y)
 
     def _render_stat(self, surface, label, value, pos, color):

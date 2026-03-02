@@ -52,8 +52,8 @@ class TestStatsPanelExtensions:
 
     def test_extended_height(self):
         """Test stats panel height is extended for new sections"""
-        # Height should be increased from 120 to 200
-        assert self.stats_panel.HEIGHT == 200
+        # Height should be increased from 120 to 220
+        assert self.stats_panel.HEIGHT == 220
         
         # Width should remain unchanged
         assert self.stats_panel.WIDTH == 200
@@ -206,13 +206,13 @@ class TestStatsPanelExtensions:
 
     def test_layout_spacing(self):
         """Test layout spacing for new sections"""
-        # Culture section should start at y + 110
-        culture_y = 100 + 110  # base y + offset
-        assert culture_y == 210
+        # Culture section should start at y + 100
+        culture_y = 100 + 100  # base y + offset
+        assert culture_y == 200
         
-        # Personality section should start 45 pixels after culture
-        personality_y = culture_y + 45
-        assert personality_y == 255
+        # Personality section should start 40 pixels after culture
+        personality_y = culture_y + 40
+        assert personality_y == 240
         
         # Both should fit within the extended height (220)
         assert personality_y < self.stats_panel.HEIGHT
