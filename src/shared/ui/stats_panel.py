@@ -47,9 +47,9 @@ class StatsPanel(UIComponent):
         spd = calculate_speed(self.slime.genome, self.slime.level)
         
         # Render stats
-        self._render_stat(surface, "HP", hp, (x + self.PADDING, y + 30))
-        self._render_stat(surface, "ATK", atk, (x + self.PADDING, y + 50))
-        self._render_stat(surface, "SPD", spd, (x + self.PADDING, y + 70))
+        self._render_stat(surface, "HP", hp, (x + self.PADDING, y + 30), self.theme.success)
+        self._render_stat(surface, "ATK", atk, (x + self.PADDING, y + 50), self.theme.danger)
+        self._render_stat(surface, "SPD", spd, (x + self.PADDING, y + 70), self.theme.info)
         
         # Genetic dominance hint
         dominance = self._get_dominance_text()
