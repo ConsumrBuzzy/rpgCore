@@ -1,6 +1,6 @@
 import pygame
 from typing import Tuple, Optional
-from src.shared.ui.base_component import UIComponent
+from src.shared.ui.base import UIComponent
 from src.shared.ui.theme import UITheme
 from src.shared.ui.ui_event import UIEvent
 from src.shared.teams.roster import RosterSlime

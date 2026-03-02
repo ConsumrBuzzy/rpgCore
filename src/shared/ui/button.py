@@ -3,6 +3,7 @@ from typing import Callable, Tuple, Optional
 from src.shared.ui.spec import UISpec
 from src.shared.ui.panel import Panel
 from src.shared.ui.label import Label
+from src.shared.ui.theme import UITheme
 
 class Button(Panel):
     """Interactive clickable region with states, driven by UISpec."""
@@ -15,18 +16,20 @@ class Button(Panel):
         spec: UISpec,
         variant: str = "primary",
         enabled: bool = True,
+        theme: Optional[UITheme] = None,
         z_order: int = 0
     ):
         self.spec = spec
         self.variant = variant
         self.enabled = enabled
+        self.theme = theme or UITheme.DEFAULT
         
-        # Build variant styling based on spec
+        # Build variant styling based on theme
         variants = {
-            "primary":   {"bg": spec.color_accent,   "text": (255,255,255)},
-            "secondary": {"bg": spec.color_surface,  "text": spec.color_text},
-            "danger":    {"bg": spec.color_danger,   "text": (255,255,255)},
-            "ghost":     {"bg": (0,0,0,0),           "text": spec.color_text, "border": spec.color_border},
+            "primary":   {"bg": self.theme.info, "text": (255,255,255)},
+            "secondary": {"bg": self.theme.surface, "text": self.theme.text_primary},
+            "danger":    {"bg": self.theme.danger, "text": (255,255,255)},
+            "ghost":     {"bg": (0,0,0,0), "text": self.theme.text_primary, "border": self.theme.border},
         }
         style = variants.get(variant, variants["primary"])
         
@@ -35,17 +38,18 @@ class Button(Panel):
         if variant == "ghost":
             self.bg_color_hover = (style["bg"][0], style["bg"][1], style["bg"][2], 30) # faint highlight
             self.bg_color_pressed = (style["bg"][0], style["bg"][1], style["bg"][2], 60)
-            border_color = style.get("border", spec.color_border)
+            border_color = style.get("border", self.theme.border)
         else:
             # Simple brightening for hover
             self.bg_color_hover = tuple(min(255, c + 20) for c in style["bg"])
             self.bg_color_pressed = tuple(max(0, c - 20) for c in style["bg"])
-            border_color = spec.color_border
+            border_color = self.theme.border
 
         super().__init__(
             rect=rect, 
             spec=spec,
             variant="card" if variant != "ghost" else "surface", # Map to Panel variant
+            theme=theme,
             z_order=z_order
         )
         # Override Panel's bg/border with our variant style
