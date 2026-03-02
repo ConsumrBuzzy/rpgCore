@@ -36,7 +36,7 @@ class ProfileCard(UIComponent):
         
         # Create rect for base component
         rect = pygame.Rect(position[0], position[1], self.WIDTH, self.HEIGHT)
-        super().__init__(rect, theme, z_order=0)
+        super().__init__(rect, self.theme, z_order=0)
         
         # Store slime data
         self.slime = slime
@@ -45,7 +45,7 @@ class ProfileCard(UIComponent):
         # Add StatsPanel with proper width constraint for right side
         stats_x = position[0] + self.PORTRAIT_SIZE + self.PADDING * 2
         stats_y = position[1] + self.PORTRAIT_SIZE + self.PADDING
-        self.stats_panel = StatsPanel(slime, (stats_x, stats_y), width=self.STATS_PANEL_WIDTH)
+        self.stats_panel = StatsPanel(slime, (stats_x, stats_y), width=self.STATS_PANEL_WIDTH, theme=self.theme)
 
     def update(self, dt_ms: int):
         """No periodic updates needed for the card itself."""
