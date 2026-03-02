@@ -58,6 +58,9 @@ class Button(Panel):
         
         self.bg_color_disabled = (spec.color_bg[0]+5, spec.color_bg[1]+5, spec.color_bg[2]+5)
         
+        # Add visible attribute for compatibility
+        self.visible = True
+        
         self.state = "normal" if enabled else "disabled"
         
         # Center the label inside the button
