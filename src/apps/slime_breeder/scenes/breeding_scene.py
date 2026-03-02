@@ -42,7 +42,7 @@ class BreedingScene(Scene):
                 game_session=kwargs.get('game_session'),
                 dispatch_system=kwargs.get('dispatch_system'),
                 roster=None,  # Will load from file if not provided
-                theme=None
+                roster_sync=kwargs.get('roster_sync')  # Add sync service
             )
             self.set_context(context)
             self.roster = context.roster
