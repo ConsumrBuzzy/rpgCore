@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple, Union
 import pygame
 from src.shared.ui.base import UIComponent
 from src.shared.ui.spec import UISpec
-from src.shared.ui.theme import UITheme
+from src.shared.ui.theme import DEFAULT_THEME
 
 class Panel(UIComponent):
     """A container component that can hold and render children, driven by UISpec."""
@@ -13,11 +13,11 @@ class Panel(UIComponent):
         spec: UISpec,
         variant: str = "surface",
         border: bool = True,
-        theme: Optional[UITheme] = None,
+        theme: Optional['UITheme'] = None,
         z_order: int = 0
     ):
         self.spec = spec
-        self.theme = theme or UITheme.DEFAULT
+        self.theme = theme or DEFAULT_THEME
         self.variant = variant
         
         # Map variants to theme colors

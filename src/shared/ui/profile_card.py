@@ -66,8 +66,8 @@ class ProfileCard(UIComponent):
         
         # Background - use theme colors
         card_rect = pygame.Rect(x, y, self.WIDTH, self.HEIGHT)
-        bg_color = self.theme.panel_colors['card']['bg'] if self.slime.is_elder else self.theme.panel_colors['surface']['bg']
-        border_color = self.theme.panel_colors['card']['border'] if self.slime.is_elder else self.theme.panel_colors['surface']['border']
+        bg_color = self.theme.surface_raised if self.slime.is_elder else self.theme.surface
+        border_color = self.theme.border_active if self.slime.is_elder else self.theme.border
         border_w = 2
         
         pygame.draw.rect(surface, bg_color, card_rect, border_radius=8)

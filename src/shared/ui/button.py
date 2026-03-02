@@ -3,7 +3,7 @@ from typing import Callable, Tuple, Optional
 from src.shared.ui.spec import UISpec
 from src.shared.ui.panel import Panel
 from src.shared.ui.label import Label
-from src.shared.ui.theme import UITheme
+from src.shared.ui.theme import DEFAULT_THEME
 
 class Button(Panel):
     """Interactive clickable region with states, driven by UISpec."""
@@ -16,13 +16,13 @@ class Button(Panel):
         spec: UISpec,
         variant: str = "primary",
         enabled: bool = True,
-        theme: Optional[UITheme] = None,
+        theme: Optional['UITheme'] = None,
         z_order: int = 0
     ):
         self.spec = spec
         self.variant = variant
         self.enabled = enabled
-        self.theme = theme or UITheme.DEFAULT
+        self.theme = theme or DEFAULT_THEME
         
         # Build variant styling based on theme
         variants = {

@@ -2,7 +2,7 @@ from typing import Tuple, List, Optional
 import pygame
 from src.shared.ui.base import UIComponent
 from src.shared.ui.spec import UISpec
-from src.shared.ui.theme import UITheme
+from src.shared.ui.theme import DEFAULT_THEME
 
 class Label(UIComponent):
     """Text rendering component with alignment and word wrap, driven by UISpec."""
@@ -17,10 +17,10 @@ class Label(UIComponent):
         bold: bool = False,
         centered: bool = False,
         wrap_width: Optional[int] = None,
-        theme: Optional[UITheme] = None,
+        theme: Optional['UITheme'] = None,
         z_order: int = 0
     ):
-        self.theme = theme or UITheme.DEFAULT
+        self.theme = theme or DEFAULT_THEME
         
         # Map size names to theme values
         font_sizes = {
