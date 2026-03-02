@@ -46,6 +46,9 @@ class SlimeRenderer:
         tier = getattr(slime.genome, 'tier', 1)
         color = self._apply_tier_effects(slime.genome.base_color, tier, pos, radius)
         
+        # Inner gradient color (lighter version of base color)
+        inner_color = tuple(min(255, c + 50) for c in color)
+        
         # Render slime body
         pygame.draw.circle(temp_surface, color, pos, radius)
         
