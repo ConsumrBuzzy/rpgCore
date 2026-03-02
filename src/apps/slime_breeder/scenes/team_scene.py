@@ -138,9 +138,9 @@ class TeamScene(Scene):
                 level = 1
                 culture = "Unknown"
             
-            Label(name, (row_rect.x + 10, row_rect.y + 5), self.spec, size="sm", bold=True).add_to(self.ui_components)
+            Label(name, (row_rect.x + 10, row_rect.y + 5), self.spec, size="sm", bold=True, theme=DEFAULT_THEME).add_to(self.ui_components)
             Label(f"Lv.{level} {culture}", 
-                  (row_rect.x + 10, row_rect.y + 22), self.spec, size="xs", color=(160, 160, 180)).add_to(self.ui_components)
+                  (row_rect.x + 10, row_rect.y + 22), self.spec, size="xs", color=(160, 160, 180), theme=DEFAULT_THEME).add_to(self.ui_components)
             
             # Assign buttons
             btn_y = row_rect.y + 40
@@ -148,12 +148,12 @@ class TeamScene(Scene):
             
             if not self.dungeon_team.is_full():
                 dungeon_btn = Button("⚔", pygame.Rect(row_rect.x + 10, btn_y, btn_width, 20),
-                                         lambda s=slime: self._assign_to_dungeon(s), self.spec, variant="primary")
+                                         lambda s=slime: self._assign_to_dungeon(s), self.spec, variant="primary", theme=DEFAULT_THEME)
                 self.ui_components.append(dungeon_btn)
             
             if not self.racing_team.is_full():
                 racing_btn = Button("◎", pygame.Rect(row_rect.x + 80, btn_y, btn_width, 20),
-                                        lambda s=slime: self._assign_to_racing(s), self.spec, variant="secondary")
+                                        lambda s=slime: self._assign_to_racing(s), self.spec, variant="secondary", theme=DEFAULT_THEME)
                 self.ui_components.append(racing_btn)
 
     def _back_to_garden(self):
