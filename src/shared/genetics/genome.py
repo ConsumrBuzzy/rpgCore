@@ -34,6 +34,10 @@ class SlimeGenome:
     parent_ids: Optional[Tuple[str, str]] = None  # UUID strings of parents
     mutations: List[Dict] = field(default_factory=list)  # Mutation history
     
+    # NEW: Lifecycle fields
+    level: int = 0  # 0-10, preserve if exists, default 0
+    experience_points: int = 0  # Current experience toward next level
+    
     # Hexagon adjacency map for tier calculation
     HEXAGON_ADJACENCY = {
         'ember': ['gale', 'marsh'],  # Adjacent to gale and marsh
@@ -141,6 +145,79 @@ class SlimeGenome:
             'tide': 'marsh'
         }
         return opposites.get(culture1) == culture2
+    
+    # Lifecycle properties
+    @property
+    def stage(self) -> str:
+        """Calculate life stage from level"""
+        if self.level <= 1:
+            return 'Hatchling'
+        elif self.level <= 3:
+            return 'Juvenile'
+        elif self.level <= 5:
+            return 'Young'
+        elif self.level <= 7:
+            return 'Prime'
+        elif self.level <= 9:
+            return 'Veteran'
+        else:
+            return 'Elder'
+    
+    @property
+    def can_dispatch(self) -> bool:
+        """Can this slime be dispatched?"""
+        return self.stage != 'Hatchling'
+    
+    @property
+    def can_breed(self) -> bool:
+        """Can this slime breed?"""
+        return self.stage not in ['Hatchling', 'Juvenile']
+    
+    @property
+    def can_equip(self) -> bool:
+        """Can this slime equip items?"""
+        return self.stage not in ['Hatchling', 'Juvenile']
+    
+    @property
+    def can_mentor(self) -> bool:
+        """Can this slime mentor younger slimes?"""
+        return self.stage in ['Veteran', 'Elder']
+    
+    @property
+    def dispatch_risk(self) -> str:
+        """Risk level for dispatch based on stage"""
+        risk_map = {
+            'Hatchling': 'none',
+            'Juvenile': 'low',
+            'Young': 'standard',
+            'Prime': 'standard',
+            'Veteran': 'high',
+            'Elder': 'critical'
+        }
+        return risk_map.get(self.stage, 'standard')
+    
+    @property
+    def stage_modifier(self) -> str:
+        """Tier × stage interaction modifier"""
+        tier_name = self.tier_name.lower()
+        stage_name = self.stage.lower()
+        
+        # Special combinations
+        if tier_name == 'sundered' and stage_name == 'prime':
+            return 'volatile_peak'
+        elif tier_name == 'liminal' and stage_name == 'elder':
+            return 'threshold_legacy'
+        elif tier_name == 'void':
+            return f'primordial_{stage_name}'
+        else:
+            return 'standard'
+    
+    @property
+    def experience_to_next(self) -> int:
+        """Experience needed for next level"""
+        if self.level >= 10:  # Elder is max level
+            return 0
+        return (self.level + 1) * 100  # Simple curve: level * 100
 
 def calculate_race_stats(genome) -> dict:
     """Calculate racing-specific stats from genome."""
