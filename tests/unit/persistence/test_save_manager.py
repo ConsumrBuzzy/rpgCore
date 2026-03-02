@@ -71,8 +71,11 @@ class TestSaveManager:
             main_data = json.loads(SaveManager.SAVE_FILE.read_text())
             backup_data = json.loads(SaveManager.BACKUP_FILE.read_text())
             
+            # Check that we have the slime data in both files
+            assert len(main_data['roster']['slimes']) == 1
             assert main_data['roster']['slimes'][0]['name'] == "Test Slime"
             assert main_data['session']['resources']['gold'] == 200
+            assert len(backup_data['roster']['slimes']) == 1
             assert backup_data['roster']['slimes'][0]['name'] == "Test Slime"
             assert backup_data['session']['resources']['gold'] == 200
     
