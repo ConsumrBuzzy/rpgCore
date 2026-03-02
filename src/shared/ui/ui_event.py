@@ -11,6 +11,6 @@ from typing import Any
 @dataclass
 class UIEvent:
     """Standard event format for UI component interactions."""
-    event_type: str   # 'click', 'hover', 'select', etc.
+    event_type: str   # 'click', 'hover', 'select', 'deselect', 'change', 'submit'
     source_id: str    # which component fired it
-    payload: Any      # component-specific data
+    payload: Any = None  # component-specific data
