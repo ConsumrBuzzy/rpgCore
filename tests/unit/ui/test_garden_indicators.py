@@ -121,7 +121,11 @@ class TestGardenIndicators:
             shape="round",
             size="medium",
             pattern="spotted",
-            accessory="none"
+            accessory="none",
+            curiosity=0.5,
+            energy=0.5,
+            affection=0.5,
+            shyness=0.5
         )
         
         slime = Slime("Test Slime", genome, (100, 100))
@@ -147,7 +151,11 @@ class TestGardenIndicators:
             shape="round",
             size="medium",
             pattern="spotted",
-            accessory="none"
+            accessory="none",
+            curiosity=0.5,
+            energy=0.5,
+            affection=0.5,
+            shyness=0.5
         )
         
         slime = Slime("Test Slime", genome, (100, 100))
@@ -170,7 +178,11 @@ class TestGardenIndicators:
             shape="round",
             size="medium",
             pattern="spotted",
-            accessory="none"
+            accessory="none",
+            curiosity=0.5,
+            energy=0.5,
+            affection=0.5,
+            shyness=0.5
         )
         
         slime = Slime("Test Slime", genome, (100, 100))
