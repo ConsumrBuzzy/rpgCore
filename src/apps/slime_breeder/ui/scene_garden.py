@@ -344,7 +344,7 @@ class GardenScene(GardenSceneBase):
         
         # Add to roster and auto-save
         rs = RosterSlime(
-            slime_id=slime.id,
+            slime_id=slime.name.lower().replace(" ", "_"),
             name=slime.name,
             genome=slime.genome
         )
