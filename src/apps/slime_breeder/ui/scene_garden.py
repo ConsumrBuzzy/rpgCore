@@ -40,6 +40,9 @@ class GardenScene(GardenSceneBase):
         # Initialize garden state
         self.garden_state = GardenState()
         
+        # Initialize resource indicators for idle zones
+        self.resource_indicators = []  # List of (pos, resource_type, amount, lifetime) tuples
+        
         # Initialize garden renderer with level
         self.garden_level = 0
         try:
