@@ -149,7 +149,7 @@ class DungeonPathScene(Scene):
             print(f"[DEBUG] Path scene - Squad: {zone.squad.name}")
             for i, member in enumerate(zone.squad.members):
                 # Get the actual slime from roster to access genome
-                slime = self.roster.get_slime(member.slime_id) if hasattr(member, 'slime_id') else None
+                slime = self.roster.get_creature(member.slime_id) if hasattr(member, 'slime_id') else None
                 if slime:
                     print(f"[DEBUG]   Member {i}: {member.name}, genome colors: {slime.genome.base_color}")
                 else:
@@ -236,7 +236,7 @@ class DungeonPathScene(Scene):
         for i, entry in enumerate(self.team[:4]):
             offset = (i - 1.5) * 4
             # Get the actual slime from roster to access genome
-            slime = self.roster.get_slime(entry.slime_id)
+            slime = self.roster.get_creature(entry.slime_id)
             if slime:
                 color = slime.genome.base_color
             else:
@@ -313,7 +313,7 @@ class DungeonPathScene(Scene):
         for i, entry in enumerate(self.team[:5]):
             sy = start_y + i * SLIME_SPACING
             # Get the actual slime from roster to access genome
-            slime = self.roster.get_slime(entry.slime_id)
+            slime = self.roster.get_creature(entry.slime_id)
             if slime:
                 render_slime_from_genome(surface, slime.genome, int(px), int(sy), radius=16)
 
@@ -356,7 +356,7 @@ class DungeonPathScene(Scene):
             
             # Portrait
             # Get the actual slime from roster to access genome
-            slime = self.roster.get_slime(entry.slime_id)
+            slime = self.roster.get_creature(entry.slime_id)
             if slime:
                 render_slime_from_genome(surface, slime.genome, card_x + 25, bar_y + card_h // 2, radius=18)
             
