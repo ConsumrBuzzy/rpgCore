@@ -167,13 +167,14 @@ class TeamScene(Scene):
             # Add click handler for assignment
             def make_click_handler(target_slime):
                 def click_handler():
-                    if self.active_tab_id == "dungeon":
-                        self._assign_to_dungeon(target_slime)
-                    elif self.active_tab_id == "racing":
-                        self._assign_to_racing(target_slime)
-                    elif self.active_tab_id == "conquest":
-                        # TODO: Implement conquest team assignment
-                        pass
+                    if hasattr(self, 'tabbed_panel') and self.tabbed_panel:
+                        if self.tabbed_panel.active_tab_id == "dungeon":
+                            self._assign_to_dungeon(target_slime)
+                        elif self.tabbed_panel.active_tab_id == "racing":
+                            self._assign_to_racing(target_slime)
+                        elif self.tabbed_panel.active_tab_id == "conquest":
+                            # TODO: Implement conquest team assignment
+                            pass
                 return click_handler
             
             Button("Assign", pygame.Rect(row_rect.right - 70, row_rect.y + 35, 60, 25), 
