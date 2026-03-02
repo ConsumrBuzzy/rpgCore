@@ -33,7 +33,7 @@ class GardenScene(GardenSceneBase):
             entity_registry=kwargs.get('entity_registry'),
             game_session=kwargs.get('game_session'),
             dispatch_system=kwargs.get('dispatch_system'),
-            roster=None,  # Will be set in on_enter
+            roster=kwargs.get('roster'),  # Use shared roster
             theme=None   # Will be set in on_enter
         )
         self.set_context(context)
@@ -46,6 +46,7 @@ class GardenScene(GardenSceneBase):
         self.entity_registry = kwargs.get('entity_registry')
         self.game_session = kwargs.get('game_session')
         self.dispatch_system = kwargs.get('dispatch_system')
+        self.roster = kwargs.get('roster')  # Use shared roster
         
         # Garden area (center of screen, excluding right panel)
         self.garden_rect = pygame.Rect(
