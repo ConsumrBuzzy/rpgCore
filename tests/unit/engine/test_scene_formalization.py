@@ -15,7 +15,7 @@ class TestSceneContext:
         """Test SceneContext can be created with all optional fields"""
         # Mock load_roster to avoid loading from file during test
         import unittest.mock
-        with unittest.mock.patch('src.shared.engine.scene_context.load_roster', return_value=None):
+        with unittest.mock.patch('src.shared.teams.roster_save.load_roster', return_value=None):
             context = SceneContext()
             assert context.entity_registry is None
             assert context.game_session is None
