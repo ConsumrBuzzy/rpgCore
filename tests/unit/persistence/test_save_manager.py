@@ -164,8 +164,15 @@ class TestSaveManager:
             session = GameSession.new_game()
             session.resources['gold'] = 400
             
-            # Save to create backup
+            # Save to create main file
             SaveManager.save(roster, session)
+            
+            # Add more data and save again to create backup
+            session.resources['gold'] = 500
+            SaveManager.save(roster, session)
+            
+            # Verify backup exists
+            assert SaveManager.BACKUP_FILE.exists()
             
             # Corrupt main file
             SaveManager.SAVE_FILE.write_text("corrupted data")
@@ -175,7 +182,7 @@ class TestSaveManager:
             assert result is not None
             
             roster_data, session_data = result
-            assert session_data['resources']['gold'] == 400
+            assert session_data['resources']['gold'] == 400  # From backup
     
     def test_load_returns_none_when_no_save(self):
         """Test load returns None when no save exists"""
