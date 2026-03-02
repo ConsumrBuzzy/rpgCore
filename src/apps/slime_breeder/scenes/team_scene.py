@@ -244,6 +244,10 @@ class TeamScene(Scene):
         session.start_run("fighter")
         logger.info(f"Session floor after start_run: {session.floor}")
         self.request_scene("dungeon_room", session=session)
+    
+    def _enter_racing(self):
+        logger.info("🏁 Launching Racing...")
+        self.request_scene("racing")
 
     def _assign_to_dungeon(self, slime: RosterSlime):
         if self.dungeon_team.assign(slime):
