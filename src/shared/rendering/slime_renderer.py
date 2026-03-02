@@ -59,9 +59,9 @@ class SlimeRenderer:
         pygame.draw.circle(temp_surface, inner_color, pos, gradient_radius)
         
         # Team assignment ring (after body, before selection)
-        if hasattr(slime, 'team') and slime.team and slime.team != 'garden':
+        if hasattr(slime, 'team') and slime.team and hasattr(slime.team, 'value') and slime.team.value != 'garden':
             from src.shared.ui.theme import DEFAULT_THEME
-            team_color = DEFAULT_THEME.team_color(slime.team)
+            team_color = DEFAULT_THEME.team_color(slime.team.value)
             ring_color = (*team_color, 180)  # Semi-transparent
             pygame.draw.circle(temp_surface, ring_color, pos, base_radius + 5, 3)
         
