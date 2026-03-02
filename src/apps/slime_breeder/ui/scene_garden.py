@@ -664,6 +664,98 @@ class GardenScene(GardenSceneBase):
                 surface.blit(label_surface, label_pos)
 
     def render_garden(self, surface: pygame.Surface):
+        """Render garden using RenderPipeline if available, otherwise legacy rendering"""
+        if self.pipeline:
+            # Use RenderPipeline for layered rendering
+            # Background
+            self.pipeline.submit(
+                RenderLayer.BACKGROUND,
+                lambda s: self._render_background(s)
+            )
+            
+            # Environment
+            self.pipeline.submit(
+                RenderLayer.ENVIRONMENT,
+                lambda s: self._render_environment(s)
+            )
+            
+            # Entities
+            self.pipeline.submit(
+                RenderLayer.ENTITIES,
+                lambda s: self._render_entities(s)
+            )
+            
+            # UI Components
+            self.pipeline.submit(
+                RenderLayer.UI,
+                lambda s: self._render_ui_components(s)
+            )
+            
+            # Overlays (resource indicators, tooltips, banners)
+            self.pipeline.submit(
+                RenderLayer.OVERLAY,
+                lambda s: self._render_overlays(s)
+            )
+            
+            # Execute pipeline
+            self.pipeline.execute(surface)
+        else:
+            # Legacy rendering (fallback)
+            self._render_garden_legacy(surface)
+    
+    def _render_background(self, surface: pygame.Surface):
+        """Render background layer"""
+        surface.fill(self.spec.color_bg)
+    
+    def _render_environment(self, surface: pygame.Surface):
+        """Render environment layer"""
+        if self.garden_renderer:
+            try:
+                self.garden_renderer.render_ground(surface, self.garden_level)
+                self.garden_renderer.render_ship(surface)
+                self.garden_renderer.render_environment(surface, self.garden_level)
+            except Exception as e:
+                logger.warning(f"Garden renderer failed: {e}")
+                # Fallback to simple background
+                surface.fill((20, 20, 30), self.garden_rect)
+    
+    def _render_entities(self, surface: pygame.Surface):
+        """Render entities layer"""
+        # Render Slimes
+        for slime in self.garden_state.slimes:
+            is_selected = (slime in self.selected_entities)
+            self.renderer.render(surface, slime, is_selected)
+        
+        # Render idle zone overlays (before resource indicators)
+        self._render_idle_zone_overlays(surface)
+    
+    def _render_ui_components(self, surface: pygame.Surface):
+        """Render UI components layer"""
+        # Update and render DispatchPanel with current resources
+        if hasattr(self, 'dispatch_panel') and self.game_session:
+            available_slimes = [s for s in self.garden_state.slimes if s not in self.selected_entities]
+            self.dispatch_panel.update_data(self.game_session.resources, available_slimes)
+            self.dispatch_panel.render(surface)
+        
+        # Render right panel
+        self._render_right_panel(surface)
+        
+        # Render team status bar
+        self._render_team_status_bar(surface)
+    
+    def _render_overlays(self, surface: pygame.Surface):
+        """Render overlay layer"""
+        # Render resource indicators (after slimes, before UI)
+        self._render_resource_indicators(surface)
+        
+        # Render hover tooltip (on top of everything)
+        self._render_hover_tooltip(surface)
+        
+        # Render banner
+        self._render_banner(surface)
+    
+    def _render_garden_legacy(self, surface: pygame.Surface):
+        """Legacy rendering fallback"""
         # Render environmental elements before slimes
         if self.garden_renderer:
             try:
