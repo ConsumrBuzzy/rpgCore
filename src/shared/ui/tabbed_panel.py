@@ -26,7 +26,7 @@ class TabbedPanel(UIComponent):
     def __init__(self, rect: pygame.Rect, tabs: List[TabDef], theme: Optional[UITheme] = None):
         self.theme = theme or DEFAULT_THEME
         self.tabs = tabs
-        self.active_tab_id = tabs[0].id if tabs else None
+        self._active_tab_id = tabs[0].id if tabs else None
         self.tab_height = 32
         self.content_callbacks = {}  # tab_id -> callback function
         
@@ -72,7 +72,7 @@ class TabbedPanel(UIComponent):
     @property
     def active_tab_id(self) -> str:
         """Get the currently active tab ID"""
-        return self.active_tab_id
+        return self._active_tab_id
     
     def handle_event(self, event: pygame.event.Event) -> Optional[UIEvent]:
         """Handle tab switching events"""
@@ -82,9 +82,9 @@ class TabbedPanel(UIComponent):
             # Check if click is on any tab
             for i, tab in enumerate(self.tabs):
                 if self.tab_rects[i].collidepoint(mouse_pos):
-                    if tab.id != self.active_tab_id:
-                        old_tab = self.active_tab_id
-                        self.active_tab_id = tab.id
+                    if tab.id != self._active_tab_id:
+                        old_tab = self._active_tab_id
+                        self._active_tab_id = tab.id
                         
                         # Emit tab change event
                         return UIEvent(
@@ -105,7 +105,7 @@ class TabbedPanel(UIComponent):
         # Render tab bar
         for i, tab in enumerate(self.tabs):
             tab_rect = self.tab_rects[i]
-            is_active = tab.id == self.active_tab_id
+            is_active = tab.id == self._active_tab_id
             
             # Tab background
             if is_active:
@@ -137,8 +137,8 @@ class TabbedPanel(UIComponent):
             surface.blit(text_surface, text_rect)
         
         # Render content area
-        if self.active_tab_id in self.content_callbacks:
-            callback = self.content_callbacks[self.active_tab_id]
+        if self._active_tab_id in self.content_callbacks:
+            callback = self.content_callbacks[self._active_tab_id]
             if callback:
                 # Create content surface
                 content_surface = pygame.Surface((self.content_rect.width, self.content_rect.height), pygame.SRCALPHA)
@@ -150,7 +150,7 @@ class TabbedPanel(UIComponent):
             
             # Show empty message
             font = pygame.font.Font(None, 16)
-            text = f"No content for tab '{self.active_tab_id}'"
+            text = f"No content for tab '{self._active_tab_id}'"
             text_surface = font.render(text, True, self.theme.text_dim)
             text_rect = text_surface.get_rect()
             text_rect.center = self.content_rect.center
