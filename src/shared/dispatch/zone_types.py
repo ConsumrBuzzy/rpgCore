@@ -81,7 +81,8 @@ ZONE_CONFIGS: Dict[ZoneType, ZoneConfig] = {
 
 def get_zone_config(zone_type: ZoneType) -> ZoneConfig:
     """Get configuration for a zone type"""
-    return ZONE_CONFIGS[zone_type].copy()  # Return a copy to ensure immutability
+    from dataclasses import replace
+    return replace(ZONE_CONFIGS[zone_type])  # Return a copy to ensure immutability
 
 def get_all_zone_configs() -> Dict[ZoneType, ZoneConfig]:
     """Get all zone configurations"""
