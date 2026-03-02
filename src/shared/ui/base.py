@@ -1,32 +1,78 @@
 """
-Legacy base component - maintained for backward compatibility.
+UIComponent - Standard interface for all UI components
 
-New components should use UIComponent from base_component.py.
+Provides the contract that all UI components must follow.
+Maintains backward compatibility while enforcing the new standard.
 """
 
+from abc import ABC, abstractmethod
 from typing import Any, Optional
 import pygame
 
 
-class UIComponent:
-    """Legacy UIComponent for backward compatibility."""
+class UIComponent(ABC):
+    """
+    Standard interface that all UI components must follow.
     
-    def __init__(self, rect: pygame.Rect, z_order: int = 0):
-        self.rect = rect
+    Maintains backward compatibility while enforcing the new contract.
+    """
+    
+    def __init__(self, rect: pygame.Rect, theme: Optional['UITheme'] = None, z_order: int = 0):
+        """
+        rect defines where component renders
+        theme controls colors/fonts (defaults to DEFAULT_THEME)
+        """
+        self._rect = rect
+        self.theme = theme
         self.z_order = z_order
+        
+        # Legacy compatibility - ensure these attributes exist
+        self.visible = True
+        
+        # Try to import DEFAULT_THEME, fallback to None if not available
+        try:
+            from .theme import DEFAULT_THEME
+            if self.theme is None:
+                self.theme = DEFAULT_THEME
+        except ImportError:
+            # Theme system not available yet
+            pass
 
-    def render(self, surface: pygame.Surface) -> None:
-        """Override in subclasses."""
+    @abstractmethod
+    def render(self, surface: pygame.Surface, data: Any = None) -> None:
+        """
+        data is component-specific payload
+        surface is where to draw
+        Never stores data as instance state — data flows in at render time
+        """
         pass
 
-    def update(self, dt_ms: int) -> None:
-        """Override in subclasses."""
-        pass
+    def handle_event(self, event: pygame.event.Event) -> Optional['UIEvent']:
+        """
+        Returns UIEvent if something happened
+        Returns None if event not consumed
+        Default implementation returns None
+        """
+        return None  # default: not consumed
 
-    def handle_event(self, event: pygame.event.Event) -> bool:
-        """Override in subclasses. Return True if event consumed."""
-        return False
+    def update(self, dt: float) -> None:
+        """
+        Animation, timers, state transitions
+        Default implementation does nothing
+        """
+        pass  # default: no animation
 
+    @property
+    def rect(self) -> pygame.Rect:
+        """Returns component bounds"""
+        return self._rect
+
+    @rect.setter
+    def rect(self, value: pygame.Rect):
+        """Set component bounds"""
+        self._rect = value
+
+    # Legacy compatibility methods - preserve existing behavior
     def contains_point(self, x: int, y: int) -> bool:
         """Check if a point is within the component's rect."""
         return self.rect.collidepoint(x, y)
