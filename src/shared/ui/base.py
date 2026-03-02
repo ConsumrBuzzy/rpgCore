@@ -2,17 +2,32 @@ from abc import ABC, abstractmethod
 import pygame
 
 class UIComponent(ABC):
-    """Base class for all shared UI components."""
+    """Legacy base component - maintained for backward compatibility.
+
+New components should use UIComponent from base_component.py."""
+
+from typing import Any, Optional
+import pygame
+
+
+class UIComponent:
+    """Legacy UIComponent for backward compatibility."""
     
     def __init__(self, rect: pygame.Rect, z_order: int = 0):
         self.rect = rect
-        self.visible: bool = True
-        self.z_order: int = z_order
+        self.z_order = z_order
 
-    @abstractmethod
-    def update(self, dt_ms: int) -> None:
-        """Update component state."""
+    def render(self, surface: pygame.Surface) -> None:
+        """Override in subclasses."""
         pass
+
+    def update(self, dt_ms: int) -> None:
+        """Override in subclasses."""
+        pass
+
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """Override in subclasses. Return True if event consumed."""
+        return False
 
     @abstractmethod
     def render(self, surface: pygame.Surface) -> None:
