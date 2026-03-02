@@ -31,6 +31,9 @@ class ScrollList(UIComponent):
         self.items: List[str] = []
         self.scroll_offset: int = 0
         self.selected_index: int = 0
+        
+        # Add visible attribute for compatibility
+        self.visible = True
 
     def load_items(self, items: List[str]) -> None:
         self.items = items
