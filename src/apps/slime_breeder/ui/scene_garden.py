@@ -468,14 +468,18 @@ class GardenScene(GardenSceneBase):
             rs = next((r for r in self.roster.slimes if r.slime_id == slime_id), None)
             if rs:
                 if self.roster.get_dungeon_team().assign(rs):
-                    save_roster(self.roster)
+                    # Auto-save using SaveManager
+                    if self.context:
+                        self.context.save_roster()
                     self.on_selection_changed()
             else:
                 # Try new format
                 entry = next((e for e in self.roster.entries if e.slime_id == slime_id), None)
                 if entry:
                     if self.roster.get_dungeon_team().assign(entry):
-                        save_roster(self.roster)
+                        # Auto-save using SaveManager
+                        if self.context:
+                            self.context.save_roster()
                         self.on_selection_changed()
 
     def _assign_to_racing(self):
@@ -486,14 +490,18 @@ class GardenScene(GardenSceneBase):
             rs = next((r for r in self.roster.slimes if r.slime_id == slime_id), None)
             if rs:
                 if self.roster.get_racing_team().assign(rs):
-                    save_roster(self.roster)
+                    # Auto-save using SaveManager
+                    if self.context:
+                        self.context.save_roster()
                     self.on_selection_changed()
             else:
                 # Try new format
                 entry = next((e for e in self.roster.entries if e.slime_id == slime_id), None)
                 if entry:
                     if self.roster.get_racing_team().assign(entry):
-                        save_roster(self.roster)
+                        # Auto-save using SaveManager
+                        if self.context:
+                            self.context.save_roster()
                         self.on_selection_changed()
 
     def _remove_from_team(self):
@@ -504,14 +512,18 @@ class GardenScene(GardenSceneBase):
             rs = next((r for r in self.roster.slimes if r.slime_id == slime_id), None)
             if rs and rs.team != TeamRole.UNASSIGNED:
                 if self.roster.teams[rs.team].remove(rs.slime_id):
-                    save_roster(self.roster)
+                    # Auto-save using SaveManager
+                    if self.context:
+                        self.context.save_roster()
                     self.on_selection_changed()
             else:
                 # Try new format
                 entry = next((e for e in self.roster.entries if e.slime_id == slime_id), None)
                 if entry and entry.team != TeamRole.UNASSIGNED:
                     if self.roster.teams[entry.team].remove(entry.slime_id):
-                        save_roster(self.roster)
+                        # Auto-save using SaveManager
+                        if self.context:
+                            self.context.save_roster()
                         self.on_selection_changed()
 
     def update_garden(self, dt: float):
