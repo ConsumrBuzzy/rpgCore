@@ -541,6 +541,9 @@ class GardenScene(GardenSceneBase):
         for slime in self.garden_state.slimes:
             is_selected = (slime in self.selected_entities)
             self.renderer.render(surface, slime, is_selected)
+        
+        # Render resource indicators (after slimes, before UI)
+        self._render_resource_indicators(surface)
             
         self._render_banner(surface)
         self._render_right_panel(surface)
