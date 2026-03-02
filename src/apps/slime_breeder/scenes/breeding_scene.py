@@ -289,4 +289,4 @@ class BreedingScene(Scene):
             txt_surf = self.name_font.render(self.offspring_name + "_", True, (255, 255, 255))
             txt_rect = txt_surf.get_rect(center=(self.spec.screen_width // 2, self.spec.screen_height // 2))
             surface.blit(txt_surf, txt_rect)
-            Label("NAME YOUR NEW ARRIVAL", (txt_rect.centerx, txt_rect.top - 40), self.spec, centered=True, bold=True).render(surface)
+            Label("NAME YOUR NEW ARRIVAL", (txt_rect.centerx, txt_rect.top - 40), self.spec, centered=True, bold=True, theme=DEFAULT_THEME).render(surface)
