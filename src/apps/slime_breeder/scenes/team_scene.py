@@ -197,7 +197,7 @@ class TeamScene(Scene):
         bg_color = self.spec.color_surface_alt if slime.is_elder else self.spec.color_surface
         border_color = self.spec.color_accent if slime.is_elder else self.spec.color_border
         
-        card = Panel(rect, self.spec, variant="surface", border=True)
+        card = Panel(rect, self.spec, variant="surface", border=True, theme=DEFAULT_THEME)
         card.bg_color = bg_color
         card.border_color = border_color
         
@@ -219,8 +219,8 @@ class TeamScene(Scene):
             culture = "unknown"
         
         name_x = rect.x + portrait_size + 40
-        Label(name, (name_x, rect.y + 20), self.spec, size="lg", bold=True).add_to(card.children)
-        Label(f"Lv.{level}", (rect.right - 80, rect.y + 20), self.spec, size="md", color=(200, 200, 100)).add_to(card.children)
+        Label(name, (name_x, rect.y + 20), self.spec, size="lg", bold=True, theme=DEFAULT_THEME).add_to(card.children)
+        Label(f"Lv.{level}", (rect.right - 80, rect.y + 20), self.spec, size="md", color=(200, 200, 100), theme=DEFAULT_THEME).add_to(card.children)
         
         # Culture badge
         culture_color = {
@@ -237,12 +237,12 @@ class TeamScene(Scene):
             hp = atk = spd = 0
         
         stats_y = rect.y + 60
-        Label(f"HP: {hp}", (name_x, stats_y), self.spec, size="sm", color=(200, 100, 100)).add_to(card.children)
-        Label(f"ATK: {atk}", (name_x + 80, stats_y), self.spec, size="sm", color=(220, 140, 60)).add_to(card.children)
-        Label(f"SPD: {spd}", (name_x + 160, stats_y), self.spec, size="sm", color=(100, 180, 220), bold=True).add_to(card.children)
+        Label(f"HP: {hp}", (name_x, stats_y), self.spec, size="sm", color=(200, 100, 100), theme=DEFAULT_THEME).add_to(card.children)
+        Label(f"ATK: {atk}", (name_x + 80, stats_y), self.spec, size="sm", color=(220, 140, 60), theme=DEFAULT_THEME).add_to(card.children)
+        Label(f"SPD: {spd}", (name_x + 160, stats_y), self.spec, size="sm", color=(100, 180, 220), bold=True, theme=DEFAULT_THEME).add_to(card.children)
         
         # Speed emphasis
-        Label("SPEED determines racing performance", (name_x, stats_y + 25), self.spec, size="xs", color=(140, 140, 160)).add_to(card.children)
+        Label("SPEED determines racing performance", (name_x, stats_y + 25), self.spec, size="xs", color=(140, 140, 160), theme=DEFAULT_THEME).add_to(card.children)
         
         return card
 
