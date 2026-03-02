@@ -135,7 +135,7 @@ class StatsPanel(UIComponent):
     def _render_culture_expression(self, surface: pygame.Surface, x: int, y: int):
         """Render culture expression mini-chart"""
         # Header
-        self._render_text(surface, "CULTURE", (x, y), size=11, color=(120, 120, 140))
+        self._render_text(surface, "CULTURE", (x, y), size=11, color=self.theme.text_dim)
         
         # Get culture expression data
         culture_expression = getattr(self.slime.genome, 'culture_expression', {})
@@ -174,14 +174,14 @@ class StatsPanel(UIComponent):
             
             # Percentage
             pct_text = f"{weight:.0%}"
-            self._render_text(surface, pct_text, (x + 20 + bar_width + 5, bar_y), size=9, color=(160, 160, 180))
+            self._render_text(surface, pct_text, (x + 20 + bar_width + 5, bar_y), size=9, color=self.theme.text_secondary)
             
             bar_y += 8
 
     def _render_personality_axes(self, surface: pygame.Surface, x: int, y: int):
         """Render personality axes as mini-bars"""
         # Header
-        self._render_text(surface, "PERSONALITY", (x, y), size=11, color=(120, 120, 140))
+        self._render_text(surface, "PERSONALITY", (x, y), size=11, color=self.theme.text_dim)
         
         # Get personality axes data
         personality_axes = getattr(self.slime.genome, 'personality_axes', {})
@@ -218,6 +218,6 @@ class StatsPanel(UIComponent):
             
             # Value (1 decimal)
             value_text = f"{value:.1f}"
-            self._render_text(surface, value_text, (x + 25 + bar_width + 5, bar_y), size=9, color=(160, 160, 180))
+            self._render_text(surface, value_text, (x + 25 + bar_width + 5, bar_y), size=9, color=self.theme.text_secondary)
             
             bar_y += 8
