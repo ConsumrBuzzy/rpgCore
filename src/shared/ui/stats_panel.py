@@ -36,6 +36,7 @@ class StatsPanel(UIComponent):
         atk = calculate_attack(self.slime.genome, self.slime.level)
         spd = calculate_speed(self.slime.genome, self.slime.level)
         
+        # Original stats section
         self._render_stat(surface, "HEALTH", hp,  (x + self.PADDING, y + self.PADDING), (200, 100, 100))
         self._render_stat(surface, "ATTACK", atk, (x + self.PADDING, y + self.PADDING + 30), (220, 140, 60))
         self._render_stat(surface, "SPEED",  spd, (x + self.PADDING, y + self.PADDING + 60), (100, 180, 220))
@@ -43,7 +44,15 @@ class StatsPanel(UIComponent):
         # Genetic dominance hint
         dominance = self._get_dominance_text()
         max_dna_width = self.WIDTH - (self.PADDING * 2)  # Card width minus padding
-        self._render_truncated_text(surface, f"DNA: {dominance}", (x + self.PADDING, y + self.HEIGHT - 20), max_dna_width, size=12, color=(140, 140, 160))
+        self._render_truncated_text(surface, f"DNA: {dominance}", (x + self.PADDING, y + 90), max_dna_width, size=12, color=(140, 140, 160))
+        
+        # Culture expression chart
+        culture_y = y + 110
+        self._render_culture_expression(surface, x + self.PADDING, culture_y)
+        
+        # Personality axes
+        personality_y = culture_y + 45
+        self._render_personality_axes(surface, x + self.PADDING, personality_y)
 
     def _render_stat(self, surface, label, value, pos, color):
         # Stat Label
