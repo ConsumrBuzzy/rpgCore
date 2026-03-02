@@ -450,7 +450,7 @@ class GardenScene(GardenSceneBase):
         self.garden_state.update(dt, cursor)
 
     def _update_idle_zones(self, dt: float):
-        """Update idle zone resource generation"""
+        """Update idle zone resource generation and visual indicators"""
         if not self.game_session or not self.garden_renderer:
             return
         
@@ -469,6 +469,12 @@ class GardenScene(GardenSceneBase):
                 resource_type = random.choice(['gold', 'food', 'scrap'])
                 amount = random.randint(1, 3)
                 self.game_session.resources[resource_type] = self.game_session.resources.get(resource_type, 0) + amount
+                
+                # Add visual indicator for resource generation
+                self._create_resource_indicator(idle_target, resource_type, amount)
+        
+        # Clean up old indicators
+        self._cleanup_resource_indicators(dt)
 
     def render_garden(self, surface: pygame.Surface):
         # Render environmental elements before slimes
