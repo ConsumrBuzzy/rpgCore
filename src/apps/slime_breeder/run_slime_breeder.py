@@ -53,7 +53,16 @@ def create_app() -> SceneManager:
 def main():
     logger.info("🚀 Launching Slime Breeder...")
     app, entity_registry, game_session, dispatch_system, roster = create_app()
-    app.run("garden", entity_registry=entity_registry, game_session=game_session, dispatch_system=dispatch_system, roster=roster)
+    
+    # Set shared state that gets passed to all scenes
+    app.set_shared_state(
+        entity_registry=entity_registry,
+        game_session=game_session,
+        dispatch_system=dispatch_system,
+        roster=roster
+    )
+    
+    app.run("garden")
 
 if __name__ == "__main__":
     main()
