@@ -52,8 +52,8 @@ class TestStatsPanelExtensions:
 
     def test_extended_height(self):
         """Test stats panel height is extended for new sections"""
-        # Height should be increased from 120 to 220
-        assert self.stats_panel.HEIGHT == 220
+        # Height should be increased from 120 to 250
+        assert self.stats_panel.HEIGHT == 250
         
         # Width should remain unchanged
         assert self.stats_panel.WIDTH == 200
@@ -214,5 +214,5 @@ class TestStatsPanelExtensions:
         personality_y = culture_y + 40
         assert personality_y == 240
         
-        # Both should fit within the extended height (220)
+        # Both should fit within the extended height (250)
         assert personality_y < self.stats_panel.HEIGHT
