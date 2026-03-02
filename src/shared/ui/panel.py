@@ -2,6 +2,7 @@ from typing import List, Optional, Tuple, Union
 import pygame
 from src.shared.ui.base import UIComponent
 from src.shared.ui.spec import UISpec
+from src.shared.ui.theme import UITheme
 
 class Panel(UIComponent):
     """A container component that can hold and render children, driven by UISpec."""
@@ -12,20 +13,22 @@ class Panel(UIComponent):
         spec: UISpec,
         variant: str = "surface",
         border: bool = True,
+        theme: Optional[UITheme] = None,
         z_order: int = 0
     ):
-        super().__init__(rect, z_order)
         self.spec = spec
+        self.theme = theme or UITheme.DEFAULT
         self.variant = variant
         
-        # Map variants to spec colors
+        # Map variants to theme colors
         variants = {
-            "surface": {"bg": spec.color_surface, "border_color": spec.color_border},
-            "card":    {"bg": spec.color_surface_alt, "border_color": spec.color_accent},
-            "overlay": {"bg": (spec.color_bg[0], spec.color_bg[1], spec.color_bg[2], 230), "border_color": spec.color_border},
+            "surface": {"bg": self.theme.surface, "border_color": self.theme.border},
+            "card":    {"bg": self.theme.surface_raised, "border_color": self.theme.border_active},
+            "overlay": {"bg": (self.theme.background[0], self.theme.background[1], self.theme.background[2], 230), "border_color": self.theme.border},
         }
         style = variants.get(variant, variants["surface"])
         
+        super().__init__(rect, self.theme, z_order)
         self.bg_color = style["bg"]
         self.border_color = style["border_color"]
         self.border_width = 2 if border else 0

@@ -2,6 +2,7 @@ from typing import Tuple, List, Optional
 import pygame
 from src.shared.ui.base import UIComponent
 from src.shared.ui.spec import UISpec
+from src.shared.ui.theme import UITheme
 
 class Label(UIComponent):
     """Text rendering component with alignment and word wrap, driven by UISpec."""
@@ -16,18 +17,21 @@ class Label(UIComponent):
         bold: bool = False,
         centered: bool = False,
         wrap_width: Optional[int] = None,
+        theme: Optional[UITheme] = None,
         z_order: int = 0
     ):
-        # Map size names to spec values
+        self.theme = theme or UITheme.DEFAULT
+        
+        # Map size names to theme values
         font_sizes = {
-            "sm": spec.font_size_sm,
-            "md": spec.font_size_md,
-            "lg": spec.font_size_lg,
-            "xl": spec.font_size_xl,
-            "hd": spec.font_size_hd
+            "sm": self.theme.font_small,
+            "md": self.theme.font_medium,
+            "lg": self.theme.font_large,
+            "xl": 24,  # Fallback
+            "hd": 32,  # Fallback
         }
-        self.font_size = font_sizes.get(size, spec.font_size_md)
-        self.color = color or spec.color_text
+        self.font_size = font_sizes.get(size, self.theme.font_medium)
+        self.color = color or self.theme.text_primary
         self.align = "center" if centered else "left"
         
         # Calculate rect based on position and wrap_width
@@ -37,7 +41,7 @@ class Label(UIComponent):
         if centered:
              rect.x -= rect.width // 2
              
-        super().__init__(rect, z_order)
+        super().__init__(rect, self.theme, z_order)
         self.text = text
         self.wrap_width = wrap_width or rect.width
         self.bold = bold

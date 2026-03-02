@@ -163,7 +163,7 @@ class ProfileCard(UIComponent):
         """Render stage and tier badges in a compact row using theme colors."""
         # Stage badge (left)
         stage = getattr(self.slime.genome, 'stage', 'Unknown')
-        stage_color = self.theme.stage_colors.get(stage, (140, 140, 140))
+        stage_color = self.theme.stage_color(stage)
         render_badge(surface, stage.upper(), (x, y), stage_color)
         
         # Tier badge (right of stage)
@@ -171,7 +171,7 @@ class ProfileCard(UIComponent):
         tier_name = getattr(self.slime.genome, 'tier_name', '')
         tier_text = f"T{tier} {tier_name}" if tier_name else f"T{tier}"
         
-        tier_color = self.theme.tier_colors.get(tier, (200, 200, 200))
+        tier_color = self.theme.tier_color(tier)
         
         # Position tier badge after stage badge
         stage_width = len(stage) * 8 + 16  # Approximate
