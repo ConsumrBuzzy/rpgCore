@@ -6,7 +6,7 @@ Keeps Roster and EntityRegistry in sync automatically
 from typing import Optional
 from loguru import logger
 
-from src.shared.teams.roster import Roster, RosterSlime
+from src.shared.teams.roster import Roster, RosterSlime, TeamRole
 from src.shared.state.entity_registry import EntityRegistry
 
 
@@ -42,15 +42,38 @@ class RosterSyncService:
         Returns True if removed successfully.
         """
         try:
-            # Remove from roster first (handles team cleanup, etc.)
-            success = self.roster.remove_creature(slime_id)
-            if success:
-                # Remove from registry
-                self.registry.unregister(slime_id)
-                logger.debug(f"Removed slime {slime_id} from both roster and registry")
-            else:
-                logger.warning(f"Slime {slime_id} not found in roster for removal")
-            return success
+            # Find the entry first to get team info
+            entry = None
+            for e in self.roster.entries:
+                if e.slime_id == slime_id:
+                    entry = e
+                    break
+            
+            if not entry:
+                logger.warning(f"Slime {slime_id} not found in roster entries")
+                return False
+            
+            if entry.locked:
+                logger.warning(f"Cannot remove locked slime {slime_id}")
+                return False
+            
+            # Remove from entries
+            self.roster.entries.remove(entry)
+            
+            # Remove from team if not unassigned
+            if entry.team != TeamRole.UNASSIGNED and entry.team in self.roster.teams:
+                self.roster.teams[entry.team].remove(slime_id)
+            
+            # Remove from _roster_slimes dict
+            if slime_id in self.roster._roster_slimes:
+                del self.roster._roster_slimes[slime_id]
+            
+            # Remove from registry
+            self.registry.unregister(slime_id)
+            
+            logger.debug(f"Removed slime {slime_id} from both roster and registry")
+            return True
+            
         except Exception as e:
             logger.error(f"Failed to remove slime {slime_id}: {e}")
             return False
@@ -77,15 +100,21 @@ class RosterSyncService:
         Verify both systems agree.
         Used in tests and debug checks.
         """
-        roster_ids = set(self.roster.slimes.keys())
+        roster_ids = set(self.roster._roster_slimes.keys())
         registry_ids = set(self.registry._entities.keys())
         return roster_ids == registry_ids
 
     def _rollback_add(self, slime: RosterSlime) -> None:
         """Attempt to rollback partial add failure"""
         try:
-            # Try to remove from roster
+            # Try to remove from roster entries
             self.roster.remove_creature(slime.slime_id)
+        except Exception:
+            pass
+        try:
+            # Try to remove from roster _roster_slimes
+            if slime.slime_id in self.roster._roster_slimes:
+                del self.roster._roster_slimes[slime.slime_id]
         except Exception:
             pass
         try:
