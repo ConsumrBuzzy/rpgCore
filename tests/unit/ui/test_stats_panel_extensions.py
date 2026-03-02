@@ -1,8 +1,9 @@
-"""Tests for StatsPanel culture expression and personality extensions"""
+"""Tests for StatsPanel extensions - culture expression and personality axes"""
 
 import pytest
 from unittest.mock import Mock
 from src.shared.ui.stats_panel import StatsPanel
+from src.shared.ui.theme import DEFAULT_THEME
 from src.shared.teams.roster import RosterSlime
 from src.shared.genetics.genome import SlimeGenome, CulturalBase
 
@@ -48,7 +49,7 @@ class TestStatsPanelExtensions:
         self.mock_slime.genome = self.mock_genome
         
         # Create stats panel
-        self.stats_panel = StatsPanel(self.mock_slime, (100, 100), width=200)
+        self.stats_panel = StatsPanel(self.mock_slime, (100, 100), width=200, theme=DEFAULT_THEME)
 
     def test_extended_height(self):
         """Test stats panel height is extended for new sections"""

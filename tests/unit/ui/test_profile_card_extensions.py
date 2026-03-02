@@ -4,6 +4,7 @@ import pytest
 from unittest.mock import Mock
 from src.shared.ui.profile_card import ProfileCard
 from src.shared.ui.spec import UISpec
+from src.shared.ui.theme import DEFAULT_THEME
 from src.shared.teams.roster import RosterSlime, TeamRole
 from src.shared.genetics.genome import SlimeGenome, CulturalBase
 
@@ -80,7 +81,7 @@ class TestProfileCardExtensions:
         self.spec.color_accent = (150, 160, 180)
         
         # Create profile card
-        self.profile_card = ProfileCard(self.mock_slime, (100, 100), self.spec)
+        self.profile_card = ProfileCard(self.mock_slime, (100, 100), self.spec, theme=DEFAULT_THEME)
 
     def test_stage_badge_rendering(self):
         """Test stage badge displays correct color and text"""
