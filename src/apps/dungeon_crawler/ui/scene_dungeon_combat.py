@@ -52,7 +52,8 @@ class DungeonCombatScene(CombatSceneBase):
         if self.team and self.team.members:
             # Add all team members to party
             for team_member in self.team.members:
-                slime = self.roster.get_creature(team_member.slime_id)
+                # Get the RosterSlime directly from roster
+                slime = self.roster._roster_slimes.get(team_member.slime_id)
                 if slime and slime.alive:
                     # Use stat_block if available, fallback to genome
                     if hasattr(slime, 'stat_block') and slime.stat_block:
@@ -403,10 +404,10 @@ class DungeonCombatScene(CombatSceneBase):
         """Copies combat HP back to roster slimes."""
         for unit in self.party:
             if unit and unit.id.startswith("party_"):
-                # Find matching team slime by name
+                # Find matching team member by name
                 rs = next((s for s in self.team.members if s.name == unit.name), None)
                 if rs:
-                    slime = self.roster.get_creature(rs.slime_id)
+                    slime = self.roster._roster_slimes.get(rs.slime_id)
                     if slime:
                         slime.current_hp = float(unit.stats["hp"])
                         if slime.current_hp <= 0:
