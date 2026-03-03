@@ -510,6 +510,27 @@ class Roster:
                     entry._team_ref = roster.teams[entry.team]
                     roster.teams[entry.team].members.append(entry)
         
+        # Restore teams data if available (new format)
+        if "teams" in data:
+            for role_name, team_data in data["teams"].items():
+                role = TeamRole(role_name)
+                if role in roster.teams:
+                    team = roster.teams[role]
+                    team.slots = team_data.get("slots", 4)
+                    
+                    # Clear existing members and restore from data
+                    team.members.clear()
+                    for member_data in team_data.get("members", []):
+                        member_entry = RosterEntry(
+                            slime_id=member_data["slime_id"],
+                            team=TeamRole(member_data["team"]),
+                            locked=member_data.get("locked", False),
+                            alive=member_data.get("alive", True)
+                        )
+                        team.members.append(member_entry)
+                        # Set back-reference
+                        member_entry._team_ref = team
+        
         # Set all back-references after loading (for both legacy and new formats)
         roster._set_back_references()
         return roster
