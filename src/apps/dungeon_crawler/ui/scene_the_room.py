@@ -5,6 +5,7 @@ from src.shared.ui.label import Label
 from src.shared.ui.button import Button
 from src.shared.ui.spec import UISpec
 from src.apps.dungeon_crawler.ui.dungeon_session import DungeonSession
+from src.shared.teams.roster import TeamRole
 
 class TheRoomScene(Scene):
     """
