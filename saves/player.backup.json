@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "saved_at": "2026-03-03T03:33:17.661687+00:00",
+  "saved_at": "2026-03-03T03:33:58.946876+00:00",
   "roster": {
     "slimes": [
       {
@@ -222,11 +222,11 @@
     ]
   },
   "session": {
-    "session_id": "8a844894-dff7-49de-86f4-a4b317dc69f4",
+    "session_id": "2fd1b5fd-fe3f-4556-85c4-2fd8b4ba6b22",
     "resources": {
-      "gold": 105,
-      "scrap": 3,
-      "food": 59
+      "gold": 100,
+      "scrap": 0,
+      "food": 50
     },
     "garden": {
       "room_level": 0,
@@ -241,6 +241,6 @@
       "active_events": []
     },
     "active_dispatches": [],
-    "current_tick": 344
+    "current_tick": 0
   }
 }

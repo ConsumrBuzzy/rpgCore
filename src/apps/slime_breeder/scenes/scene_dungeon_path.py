@@ -27,6 +27,12 @@ class DungeonPathScene(Scene):
         self.layout = ArenaLayout(spec)
         self.session = kwargs.get('session')
         
+        # Create session if not provided
+        if not self.session:
+            from src.apps.dungeon_crawler.ui.dungeon_session import DungeonSession
+            self.session = DungeonSession()
+            self.session.start_run()
+        
         # Get shared entity registry
         self.entity_registry = kwargs.get('entity_registry')
         
