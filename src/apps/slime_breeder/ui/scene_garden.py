@@ -540,7 +540,7 @@ class GardenScene(GardenSceneBase):
             # BREED or SUMO - check which button was pressed
             if hasattr(self, '_last_carousel_source'):
                 if self._last_carousel_source == 'breed':
-                    # Pass selected pair to breeding scene
+                    # Pass selected pair to breeding scene via SceneContext
                     self.request_scene("breeding", selected_pair=result.selected)
                 elif self._last_carousel_source == 'sumo':
                     # Pass selected pair to sumo scene

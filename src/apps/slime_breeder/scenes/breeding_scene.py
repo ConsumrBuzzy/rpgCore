@@ -46,6 +46,11 @@ class BreedingScene(Scene):
             )
             self.set_context(context)
             self.roster = context.roster
+        
+        # Store selected pair if provided from carousel
+        selected_pair = kwargs.get('selected_pair')
+        if selected_pair and self.context:
+            self.context.selected_pair = selected_pair
             
         self.state = BreedingState.SELECT_A
         
@@ -69,6 +74,25 @@ class BreedingScene(Scene):
         self._complete_timer = 0.0
         # Input for naming
         self.name_font = pygame.font.Font(None, int(48 * spec.scale_factor))
+
+    def on_enter(self) -> None:
+        """Check for pre-selected pair from carousel."""
+        # Check if SceneContext has pre-selected pair from carousel
+        if self.context and hasattr(self.context, 'selected_pair'):
+            selected_pair = self.context.selected_pair
+            if selected_pair and len(selected_pair) == 2:
+                # Pre-select both parents from carousel
+                self.parent_a = selected_pair[0]
+                self.parent_b = selected_pair[1]
+                self.state = BreedingState.PREVIEW
+                # Generate offspring genome
+                from src.shared.genetics.breeding_system import BreedingSystem
+                self.offspring_genome = BreedingSystem.breed(self.parent_a, self.parent_b)
+                self._setup_ui()
+                return
+        
+        # No pre-selected pair, use normal flow
+        self._setup_ui()
 
     def _setup_ui(self):
         self.ui_components = []
