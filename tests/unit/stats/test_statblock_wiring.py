@@ -51,7 +51,7 @@ class TestStatBlockWiring:
             energy=0.5,
             affection=0.5,
             shyness=0.5,
-            cultural_base=CulturalBase.MOSS,
+            cultural_base=CulturalBase.MARSH,
             base_hp=20.0,
             base_atk=5.0,
             base_spd=5.0,
@@ -89,7 +89,7 @@ class TestStatBlockWiring:
             energy=0.5,
             affection=0.5,
             shyness=0.5,
-            cultural_base=CulturalBase.VOID,
+            cultural_base=CulturalBase.TUNDRA,
             base_hp=20.0,
             base_atk=5.0,
             base_spd=5.0,
@@ -156,8 +156,8 @@ class TestStatBlockWiring:
         )
         # stat_block is created automatically when accessed
         
-        # Moss has HP +3.0 modifier, but level 1 gets 0.6 stage modifier
-        moss_modifier = CULTURAL_PARAMETERS[CulturalBase.MOSS].hp_modifier
+        # Marsh has HP +3.0 modifier, but level 1 gets 0.6 stage modifier
+        marsh_modifier = CULTURAL_PARAMETERS[CulturalBase.MARSH].hp_modifier
         expected_hp = int(20.0 * moss_modifier * 0.6)  # base_hp * cultural_mod * stage_mod
         
         # Verify computed HP reflects culture bonus and stage modifier

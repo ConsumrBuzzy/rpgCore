@@ -39,7 +39,7 @@ class TestRosterSyncService:
                 base_atk=5.0,
                 base_spd=5.0,
                 generation=1,
-                cultural_base=CulturalBase.MIXED
+                cultural_base=CulturalBase.VOID
             )
         )
     
@@ -165,7 +165,7 @@ class TestRosterSyncService:
                 base_atk=5.0,
                 base_spd=5.0,
                 generation=1,
-                cultural_base=CulturalBase.MIXED
+                cultural_base=CulturalBase.VOID
             )
         )
         
@@ -230,7 +230,7 @@ class TestRosterSyncService:
                     base_atk=5.0,
                     base_spd=5.0,
                     generation=1,
-                    cultural_base=CulturalBase.MIXED
+                    cultural_base=CulturalBase.VOID
                 )
             )
             slimes.append(slime)
@@ -269,7 +269,7 @@ class TestRosterSyncService:
                 base_atk=5.0,
                 base_spd=5.0,
                 generation=1,
-                cultural_base=CulturalBase.MIXED
+                cultural_base=CulturalBase.VOID
             )
         )
         self.registry.register(old_slime)
