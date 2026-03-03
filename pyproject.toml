@@ -63,6 +63,10 @@ pythonpath = ["."]
 markers = [
     "asyncio: marks tests as async (skipped without pytest-asyncio)",
 ]
+filterwarnings = [
+    "ignore::DeprecationWarning:abc.*:",
+    "ignore::DeprecationWarning:opentelemetry.*:",
+]
 
 [tool.isort]
 profile = "black"
