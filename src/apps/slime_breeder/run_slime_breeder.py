@@ -10,6 +10,7 @@ from src.apps.dungeon_crawler.ui.scene_dungeon_room import DungeonRoomScene
 from src.apps.slime_breeder.scenes.scene_dungeon_path import DungeonPathScene
 from src.apps.dungeon_crawler.ui.scene_dungeon_combat import DungeonCombatScene
 from src.apps.dungeon_crawler.ui.scene_inventory import InventoryOverlay
+from src.apps.slime_breeder.scenes.scene_sumo import SumoScene
 from src.shared.engine.scene_manager import SceneManager
 from src.shared.ui.spec import SPEC_720
 from src.shared.state.entity_registry import EntityRegistry
@@ -63,6 +64,7 @@ def create_app() -> SceneManager:
     manager.register("teams", TeamScene)
     manager.register("breeding", BreedingScene)
     manager.register("racing", RaceScene)
+    manager.register("sumo", SumoScene)
     manager.register("tower_defense", TowerDefenseScene)
     manager.register("dungeon", TheRoomScene)
     manager.register("dungeon_room", DungeonRoomScene)
