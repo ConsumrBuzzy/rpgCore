@@ -120,7 +120,7 @@ class TestSlimeCarousel:
         assert carousel.result.confirmed
         assert len(carousel.result.selected) == 1
         assert carousel.result.selected[0] == self.slime1
-        assert carousel.result.mode == "SINGLE"
+        assert carousel.result.mode == CarouselMode.SINGLE.value
     
     def test_carousel_pair_mode_returns_two(self):
         """Test pair mode returns two slimes when confirmed."""
@@ -143,7 +143,7 @@ class TestSlimeCarousel:
         assert len(carousel.result.selected) == 2
         assert self.slime1 in carousel.result.selected
         assert self.slime2 in carousel.result.selected
-        assert carousel.result.mode == "PAIR"
+        assert carousel.result.mode == CarouselMode.PAIR.value
     
     def test_carousel_cancel_returns_confirmed_false(self):
         """Test cancel returns confirmed=False."""
@@ -156,7 +156,7 @@ class TestSlimeCarousel:
         assert carousel.is_complete
         assert not carousel.result.confirmed
         assert len(carousel.result.selected) == 0
-        assert carousel.result.mode == "SINGLE"
+        assert carousel.result.mode == CarouselMode.SINGLE.value
     
     def test_carousel_filter_level_3_plus(self):
         """Test LEVEL_3_PLUS filter only shows level 3+ slimes."""
@@ -252,6 +252,7 @@ class TestSlimeCarousel:
         # Should not complete or select anything
         assert not carousel.is_complete
         assert len(carousel.selected_slimes) == 0
+        assert carousel.result.mode == CarouselMode.BROWSE.value
     
     def test_carousel_animation_offset(self):
         """Test slide animation offset calculation."""
