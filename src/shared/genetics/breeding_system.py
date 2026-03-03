@@ -108,9 +108,9 @@ class BreedingSystem:
             }
             key = aliases.get(key, key)
             
-            # Special case: if no valid culture found, use marsh as fallback
-            if key not in ['ember', 'gale', 'marsh', 'crystal', 'tundra', 'tide']:
-                key = 'marsh'
+            # Special case: if no valid culture found, use void as fallback
+            if key not in ['ember', 'gale', 'marsh', 'crystal', 'tundra', 'tide', 'void']:
+                key = 'void'
             
             expr = {key: 1.0}
         
@@ -236,14 +236,14 @@ class BreedingSystem:
         expression_to_enum = {
             'EMBER': CulturalBase.EMBER,
             'CRYSTAL': CulturalBase.CRYSTAL,
-            'MARSH': CulturalBase.MOSS,  # marsh -> moss
+            'MARSH': CulturalBase.MARSH,
             'TIDE': CulturalBase.TIDE,
             'VOID': CulturalBase.VOID,
-            'GALE': CulturalBase.MOSS,   # gale -> moss (fallback)
-            'TUNDRA': CulturalBase.MOSS, # tundra -> moss (fallback)
+            'GALE': CulturalBase.GALE,
+            'TUNDRA': CulturalBase.TUNDRA,
         }
         
         try:
             return expression_to_enum[culture_name]
         except KeyError:
-            return CulturalBase.MIXED
+            return CulturalBase.VOID
