@@ -43,7 +43,7 @@ class DungeonCombatScene(CombatSceneBase):
         if not self.team:
             # Fallback for direct testing
             from src.shared.teams.roster import TeamRole
-            self.team = self.roster.get_team(TeamRole.DUNGEON)
+            self.team = self.roster.get_dungeon_team()
             
         self.slime_renderer = SlimeRenderer()
         
