@@ -188,8 +188,10 @@ class DispatchSystem:
                     power += genome.base_spd * 0.02
             
             # Power from tier
-            if hasattr(genome, 'tier'):
-                power += genome.tier * 0.05
+            if hasattr(slime, 'genome'):
+                genome = slime.genome
+                if hasattr(genome, 'tier'):
+                    power += genome.tier * 0.05
             
             total_power += power
         
