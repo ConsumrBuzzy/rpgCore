@@ -158,7 +158,7 @@ class TestStatBlockWiring:
         
         # Marsh has HP +3.0 modifier, but level 1 gets 0.6 stage modifier
         marsh_modifier = CULTURAL_PARAMETERS[CulturalBase.MARSH].hp_modifier
-        expected_hp = int(20.0 * moss_modifier * 0.6)  # base_hp * cultural_mod * stage_mod
+        expected_hp = int(20.0 * marsh_modifier * 0.6)  # base_hp * cultural_mod * stage_mod
         
         # Verify computed HP reflects culture bonus and stage modifier
         assert slime.stat_block.hp == expected_hp, f"Marsh HP {slime.stat_block.hp} should be {expected_hp}"
