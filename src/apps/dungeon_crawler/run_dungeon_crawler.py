@@ -420,7 +420,7 @@ def main(args=None):
         # Get the roster and team from the session
         from shared.teams.roster import TeamRole
         roster = session.roster
-        team = roster.get_team(TeamRole.DUNGEON)
+        team = roster.get_dungeon_team()
         
         # Local imports to avoid circular deps if they occur
         from apps.dungeon_crawler.ui.scene_dungeon_room import DungeonRoomScene

@@ -117,7 +117,7 @@ class TheRoomScene(Scene):
             from shared.teams.roster_save import load_roster
             roster = load_roster()
         
-        team = roster.get_team(TeamRole.DUNGEON) if roster else None
+        team = roster.get_dungeon_team() if roster else None
         
         self.request_scene("dungeon_room", session=self.session, roster=roster, team=team)
 
