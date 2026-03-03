@@ -10,6 +10,7 @@ from src.shared.ui.label import Label
 from src.shared.ui.layouts import HubLayout
 from src.shared.ui.profile_card import ProfileCard
 from src.shared.roster.roster import RosterSlime
+from src.shared.roster.roster_save import load_roster
 from src.shared.genetics.cultural_base import CulturalBase
 from src.shared.ui.theme import UITheme, DEFAULT_THEME
 import random
