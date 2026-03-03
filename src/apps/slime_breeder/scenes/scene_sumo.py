@@ -25,8 +25,11 @@ class SumoScene(Scene):
         
         # Get selected pair from context or kwargs
         self.selected_pair = kwargs.get('selected_pair', [])
-        if not self.selected_pair and hasattr(kwargs.get('context'), 'selected_pair'):
-            self.selected_pair = kwargs['context'].selected_pair or []
+        if not self.selected_pair:
+            # Check if context has selected_pair
+            context = kwargs.get('context')
+            if context and hasattr(context, 'selected_pair'):
+                self.selected_pair = context.selected_pair or []
         
         # Combat state
         self.slime_a: Optional[RosterSlime] = None
