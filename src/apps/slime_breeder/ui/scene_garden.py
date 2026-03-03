@@ -559,8 +559,8 @@ class GardenScene(GardenSceneBase):
                     # Pass selected slime to race scene
                     self.request_scene("racing", selected_slime=selected_slime)
                 elif self._last_carousel_source == 'dungeon':
-                    # Pass selected slime to dungeon scene
-                    self.request_scene("dungeon", selected_slime=selected_slime)
+                    # Pass selected slime to dungeon path scene
+                    self.request_scene("dungeon_path", selected_slime=selected_slime)
         
         # BROWSE mode - no action needed, just close carousel
 
