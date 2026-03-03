@@ -46,7 +46,8 @@ class DungeonPathScene(Scene):
             team = d_team.members if d_team else []
         
         # Store team on session for combat access
-        self.session.team = team
+        if hasattr(self.session, 'team'):
+            self.session.team = team
         self.team = team
 
         # Generate track ONCE and store on session
