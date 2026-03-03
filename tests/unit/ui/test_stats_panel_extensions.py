@@ -103,9 +103,10 @@ class TestStatsPanelExtensions:
             'crystal': (220, 220, 240),  # pale white
             'tundra': (180, 200, 220),  # silver blue
             'tide': (80, 80, 220),    # electric blue
+            'void': (180, 100, 220),  # purple
         }
         
-        assert len(culture_colors) == 6
+        assert len(culture_colors) == 7
         assert all(isinstance(color, tuple) and len(color) == 3 for color in culture_colors.values())
 
     def test_personality_axes_definitions(self):
