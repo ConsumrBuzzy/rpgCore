@@ -486,6 +486,7 @@ class GardenScene(GardenSceneBase):
             self.roster, 
             CarouselMode.PAIR, 
             filter_type=CarouselFilter.LEVEL_3_PLUS,
+            spec=self.spec,
             theme=self.spec.theme if hasattr(self.spec, 'theme') else None
         )
 
@@ -496,6 +497,7 @@ class GardenScene(GardenSceneBase):
         self.active_carousel = SlimeCarousel(
             self.roster, 
             CarouselMode.SINGLE,
+            spec=self.spec,
             theme=self.spec.theme if hasattr(self.spec, 'theme') else None
         )
 
@@ -506,6 +508,7 @@ class GardenScene(GardenSceneBase):
         self.active_carousel = SlimeCarousel(
             self.roster, 
             CarouselMode.SINGLE,
+            spec=self.spec,
             theme=self.spec.theme if hasattr(self.spec, 'theme') else None
         )
 
@@ -516,6 +519,7 @@ class GardenScene(GardenSceneBase):
         self.active_carousel = SlimeCarousel(
             self.roster, 
             CarouselMode.PAIR,
+            spec=self.spec,
             theme=self.spec.theme if hasattr(self.spec, 'theme') else None
         )
 
@@ -526,6 +530,7 @@ class GardenScene(GardenSceneBase):
         self.active_carousel = SlimeCarousel(
             self.roster, 
             CarouselMode.BROWSE,
+            spec=self.spec,
             theme=self.spec.theme if hasattr(self.spec, 'theme') else None
         )
 
