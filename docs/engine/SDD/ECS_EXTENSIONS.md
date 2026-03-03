@@ -50,19 +50,8 @@ class WorldProcedure(ABC):
     def apply(self, context: SceneContext) -> ProcedureResult:
         """Apply the procedure and return result"""
         pass
-    
-    def to_dict(self) -> dict:
-        """Serialize procedure for persistence"""
-        return {
-            'procedure_type': self.procedure_type,
-            'timestamp': self.timestamp,
-            'data': self._serialize_data()
-        }
-    
-    @abstractmethod
-    def _serialize_data(self) -> dict:
-        """Serialize procedure-specific data"""
-        pass
+
+    **Note**: See `/docs/engine/SDD/DELTA_PERSISTENCE.md` for architectural precedent. This pattern was previously designed as ADR_058 in the DGT Platform. The core insight — world state as a sequence of deltas rather than snapshots — is preserved in the current Procedure spec.
     
     @classmethod
     def from_dict(cls, data: dict) -> 'WorldProcedure':
