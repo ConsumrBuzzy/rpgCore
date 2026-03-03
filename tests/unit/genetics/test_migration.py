@@ -74,8 +74,10 @@ class TestMigrationToEntityTemplate:
             scene.garden_state = Mock()
             scene.garden_state.slimes = [mock_slime]
             
-            # Call the method
-            GardenScene._sync_roster_with_garden(scene)
+            # Mock save_roster to avoid JSON serialization issues
+            with patch('src.apps.slime_breeder.ui.scene_garden.save_roster'):
+                # Call the method
+                GardenScene._sync_roster_with_garden(scene)
             
             # Verify template.build was called
             mock_build.assert_called_once_with(
@@ -104,10 +106,13 @@ class TestMigrationToEntityTemplate:
             scene.context = Mock()
             scene.context.roster_sync = None
             
-            # Mock garden_state
+            # Mock garden_state and garden_rect
             scene.garden_state = Mock()
             scene.garden_state.slimes = []
             scene.garden_state.add_slime = Mock()
+            scene.garden_rect = Mock()
+            scene.garden_rect.width = 800
+            scene.garden_rect.height = 600
             
             # Call the method
             GardenScene._add_new_slime(scene)
