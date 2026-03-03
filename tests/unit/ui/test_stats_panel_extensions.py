@@ -34,8 +34,8 @@ class TestStatsPanelExtensions:
             'crystal': 0.3,
             'marsh': 0.1,
             'gale': 0.05,  # Below threshold
-            'marsh': 0.02,  # Below threshold
-            'tundra': 0.01   # Below threshold
+            'tundra': 0.02,  # Below threshold
+            'tide': 0.01   # Below threshold
         }
         self.mock_genome.personality_axes = {
             'aggression': 0.4,
@@ -76,7 +76,7 @@ class TestStatsPanelExtensions:
         # Should filter out cultures below 0.05
         active_cultures = [(c, w) for c, w in culture_expression.items() if w > 0.05]
         
-        # Should only include ember, crystal, marsh
+        # Should only include ember, crystal, marsh (3 cultures)
         expected_active = [('ember', 0.6), ('crystal', 0.3), ('marsh', 0.1)]
         
         assert len(active_cultures) == 3

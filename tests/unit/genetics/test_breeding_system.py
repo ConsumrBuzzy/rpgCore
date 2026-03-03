@@ -54,7 +54,7 @@ class TestBreedingSystem:
             base_hp=25.0,
             base_atk=5.0,
             base_spd=4.0,
-            cultural_base=CulturalBase.MOSS,
+            cultural_base=CulturalBase.MARSH,
             culture_expression={'ember': 0.0, 'gale': 0.0, 'marsh': 1.0, 'crystal': 0.0, 'tundra': 0.0, 'tide': 0.0},
             generation=2,
             level=4
@@ -183,7 +183,7 @@ class TestBreedingSystem:
             pattern='solid', pattern_color=(50, 50, 200), accessory='none',
             curiosity=0.5, energy=0.5, affection=0.5, shyness=0.5,
             base_hp=20.0, base_atk=5.0, base_spd=5.0,
-            cultural_base=CulturalBase.MOSS,
+            cultural_base=CulturalBase.MARSH,
             culture_expression={'ember': 0.0, 'gale': 1.0, 'marsh': 0.0, 'crystal': 0.0, 'tundra': 0.0, 'tide': 0.0},
             generation=1,
             level=3
@@ -287,12 +287,12 @@ class TestBreedingSystem:
         # Test mixed culture fallback
         expr_mixed = {'ember': 0.3, 'gale': 0.3, 'marsh': 0.2, 'crystal': 0.1, 'tundra': 0.05, 'tide': 0.05}
         dominant = BreedingSystem._dominant_culture(expr_mixed)
-        assert dominant in [CulturalBase.EMBER, CulturalBase.MOSS]  # Could be either due to tie
+        assert dominant in [CulturalBase.EMBER, CulturalBase.GALE]  # Could be either due to tie
         
         # Test unknown culture fallback
         expr_unknown = {'unknown': 1.0}
         dominant = BreedingSystem._dominant_culture(expr_unknown)
-        assert dominant == CulturalBase.MIXED
+        assert dominant == CulturalBase.VOID
     
     def test_variance_bounds(self, sample_parents):
         """Test that variance stays within reasonable bounds."""
@@ -340,7 +340,7 @@ class TestBreedingSystem:
             pattern='spotted', pattern_color=(50, 200, 50), accessory='none',
             curiosity=0.5, energy=0.5, affection=0.5, shyness=0.5,
             base_hp=20.0, base_atk=5.0, base_spd=5.0,
-            cultural_base=CulturalBase.MOSS,
+            cultural_base=CulturalBase.MARSH,
             # culture_expression missing - will trigger fallback
             generation=1,
             level=3
