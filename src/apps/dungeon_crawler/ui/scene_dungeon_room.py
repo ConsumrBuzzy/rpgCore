@@ -22,6 +22,8 @@ class DungeonRoomScene(Scene):
         super().__init__(manager, spec, **kwargs)
         self.layout = HubLayout(spec)
         self.session = session
+        self.roster = kwargs.get("roster")
+        self.team = kwargs.get("team")
         
         # Grid settings derived from spec/layout
         self.tile_size = 48
