@@ -108,6 +108,10 @@ class BreedingSystem:
             }
             key = aliases.get(key, key)
             
+            # Special case: if no valid culture found, use marsh as fallback
+            if key not in ['ember', 'gale', 'marsh', 'crystal', 'tundra', 'tide']:
+                key = 'marsh'
+            
             expr = {key: 1.0}
         
         return expr

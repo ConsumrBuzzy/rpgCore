@@ -35,7 +35,8 @@ class TestBreedingSystem:
             base_spd=6.0,
             cultural_base=CulturalBase.EMBER,
             culture_expression={'ember': 1.0, 'gale': 0.0, 'marsh': 0.0, 'crystal': 0.0, 'tundra': 0.0, 'tide': 0.0},
-            generation=1
+            generation=1,
+            level=4
         )
         
         # Parent B: Pure marsh culture  
@@ -55,7 +56,8 @@ class TestBreedingSystem:
             base_spd=4.0,
             cultural_base=CulturalBase.MOSS,
             culture_expression={'ember': 0.0, 'gale': 0.0, 'marsh': 1.0, 'crystal': 0.0, 'tundra': 0.0, 'tide': 0.0},
-            generation=2
+            generation=2,
+            level=4
         )
         
         parent_a = RosterSlime(
@@ -98,7 +100,8 @@ class TestBreedingSystem:
             base_spd=7.0,
             cultural_base=CulturalBase.VOID,
             # culture_expression missing - simulates old save data
-            generation=1
+            generation=1,
+            level=2
         )
         
         parent_old = RosterSlime(
@@ -171,7 +174,8 @@ class TestBreedingSystem:
             base_hp=20.0, base_atk=5.0, base_spd=5.0,
             cultural_base=CulturalBase.MOSS,
             culture_expression={'ember': 0.0, 'gale': 1.0, 'marsh': 0.0, 'crystal': 0.0, 'tundra': 0.0, 'tide': 0.0},
-            generation=1
+            generation=1,
+            level=3
         )
         parent_valid = RosterSlime('valid', 'Valid Parent', genome_valid, 'unassigned', 3, 1)
         
