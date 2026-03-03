@@ -30,12 +30,6 @@ class DungeonCombatScene(CombatSceneBase):
         self.roster = kwargs.get("roster")
         self.team = kwargs.get("team")
         
-        print(f"[DEBUG] Combat scene - kwargs keys: {list(kwargs.keys())}")
-        print(f"[DEBUG] Combat scene - team from kwargs: {self.team}")
-        if self.team:
-            print(f"[DEBUG] Combat scene - team type: {type(self.team)}")
-            print(f"[DEBUG] Combat scene - team members count: {len(self.team.members)}")
-        
         if not self.session:
             # Fallback for direct testing
             self.session = DungeonSession()
@@ -50,29 +44,17 @@ class DungeonCombatScene(CombatSceneBase):
             # Fallback for direct testing
             from src.shared.teams.roster import TeamRole
             self.team = self.roster.get_dungeon_team()
-            print(f"[DEBUG] Combat scene - fallback team: {self.team}")
-            if self.team:
-                print(f"[DEBUG] Combat scene - fallback team members: {len(self.team.members)}")
             
         self.slime_renderer = SlimeRenderer()
         
         # 1. Setup Units - Use full dungeon team
         self.party = []
-        print(f"[DEBUG] Combat scene - Team: {self.team}")
-        if self.team:
-            print(f"[DEBUG] Combat scene - Team members: {len(self.team.members)}")
-            print(f"[DEBUG] Combat scene - Team member IDs: {[m.slime_id for m in self.team.members]}")
-        else:
-            print("[DEBUG] Combat scene - No team provided")
-            
         if self.team and self.team.members:
             # Add all team members to party
             for team_member in self.team.members:
-                print(f"[DEBUG] Processing team member: {team_member.slime_id}")
                 # Get the RosterSlime directly from roster
                 slime = self.roster._roster_slimes.get(team_member.slime_id)
                 if slime and slime.alive:
-                    print(f"[DEBUG] Adding {slime.name} to party")
                     # Use stat_block if available, fallback to genome
                     if hasattr(slime, 'stat_block') and slime.stat_block:
                         stats = {
@@ -96,11 +78,6 @@ class DungeonCombatScene(CombatSceneBase):
                         }
                     
                     self.party.append(DungeonUnit(f"party_{len(self.party)}", slime.name, stats, "party", slime))
-                else:
-                    print(f"[DEBUG] Slime {team_member.slime_id} not found or dead")
-        
-        print(f"[DEBUG] Final party size: {len(self.party)}")
-        print(f"[DEBUG] Party members: {[unit.name for unit in self.party]}")
         
         # Fallback to hero if no team members
         if not self.party:
