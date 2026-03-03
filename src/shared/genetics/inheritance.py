@@ -11,7 +11,7 @@ ACCESSORIES = ["none", "crown", "scar", "glow", "shell", "crystals"]
 def generate_random(culture: Optional[CulturalBase] = None) -> SlimeGenome:
     """Generate a SlimeGenome, optionally influenced by a CulturalBase."""
     if culture is None:
-        culture = random.choice([cb for cb in CulturalBase if cb != CulturalBase.MIXED])
+        culture = random.choice([cb for cb in CulturalBase if cb != CulturalBase.VOID])
     
     params = CULTURAL_PARAMETERS[culture]
     
@@ -71,7 +71,7 @@ def breed(parent_a: SlimeGenome, parent_b: SlimeGenome, mutation_chance: float =
         return result
 
     # Cultural inheritance
-    new_culture = CulturalBase.MIXED
+    new_culture = CulturalBase.VOID
     if parent_a.cultural_base == parent_b.cultural_base:
         new_culture = parent_a.cultural_base
     else:

@@ -27,7 +27,7 @@ class SlimeGenome:
     generation: int = 1
 
     # Cultural identity
-    cultural_base: CulturalBase = CulturalBase.MIXED
+    cultural_base: CulturalBase = CulturalBase.VOID
     
     # NEW: Extended genetics fields
     culture_expression: Dict[str, float] = field(default_factory=dict)  # Six culture weights
@@ -53,13 +53,7 @@ class SlimeGenome:
         # Only initialize culture_expression if it's empty
         # This allows manual setting after construction
         if not self.culture_expression:
-            if self.cultural_base == CulturalBase.MIXED:
-                # Mixed culture gets equal distribution
-                self.culture_expression = {
-                    'ember': 0.167, 'gale': 0.167, 'crystal': 0.167,
-                    'marsh': 0.167, 'tide': 0.167, 'tundra': 0.167
-                }
-            elif self.cultural_base == CulturalBase.VOID:
+            if self.cultural_base == CulturalBase.VOID:
                 # Void gets equal distribution (same as mixed for now)
                 self.culture_expression = {
                     'ember': 0.167, 'gale': 0.167, 'crystal': 0.167,
