@@ -155,16 +155,16 @@ class SumoScene(Scene):
             return
         
         # Winner gets 50 XP
-        self.winner.experience_points += 50
+        self.winner.experience += 50
         
         # Loser gets 20 XP consolation
-        self.loser.experience_points += 20
+        self.loser.experience += 20
         
         # Check for level up (simplified - every 100 XP = level up)
         for slime in [self.winner, self.loser]:
-            if slime.experience_points >= 100:
+            if slime.experience >= 100:
                 slime.level += 1
-                slime.experience_points -= 100
+                slime.experience -= 100
     
     def _setup_ui(self):
         """Set up the UI components."""
