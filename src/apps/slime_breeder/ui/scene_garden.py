@@ -70,6 +70,9 @@ class GardenScene(GardenSceneBase):
         # Initialize dispatched slimes tracking
         self.dispatched_slimes = {}  # slime_id -> zone_type string
         
+        # Carousel state
+        self.active_carousel = None
+        
         # Initialize garden renderer with level
         self.garden_level = 0
         try:
@@ -302,6 +305,55 @@ class GardenScene(GardenSceneBase):
         for button in self._pending_action_buttons:
             self.action_bar.add_child(button)
         
+        # 4. Bottom Hub Bar
+        hub_bar_height = 60
+        hub_bar_y = self.spec.screen_height - hub_bar_height
+        self.hub_bar_rect = pygame.Rect(0, hub_bar_y, self.spec.screen_width, hub_bar_height)
+        self.hub_bar = Panel(self.hub_bar_rect, self.spec, variant="surface")
+        self.ui_components.append(self.hub_bar)
+        
+        # Hub bar buttons - 5 buttons across full width
+        button_width = 140
+        button_height = 40
+        button_spacing = 20
+        total_width = (5 * button_width) + (4 * button_spacing)
+        start_x = (self.spec.screen_width - total_width) // 2
+        button_y = hub_bar_y + (hub_bar_height - button_height) // 2
+        
+        # BREED button
+        self.breed_hub_btn = Button("🧬 BREED", pygame.Rect(start_x, button_y, button_width, button_height),
+                                   self._open_breed_carousel, self.spec, variant="ghost")
+        self.hub_bar.add_child(self.breed_hub_btn)
+        
+        # RACE button
+        self.race_hub_btn = Button("🏎 RACE", pygame.Rect(start_x + button_width + button_spacing, button_y, button_width, button_height),
+                                  self._open_race_carousel, self.spec, variant="ghost")
+        self.hub_bar.add_child(self.race_hub_btn)
+        
+        # DUNGEON button with "COMING SOON" badge
+        self.dungeon_hub_btn = Button("⚔ DUNGEON", pygame.Rect(start_x + 2*(button_width + button_spacing), button_y, button_width, button_height),
+                                     self._open_dungeon_carousel, self.spec, variant="ghost")
+        self.hub_bar.add_child(self.dungeon_hub_btn)
+        
+        # SUMO button
+        self.sumo_hub_btn = Button("🥊 SUMO", pygame.Rect(start_x + 3*(button_width + button_spacing), button_y, button_width, button_height),
+                                  self._open_sumo_carousel, self.spec, variant="ghost")
+        self.hub_bar.add_child(self.sumo_hub_btn)
+        
+        # ROSTER button
+        self.roster_hub_btn = Button("📋 ROSTER", pygame.Rect(start_x + 4*(button_width + button_spacing), button_y, button_width, button_height),
+                                    self._open_roster_carousel, self.spec, variant="ghost")
+        self.hub_bar.add_child(self.roster_hub_btn)
+        
+        # Store hub buttons for access
+        self._hub_buttons = [
+            self.breed_hub_btn,
+            self.race_hub_btn,
+            self.dungeon_hub_btn,
+            self.sumo_hub_btn,
+            self.roster_hub_btn
+        ]
+        
         # Create and add DispatchPanel
         dispatch_rect = pygame.Rect(
             self.actions_rect.x + 10,
@@ -411,6 +463,53 @@ class GardenScene(GardenSceneBase):
             "dungeon_path",
             session=session,
             depth=1
+        )
+
+    # Carousel handler methods
+    def _open_breed_carousel(self):
+        """Open carousel for breeding pair selection."""
+        from src.shared.ui.slime_carousel import SlimeCarousel, CarouselMode, CarouselFilter
+        self.active_carousel = SlimeCarousel(
+            self.roster, 
+            CarouselMode.PAIR, 
+            filter_type=CarouselFilter.LEVEL_3_PLUS,
+            theme=self.spec.theme if hasattr(self.spec, 'theme') else None
+        )
+
+    def _open_race_carousel(self):
+        """Open carousel for single race slime selection."""
+        from src.shared.ui.slime_carousel import SlimeCarousel, CarouselMode
+        self.active_carousel = SlimeCarousel(
+            self.roster, 
+            CarouselMode.SINGLE,
+            theme=self.spec.theme if hasattr(self.spec, 'theme') else None
+        )
+
+    def _open_dungeon_carousel(self):
+        """Open carousel for single dungeon slime selection."""
+        from src.shared.ui.slime_carousel import SlimeCarousel, CarouselMode
+        self.active_carousel = SlimeCarousel(
+            self.roster, 
+            CarouselMode.SINGLE,
+            theme=self.spec.theme if hasattr(self.spec, 'theme') else None
+        )
+
+    def _open_sumo_carousel(self):
+        """Open carousel for sumo pair selection."""
+        from src.shared.ui.slime_carousel import SlimeCarousel, CarouselMode
+        self.active_carousel = SlimeCarousel(
+            self.roster, 
+            CarouselMode.PAIR,
+            theme=self.spec.theme if hasattr(self.spec, 'theme') else None
+        )
+
+    def _open_roster_carousel(self):
+        """Open carousel for roster browsing."""
+        from src.shared.ui.slime_carousel import SlimeCarousel, CarouselMode
+        self.active_carousel = SlimeCarousel(
+            self.roster, 
+            CarouselMode.BROWSE,
+            theme=self.spec.theme if hasattr(self.spec, 'theme') else None
         )
 
     def pick_entity(self, pos: Tuple[int, int]) -> Optional[Slime]:
@@ -1025,6 +1124,15 @@ class GardenScene(GardenSceneBase):
             self.context.save_roster()
 
     def handle_event(self, event: pygame.event.Event) -> None:
+        # Handle carousel overlay first (highest priority)
+        if self.active_carousel:
+            result = self.active_carousel.handle_event(event)
+            if result:
+                # Carousel completed, handle result
+                self._handle_carousel_result(result)
+                self.active_carousel = None
+            return  # Event consumed by carousel
+        
         # Route through InputRouter if available
         if self.router:
             if self.router.route(event):
