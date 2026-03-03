@@ -256,10 +256,11 @@ class BreedingScene(Scene):
         
         start_level = 2 if (self.parent_a.is_elder or self.parent_b.is_elder) else 1
         new_id = f"slime_{random.randint(10000, 99999)}"
-        self.offspring_slime = RosterSlime(
-            slime_id=new_id,
-            name=self.offspring_name,
+        from src.shared.genetics.entity_template import SlimeEntityTemplate
+        self.offspring_slime = SlimeEntityTemplate.build(
             genome=self.offspring_genome,
+            name=self.offspring_name,
+            slime_id=new_id,
             team=TeamRole.UNASSIGNED,
             level=start_level,
             generation=self.offspring_genome.generation

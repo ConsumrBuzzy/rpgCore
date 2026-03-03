@@ -428,6 +428,17 @@ class Roster:
                     current_hp=s.get("current_hp", -1.0),
                     generation=s.get("generation", 1)
                 )
+                
+                # Validate loaded slime (warn-only for save data integrity)
+                from src.shared.genetics.entity_template import SlimeEntityTemplate
+                from loguru import logger
+                errors = SlimeEntityTemplate.validate(rs)
+                if errors:
+                    logger.warning(
+                        f"Loaded slime {rs.slime_id} has validation issues: {errors}"
+                    )
+                    # Do not reject loaded slimes - data integrity requires loading what exists
+                
                 roster.add_slime(rs)
                 # Set back-reference for the entry that was created by add_slime
                 for entry in roster.entries:

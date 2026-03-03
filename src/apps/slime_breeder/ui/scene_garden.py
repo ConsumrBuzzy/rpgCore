@@ -325,12 +325,12 @@ class GardenScene(GardenSceneBase):
             has_new_format = any(entry.slime_id == slime_id for entry in self.roster.entries)
             
             if not has_old_format and not has_new_format:
-                # Create roster entry for this slime using old format for compatibility
-                from src.shared.teams.roster import RosterSlime
-                rs = RosterSlime(
-                    slime_id=slime_id,
+                # Create roster entry for this slime using template
+                from src.shared.genetics.entity_template import SlimeEntityTemplate
+                rs = SlimeEntityTemplate.build(
+                    genome=slime.genome,
                     name=slime.name,
-                    genome=slime.genome
+                    slime_id=slime_id
                 )
                 self.roster.add_slime(rs)
         save_roster(self.roster)
@@ -343,10 +343,11 @@ class GardenScene(GardenSceneBase):
         self.garden_state.add_slime(slime)
         
         # Add to both roster and registry using sync service
-        rs = RosterSlime(
-            slime_id=slime.name.lower().replace(" ", "_"),
+        from src.shared.genetics.entity_template import SlimeEntityTemplate
+        rs = SlimeEntityTemplate.build(
+            genome=slime.genome,
             name=slime.name,
-            genome=slime.genome
+            slime_id=slime.name.lower().replace(" ", "_")
         )
         
         # Use RosterSyncService if available, fallback to direct roster.add

@@ -106,6 +106,12 @@ class RaceScene(Scene):
         
         # Add AI racers (create temporary RosterSlime for compatibility)
         for i in range(4 - len(participants)):
+            # NOTE: AI racers are ephemeral objects
+            # created for race simulation only.
+            # They are never added to the Roster or
+            # EntityRegistry, so SlimeEntityTemplate
+            # migration is intentionally skipped.
+            # These objects do not require validation.
             ai_slime = RosterSlime(slime_id=f"ai_{i}", name=f"Racer_{i+1}", genome=generate_random(), level=random.randint(1, 5))
             participants.append(ai_slime)
         
