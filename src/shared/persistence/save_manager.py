@@ -5,7 +5,7 @@ Prevents roster loss and provides unified persistence
 
 import json
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
 from loguru import logger
@@ -38,7 +38,7 @@ class SaveManager:
             cls.SAVE_DIR.mkdir(exist_ok=True)
             data = {
                 'version': 1,
-                'saved_at': datetime.utcnow().isoformat(),
+                'saved_at': datetime.now(datetime.UTC).isoformat(),
                 'roster': cls._serialize_roster(roster),
                 'session': session.to_dict(),
             }
