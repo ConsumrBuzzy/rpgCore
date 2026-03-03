@@ -27,31 +27,81 @@ class DungeonUnit:
 class DungeonCombatScene(CombatSceneBase):
     def on_combat_enter(self, **kwargs):
         self.session = kwargs.get("session")
+        self.roster = kwargs.get("roster")
+        self.team = kwargs.get("team")
+        
         if not self.session:
             # Fallback for direct testing
             self.session = DungeonSession()
             self.session.start_run()
+        
+        if not self.roster:
+            # Fallback for direct testing
+            from src.shared.teams.roster import Roster
+            self.roster = Roster()
+        
+        if not self.team:
+            # Fallback for direct testing
+            from src.shared.teams.roster import TeamRole
+            self.team = self.roster.get_team(TeamRole.DUNGEON)
             
         self.slime_renderer = SlimeRenderer()
         
-        # 1. Setup Units
-        hero = self.session.hero
+        # 1. Setup Units - Use full dungeon team
+        self.party = []
+        if self.team and self.team.members:
+            # Add all team members to party
+            for team_member in self.team.members:
+                slime = self.roster.get_creature(team_member.slime_id)
+                if slime and slime.alive:
+                    # Use stat_block if available, fallback to genome
+                    if hasattr(slime, 'stat_block') and slime.stat_block:
+                        stats = {
+                            "hp": slime.stat_block.hp,
+                            "max_hp": slime.stat_block.hp,
+                            "attack": slime.stat_block.atk,
+                            "defense": 2,
+                            "speed": slime.stat_block.spd,
+                            "stance": "Aggressive"
+                        }
+                    else:
+                        # Fallback to genome stats
+                        from src.shared.teams.stat_calculator import calculate_hp, calculate_attack, calculate_speed
+                        stats = {
+                            "hp": calculate_hp(slime.genome, slime.level),
+                            "max_hp": calculate_hp(slime.genome, slime.level),
+                            "attack": calculate_attack(slime.genome, slime.level),
+                            "defense": 2,
+                            "speed": calculate_speed(slime.genome, slime.level),
+                            "stance": "Aggressive"
+                        }
+                    
+                    self.party.append(DungeonUnit(f"party_{len(self.party)}", slime.name, stats, "party", slime))
         
-        # Check if hero has stat_block and use computed stats
-        if hasattr(hero, 'stat_block') and hero.stat_block:
-            hero_stats = {
-                "hp": hero.stat_block.hp,
-                "max_hp": hero.stat_block.hp,
-                "attack": hero.stat_block.atk,
-                "defense": 2,
-                "speed": hero.stat_block.spd,
-                "stance": "Aggressive"
-            }
-        else:
-            # TODO Phase 5B: pass RosterSlime here to use stat_block
-            hero_stats = hero.stats
+        # Fallback to hero if no team members
+        if not self.party:
+            hero = self.session.hero
+            if hasattr(hero, 'stat_block') and hero.stat_block:
+                hero_stats = {
+                    "hp": hero.stat_block.hp,
+                    "max_hp": hero.stat_block.hp,
+                    "attack": hero.stat_block.atk,
+                    "defense": 2,
+                    "speed": hero.stat_block.spd,
+                    "stance": "Aggressive"
+                }
+            else:
+                from src.shared.teams.stat_calculator import calculate_hp, calculate_attack, calculate_speed
+                hero_stats = {
+                    "hp": calculate_hp(hero.genome, hero.level),
+                    "max_hp": calculate_hp(hero.genome, hero.level),
+                    "attack": calculate_attack(hero.genome, hero.level),
+                    "defense": 2,
+                    "speed": calculate_speed(hero.genome, hero.level),
+                    "stance": "Aggressive"
+                }
             
-        self.party[0] = DungeonUnit("hero", hero.name, hero_stats, "party", hero)
+            self.party.append(DungeonUnit("hero", hero.name, hero_stats, "party", hero))
         
         # Read squad from session.active_zone
         # Same object that path rendered
