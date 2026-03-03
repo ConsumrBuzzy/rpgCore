@@ -71,8 +71,8 @@ class SumoScene(Scene):
         if not self.slime_a or not self.slime_b:
             return
         
-        culture_a = self.slime_a.cultural_base
-        culture_b = self.slime_b.cultural_base
+        culture_a = self.slime_a.genome.cultural_base
+        culture_b = self.slime_b.genome.cultural_base
         
         # Aggressive triangle: ember beats gale, gale beats tundra, tundra beats ember
         aggressive_advantages = {
