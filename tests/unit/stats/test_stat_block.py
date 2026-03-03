@@ -66,7 +66,7 @@ class TestStatBlock:
         """Test pure marsh culture gives HP bonus."""
         # Pure marsh culture
         marsh_genome = replace(base_genome,
-            cultural_base=CulturalBase.MOSS,
+            cultural_base=CulturalBase.MARSH,
             culture_expression={'ember': 0.0, 'gale': 0.0, 'marsh': 1.0, 'crystal': 0.0, 'tundra': 0.0, 'tide': 0.0}
         )
         

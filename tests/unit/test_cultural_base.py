@@ -85,13 +85,13 @@ def test_breeding_lock_mechanic():
     assert rs.can_breed is True
 
 def test_base_stat_inheritance():
-    # Setup parents within Moss caps (HP:40, ATK:9, SPD:13)
-    g1 = generate_random(CulturalBase.MOSS)
+    # Setup parents within Marsh caps (HP:40, ATK:9, SPD:13)
+    g1 = generate_random(CulturalBase.MARSH)
     g1.base_hp = 30.0
     g1.base_atk = 8.0
     g1.base_spd = 10.0
     
-    g2 = generate_random(CulturalBase.MOSS)
+    g2 = generate_random(CulturalBase.MARSH)
     g2.base_hp = 20.0
     g2.base_atk = 6.0
     g2.base_spd = 8.0
@@ -117,10 +117,10 @@ def test_generation_tracking():
     assert offspring.generation == 6
 
 def test_stat_cap_logic():
-    # HP cap for Moss is 40.0
-    g1 = generate_random(CulturalBase.MOSS)
+    # HP cap for Marsh is 40.0
+    g1 = generate_random(CulturalBase.MARSH)
     g1.base_hp = 50.0 # Above cap
-    g2 = generate_random(CulturalBase.MOSS)
+    g2 = generate_random(CulturalBase.MARSH)
     g2.base_hp = 50.0
     
     offspring = breed(g1, g2, mutation_chance=0)
@@ -128,8 +128,8 @@ def test_stat_cap_logic():
 
 def test_mutation_logic():
     # Test mutation chance
-    g1 = generate_random(CulturalBase.MOSS)
-    g2 = generate_random(CulturalBase.MOSS)
+    g1 = generate_random(CulturalBase.MARSH)
+    g2 = generate_random(CulturalBase.MARSH)
     
     mutated = False
     for i in range(200):
