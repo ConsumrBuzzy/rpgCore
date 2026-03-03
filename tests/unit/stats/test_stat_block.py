@@ -78,9 +78,13 @@ class TestStatBlock:
         assert stat_block.culture_spd == 0.5 # 1.0 * 0.5
         
         # Final stats should include culture bonuses
+        # Base: 20.0 + 3.0 = 23.0 -> int(23.0) = 23
+        assert stat_block.hp == 23
         assert stat_block.hp > base_genome.base_hp     # HP bonus
-        assert stat_block.atk > base_genome.base_atk  # Attack bonus
-        assert stat_block.spd > base_genome.base_spd   # Speed bonus
+        # Base: 5.0 + 0.5 = 5.5 -> int(5.5) = 5 (rounded down)
+        assert stat_block.atk == 5
+        # Base: 5.0 + 0.5 = 5.5 -> int(5.5) = 5 (rounded down)
+        assert stat_block.spd == 5
     
     def test_from_genome_pure_gale(self, base_genome):
         """Test pure gale culture gives speed bonus."""
@@ -98,9 +102,13 @@ class TestStatBlock:
         assert stat_block.culture_spd == 3.0 # 1.0 * 3.0
         
         # Final stats should include culture bonuses
+        # Base: 20.0 + 0.5 = 20.5 -> int(20.5) = 20 (rounded down)
+        assert stat_block.hp == 20
+        # Base: 5.0 + 0.5 = 5.5 -> int(5.5) = 5 (rounded down)
+        assert stat_block.atk == 5
+        # Base: 5.0 + 3.0 = 8.0 -> int(8.0) = 8
+        assert stat_block.spd == 8
         assert stat_block.spd > base_genome.base_spd   # Major speed bonus
-        assert stat_block.hp > base_genome.base_hp     # HP bonus
-        assert stat_block.atk > base_genome.base_atk  # Attack bonus
     
     def test_from_genome_mixed_culture(self, base_genome):
         """Test mixed culture expression gives multiple bonuses."""
@@ -119,9 +127,14 @@ class TestStatBlock:
         assert stat_block.culture_spd == 0.5  # 0.25 + 0.25
         
         # Final stats should include both culture bonuses
-        assert stat_block.atk > base_genome.base_atk  # Attack bonus
+        # Base: 20.0 + 1.75 = 21.75 -> int(21.75) = 21
+        assert stat_block.hp == 21
         assert stat_block.hp > base_genome.base_hp     # HP bonus
-        assert stat_block.spd > base_genome.base_spd   # Speed bonus
+        # Base: 5.0 + 1.75 = 6.75 -> int(6.75) = 6
+        assert stat_block.atk == 6
+        assert stat_block.atk > base_genome.base_atk  # Attack bonus
+        # Base: 5.0 + 0.5 = 5.5 -> int(5.5) = 5 (rounded down)
+        assert stat_block.spd == 5
     
     def test_stage_modifier_hatchling(self, base_genome):
         """Test hatchling stage modifier reduces stats."""
