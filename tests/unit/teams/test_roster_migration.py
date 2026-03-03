@@ -38,7 +38,7 @@ class TestCultureExpressionMigration:
     def test_migrate_genome_empty_expression(self):
         """Test migration when culture_expression is empty."""
         genome_data = {
-            'cultural_base': CulturalBase.MOSS,
+            'cultural_base': CulturalBase.MARSH,
             'culture_expression': {},
             'shape': 'round',
             'size': 'medium',
@@ -115,7 +115,7 @@ class TestCultureExpressionMigration:
     def test_migrate_genome_moss_alias(self):
         """Test moss -> marsh alias mapping."""
         genome_data = {
-            'cultural_base': CulturalBase.MOSS,
+            'cultural_base': CulturalBase.MARSH,
             'shape': 'round',
             'size': 'medium',
             'base_color': [100, 255, 100],

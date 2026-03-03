@@ -57,7 +57,7 @@ class TestSaveManager:
                     base_atk=5.0,
                     base_spd=5.0,
                     generation=1,
-                    cultural_base=CulturalBase.MIXED
+                    cultural_base=CulturalBase.VOID
                 )
             )
             roster.add_slime(slime)

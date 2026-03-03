@@ -26,7 +26,7 @@ class TestSlimeGenomeExtension:
             shape="round", size="medium", base_color=(128, 128, 128),
             pattern="solid", pattern_color=(0, 0, 0), accessory="none",
             curiosity=0.5, energy=0.5, affection=0.5, shyness=0.5,
-            cultural_base=CulturalBase.MIXED
+            cultural_base=CulturalBase.VOID
         )
         expected_mixed = 1.0 / 6.0  # Equal distribution
         for expr in genome_mixed.culture_expression.values():
