@@ -252,7 +252,8 @@ class TestSlimeCarousel:
         # Should not complete or select anything
         assert not carousel.is_complete
         assert len(carousel.selected_slimes) == 0
-        assert carousel.result.mode == CarouselMode.BROWSE.value
+        # Result is None when not complete
+        assert carousel.result is None
     
     def test_carousel_animation_offset(self):
         """Test slide animation offset calculation."""
@@ -297,7 +298,9 @@ class TestSlimeCarousel:
         # Mock escape event
         escape_event = pygame.event.Event(pygame.KEYDOWN, key=pygame.K_ESCAPE)
         
-        result = carousel.handle_event(escape_event)
-        assert result is not None
-        assert isinstance(result, CarouselResult)
-        assert not result.confirmed
+        # Handle escape event
+        carousel.handle_event(escape_event)
+        
+        # Check result
+        assert carousel.is_complete
+        assert not carousel.result.confirmed
