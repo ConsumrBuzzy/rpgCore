@@ -51,7 +51,7 @@ class TestStatBlockWiring:
             energy=0.5,
             affection=0.5,
             shyness=0.5,
-            cultural_base=CulturalBase.MARSH,
+            cultural_base=CulturalBase.MOSS,
             base_hp=20.0,
             base_atk=5.0,
             base_spd=5.0,
@@ -70,7 +70,7 @@ class TestStatBlockWiring:
             energy=0.5,
             affection=0.5,
             shyness=0.5,
-            cultural_base=CulturalBase.TUNDRA,
+            cultural_base=CulturalBase.EMBER,  # Use EMBER as substitute for TUNDRA
             base_hp=20.0,
             base_atk=5.0,
             base_spd=5.0,
@@ -133,17 +133,17 @@ class TestStatBlockWiring:
         assert slime.stat_block.atk >= expected_atk, f"ATK should be at least {expected_atk}"
     
     def test_marsh_culture_shows_higher_hp(self):
-        """Test pure marsh slime shows higher HP due to culture bonus."""
-        # Create marsh slime with stat_block
+        """Test pure moss slime shows higher HP due to culture bonus."""
+        # Create moss slime with stat_block
         slime = RosterSlime("marsh_slime", self.marsh_genome, level=1)
         slime.stat_block = StatBlock.from_genome(self.marsh_genome)
         
-        # Marsh has HP +3.0 modifier
-        marsh_modifier = CULTURAL_PARAMETERS[CulturalBase.MARSH].hp_modifier
-        expected_hp = int(20.0 * marsh_modifier * 1.0)  # base_hp * cultural_mod * level_mod
+        # Moss has HP +3.0 modifier
+        moss_modifier = CULTURAL_PARAMETERS[CulturalBase.MOSS].hp_modifier
+        expected_hp = int(20.0 * moss_modifier * 1.0)  # base_hp * cultural_mod * level_mod
         
         # Verify computed HP is higher than base
-        assert slime.stat_block.hp > 20.0, f"Marsh HP {slime.stat_block.hp} should be > base 20.0"
+        assert slime.stat_block.hp > 20.0, f"Moss HP {slime.stat_block.hp} should be > base 20.0"
         assert slime.stat_block.hp >= expected_hp, f"HP should be at least {expected_hp}"
     
     def test_stage_affects_displayed_stats(self):
@@ -306,11 +306,21 @@ class TestDispatchSystemStatBlock:
             level=1
         )
         
-        self.slime_with_stat_block = RosterSlime("test_slime", genome, level=1)
+        self.slime_with_stat_block = RosterSlime(
+            slime_id="test_slime",
+            name="TestSlime",
+            genome=genome,
+            level=1
+        )
         self.slime_with_stat_block.stat_block = StatBlock.from_genome(genome)
         
         # Create slime without stat_block
-        self.slime_without_stat_block = RosterSlime("fallback_slime", genome, level=1)
+        self.slime_without_stat_block = RosterSlime(
+            slime_id="fallback_slime",
+            name="FallbackSlime",
+            genome=genome,
+            level=1
+        )
         # No stat_block assigned
     
     def test_dispatch_uses_stat_block_when_available(self):
