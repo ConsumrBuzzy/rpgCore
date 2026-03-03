@@ -512,6 +512,36 @@ class GardenScene(GardenSceneBase):
             theme=self.spec.theme if hasattr(self.spec, 'theme') else None
         )
 
+    def _handle_carousel_result(self, result):
+        """Handle carousel selection result."""
+        if not result.confirmed:
+            return  # User cancelled
+        
+        from src.shared.ui.slime_carousel import CarouselMode
+        
+        if result.mode == CarouselMode.PAIR.value and len(result.selected) == 2:
+            # BREED or SUMO - check which button was pressed
+            if hasattr(self, '_last_carousel_source'):
+                if self._last_carousel_source == 'breed':
+                    # Pass selected pair to breeding scene
+                    self.request_scene("breeding", selected_pair=result.selected)
+                elif self._last_carousel_source == 'sumo':
+                    # Pass selected pair to sumo scene
+                    self.request_scene("sumo", selected_pair=result.selected)
+        
+        elif result.mode == CarouselMode.SINGLE.value and len(result.selected) == 1:
+            # RACE or DUNGEON - check which button was pressed
+            if hasattr(self, '_last_carousel_source'):
+                selected_slime = result.selected[0]
+                if self._last_carousel_source == 'race':
+                    # Pass selected slime to race scene
+                    self.request_scene("racing", selected_slime=selected_slime)
+                elif self._last_carousel_source == 'dungeon':
+                    # Pass selected slime to dungeon scene
+                    self.request_scene("dungeon", selected_slime=selected_slime)
+        
+        # BROWSE mode - no action needed, just close carousel
+
     def pick_entity(self, pos: Tuple[int, int]) -> Optional[Slime]:
         # Return the top-most slime at pos
         for slime in reversed(self.garden_state.slimes):
