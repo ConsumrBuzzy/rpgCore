@@ -417,6 +417,11 @@ def main(args=None):
         # Launch Pygame UI
         session = DungeonSession()
         
+        # Get the roster and team from the session
+        from src.shared.teams.roster import TeamRole
+        roster = session.roster
+        team = roster.get_team(TeamRole.DUNGEON)
+        
         # Local imports to avoid circular deps if they occur
         from src.apps.dungeon_crawler.ui.scene_dungeon_room import DungeonRoomScene
         from src.apps.dungeon_crawler.ui.scene_inventory import InventoryOverlay
@@ -428,7 +433,7 @@ def main(args=None):
         manager.register("inventory", InventoryOverlay)
         manager.register("dungeon_combat", DungeonCombatScene)
         
-        manager.run("the_room", session=session)
+        manager.run("the_room", session=session, roster=roster, team=team)
 
 if __name__ == "__main__":
     main()
