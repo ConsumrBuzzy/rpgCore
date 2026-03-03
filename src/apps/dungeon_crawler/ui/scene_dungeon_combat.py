@@ -314,21 +314,24 @@ class DungeonCombatScene(CombatSceneBase):
         self._sync_back_hp()
         if self.session:
             self.session.last_combat_result = "victory"
-        self.manager.pop(combat_result="victory")
+        # Return to dungeon room scene with combat result
+        self.manager.switch_to("dungeon_room", session=self.session, combat_result="victory")
 
     def _handle_defeat(self):
         self.add_log("Hero has fallen...")
         if self.session:
             self.session.end_run(cause="Killed in combat")
             self.session.last_combat_result = "defeat"
-        self.manager.pop(combat_result="defeat")
+        # Return to dungeon room scene with combat result
+        self.manager.switch_to("dungeon_room", session=self.session, combat_result="defeat")
 
     def _handle_flee(self):
         self.add_log("Fleeing...")
         self._sync_back_hp()
         if self.session:
             self.session.last_combat_result = "flee"
-        self.manager.pop(combat_result="flee")
+        # Return to dungeon room scene with combat result
+        self.manager.switch_to("dungeon_room", session=self.session, combat_result="flee")
 
     def _sync_back_hp(self):
         """Copies combat HP back to roster slimes."""

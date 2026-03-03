@@ -175,7 +175,7 @@ class DungeonRoomScene(Scene):
         if self.enemy_defeated: return
         if self.hero_grid_pos == self.enemy_grid_pos:
             logger.info("💥 COLLISION! Entering Combat...")
-            self.request_scene("dungeon_combat", session=self.session, enemy_entity=self.slime_entity)
+            self.request_scene("dungeon_combat", session=self.session, enemy_entity=self.slime_entity, roster=self.roster, team=self.team)
 
     def update(self, dt: float) -> None:
         self.torch_timer += dt
