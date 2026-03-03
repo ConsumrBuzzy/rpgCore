@@ -248,7 +248,7 @@ class Creature:
         
         # Restore genome
         g_data = data["genome"]
-        g_data["cultural_base"] = CulturalBase(g_data.get("cultural_base", "mixed"))
+        g_data["cultural_base"] = CulturalBase(g_data.get("cultural_base", "void"))
         genome = SlimeGenome(**g_data)
         
         # Create creature

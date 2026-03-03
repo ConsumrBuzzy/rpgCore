@@ -47,7 +47,6 @@ class UITheme:
             'crystal': (220, 220, 240),
             'tundra':  (180, 200, 220),
             'tide':    (80, 80, 220),
-            'coastal': (80, 160, 200),  # NOTE: coastal maps to Tide visually
             'void':    (180, 100, 220),
         }
     )

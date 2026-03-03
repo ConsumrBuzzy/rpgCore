@@ -5,11 +5,11 @@ from typing import Tuple, Dict
 class CulturalBase(Enum):
     EMBER   = "ember"
     CRYSTAL = "crystal"
-    MOSS    = "moss"
-    COASTAL = "coastal"
-    TIDE    = "tide"      # NEW: Lightning/Charisma culture
+    MARSH   = "marsh"
+    GALE    = "gale"
+    TUNDRA  = "tundra"
+    TIDE    = "tide"
     VOID    = "void"
-    MIXED   = "mixed"
 
 @dataclass
 class CulturalParameters:
@@ -43,7 +43,7 @@ CULTURAL_PARAMETERS: Dict[CulturalBase, CulturalParameters] = {
         speed_modifier         = 0.7,
         rare_trait_chance      = 0.08,
     ),
-    CulturalBase.MOSS: CulturalParameters(
+    CulturalBase.MARSH: CulturalParameters(
         body_roundness_range   = (0.6, 0.9),   # rounded
         primary_hue_range      = (90, 150),     # greens
         wobble_frequency_range = (0.5, 1.0),    # gentle
@@ -52,14 +52,23 @@ CULTURAL_PARAMETERS: Dict[CulturalBase, CulturalParameters] = {
         speed_modifier         = 1.3,
         rare_trait_chance      = 0.04,
     ),
-    CulturalBase.COASTAL: CulturalParameters(
-        body_roundness_range   = (0.5, 0.8),   # fluid
-        primary_hue_range      = (180, 210),    # blue-teal
-        wobble_frequency_range = (0.8, 1.4),    # ripple
-        hp_modifier            = 1.0,
-        attack_modifier        = 1.0,
-        speed_modifier         = 1.0,
+    CulturalBase.GALE: CulturalParameters(
+        body_roundness_range   = (0.3, 0.6),   # angular
+        primary_hue_range      = (210, 270),    # blues
+        wobble_frequency_range = (2.0, 3.5),    # fast
+        hp_modifier            = 0.9,
+        attack_modifier        = 0.9,
+        speed_modifier         = 1.4,
         rare_trait_chance      = 0.06,
+    ),
+    CulturalBase.TUNDRA: CulturalParameters(
+        body_roundness_range   = (0.7, 0.9),   # angular
+        primary_hue_range      = (180, 210),    # cool blues
+        wobble_frequency_range = (0.3, 0.6),    # slow
+        hp_modifier            = 1.1,
+        attack_modifier        = 0.9,
+        speed_modifier         = 0.8,
+        rare_trait_chance      = 0.05,
     ),
     CulturalBase.TIDE: CulturalParameters(
         body_roundness_range   = (0.3, 0.6),   # flowing
@@ -78,14 +87,5 @@ CULTURAL_PARAMETERS: Dict[CulturalBase, CulturalParameters] = {
         attack_modifier        = 1.2,
         speed_modifier         = 1.2,
         rare_trait_chance      = 0.25,
-    ),
-    CulturalBase.MIXED: CulturalParameters(
-        body_roundness_range   = (0.3, 0.8),
-        primary_hue_range      = (0, 360),
-        wobble_frequency_range = (0.5, 1.5),
-        hp_modifier            = 1.0,
-        attack_modifier        = 1.0,
-        speed_modifier         = 1.0,
-        rare_trait_chance      = 0.03,
     ),
 }

@@ -378,7 +378,7 @@ class Roster:
             g_data = s["genome"]
             # Cast culture string back to Enum
             from src.shared.genetics.cultural_base import CulturalBase
-            g_data["cultural_base"] = CulturalBase(g_data.get("cultural_base", "mixed"))
+            g_data["cultural_base"] = CulturalBase(g_data.get("cultural_base", "void"))
             
             # Ensure base stats exist (for backward compatibility if needed)
             if "base_hp" not in g_data: g_data["base_hp"] = 20.0

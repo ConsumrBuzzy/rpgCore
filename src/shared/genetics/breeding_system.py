@@ -90,7 +90,7 @@ class BreedingSystem:
         expr = getattr(genome, 'culture_expression', {})
         if not expr:
             # Derive from cultural_base
-            base = getattr(genome, 'cultural_base', CulturalBase.MOSS)
+            base = getattr(genome, 'cultural_base', CulturalBase.VOID)
             if hasattr(base, 'value'):
                 base = base.value
             key = base.lower().replace('culturalbase.', '').strip()
@@ -98,8 +98,8 @@ class BreedingSystem:
             # Map known aliases (same as migration)
             aliases = {
                 'moss': 'marsh',
-                'coastal': 'tide',
-                'mixed': 'marsh',
+                'coastal': 'tundra',  # Corrected: coastal → tundra
+                'mixed': 'void',
                 # Handle enum to expression mapping
                 'ember': 'ember',
                 'crystal': 'crystal',

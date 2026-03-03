@@ -38,10 +38,9 @@ class UISpec:
     # Cultural colors
     color_ember: tuple   # (220, 80, 40)
     color_crystal: tuple # (80, 160, 220)
-    color_moss: tuple    # (80, 180, 80)
-    color_coastal: tuple # (60, 180, 200)
+    color_marsh: tuple    # (80, 180, 80)
+    color_tundra: tuple # (60, 180, 200)
     color_void: tuple    # (140, 60, 200)
-    color_mixed: tuple   # (160, 160, 160)
     
     # Component sizes
     button_height_sm: int   # 32
@@ -84,10 +83,9 @@ SPEC_720 = UISpec(
     
     color_ember=(220, 80, 40),
     color_crystal=(80, 160, 220),
-    color_moss=(80, 180, 80),
-    color_coastal=(60, 180, 200),
+    color_marsh=(80, 180, 80),
+    color_tundra=(60, 180, 200),
     color_void=(140, 60, 200),
-    color_mixed=(160, 160, 160),
     
     button_height_sm=32,
     button_height_md=44,
@@ -130,10 +128,9 @@ SPEC_1080 = UISpec(
     
     color_ember=SPEC_720.color_ember,
     color_crystal=SPEC_720.color_crystal,
-    color_moss=SPEC_720.color_moss,
-    color_coastal=SPEC_720.color_coastal,
+    color_marsh=SPEC_720.color_marsh,
+    color_tundra=SPEC_720.color_tundra,
     color_void=SPEC_720.color_void,
-    color_mixed=SPEC_720.color_mixed,
     
     button_height_sm=int(32 * 1.5),
     button_height_md=int(44 * 1.5),
@@ -176,10 +173,9 @@ SPEC_160 = UISpec(
     
     color_ember=(255, 100, 0),      # Orange ember
     color_crystal=(0, 200, 255),    # Cyan crystal
-    color_moss=(0, 255, 0),        # Green moss
-    color_coastal=(0, 200, 200),   # Teal coastal
-    color_void=(200, 0, 255),      # Purple void
-    color_mixed=(200, 200, 200),   # Gray mixed
+    color_marsh=(0, 255, 0),        # Green marsh
+    color_tundra=(0, 200, 200),     # Teal tundra
+    color_void=(200, 0, 255),       # Purple void
     
     button_height_sm=8,
     button_height_md=12,
