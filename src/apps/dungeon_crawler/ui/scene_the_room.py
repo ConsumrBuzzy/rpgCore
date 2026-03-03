@@ -12,9 +12,13 @@ class TheRoomScene(Scene):
     The Hub scene — The Room.
     A dark bedroom with interactive elements.
     """
-    def __init__(self, manager, spec: UISpec, session: DungeonSession, **kwargs):
+    def __init__(self, manager, spec: UISpec, session: DungeonSession = None, **kwargs):
         super().__init__(manager, spec, **kwargs)
-        self.session = session
+        self.session = session or DungeonSession()
+        
+        # Initialize session if not provided
+        if not self.session.hero:
+            self.session.start_run("fighter")
         
         # Aesthetic colors
         self.bg_color = (15, 12, 12) # Dark reddish black
