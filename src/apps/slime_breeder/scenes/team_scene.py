@@ -359,8 +359,9 @@ class TeamScene(Scene):
         
         # Culture badge
         culture_color = {
-            "ember": (200, 80, 40), "crystal": (140, 200, 255), "moss": (80, 180, 80),
-            "coastal": (80, 140, 180), "void": (100, 40, 140), "unknown": (140, 140, 140)
+            "ember": (200, 80, 40), "crystal": (140, 200, 255), "marsh": (80, 180, 80),
+            "gale": (135, 206, 235), "tundra": (180, 200, 220), "tide": (80, 80, 220),
+            "void": (100, 40, 140), "unknown": (140, 140, 140)
         }.get(culture, (140, 140, 140))
         
         # Stats (racing focused)

@@ -167,6 +167,7 @@ class StatsPanel(UIComponent):
             'crystal': self.theme.culture_color('crystal'),
             'tundra':  self.theme.culture_color('tundra'),
             'tide':    self.theme.culture_color('tide'),
+            'void':    self.theme.culture_color('void'),
         }
         
         # Filter and sort cultures by expression (> 0.05 threshold)

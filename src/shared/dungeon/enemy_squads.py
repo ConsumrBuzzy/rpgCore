@@ -26,14 +26,14 @@ SQUAD_TEMPLATES = [
         "name": "Lone Wanderer",
         "threat": "low",
         "size": 1,
-        "culture": CulturalArchetype.MOSS,
+        "culture": CulturalArchetype.MARSH,
         "level_range": (1, 2),
     },
     {
         "name": "The Thorn Pack",
         "threat": "medium",
         "size": 3,
-        "culture": CulturalArchetype.MOSS,
+        "culture": CulturalArchetype.MARSH,
         "level_range": (1, 3),
     },
     {
@@ -61,7 +61,7 @@ SQUAD_TEMPLATES = [
         "name": "Swarm of Pips",
         "threat": "medium",
         "size": 5,
-        "culture": CulturalArchetype.COASTAL,
+        "culture": CulturalArchetype.TUNDRA,
         "level_range": (1, 2),
     },
 ]

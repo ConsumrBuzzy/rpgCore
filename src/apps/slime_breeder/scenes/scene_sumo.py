@@ -74,18 +74,18 @@ class SumoScene(Scene):
         culture_a = self.slime_a.genome.cultural_base
         culture_b = self.slime_b.genome.cultural_base
         
-        # Aggressive triangle: ember beats crystal, crystal beats moss, moss beats ember
+        # Aggressive triangle: ember beats gale, gale beats tundra, tundra beats ember
         aggressive_advantages = {
-            CulturalBase.EMBER: CulturalBase.CRYSTAL,
-            CulturalBase.CRYSTAL: CulturalBase.MOSS,
-            CulturalBase.MOSS: CulturalBase.EMBER
+            CulturalBase.EMBER: CulturalBase.GALE,
+            CulturalBase.GALE: CulturalBase.TUNDRA,
+            CulturalBase.TUNDRA: CulturalBase.EMBER
         }
         
-        # Tactical triangle: tide beats coastal, coastal beats marsh (moss), marsh (moss) beats tide
+        # Tactical triangle: tide beats marsh, marsh beats crystal, crystal beats tide
         tactical_advantages = {
-            CulturalBase.TIDE: CulturalBase.COASTAL,
-            CulturalBase.COASTAL: CulturalBase.MOSS,
-            CulturalBase.MOSS: CulturalBase.TIDE
+            CulturalBase.TIDE: CulturalBase.MARSH,
+            CulturalBase.MARSH: CulturalBase.CRYSTAL,
+            CulturalBase.CRYSTAL: CulturalBase.TIDE
         }
         
         # Check aggressive triangle

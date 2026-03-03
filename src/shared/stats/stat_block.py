@@ -76,7 +76,7 @@ class StatBlock:
             'marsh':   {'atk': 0.5, 'hp': 3.0,  'spd': 0.5},
             'crystal': {'atk': 1.0, 'hp': 1.0,  'spd': 1.0},
             'tundra':  {'atk': 0.5, 'hp': 2.0,  'spd': -1.0},
-            'tide':    {'atk': 2.0, 'hp': 0.5,  'spd': 2.0},
+            'tide':    {'atk': 2.0, 'hp': 0.5,  'spd': 0.5},
         }
 
         # Compute culture modifiers
