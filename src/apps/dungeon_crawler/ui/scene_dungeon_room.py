@@ -124,9 +124,9 @@ class DungeonRoomScene(Scene):
 
     def _handle_flee(self):
         logger.info("🏃 Flee from encounter")
-        # Return to dungeon_path if session exists, else garden
+        # Return to the_room (hub) if session exists, else garden
         if self.session:
-            self.manager.switch_to("dungeon_path", session=self.session)
+            self.manager.switch_to("the_room", session=self.session)
         else:
             self.manager.switch_to("garden")
 
