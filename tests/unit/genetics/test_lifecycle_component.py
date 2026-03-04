@@ -190,7 +190,7 @@ class TestLifecycleComponent:
         assert genome.can_equip == False
         assert genome.can_mentor == False
         assert genome.dispatch_risk == 'none'
-        assert genome.stage_modifier == 'primordial_hatchling'  # Default tier is Void/Mixed
+        assert genome.stage_modifier == 'primordial_hatchling'  # Default tier is Void
     
     def test_lifecycle_integration_with_genetics(self):
         """Test lifecycle works with existing genetics fields"""

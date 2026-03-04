@@ -249,13 +249,7 @@ class Creature:
         # Restore genome with migration support
         g_data = data["genome"]
         culture_value = g_data.get("cultural_base", "void")
-        # Handle old culture names during migration
-        culture_aliases = {
-            'moss': 'marsh',
-            'coastal': 'tundra',
-            'mixed': 'void'
-        }
-        culture_value = culture_aliases.get(culture_value, culture_value)
+        # Culture validation is handled by enum casting below
         
         try:
             g_data["cultural_base"] = CulturalBase(culture_value)

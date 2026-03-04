@@ -97,9 +97,6 @@ class BreedingSystem:
             
             # Map known aliases (same as migration)
             aliases = {
-                'moss': 'marsh',
-                'coastal': 'tundra',  # Corrected: coastal → tundra
-                'mixed': 'void',
                 # Handle enum to expression mapping
                 'ember': 'ember',
                 'crystal': 'crystal',

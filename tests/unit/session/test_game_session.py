@@ -153,7 +153,7 @@ class TestWorldState:
     
     def test_discover_multiple_cultures(self):
         """Test discovering multiple cultures"""
-        cultures = ['ember', 'crystal', 'moss']
+        cultures = ['ember', 'crystal', 'marsh']
         for culture in cultures:
             self.session.discover_culture(culture)
         

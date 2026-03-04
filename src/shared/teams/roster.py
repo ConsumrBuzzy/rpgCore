@@ -439,13 +439,7 @@ class Roster:
                 from src.shared.genetics.cultural_base import CulturalBase
                 
                 culture_value = g_data.get("cultural_base", "void")
-                # Handle old culture names during migration
-                culture_aliases = {
-                    'moss': 'marsh',
-                    'coastal': 'tundra',
-                    'mixed': 'void'
-                }
-                culture_value = culture_aliases.get(culture_value, culture_value)
+                # Culture validation is handled by enum casting below
                 
                 try:
                     g_data["cultural_base"] = CulturalBase(culture_value)
@@ -561,13 +555,8 @@ class Roster:
                 base = base.value
             key = base.lower().replace('culturalbase.', '').strip()
             
-            # Map known aliases
-            aliases = {
-                'moss': 'marsh',
-                'coastal': 'tide',
-                'mixed': 'marsh',
-            }
-            key = aliases.get(key, key)
+            # Normalize key
+            key = base.lower().replace('culturalbase.', '').strip()
             
             genome_data['culture_expression'] = {key: 1.0}
         return genome_data

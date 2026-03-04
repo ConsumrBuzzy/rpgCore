@@ -284,7 +284,7 @@ class TestBreedingSystem:
         dominant = BreedingSystem._dominant_culture(expr_ember)
         assert dominant == CulturalBase.EMBER
         
-        # Test mixed culture fallback
+        # Test tie-breaker culture fallback
         expr_mixed = {'ember': 0.3, 'gale': 0.3, 'marsh': 0.2, 'crystal': 0.1, 'tundra': 0.05, 'tide': 0.05}
         dominant = BreedingSystem._dominant_culture(expr_mixed)
         assert dominant in [CulturalBase.EMBER, CulturalBase.GALE]  # Could be either due to tie
@@ -331,11 +331,11 @@ class TestBreedingSystem:
             assert 0.0 <= offspring.shyness <= 1.0
     
     def test_culture_alias_fallback(self, parents_with_missing_culture):
-        """Test culture alias mapping in fallback."""
+        """Test culture recovery mapping in fallback."""
         parent_old = parents_with_missing_culture
         
         # Create a genome with missing culture_expression to trigger fallback
-        genome_moss = SlimeGenome(
+        genome_marsh = SlimeGenome(
             shape='round', size='medium', base_color=(100, 255, 100),
             pattern='spotted', pattern_color=(50, 200, 50), accessory='none',
             curiosity=0.5, energy=0.5, affection=0.5, shyness=0.5,
@@ -347,11 +347,11 @@ class TestBreedingSystem:
         )
         
         # Manually clear culture_expression to test fallback
-        genome_moss.culture_expression = {}
+        genome_marsh.culture_expression = {}
         
-        expr = BreedingSystem._get_culture_expression_fallback(genome_moss)
+        expr = BreedingSystem._get_culture_expression_fallback(genome_marsh)
         
-        # Should map moss to marsh
+        # Should map cultural base enum to expression
         assert 'marsh' in expr
         assert expr['marsh'] == 1.0
     

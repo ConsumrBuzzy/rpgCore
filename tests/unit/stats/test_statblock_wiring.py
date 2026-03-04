@@ -146,8 +146,8 @@ class TestStatBlockWiring:
         assert slime.stat_block.atk < 5.0, "Hatchling stage modifier should reduce ATK below base"
     
     def test_marsh_culture_shows_higher_hp(self):
-        """Test pure moss slime shows higher HP due to culture bonus."""
-        # Create moss slime with stat_block
+        """Test pure marsh slime shows higher HP due to culture bonus."""
+        # Create marsh slime with stat_block
         slime = RosterSlime(
             slime_id="marsh_slime",
             name="MarshSlime",

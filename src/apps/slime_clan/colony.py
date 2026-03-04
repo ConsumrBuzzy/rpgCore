@@ -30,7 +30,7 @@ class ColonyManager:
     def __init__(self, node_type_enum):
         self.colonies: Dict[str, Colony] = {}
         self.node_type_enum = node_type_enum
-        self.name_pool = ["Mire", "Fenwick", "Ashroot", "Bramble", "Gust", "Ember", "Tide", "Cinder", "Reed", "Moss"]
+        self.name_pool = ["Mire", "Fenwick", "Ashroot", "Bramble", "Gust", "Ember", "Tide", "Cinder", "Reed", "Marsh"]
         self.resolver = D20Resolver()
 
     def create_colony(self, id: str, name: str, x: int, y: int, coord: tuple[int, int], node_type: Any, connections: List[str], faction: Optional[str] = None) -> Colony:

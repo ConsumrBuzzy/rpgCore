@@ -37,7 +37,7 @@ class SaveManager:
         try:
             cls.SAVE_DIR.mkdir(exist_ok=True)
             data = {
-                'version': 1,
+                'version': 2,
                 'saved_at': datetime.now(timezone.utc).isoformat(),
                 'roster': cls._serialize_roster(roster),
                 'session': session.to_dict(),
@@ -72,6 +72,9 @@ class SaveManager:
             try:
                 if path.exists():
                     data = json.loads(path.read_text())
+                    if data.get('version', 1) < 2:
+                        logger.warning(f"Save file {path.name} is obsolete (version < 2). Ignoring.")
+                        continue
                     logger.info(f"Loaded save from {path.name}")
                     return (data['roster'], data['session'])
             except Exception as e:

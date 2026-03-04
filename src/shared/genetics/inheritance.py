@@ -75,7 +75,7 @@ def breed(parent_a: SlimeGenome, parent_b: SlimeGenome, mutation_chance: float =
     if parent_a.cultural_base == parent_b.cultural_base:
         new_culture = parent_a.cultural_base
     else:
-        # 20% chance to inherit from either parent instead of mixed
+        # 20% chance to inherit from either parent instead of void
         r = random.random()
         if r < 0.1: new_culture = parent_a.cultural_base
         elif r < 0.2: new_culture = parent_b.cultural_base

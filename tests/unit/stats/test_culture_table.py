@@ -71,10 +71,9 @@ class TestCultureTable:
         for stat, amp in void_stats.items():
             assert amp == 1.0, f"Void {stat} should be 1.0, got {amp}"
     
-    def test_mixed_culture_removed_from_enum(self):
-        """Test that 'mixed' culture is not in the amp table."""
-        assert 'mixed' not in CULTURE_AMP_TABLE
-        assert 'MIXED' not in CULTURE_AMP_TABLE
+    def test_gale_culture_present(self):
+        """Test that 'gale' culture is in the amp table."""
+        assert 'gale' in CULTURE_AMP_TABLE
     
     def test_crystal_chm_is_0_8_not_0_5(self):
         """Test that crystal's CHM is 0.8 (not the old 0.5)."""

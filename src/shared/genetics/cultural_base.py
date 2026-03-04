@@ -4,9 +4,9 @@ from typing import Tuple, Dict
 
 class CulturalBase(Enum):
     EMBER   = "ember"
-    CRYSTAL = "crystal"
-    MARSH   = "marsh"
     GALE    = "gale"
+    MARSH   = "marsh"
+    CRYSTAL = "crystal"
     TUNDRA  = "tundra"
     TIDE    = "tide"
     VOID    = "void"
@@ -34,14 +34,14 @@ CULTURAL_PARAMETERS: Dict[CulturalBase, CulturalParameters] = {
         speed_modifier         = 1.1,
         rare_trait_chance      = 0.05,
     ),
-    CulturalBase.CRYSTAL: CulturalParameters(
-        body_roundness_range   = (0.4, 0.7),   # geometric
-        primary_hue_range      = (180, 240),    # blue-white
-        wobble_frequency_range = (0.3, 0.8),    # slow
-        hp_modifier            = 1.4,
-        attack_modifier        = 0.8,
-        speed_modifier         = 0.7,
-        rare_trait_chance      = 0.08,
+    CulturalBase.GALE: CulturalParameters(
+        body_roundness_range   = (0.3, 0.6),   # angular
+        primary_hue_range      = (210, 270),    # blues
+        wobble_frequency_range = (2.0, 3.5),    # fast
+        hp_modifier            = 0.9,
+        attack_modifier        = 0.9,
+        speed_modifier         = 1.4,
+        rare_trait_chance      = 0.06,
     ),
     CulturalBase.MARSH: CulturalParameters(
         body_roundness_range   = (0.6, 0.9),   # rounded
@@ -52,14 +52,14 @@ CULTURAL_PARAMETERS: Dict[CulturalBase, CulturalParameters] = {
         speed_modifier         = 1.3,
         rare_trait_chance      = 0.04,
     ),
-    CulturalBase.GALE: CulturalParameters(
-        body_roundness_range   = (0.3, 0.6),   # angular
-        primary_hue_range      = (210, 270),    # blues
-        wobble_frequency_range = (2.0, 3.5),    # fast
-        hp_modifier            = 0.9,
-        attack_modifier        = 0.9,
-        speed_modifier         = 1.4,
-        rare_trait_chance      = 0.06,
+    CulturalBase.CRYSTAL: CulturalParameters(
+        body_roundness_range   = (0.4, 0.7),   # geometric
+        primary_hue_range      = (180, 240),    # blue-white
+        wobble_frequency_range = (0.3, 0.8),    # slow
+        hp_modifier            = 1.4,
+        attack_modifier        = 0.8,
+        speed_modifier         = 0.7,
+        rare_trait_chance      = 0.08,
     ),
     CulturalBase.TUNDRA: CulturalParameters(
         body_roundness_range   = (0.7, 0.9),   # angular

@@ -197,7 +197,7 @@ class WorldFactory:
                 },
                 starting_population=300,
                 initial_factions=[Faction.MERCHANTS, Faction.PEASANTRY],
-                location_name="Coastal Town",
+                location_name="Tundra Town",
                 coordinates=(0, 10),
                 radius=5
             ),
