@@ -123,14 +123,13 @@ class SpaceTraderScene(Scene):
         self.session.price_model.update_daily()
         self._build_ui()
 
-    def handle_events(self, events: list[pygame.event.Event]) -> None:
-        for event in events:
-            if event.type == pygame.QUIT:
-                self.request_quit()
-                
-            self.market_list.handle_event(event)
-            for btn in self.buttons:
-                btn.handle_event(event)
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.QUIT:
+            self.request_quit()
+            
+        self.market_list.handle_event(event)
+        for btn in self.buttons:
+            btn.handle_event(event)
 
     def update(self, dt_ms: float) -> None:
         pass
