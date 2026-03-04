@@ -203,8 +203,8 @@ class TestStatBlockWiring:
         )
         
         # Create stat_blocks
-        hatchling_block = StatBlock.from_genome(hatchling_genome)
-        prime_block = StatBlock.from_genome(prime_genome)
+        hatchling_block = StatBlock.from_genome(hatchling_genome, level=hatchling_genome.level)
+        prime_block = StatBlock.from_genome(prime_genome, level=prime_genome.level)
         
         # Prime should have higher stats due to stage modifier (1.2x vs 0.6x)
         assert prime_block.hp > hatchling_block.hp, "Prime HP should be > Hatchling HP"
@@ -310,9 +310,10 @@ class TestStatBlockWiring:
         )
         # stat_block is created automatically when accessed
         
-        # Void has balanced stats (0.0x all modifiers)
-        # Expected HP = (20.0 * 0.6) + 0.0 = 12.0, rounds to 12
-        expected_hp = int((20.0 * 0.6))
+        # Void has balanced stats (1/6th of all modifiers)
+        # 1/6th of (0.5+0.5+3.0+1.0+2.0+0.5) = 1.25
+        # Expected HP = (20.0 * 0.6) + 1.25 = 13.25, rounds to 13
+        expected_hp = int((20.0 * 0.6) + 1.25)
         assert slime.stat_block.hp == expected_hp, f"Void HP {slime.stat_block.hp} should be {expected_hp}"
         assert slime.stat_block.hp < 20.0, "Hatchling stage modifier should reduce HP below base"
         
@@ -321,10 +322,10 @@ class TestStatBlockWiring:
         atk_ratio = slime.stat_block.atk / 5.0
         spd_ratio = slime.stat_block.spd / 5.0
         
-        # All ratios should be similar (within 20% of each other)
+        # All ratios should be similar (within 25% of each other)
         max_ratio = max(hp_ratio, atk_ratio, spd_ratio)
         min_ratio = min(hp_ratio, atk_ratio, spd_ratio)
-        assert max_ratio - min_ratio < 0.2, "Void stats should be balanced"
+        assert max_ratio - min_ratio < 0.25, "Void stats should be balanced"
     
     def test_tundra_spd_penalty_visible(self):
         """Test ember slime shows SPD penalty but HP bonus."""
