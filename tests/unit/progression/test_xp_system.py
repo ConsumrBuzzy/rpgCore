@@ -38,6 +38,7 @@ def mock_void_slime():
     genome = SlimeGenome(
         shape="round", size="small", base_color=(100, 100, 100),
         pattern="none", pattern_color=(0, 0, 0), accessory="none",
+        curiosity=0.5, energy=0.5, affection=0.5, shyness=0.5,
         cultural_base=CulturalBase.VOID
     )
     genome.culture_expression = {"void": 1.0}
@@ -65,7 +66,12 @@ def test_award_xp_applies_culture_amplification_ember(mock_random, mock_slime):
     
 @patch("random.random", return_value=0.99)
 def test_award_xp_applies_culture_amplification_gale(mock_random):
-    genome = SlimeGenome(shape="round", size="medium", cultural_base=CulturalBase.GALE)
+    genome = SlimeGenome(
+        shape="round", size="medium", base_color=(100, 100, 100),
+        pattern="none", pattern_color=(0, 0, 0), accessory="none",
+        curiosity=0.5, energy=0.5, affection=0.5, shyness=0.5,
+        cultural_base=CulturalBase.GALE
+    )
     genome.culture_expression = {"gale": 1.0}
     slime = Creature(genome=genome)
     
@@ -77,7 +83,12 @@ def test_award_xp_applies_culture_amplification_gale(mock_random):
 
 @patch("random.random", return_value=0.99)
 def test_award_xp_mixed_culture_weighted_amplification(mock_random):
-    genome = SlimeGenome(shape="round", size="medium", cultural_base=CulturalBase.VOID)
+    genome = SlimeGenome(
+        shape="round", size="medium", base_color=(100, 100, 100),
+        pattern="none", pattern_color=(0, 0, 0), accessory="none",
+        curiosity=0.5, energy=0.5, affection=0.5, shyness=0.5,
+        cultural_base=CulturalBase.VOID
+    )
     # Mix of Ember (PWR 1.25, VIT 1.0) and Marsh (PWR 1.0, VIT 1.25)
     genome.culture_expression = {"ember": 0.5, "marsh": 0.5}
     slime = Creature(genome=genome)

@@ -88,7 +88,9 @@ def test_culture_soft_stat_modifiers_crystal_mnd(mock_genome):
 
 def test_culture_soft_stat_modifiers_tide_chm():
     genome = SlimeGenome(
-        shape="round", size="medium", cultural_base=CulturalBase.TIDE,
+        shape="round", size="medium", base_color=(100, 100, 100),
+        pattern="none", pattern_color=(0, 0, 0), accessory="none",
+        cultural_base=CulturalBase.TIDE,
         affection=1.0, shyness=0.0, energy=0.0, curiosity=0.0
     )
     # Base CHM: 1.0*8 + 1.0*4 = 12.

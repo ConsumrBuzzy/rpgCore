@@ -34,7 +34,13 @@
       "level": 1,
       "experience": 20,
       "breeding_lock_level": 0,
-      "current_hp": 10.0
+      "current_hp": 10.0,
+      "vit_xp": 0,
+      "pwr_xp": 0,
+      "agi_xp": 0,
+      "mnd_xp": 0,
+      "res_xp": 0,
+      "chm_xp": 0
     },
     {
       "slime_id": "pip_2",
@@ -70,7 +76,13 @@
       "level": 1,
       "experience": 0,
       "breeding_lock_level": 0,
-      "current_hp": 14.0
+      "current_hp": 14.0,
+      "vit_xp": 0,
+      "pwr_xp": 0,
+      "agi_xp": 0,
+      "mnd_xp": 0,
+      "res_xp": 0,
+      "chm_xp": 0
     },
     {
       "slime_id": "fizz_3",
@@ -106,7 +118,13 @@
       "level": 1,
       "experience": 0,
       "breeding_lock_level": 0,
-      "current_hp": 20.0
+      "current_hp": 20.0,
+      "vit_xp": 0,
+      "pwr_xp": 0,
+      "agi_xp": 0,
+      "mnd_xp": 0,
+      "res_xp": 0,
+      "chm_xp": 0
     },
     {
       "slime_id": "mochi_4",
@@ -142,7 +160,13 @@
       "level": 1,
       "experience": 50,
       "breeding_lock_level": 0,
-      "current_hp": 10.0
+      "current_hp": 10.0,
+      "vit_xp": 0,
+      "pwr_xp": 0,
+      "agi_xp": 0,
+      "mnd_xp": 0,
+      "res_xp": 0,
+      "chm_xp": 0
     },
     {
       "slime_id": "bloop_5",
@@ -178,7 +202,13 @@
       "level": 1,
       "experience": 0,
       "breeding_lock_level": 0,
-      "current_hp": 23.0
+      "current_hp": 23.0,
+      "vit_xp": 0,
+      "pwr_xp": 0,
+      "agi_xp": 0,
+      "mnd_xp": 0,
+      "res_xp": 0,
+      "chm_xp": 0
     },
     {
       "slime_id": "lumen_6",
@@ -214,7 +244,13 @@
       "level": 1,
       "experience": 0,
       "breeding_lock_level": 0,
-      "current_hp": 20.0
+      "current_hp": 20.0,
+      "vit_xp": 0,
+      "pwr_xp": 0,
+      "agi_xp": 0,
+      "mnd_xp": 0,
+      "res_xp": 0,
+      "chm_xp": 0
     }
   ]
 }

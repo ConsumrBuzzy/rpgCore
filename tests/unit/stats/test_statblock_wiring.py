@@ -118,11 +118,12 @@ class TestStatBlockWiring:
         # Render panel (this will access stat_block)
         panel.render(surface)
         
-        # Verify stat_block was used (ember has ATK +3.0, but level 1 gets 0.6 stage modifier)
-        # Expected ATK = (5.0 + 3.0) * 0.6 = 4.8, rounds to 4
-        expected_atk = int((5.0 + 3.0) * 0.6)
+        # Verify stat_block was used
+        # New formula: (base_atk * stage_mod) + culture_mod
+        # Expected ATK = (5.0 * 0.6) + 3.0 = 6
+        expected_atk = int((5.0 * 0.6) + 3.0)
         assert slime.stat_block.atk == expected_atk, f"Ember ATK {slime.stat_block.atk} should be {expected_atk}"
-        assert slime.stat_block.atk < 5.0, "Hatchling stage modifier should reduce ATK below base"
+        # ATK calculation changed, so we verify it's correctly computed instead of strictly below base.
         
         pygame.quit()
     
@@ -137,13 +138,12 @@ class TestStatBlockWiring:
         )
         # stat_block is created automatically when accessed
         
-        # Ember has ATK +3.0 modifier, but level 1 gets 0.6 stage modifier
-        ember_modifier = CULTURAL_PARAMETERS[CulturalBase.EMBER].attack_modifier
-        expected_atk = int((5.0 + 0) * ember_modifier * 0.6)  # base_atk + energy_bonus * cultural_mod * stage_mod
+        # Ember has ATK +3.0 modifier, level 1 gets 0.6 stage modifier
+        # New formula: (base_atk * stage_mod) + culture_mod
+        expected_atk = int((5.0 * 0.6) + 3.0)
         
         # Verify computed ATK reflects culture bonus and stage modifier
         assert slime.stat_block.atk == expected_atk, f"Ember ATK {slime.stat_block.atk} should be {expected_atk}"
-        assert slime.stat_block.atk < 5.0, "Hatchling stage modifier should reduce ATK below base"
     
     def test_marsh_culture_shows_higher_hp(self):
         """Test pure marsh slime shows higher HP due to culture bonus."""
@@ -156,13 +156,12 @@ class TestStatBlockWiring:
         )
         # stat_block is created automatically when accessed
         
-        # Marsh has HP +3.0 modifier from culture expression, but level 1 gets 0.6 stage modifier
-        # Expected HP = (20.0 + 3.0) * 0.6 = 13.8, rounds to 13
-        expected_hp = int((20.0 + 3.0) * 0.6)  # (base_hp + cultural_mod) * stage_mod
+        # Marsh has HP +3.0 modifier from culture, level 1 gets 0.6 stage modifier
+        # Expected HP = (20.0 * 0.6) + 3.0 = 15
+        expected_hp = int((20.0 * 0.6) + 3.0)
         
         # Verify computed HP reflects culture bonus and stage modifier
         assert slime.stat_block.hp == expected_hp, f"Marsh HP {slime.stat_block.hp} should be {expected_hp}"
-        assert slime.stat_block.hp < 20.0, "Hatchling stage modifier should reduce HP below base"
     
     def test_stage_affects_displayed_stats(self):
         """Test stage affects displayed stats (Prime 1.2x vs Hatchling 0.6x)."""
@@ -311,9 +310,9 @@ class TestStatBlockWiring:
         )
         # stat_block is created automatically when accessed
         
-        # Void has balanced stats (1.0x all modifiers)
-        # Expected HP = (20.0 + 0.0) * 0.6 = 12.0, rounds to 12
-        expected_hp = int((20.0 + 0.0) * 0.6)
+        # Void has balanced stats (0.0x all modifiers)
+        # Expected HP = (20.0 * 0.6) + 0.0 = 12.0, rounds to 12
+        expected_hp = int((20.0 * 0.6))
         assert slime.stat_block.hp == expected_hp, f"Void HP {slime.stat_block.hp} should be {expected_hp}"
         assert slime.stat_block.hp < 20.0, "Hatchling stage modifier should reduce HP below base"
         
@@ -338,22 +337,12 @@ class TestStatBlockWiring:
         )
         # stat_block is created automatically when accessed
         
-        # Ember has ATK +3.0, but level 1 gets 0.6 stage modifier
-        # Expected HP = (20.0 + 0.5) * 0.6 = 12.3, rounds to 12
-        expected_hp = int((20.0 + 0.5) * 0.6)
-        assert slime.stat_block.hp == expected_hp, f"HP should be {expected_hp} (base + culture) * stage_modifier"
+        # Expected HP = (20.0 * 0.6) + 0.5 = 12.5, rounds to 12
+        expected_hp = int((20.0 * 0.6) + 0.5)
+        assert slime.stat_block.hp == expected_hp, f"HP should be {expected_hp}"
         assert slime.stat_block.hp < 20.0, "Hatchling stage modifier should reduce HP below base"
         
-        # Verify the specific modifiers (accounting for stage modifier)
-        ember_hp_mod = CULTURAL_PARAMETERS[CulturalBase.EMBER].hp_modifier  # +3.0
-        ember_atk_mod = CULTURAL_PARAMETERS[CulturalBase.EMBER].attack_modifier  # +3.0
-        
-        # HP and ATK should be increased but reduced by stage modifier
-        # Ember has hp_modifier=0.8, atk_modifier=3.0
-        expected_hp = int((20.0 + 0.4) * 0.6)  # base_hp + culture_hp * stage_mod
-        expected_atk = int((5.0 + 3.0) * 0.6)  # base_atk + culture_atk * stage_mod
-        
-        assert slime.stat_block.hp == expected_hp, f"HP should be {expected_hp}"
+        expected_atk = int((5.0 * 0.6) + 3.0)
         assert slime.stat_block.atk == expected_atk, f"ATK should be {expected_atk}"
 
 
