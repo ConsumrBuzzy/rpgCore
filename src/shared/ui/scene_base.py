@@ -43,7 +43,7 @@ class SceneBase(ABC):
                     return True
         return False
 
-    def update(self, dt_ms: int) -> None:
+    def tick(self, dt_ms: int) -> None:
         """Update all visible components."""
         for component in self.components:
             if component.visible:

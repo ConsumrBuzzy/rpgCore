@@ -64,7 +64,7 @@ class ScrollList(UIComponent):
                 return True
         return False
 
-    def update(self, dt_ms: int) -> None:
+    def tick(self, dt_ms: int) -> None:
         pass
 
     def render(self, surface: pygame.Surface) -> None:

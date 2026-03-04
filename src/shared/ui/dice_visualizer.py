@@ -258,7 +258,7 @@ class Die:
         self.squash      = 1.0
         self.stretch     = 1.0
 
-    def update(self, dt):
+    def tick(self, dt):
         self.hovered = False
 
         if self.state == "idle":

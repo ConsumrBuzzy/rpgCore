@@ -43,7 +43,7 @@ class Card(Button):
         self.base_y = rect.y
         self.shift_y = 0
 
-    def update(self, dt_ms: int) -> None:
+    def tick(self, dt_ms: int) -> None:
         if not self.visible:
             return
             

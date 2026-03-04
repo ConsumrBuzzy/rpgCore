@@ -42,7 +42,7 @@ class ProgressBar(UIComponent):
             self.label = Label(self.rect, align="center", color=color)
         self.label.set_text(text)
 
-    def update(self, dt_ms: int) -> None:
+    def tick(self, dt_ms: int) -> None:
         if not self.visible:
             return
             

@@ -47,7 +47,7 @@ class ProfileCard(UIComponent):
         stats_y = position[1] + self.PORTRAIT_SIZE + self.PADDING
         self.stats_panel = StatsPanel(slime, (stats_x, stats_y), width=self.STATS_PANEL_WIDTH, theme=self.theme)
 
-    def update(self, dt_ms: int):
+    def tick(self, dt_ms: int):
         """No periodic updates needed for the card itself."""
         pass
 

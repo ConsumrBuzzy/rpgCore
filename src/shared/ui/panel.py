@@ -68,11 +68,11 @@ class Panel(UIComponent):
                 return True
         return False
 
-    def update(self, dt_ms: int) -> None:
+    def tick(self, dt_ms: int) -> None:
         if not self.visible:
             return
         for child in self.children:
-            child.update(dt_ms)
+            child.tick(dt_ms)
 
     def render(self, surface: pygame.Surface) -> None:
         if not self.visible:
