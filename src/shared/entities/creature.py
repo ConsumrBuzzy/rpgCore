@@ -41,6 +41,14 @@ class Creature:
     alive: bool = True
     generation: int = 1
     
+    # Stat XP fields (new)
+    vit_xp: int = 0
+    pwr_xp: int = 0
+    agi_xp: int = 0
+    mnd_xp: int = 0
+    res_xp: int = 0
+    chm_xp: int = 0
+    
     # Team Assignment (from RosterSlime)
     team: TeamRole = TeamRole.UNASSIGNED
     locked: bool = False  # True when on active mission
@@ -236,6 +244,12 @@ class Creature:
             "current_hp": self.current_hp,
             "alive": self.alive,
             "generation": self.generation,
+            "vit_xp": self.vit_xp,
+            "pwr_xp": self.pwr_xp,
+            "agi_xp": self.agi_xp,
+            "mnd_xp": self.mnd_xp,
+            "res_xp": self.res_xp,
+            "chm_xp": self.chm_xp,
             "team": self.team.value,
             "locked": self.locked,
             "age": self.age
@@ -273,6 +287,12 @@ class Creature:
             current_hp=data.get("current_hp", -1.0),
             alive=data.get("alive", True),
             generation=data.get("generation", 1),
+            vit_xp=data.get("vit_xp", 0),
+            pwr_xp=data.get("pwr_xp", 0),
+            agi_xp=data.get("agi_xp", 0),
+            mnd_xp=data.get("mnd_xp", 0),
+            res_xp=data.get("res_xp", 0),
+            chm_xp=data.get("chm_xp", 0),
             team=TeamRole(data.get("team", "unassigned")),
             locked=data.get("locked", False),
             age=data.get("age", 0)

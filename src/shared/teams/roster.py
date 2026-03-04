@@ -144,7 +144,13 @@ class RosterSlime:
             level=creature.level,
             experience=creature.experience,
             breeding_lock_level=creature.breeding_lock_level,
-            current_hp=creature.current_hp
+            current_hp=creature.current_hp,
+            vit_xp=getattr(creature, 'vit_xp', 0),
+            pwr_xp=getattr(creature, 'pwr_xp', 0),
+            agi_xp=getattr(creature, 'agi_xp', 0),
+            mnd_xp=getattr(creature, 'mnd_xp', 0),
+            res_xp=getattr(creature, 'res_xp', 0),
+            chm_xp=getattr(creature, 'chm_xp', 0)
         )
 
 @dataclass
@@ -468,7 +474,13 @@ class Roster:
                     experience=s.get("experience", 0),
                     breeding_lock_level=s.get("breeding_lock_level", 0),
                     current_hp=s.get("current_hp", -1.0),
-                    generation=s.get("generation", 1)
+                    generation=s.get("generation", 1),
+                    vit_xp=s.get("vit_xp", 0),
+                    pwr_xp=s.get("pwr_xp", 0),
+                    agi_xp=s.get("agi_xp", 0),
+                    mnd_xp=s.get("mnd_xp", 0),
+                    res_xp=s.get("res_xp", 0),
+                    chm_xp=s.get("chm_xp", 0)
                 )
                 
                 # Validate loaded slime (warn-only for save data integrity)
@@ -624,7 +636,13 @@ class Roster:
                     "level": s.level,
                     "experience": s.experience,
                     "breeding_lock_level": s.breeding_lock_level,
-                    "current_hp": s.current_hp
+                    "current_hp": s.current_hp,
+                    "vit_xp": s.vit_xp,
+                    "pwr_xp": s.pwr_xp,
+                    "agi_xp": s.agi_xp,
+                    "mnd_xp": s.mnd_xp,
+                    "res_xp": s.res_xp,
+                    "chm_xp": s.chm_xp
                 }
                 for s in self.slimes
             ]
