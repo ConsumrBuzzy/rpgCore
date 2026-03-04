@@ -237,22 +237,25 @@ class OverworldScene(Scene):
                                 self.colony_manager.modify_sympathy(u, -10, "collateral fear", neighbor)
                     self.actions_remaining -= 1
                     stronghold_bonus = (node.node_type == NodeType.STRONGHOLD)
-                    self.request_scene("battle_field",
-                        region=node.name,
-                        difficulty="NORMAL",
-                        node_id=node.id,
-                        nodes=self.nodes,
-                        colony_manager=self.colony_manager,
-                        faction_manager=self.faction_manager,
-                        day=self.day,
-                        actions_remaining=self.actions_remaining,
-                        resources=self.resources,
-                        ship_parts=self.ship_parts,
-                        secured_part_nodes=list(self.secured_part_nodes),
-                        stronghold_bonus=stronghold_bonus,
-                        tribe_state=self.tribe_state,
-                        player_units=self.player_units
-                    )
+                    from src.apps.slime_clan.scenes.battle_field_scene import BattleFieldScene
+                    kwargs = self.context.resources.copy()
+                    kwargs.update({
+                        "region": node.name,
+                        "difficulty": "NORMAL",
+                        "node_id": node.id,
+                        "nodes": self.nodes,
+                        "colony_manager": self.colony_manager,
+                        "faction_manager": self.faction_manager,
+                        "day": self.day,
+                        "actions_remaining": self.actions_remaining,
+                        "resources": self.resources,
+                        "ship_parts": self.ship_parts,
+                        "secured_part_nodes": list(self.secured_part_nodes),
+                        "stronghold_bonus": stronghold_bonus,
+                        "tribe_state": self.tribe_state,
+                        "player_units": self.player_units
+                    })
+                    self.context.manager.switch_to(BattleFieldScene(**kwargs))
                 elif owner == "CLAN_YELLOW":
                     if not self.tribe_state.get(node.id, {}).get("dispersed", False):
                         self.selected_unbound_node = node
@@ -310,7 +313,7 @@ class OverworldScene(Scene):
     def handle_event(self, event: pygame.event.Event) -> None:
         pass  # stub — scene not yet active
 
-    def update(self, dt_ms: float) -> None:
+    def tick(self, dt_ms: float) -> None:
         if self.current_defection:
             self.defection_timer -= dt_ms
             if self.defection_timer <= 0:

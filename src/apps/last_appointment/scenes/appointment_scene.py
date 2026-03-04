@@ -23,8 +23,10 @@ STANCE_COLORS = {
 NUMBER_COLOR = (102, 102, 128)       # #666680
 
 class AppointmentScene(Scene):
-    def __init__(self, manager: SceneManager, spec, **kwargs):
-        super().__init__(manager, spec, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
         self.state_tracker = StateTracker()
         self.keyword_registry = KeywordRegistry()
         self.graph = ConversationGraph(self.state_tracker, self.keyword_registry)
@@ -36,8 +38,8 @@ class AppointmentScene(Scene):
         self.npc_response_text = ""
         
         # Initialize UI components
-        self.text_window = TextWindow(0, 0, manager.width, slow_reveal=True, reveal_speed=40.0)
-        self.card_layout = CardLayout(manager.width, manager.height)
+        self.text_window = TextWindow(0, 0, self.spec.screen_width, slow_reveal=True, reveal_speed=40.0)
+        self.card_layout = CardLayout(self.spec.screen_width, self.spec.screen_height)
         
         # Room vignette interpolation state
         self.current_brightness = 0.0
@@ -102,7 +104,7 @@ class AppointmentScene(Scene):
 
     def _build_vignette(self) -> None:
         """Builds a radial gradient surface for the vignette effect."""
-        w, h = self.manager.width, self.manager.height
+        w, h = self.spec.screen_width, self.spec.screen_height
         self.vignette_surface = pygame.Surface((w, h), pygame.SRCALPHA)
         center_x, center_y = w // 2, h // 2
         
@@ -243,7 +245,7 @@ class AppointmentScene(Scene):
         # if the text_window is the PROMPT or the NPC response...
         # Let's say cards fade in once the current text block (which might be the prompt itself if no NPC response) finishes.
 
-    def update(self, dt_ms: float) -> None:
+    def tick(self, dt_ms: float) -> None:
         # Interpolate brightness
         if abs(self.current_brightness - self.target_brightness) > 0.5:
             # Shift 20 units per second
@@ -325,7 +327,7 @@ class AppointmentScene(Scene):
         # Draw separator line below text
         separator_color = (42, 42, 58) # #2A2A3A
         line_y = int(text_bottom_y) + 20
-        pygame.draw.line(surface, separator_color, (self.text_window.x + self.text_window.padding_x, line_y), (self.manager.width - self.text_window.padding_x, line_y), 1)
+        pygame.draw.line(surface, separator_color, (self.text_window.x + self.text_window.padding_x, line_y), (self.spec.screen_width - self.text_window.padding_x, line_y), 1)
         
         # Draw stances (bottom right corner, muted italic style)
         stance = self.state_tracker.get_flag("current_stance", "")
@@ -340,7 +342,7 @@ class AppointmentScene(Scene):
                 stance_sur = stance_font.render(stance_text, True, (80, 80, 95))
                 sw = stance_sur.get_width()
                 sh = stance_sur.get_height()
-                surface.blit(stance_sur, (self.manager.width - sw - 20, self.manager.height - sh - 20))
+                surface.blit(stance_sur, (self.spec.screen_width - sw - 20, self.spec.screen_height - sh - 20))
         
         # Render cards if Prompt phase
         if self.phase == "PROMPT" and self.card_layout.cards:
