@@ -19,9 +19,11 @@ from src.shared.racing.minimap import RaceMinimap
 from src.shared.rendering.slime_renderer import SlimeRenderer
 
 class DungeonPathScene(Scene):
-    def __init__(self, manager, spec: UISpec, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.layout = ArenaLayout(spec)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.layout = ArenaLayout(self.spec)
         self.roster = kwargs.get("roster")
         if not self.roster:
             from src.shared.teams.roster_save import load_roster
@@ -77,7 +79,7 @@ class DungeonPathScene(Scene):
             if event.key == pygame.K_ESCAPE:
                 self._exit_dungeon()
 
-    def update(self, dt: float) -> None:
+    def tick(self, dt: float) -> None:
         dt_ms = int(dt * 1000)
         for comp in self.ui_components:
             comp.update(dt_ms)
@@ -95,7 +97,11 @@ class DungeonPathScene(Scene):
         z_type = zone.zone_type
         if z_type == DungeonZoneType.COMBAT or z_type == DungeonZoneType.BOSS:
             # Trigger combat
-            self.manager.switch_to("dungeon_combat", party=self.engine.party.slimes, zone=zone)
+            from src.apps.dungeon_crawler.ui.scene_dungeon_combat import DungeonCombatScene
+            kwargs = self.context.resources.copy()
+            kwargs["party"] = self.engine.party.slimes
+            kwargs["zone"] = zone
+            self.context.manager.overlay(DungeonCombatScene(**kwargs))
         elif z_type == DungeonZoneType.TREASURE:
             # Trigger loot popup or overlay
             pass
@@ -175,7 +181,8 @@ class DungeonPathScene(Scene):
             self.renderer.render(surface, dummy)
 
     def _exit_dungeon(self):
-        self.manager.switch_to("garden")
+        from src.apps.slime_breeder.ui.scene_garden import GardenScene
+        self.context.manager.switch_to(GardenScene(**self.context.resources))
 
     def on_exit(self):
         pass
