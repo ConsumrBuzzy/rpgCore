@@ -6,6 +6,7 @@ Entity-based rendering pattern.
 from typing import Any, List, Dict
 from math import cos, sin
 import os
+import pygame
 
 from .render_adapter import RenderAdapter
 
