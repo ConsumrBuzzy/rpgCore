@@ -47,13 +47,13 @@ class UIComponent(ABC):
         """
         pass
 
+    @abstractmethod
     def handle_event(self, event: pygame.event.Event) -> Optional['UIEvent']:
         """
         Returns UIEvent if something happened
         Returns None if event not consumed
-        Default implementation returns None
         """
-        return None  # default: not consumed
+        pass
 
     def update(self, dt: float) -> None:
         """

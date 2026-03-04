@@ -20,11 +20,9 @@ class PyGameRenderer(RenderAdapter):
         if os.environ.get("PYTEST_CURRENT_TEST"):
             os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    def initialize(self) -> bool:
-        import pygame
-        pygame.init()
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption(self.title)
+    def initialize(self, surface: pygame.Surface = None) -> bool:
+        if surface is not None:
+            self.screen = surface
         return True
 
     def shutdown(self) -> None:

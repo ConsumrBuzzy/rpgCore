@@ -13,11 +13,17 @@ root_dir = Path(__file__).parent.absolute()
 if str(root_dir) not in sys.path:
     sys.path.insert(0, str(root_dir))
     
-from src.launcher.manifest import DemoManifest
-from src.launcher.registry import DemoRegistry
-from src.launcher.cli import CLILauncher
-
 def main():
+    import pygame
+    from src.launcher.manifest import DemoManifest
+    from src.launcher.registry import DemoRegistry
+    from src.launcher.cli import CLILauncher
+    
+    pygame.init()
+    surface = pygame.display.set_mode((1280, 720))
+    pygame.display.set_caption("rpgCore")
+    clock = pygame.time.Clock()
+
     manifest_path = root_dir / "demos.json"
     manifests = DemoManifest.load(manifest_path)
     registry = DemoRegistry(manifests)
@@ -28,20 +34,17 @@ def main():
     if not args:
         # Launch Main Menu instead of directly booting garden
         from src.apps.slime_breeder.run_slime_breeder import create_app
+        from src.shared.engine.scene_manager import SceneManager
         from src.shared.ui.scenes.scene_main_menu import MainMenuScene
         
-        manager, entity_registry, game_session, dispatch_system, roster, roster_sync = create_app()
-        manager.set_shared_state(
-            entity_registry=entity_registry,
-            game_session=game_session,
-            dispatch_system=dispatch_system,
-            roster=roster,
-            roster_sync=roster_sync,
-            registry=registry
-        )
+        resources = create_app()
+        resources["registry"] = registry
         
-        manager.register("main_menu", MainMenuScene)
-        manager.run("main_menu")
+        manager = SceneManager(surface, clock)
+        manager.resources = resources
+        
+        manager.switch_to(MainMenuScene())
+        manager.run()
         return
 
     command = args[0]

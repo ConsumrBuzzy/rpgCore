@@ -34,7 +34,7 @@ class LegacySceneAdapter:
         
         original_quit = pygame.quit
         original_display_quit = pygame.display.quit
-        original_set_mode = pygame.display.set_mode
+        original_set_mode = getattr(pygame.display, 'set_mode')
         
         def mock_quit():
             pass
@@ -44,7 +44,7 @@ class LegacySceneAdapter:
             
         pygame.quit = mock_quit
         pygame.display.quit = mock_quit
-        pygame.display.set_mode = mock_set_mode
+        setattr(pygame.display, 'set_mode', mock_set_mode)
             
         try:
             self.entry_func()
@@ -55,7 +55,7 @@ class LegacySceneAdapter:
         finally:
             pygame.quit = original_quit
             pygame.display.quit = original_display_quit
-            pygame.display.set_mode = original_set_mode
+            setattr(pygame.display, 'set_mode', original_set_mode)
             
             outer_surface.fill((0, 0, 0))
             pygame.display.flip()

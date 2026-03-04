@@ -402,7 +402,8 @@ TICK_RATE_MS = 800
 class AutoBattleScene:
     def __init__(self, region_name: str = "Unknown Region", difficulty: str = "NORMAL"):
         pygame.init()
-        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        # TODO: Migrate to Scene subclass — tracked Phase N
+        self.screen = pygame.display.get_surface()
         pygame.display.set_caption("rpgCore — Auto-Battle")
         self.region_name = region_name
         self.difficulty = difficulty

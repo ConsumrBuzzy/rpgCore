@@ -26,7 +26,8 @@ class AsteroidsGame:
         self.scale = 4
         
         pygame.init()
-        self.screen = pygame.display.set_mode((self.width * self.scale, self.height * self.scale))
+        # TODO: Migrate to Scene subclass — tracked Phase N
+        self.screen = pygame.display.get_surface()
         pygame.display.set_caption(f"rpgCore - Asteroids ({mode})")
         self.canvas = pygame.Surface((self.width, self.height))
         self.clock = pygame.time.Clock()

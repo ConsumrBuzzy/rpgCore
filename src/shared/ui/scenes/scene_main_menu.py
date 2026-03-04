@@ -32,9 +32,11 @@ class WanderSlime:
     genome: SlimeGenome
 
 class MainMenuScene(Scene):
-    def __init__(self, manager, spec: UISpec, registry=None, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.registry = registry
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.registry = None
         
         # Slime colors using theme culture fallback or arbitrary defaults
         culture_colors = {
@@ -126,6 +128,10 @@ class MainMenuScene(Scene):
         self.hovered_btn_idx = -1
         self._setup_buttons()
 
+    def on_enter(self, context) -> None:
+        super().on_enter(context)
+        self.registry = context.resources.get("registry")
+
     def _setup_buttons(self):
         self.buttons = []
         # Fallback titles if registry not provided
@@ -173,8 +179,8 @@ class MainMenuScene(Scene):
 
     def _launch_target(self, target: str):
         if target == "quit":
-            pygame.quit()
-            sys.exit(0)
+            self.request_quit()
+            return
             
         if self.registry:
             # First try exact match
@@ -189,7 +195,8 @@ class MainMenuScene(Scene):
             if demo:
                 # For proper scenes like Slime Garden context:
                 if demo.id == "slime_breeder":
-                    self.manager.switch_to("garden")
+                    from src.apps.slime_breeder.ui.scene_garden import GardenScene
+                    self.context.manager.switch_to(GardenScene())
                 else:
                     # Legacy fallback
                     try:

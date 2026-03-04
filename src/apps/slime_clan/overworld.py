@@ -56,7 +56,8 @@ class MapNode:
 class Overworld:
     def __init__(self) -> None:
         pygame.init()
-        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        # TODO: Migrate to Scene subclass — tracked Phase N
+        self.screen = pygame.display.get_surface()
         pygame.display.set_caption(WINDOW_TITLE)
         
         try:

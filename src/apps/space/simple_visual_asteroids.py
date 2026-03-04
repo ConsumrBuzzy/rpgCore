@@ -31,7 +31,8 @@ class SimpleVisualAsteroids:
         scale_factor = 4
         self.screen_width = SOVEREIGN_WIDTH * scale_factor
         self.screen_height = SOVEREIGN_HEIGHT * scale_factor
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        # TODO: Migrate to Scene subclass — tracked Phase N
+        self.screen = pygame.display.get_surface()
         pygame.display.set_caption("DGT Platform - Simple Visual Asteroids")
         
         # Create surface for game rendering (160x144)

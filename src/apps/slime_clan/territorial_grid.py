@@ -522,9 +522,8 @@ class TerritorialGrid:
 
     def __init__(self) -> None:
         pygame.init()
-        self.screen: pygame.Surface = pygame.display.set_mode(
-            (WINDOW_WIDTH, WINDOW_HEIGHT)
-        )
+        # TODO: Migrate to Scene subclass — tracked Phase N
+        self.screen: pygame.Surface = pygame.display.get_surface()
         pygame.display.set_caption(WINDOW_TITLE)
 
         # 10×10 grid — seeded with starting state (Session 003)

@@ -1,50 +1,34 @@
 """
 Scene Manager — Lightweight State Machine for pygame Applications
-
-Provides a Scene base class and SceneManager that runs a single pygame
-event loop, delegating to the active scene's handle_events/update/render.
-
-Extracted from the dgt_engine heartbeat pattern, stripped to essentials.
 """
 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional, TYPE_CHECKING, Dict, Any
+from typing import Optional, TYPE_CHECKING, Dict, Any, List
+from dataclasses import dataclass, field
 
 import pygame
 from loguru import logger
 
 from src.shared.engine.base_system import BaseSystem, SystemStatus, SystemConfig
-from src.shared.engine.system_clock import SystemClock, TimeMode
 
-from src.shared.ui.spec import UISpec, SPEC_720
+@dataclass
+class SceneContext:
+    surface: pygame.Surface
+    manager: 'SceneManager'
+    clock: pygame.time.Clock
+    resources: dict = field(default_factory=dict)
 
 class Scene(BaseSystem, ABC):
     """
-    Abstract base class for all game scenes, driven by UISpec.
+    Abstract base class for all game scenes.
     """
 
-    def __init__(self, manager: SceneManager, spec: UISpec, **kwargs) -> None:
-        # BaseSystem initialization
+    def __init__(self, **kwargs) -> None:
         super().__init__(SystemConfig(name=self.__class__.__name__))
-        
-        self.manager = manager
-        self.spec = spec
-        self._kwargs = kwargs
-        self.next_scene: Optional[str] = None
-        self.next_scene_kwargs: Dict[str, Any] = {}
+        self.context: Optional[SceneContext] = None
         self.quit_requested: bool = False
-        
-        # Optional formalization components - scenes opt in
-        self.context: Optional['SceneContext'] = None
-        self.pipeline: Optional['RenderPipeline'] = None
-        self.router: Optional['InputRouter'] = None
-
-    def request_scene(self, scene_name: str, **kwargs) -> None:
-        """Request a transition to another scene after this frame."""
-        self.next_scene = scene_name
-        self.next_scene_kwargs = kwargs
 
     def request_quit(self) -> None:
         """Request application exit after this frame."""
@@ -54,13 +38,8 @@ class Scene(BaseSystem, ABC):
     # BaseSystem Lifecycle Wrappers
     # ---------------------------------------------------------------------------
     def initialize(self) -> bool:
-        """Formal initialization."""
-        self.on_enter()
+        """Formal initialization - unused in new lifecycle but kept for BaseSystem contract."""
         return True
-
-    def tick(self, delta_time: float) -> None:
-        """Formal update (delta_time in seconds)."""
-        self.update(delta_time)
 
     def shutdown(self) -> None:
         """Formal cleanup."""
@@ -69,16 +48,20 @@ class Scene(BaseSystem, ABC):
     # ---------------------------------------------------------------------------
     # Standard Scene Interface
     # ---------------------------------------------------------------------------
-    def on_enter(self) -> None:
-        """Optional: Called when entering the scene."""
-        pass
+    def on_enter(self, context: SceneContext) -> None:
+        """Called when scene becomes active. Receives context."""
+        self.context = context
 
     def on_exit(self) -> None:
-        """Optional: Called when exiting the scene."""
+        """Called when scene is popped or replaced."""
         pass
 
-    def on_resume(self, **kwargs) -> None:
-        """Optional: Called when resuming the scene after a pop."""
+    def on_pause(self) -> None:
+        """Called when a scene is pushed on top of this one."""
+        pass
+
+    def on_resume(self) -> None:
+        """Called when the scene above is popped, this becomes active again."""
         pass
 
     @abstractmethod
@@ -87,7 +70,7 @@ class Scene(BaseSystem, ABC):
         pass
 
     @abstractmethod
-    def update(self, dt: float) -> None:
+    def tick(self, dt: float) -> None:
         """Update scene state (dt in seconds)."""
         pass
 
@@ -96,158 +79,102 @@ class Scene(BaseSystem, ABC):
         """Render scene to the provided surface."""
         pass
 
-    # ---------------------------------------------------------------------------
-    # Optional Formalization Components - Scenes Opt In
-    # ---------------------------------------------------------------------------
-    
-    def set_context(self, ctx: 'SceneContext') -> None:
-        """Set scene context for ECS interaction"""
-        self.context = ctx
-
-    def use_pipeline(self) -> 'RenderPipeline':
-        """Get or create render pipeline"""
-        if not self.pipeline:
-            from src.shared.engine.render_pipeline import RenderPipeline
-            self.pipeline = RenderPipeline()
-        return self.pipeline
-
-    def use_router(self) -> 'InputRouter':
-        """Get or create input router"""
-        if not self.router:
-            from src.shared.engine.input_router import InputRouter
-            self.router = InputRouter()
-        return self.router
-
-
 class SceneManager:
     """
     Manages scene lifecycle and transitions in a single pygame window.
     """
 
-    def __init__(self, width: int = 1280, height: int = 720, title: str = "rpgCore", fps: int = 60, spec: Optional[UISpec] = None):
-        self.width = width
-        self.height = height
-        self.title = title
-        self.fps = fps
-        self.spec = spec or SPEC_720
-
-        self._scenes: Dict[str, type] = {}
-        self._active_scene: Optional[Scene] = None
-        self._scene_stack: List[Scene] = []
+    def __init__(self, surface: pygame.Surface, clock: pygame.time.Clock):
+        self.surface = surface
+        self.clock = clock
+        self._stack: List[Scene] = []
         self._running = False
+        self.resources: Dict[str, Any] = {}
         
-        # Shared state that gets passed to all scenes
-        self._shared_state: Dict[str, Any] = {}
+        # Keep track of active scene for BaseSystem generic checks
+        self._active_scene: Optional[Scene] = None
+
+    def switch_to(self, scene: Scene) -> None:
+        """Replace current scene entirely."""
+        if self._stack:
+            old_scene = self._stack.pop()
+            logger.info(f"Exiting scene: {old_scene.config.name}")
+            old_scene.on_exit()
+            old_scene.status = SystemStatus.STOPPED
+            
+        logger.info(f"Switching to scene: {scene.config.name}")
+        self._stack.append(scene)
+        self._active_scene = scene
         
-        self.clock = SystemClock(target_fps=fps, mode=TimeMode.REAL_TIME)
+        ctx = SceneContext(self.surface, self, self.clock, self.resources)
+        scene.on_enter(ctx)
+        scene.status = SystemStatus.RUNNING
 
-    def register(self, name: str, scene_class: type) -> None:
-        """Register a scene class by name."""
-        self._scenes[name] = scene_class
+    def overlay(self, scene: Scene) -> None:
+        """Push scene on top without exiting the one below."""
+        if self._stack:
+            old_scene = self._stack[-1]
+            logger.info(f"Pausing scene: {old_scene.config.name}")
+            old_scene.on_pause()
+            old_scene.status = SystemStatus.PAUSED
 
-    def set_shared_state(self, **kwargs) -> None:
-        """Set shared state that gets passed to all scenes."""
-        self._shared_state.update(kwargs)
-
-    def switch_to(self, name: str, **kwargs) -> None:
-        """Switch to a registered scene. Calls lifecycle methods."""
-        if name not in self._scenes:
-            raise ValueError(f"Unknown scene: {name}")
-
-        if self._active_scene:
-            self._active_scene.shutdown()
-            self._active_scene.status = SystemStatus.STOPPED
-
-        # Merge shared state with scene-specific kwargs
-        merged_kwargs = {**self._shared_state, **kwargs}
+        logger.info(f"Overlaying scene: {scene.config.name}")
+        self._stack.append(scene)
+        self._active_scene = scene
         
-        scene_class = self._scenes[name]
-        logger.info(f"Switching to scene: {name}")
-        logger.info(f"Scene class: {scene_class}")
-        logger.info(f"Kwargs: {merged_kwargs}")
-        self._active_scene = scene_class(self, self.spec, **merged_kwargs)
-        
-        if not self._active_scene.initialize():
-            logger.error(f"Failed to initialize scene: {name}")
-            self._running = False
-        else:
-            self._active_scene.status = SystemStatus.RUNNING
+        ctx = SceneContext(self.surface, self, self.clock, self.resources)
+        scene.on_enter(ctx)
+        scene.status = SystemStatus.RUNNING
 
-    def push(self, name: str, **kwargs) -> None:
-        """Pause current scene and push a new one onto the stack."""
-        if name not in self._scenes:
-            raise ValueError(f"Unknown scene: {name}")
-
-        if self._active_scene:
-            logger.info(f"Pausing scene: {self._active_scene.config.name}")
-            self._active_scene.status = SystemStatus.PAUSED
-            self._scene_stack.append(self._active_scene)
-
-        # Merge shared state with scene-specific kwargs
-        merged_kwargs = {**self._shared_state, **kwargs}
-        
-        scene_class = self._scenes[name]
-        logger.info(f"Pushing scene: {name}")
-        self._active_scene = scene_class(self, self.spec, **merged_kwargs)
-        
-        if not self._active_scene.initialize():
-            logger.error(f"Failed to initialize pushed scene: {name}")
-            self._running = False
-        else:
-            self._active_scene.status = SystemStatus.RUNNING
-
-    def pop(self, **kwargs) -> None:
-        """Shutdown current scene and resume the previous one from the stack."""
-        if not self._scene_stack:
-            logger.warning("Attempted to pop from empty scene stack")
+    def back(self) -> None:
+        """Return to previous scene. Replaces .pop()."""
+        if not self._stack:
+            logger.warning("Attempted to call back() with empty stack")
             return
 
-        if self._active_scene:
-            logger.info(f"Popping scene: {self._active_scene.config.name}")
-            self._active_scene.shutdown()
-            self._active_scene.status = SystemStatus.STOPPED
+        old_scene = self._stack.pop()
+        logger.info(f"Exiting scene: {old_scene.config.name}")
+        old_scene.on_exit()
+        old_scene.status = SystemStatus.STOPPED
 
-        self._active_scene = self._scene_stack.pop()
-        logger.info(f"Resuming scene: {self._active_scene.config.name}")
-        self._active_scene.status = SystemStatus.RUNNING
-        self._active_scene.on_resume(**kwargs)
+        if self._stack:
+            self._active_scene = self._stack[-1]
+            logger.info(f"Resuming scene: {self._active_scene.config.name}")
+            self._active_scene.on_resume()
+            self._active_scene.status = SystemStatus.RUNNING
+        else:
+            self._active_scene = None
 
-    def run(self, initial_scene: str, **kwargs) -> None:
+    def run(self, fps: int = 60) -> None:
         """Main loop."""
-        pygame.init()
-        screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption(self.title)
-        
-        raw_clock = pygame.time.Clock()
-
-        self.switch_to(initial_scene, **kwargs)
         self._running = True
 
         while self._running:
-            elapsed_ms = raw_clock.tick(self.fps)
-            self.clock.update(elapsed_ms / 1000.0)
-            dt = self.clock.delta_time
+            elapsed_ms = self.clock.tick(fps)
+            dt = elapsed_ms / 1000.0
 
             events = pygame.event.get()
 
-            if self._active_scene and self._active_scene.is_running():
+            if self._stack:
+                active_scene = self._stack[-1]
+                
                 # Loop through events and pass individually
                 for event in events:
                     if event.type == pygame.QUIT:
                         self._running = False
-                    self._active_scene.handle_event(event)
+                    active_scene.handle_event(event)
                 
-                self._active_scene.tick(dt)
-                self._active_scene.render(screen)
-                pygame.display.flip()
+                if active_scene.status == SystemStatus.RUNNING:
+                    active_scene.tick(dt)
+                    active_scene.render(self.surface)
+                    pygame.display.flip()
 
-                if self._active_scene.quit_requested:
+                if getattr(active_scene, 'quit_requested', False):
                     self._running = False
-                elif self._active_scene.next_scene:
-                    next_name = self._active_scene.next_scene
-                    next_kwargs = self._active_scene.next_scene_kwargs
-                    self.switch_to(next_name, **next_kwargs)
+            else:
+                self._running = False
 
-        if self._active_scene:
-            self._active_scene.shutdown()
+        if self._stack:
+            for scene in reversed(self._stack):
+                scene.on_exit()
         pygame.quit()

@@ -6,15 +6,11 @@ from src.shared.ui.spec import UISpec
 from .mock_data import generate_mock_roster
 from .screenshot_tool import save_screenshot
 
-def run_review(scene_name: str):
+def run_review(scene_name: str, screen: pygame.Surface):
     """Launches a scene for review, takes a screenshot, and exits."""
-    pygame.init()
-    
     # Use standard UISpec
     from src.shared.ui.spec import SPEC_720
     spec = SPEC_720
-    screen = pygame.display.set_mode((spec.screen_width, spec.screen_height))
-    pygame.display.set_caption(f"UI Review: {scene_name}")
     
     roster = generate_mock_roster()
     

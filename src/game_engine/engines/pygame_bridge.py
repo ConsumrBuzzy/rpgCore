@@ -36,11 +36,10 @@ class PyGameBridge:
             "thrust": (255, 100, 0)       # Orange
         }
 
-    def connect(self) -> bool:
+    def connect(self, surface: pygame.Surface = None) -> bool:
         """Initialize PyGame window."""
-        pygame.init()
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption(self.caption)
+        if surface is not None:
+            self.screen = surface
         self.font = pygame.font.SysFont("monospace", 14)
         return True
 
