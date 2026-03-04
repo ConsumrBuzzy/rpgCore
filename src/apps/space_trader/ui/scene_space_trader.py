@@ -14,12 +14,14 @@ from src.shared.ui.spec import UISpec
 class SpaceTraderScene(Scene):
     """Main UI scene orchestrating the visual Space Trader loop."""
     
-    def __init__(self, manager, spec: UISpec, session: SpaceTraderSession = None, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.session = session or kwargs.get('session')
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.session = kwargs.get('session')
         
-        self.width = self.manager.width
-        self.height = self.manager.height
+        self.width = self.spec.screen_width
+        self.height = self.spec.screen_height
         
         self.hud = SpaceTraderHUD(session, self.width)
         
@@ -133,7 +135,7 @@ class SpaceTraderScene(Scene):
         for btn in self.buttons:
             btn.handle_event(event)
 
-    def update(self, dt_ms: float) -> None:
+    def tick(self, dt_ms: float) -> None:
         pass
 
     def render(self, surface: pygame.Surface) -> None:

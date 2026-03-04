@@ -6,10 +6,12 @@ from src.shared.ui.button import Button
 from src.shared.ui.spec import UISpec
 from src.apps.dungeon_crawler.ui.dungeon_session import DungeonSession
 
-class InventoryOverlay(Scene):
-    def __init__(self, manager, spec: UISpec, session: DungeonSession, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.session = session
+class InventoryScene(Scene):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.session = kwargs.get("session")
         
         self.bg_color = (10, 10, 15, 200) # Slightly transparent dark
         self.panel_bg = (30, 30, 40)
@@ -32,7 +34,7 @@ class InventoryOverlay(Scene):
             if hasattr(button, 'handle_event') and button.handle_event(event):
                 return
 
-    def update(self, dt: float) -> None:
+    def tick(self, dt: float) -> None:
         """Update scene state."""
         for button in self.buttons:
             if hasattr(button, 'update'):
@@ -106,4 +108,7 @@ class InventoryOverlay(Scene):
 
     def _handle_close(self):
         # Return to previous scene
-        self.request_scene("dungeon", session=self.session) # Simple fallback, could be smarter if tracked history
+        from src.apps.dungeon_crawler.ui.scene_the_room import TheRoomScene
+        kwargs = self.context.resources.copy()
+        kwargs["session"] = self.session
+        self.context.manager.switch_to(TheRoomScene(**kwargs))
