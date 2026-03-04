@@ -22,13 +22,29 @@ class LegacySceneAdapter:
         self.entry_func = entry_func
 
     def launch(self) -> None:
-        size = (1280, 720)
-        caption = ("rpgCore", "")
+        outer_surface = pygame.display.get_surface()
+        if not outer_surface:
+            try:
+                self.entry_func()
+            except SystemExit:
+                pass
+            return
+            
+        caption = pygame.display.get_caption()
         
-        surface = pygame.display.get_surface()
-        if surface:
-            size = surface.get_size()
-            caption = pygame.display.get_caption()
+        original_quit = pygame.quit
+        original_display_quit = pygame.display.quit
+        original_set_mode = pygame.display.set_mode
+        
+        def mock_quit():
+            pass
+            
+        def mock_set_mode(*args, **kwargs):
+            return outer_surface
+            
+        pygame.quit = mock_quit
+        pygame.display.quit = mock_quit
+        pygame.display.set_mode = mock_set_mode
             
         try:
             self.entry_func()
@@ -36,11 +52,12 @@ class LegacySceneAdapter:
             pass
         except Exception as e:
             print(f"Legacy app crashed: {e}")
+        finally:
+            pygame.quit = original_quit
+            pygame.display.quit = original_display_quit
+            pygame.display.set_mode = original_set_mode
             
-        # Most standalone apps call pygame.quit() on exit.
-        if not pygame.get_init():
-            pygame.init()
-            
-        pygame.display.set_mode(size)
-        if caption[0]:
-            pygame.display.set_caption(caption[0])
+            outer_surface.fill((0, 0, 0))
+            pygame.display.flip()
+            if caption[0]:
+                pygame.display.set_caption(caption[0])
