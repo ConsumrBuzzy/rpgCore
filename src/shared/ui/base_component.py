@@ -44,7 +44,7 @@ class UIComponent(ABC):
         """
         return None
     
-    def update(self, dt: float) -> None:
+    def tick(self, dt: float) -> None:
         """
         Animation, timers, state transitions
         Default implementation does nothing
