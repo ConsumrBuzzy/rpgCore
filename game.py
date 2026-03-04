@@ -26,12 +26,22 @@ def main():
     args = sys.argv[1:]
     
     if not args:
-        # Launch Garden (Slime Breeder) directly as home base
-        demo = registry.get("slime_breeder")
-        if demo:
-            launcher.launch(demo)
-        else:
-            print("Error: Could not find 'slime_breeder' demo.")
+        # Launch Main Menu instead of directly booting garden
+        from src.apps.slime_breeder.run_slime_breeder import create_app
+        from src.shared.ui.scenes.scene_main_menu import MainMenuScene
+        
+        manager, entity_registry, game_session, dispatch_system, roster, roster_sync = create_app()
+        manager.set_shared_state(
+            entity_registry=entity_registry,
+            game_session=game_session,
+            dispatch_system=dispatch_system,
+            roster=roster,
+            roster_sync=roster_sync,
+            registry=registry
+        )
+        
+        manager.register("main_menu", MainMenuScene)
+        manager.run("main_menu")
         return
 
     command = args[0]
