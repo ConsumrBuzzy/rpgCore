@@ -28,9 +28,11 @@ class BreedingState(Enum):
     COMPLETE = auto()
 
 class BreedingScene(Scene):
-    def __init__(self, manager, spec: UISpec, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.layout = SelectionLayout(spec)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.layout = SelectionLayout(self.spec)
         
         # Use shared roster from kwargs or create SceneContext
         self.roster = kwargs.get('roster')
@@ -203,8 +205,12 @@ class BreedingScene(Scene):
         if self.offspring_slime:
             ProfileCard(self.offspring_slime, (center_rect.centerx - self.spec.card_width//2, center_rect.y + 60), self.spec, theme=DEFAULT_THEME).add_to(self.ui_components)
             
+        def go_to_garden():
+            from src.apps.slime_breeder.ui.scene_garden import GardenScene
+            self.context.manager.switch_to(GardenScene(**self.context.resources))
+            
         Button("RETURN TO GARDEN", pygame.Rect(center_rect.centerx - 100, center_rect.bottom - 60, 200, 44),
-               lambda: self.manager.switch_to("garden"), self.spec, variant="primary", theme=DEFAULT_THEME).add_to(self.ui_components)
+               go_to_garden, self.spec, variant="primary", theme=DEFAULT_THEME).add_to(self.ui_components)
 
     def get_status_text(self) -> str:
         if self.state == BreedingState.SELECT_A:
@@ -223,7 +229,8 @@ class BreedingScene(Scene):
 
     def _handle_back(self):
         if self.state in [BreedingState.SELECT_A, BreedingState.COMPLETE]:
-            self.manager.switch_to("garden")
+            from src.apps.slime_breeder.ui.scene_garden import GardenScene
+            self.context.manager.switch_to(GardenScene(**self.context.resources))
         elif self.state == BreedingState.SELECT_B:
             self.state = BreedingState.SELECT_A
             self.parent_a = None
@@ -309,7 +316,7 @@ class BreedingScene(Scene):
         self._complete_timer = 3.0
         self._setup_ui()
 
-    def update(self, dt: float):
+    def tick(self, dt: float):
         dt_ms = int(dt * 1000)
         for comp in self.ui_components:
             comp.update(dt_ms)
@@ -325,7 +332,8 @@ class BreedingScene(Scene):
             if self._complete_timer > 0:
                 self._complete_timer -= dt
                 if self._complete_timer <= 0:
-                    self.manager.switch_to("garden")
+                    from src.apps.slime_breeder.ui.scene_garden import GardenScene
+                    self.context.manager.switch_to(GardenScene(**self.context.resources))
 
     def render(self, surface: pygame.Surface):
         surface.fill(self.spec.color_bg)

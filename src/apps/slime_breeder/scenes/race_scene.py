@@ -23,9 +23,11 @@ class RaceScene(Scene):
     """
     Focused racing screen using ArenaLayout with persistent session state.
     """
-    def __init__(self, manager, spec: UISpec, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.layout = ArenaLayout(spec)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.layout = ArenaLayout(self.spec)
         
         # Session management
         self.session = kwargs.get("session")
@@ -154,12 +156,13 @@ class RaceScene(Scene):
         # Handle race-specific events
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                self.request_scene("garden")
+                from src.apps.slime_breeder.ui.scene_garden import GardenScene
+                self.context.manager.switch_to(GardenScene(**self.context.resources))
             elif event.key == pygame.K_SPACE and self.start_countdown <= 0:
                 if self.engine and not self.engine.is_finished():
                     self.engine.tick(0.1)  # Fast forward slightly
 
-    def update(self, dt: float) -> None:
+    def tick(self, dt: float) -> None:
         dt_ms = int(dt * 1000)
         for comp in self.ui_components:
             comp.update(dt_ms)
@@ -184,7 +187,10 @@ class RaceScene(Scene):
         if self._show_results:
             self._results_timer -= dt
             if self._results_timer <= 0:
-                self.manager.switch_to("garden", race_result=self._race_results[0] if self._race_results else None)
+                kwargs = self.context.resources.copy()
+                kwargs["race_result"] = self._race_results[0] if self._race_results else None
+                from src.apps.slime_breeder.ui.scene_garden import GardenScene
+                self.context.manager.switch_to(GardenScene(**kwargs))
                 return
             
         if self.shake_timer > 0:
@@ -430,7 +436,8 @@ class RaceScene(Scene):
             pygame.draw.line(surface, (240, 240, 255, 150), (line["x"], ly), (line["x"] + line["len"], ly), 2)
 
     def _exit_race(self):
-        self.manager.switch_to("garden")
+        from src.apps.slime_breeder.ui.scene_garden import GardenScene
+        self.context.manager.switch_to(GardenScene(**self.context.resources))
 
     def _on_race_complete(self):
         self._show_results = True

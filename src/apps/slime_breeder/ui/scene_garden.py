@@ -24,23 +24,9 @@ from src.shared.ui.spec import UISpec
 NAMES = ["Mochi", "Pip", "Glimmer", "Bloop", "Sage", "Dew", "Ember", "Fizz", "Lumen", "Nook"]
 
 class GardenScene(GardenSceneBase):
-    def __init__(self, manager, spec: UISpec, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.layout = HubLayout(spec)
-        
-        # Set up SceneContext for ECS interaction
-        context = SceneContext(
-            entity_registry=kwargs.get('entity_registry'),
-            game_session=kwargs.get('game_session'),
-            dispatch_system=kwargs.get('dispatch_system'),
-            roster=kwargs.get('roster'),  # Use shared roster
-            roster_sync=kwargs.get('roster_sync')  # Add sync service
-        )
-        self.set_context(context)
-        
-        # Set up formalized components
-        self.use_pipeline()
-        self.use_router()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._kwargs = kwargs
         
         # Legacy compatibility - keep direct references for now
         self.entity_registry = kwargs.get('entity_registry')
@@ -424,7 +410,8 @@ class GardenScene(GardenSceneBase):
             self.context.save_roster()
 
     def _go_to_breeding(self):
-        self.request_scene("breeding")
+        from src.apps.slime_breeder.scenes.breeding_scene import BreedingScene
+        self.context.manager.switch_to(BreedingScene(**self.context.resources))
 
     def _release_selected(self):
         if len(self.selected_entities) == 0:
@@ -455,10 +442,12 @@ class GardenScene(GardenSceneBase):
         self.on_selection_changed()
 
     def _go_to_teams(self):
-        self.request_scene("teams")
+        from src.apps.slime_breeder.scenes.team_scene import TeamScene
+        self.context.manager.switch_to(TeamScene(**self.context.resources))
 
     def _go_to_racing(self):
-        self.request_scene("racing")
+        from src.apps.slime_breeder.scenes.race_scene import RaceScene
+        self.context.manager.switch_to(RaceScene(**self.context.resources))
 
     def _go_to_dungeon(self):
         team = self.roster.get_dungeon_team()
@@ -469,13 +458,12 @@ class GardenScene(GardenSceneBase):
             )
             return
         
-        from src.apps.dungeon_crawler.ui.dungeon_session import DungeonSession
+        from src.apps.slime_breeder.scenes.scene_dungeon_path import DungeonPathScene
         session = DungeonSession(team=team.members)
-        self.manager.switch_to(
-            "dungeon_path",
-            session=session,
-            depth=1
-        )
+        kwargs = self.context.resources.copy()
+        kwargs["session"] = session
+        kwargs["depth"] = 1
+        self.context.manager.switch_to(DungeonPathScene(**kwargs))
 
     # Carousel handler methods
     def _open_breed_carousel(self):
@@ -545,22 +533,29 @@ class GardenScene(GardenSceneBase):
             # BREED or SUMO - check which button was pressed
             if hasattr(self, '_last_carousel_source'):
                 if self._last_carousel_source == 'breed':
-                    # Pass selected pair to breeding scene via SceneContext
-                    self.request_scene("breeding", selected_pair=result.selected)
+                    from src.apps.slime_breeder.scenes.breeding_scene import BreedingScene
+                    kwargs = self.context.resources.copy()
+                    kwargs["selected_pair"] = result.selected
+                    self.context.manager.switch_to(BreedingScene(**kwargs))
                 elif self._last_carousel_source == 'sumo':
-                    # Pass selected pair to sumo scene
-                    self.request_scene("sumo", selected_pair=result.selected)
+                    from src.apps.slime_breeder.scenes.scene_sumo import SumoScene
+                    kwargs = self.context.resources.copy()
+                    kwargs["selected_pair"] = result.selected
+                    self.context.manager.switch_to(SumoScene(**kwargs))
         
         elif result.mode == CarouselMode.SINGLE.value and len(result.selected) == 1:
-            # RACE or DUNGEON - check which button was pressed
             if hasattr(self, '_last_carousel_source'):
                 selected_slime = result.selected[0]
                 if self._last_carousel_source == 'race':
-                    # Pass selected slime to race scene
-                    self.request_scene("racing", selected_slime=selected_slime)
+                    from src.apps.slime_breeder.scenes.race_scene import RaceScene
+                    kwargs = self.context.resources.copy()
+                    kwargs["selected_slime"] = selected_slime
+                    self.context.manager.switch_to(RaceScene(**kwargs))
                 elif self._last_carousel_source == 'dungeon':
-                    # Pass selected slime to dungeon path scene
-                    self.request_scene("dungeon_path", selected_slime=selected_slime)
+                    from src.apps.slime_breeder.scenes.scene_dungeon_path import DungeonPathScene
+                    kwargs = self.context.resources.copy()
+                    kwargs["selected_slime"] = selected_slime
+                    self.context.manager.switch_to(DungeonPathScene(**kwargs))
         
         # BROWSE mode - no action needed, just close carousel
 
@@ -1226,12 +1221,14 @@ class GardenScene(GardenSceneBase):
             
             # Check if clicking on dungeon status area
             if hasattr(self, 'dungeon_status_area') and self.dungeon_status_area.collidepoint(mouse_pos):
-                self.request_scene("teams")
+                from src.apps.slime_breeder.scenes.team_scene import TeamScene
+                self.context.manager.switch_to(TeamScene(**self.context.resources))
                 return
             
             # Check if clicking on racing status area  
             if hasattr(self, 'racing_status_area') and self.racing_status_area.collidepoint(mouse_pos):
-                self.request_scene("teams")
+                from src.apps.slime_breeder.scenes.team_scene import TeamScene
+                self.context.manager.switch_to(TeamScene(**self.context.resources))
                 return
             
             # Handle slime selection

@@ -12,9 +12,11 @@ class GardenSceneBase(Scene):
     Standard template for entity creation and ambient interaction.
     Follows HubLayout: Top Bar, Main (Garden), Side (Details), Bottom (Status).
     """
-    def __init__(self, manager, spec: UISpec, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.layout = HubLayout(spec)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.layout = HubLayout(self.spec)
         
         # Backward compatibility aliases/convenience
         self.garden_rect = self.layout.main_area
@@ -24,7 +26,8 @@ class GardenSceneBase(Scene):
         self.ui_components: List[UIComponent] = []
         self.selected_entities: List[Any] = []
 
-    def on_enter(self) -> None:
+    def on_enter(self, context) -> None:
+        super().on_enter(context)
         self._base_setup_ui()
         self.on_garden_enter()
 
@@ -78,7 +81,7 @@ class GardenSceneBase(Scene):
         """Hook for subclasses when selection updates."""
         pass
 
-    def update(self, dt: float) -> None:
+    def tick(self, dt: float) -> None:
         for comp in self.ui_components:
             comp.update(int(dt * 1000))
         self.update_garden(dt)

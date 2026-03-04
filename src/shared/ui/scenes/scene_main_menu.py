@@ -196,7 +196,7 @@ class MainMenuScene(Scene):
                 # For proper scenes like Slime Garden context:
                 if demo.id == "slime_breeder":
                     from src.apps.slime_breeder.ui.scene_garden import GardenScene
-                    self.context.manager.switch_to(GardenScene())
+                    self.context.manager.switch_to(GardenScene(**self.context.resources))
                 else:
                     # Legacy fallback
                     try:

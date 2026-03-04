@@ -17,9 +17,11 @@ class TeamScene(Scene):
     """
     Dedicated team management screen using SelectionLayout.
     """
-    def __init__(self, manager, spec: UISpec, **kwargs):
-        super().__init__(manager, spec, **kwargs)
-        self.layout = SelectionLayout(spec)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        from src.shared.ui.spec import SPEC_720
+        self.spec = SPEC_720
+        self.layout = SelectionLayout(self.spec)
         
         # Use shared roster from kwargs or create SceneContext
         self.roster = kwargs.get('roster')
@@ -91,7 +93,11 @@ class TeamScene(Scene):
         self.ui_components.append(self.action_panel)
         
         # Back button
-        back_btn = Button("← Back", self.layout.action_bar, lambda: self.request_scene("garden"), self.spec, variant="ghost", theme=DEFAULT_THEME)
+        def go_to_garden():
+            from src.apps.slime_breeder.ui.scene_garden import GardenScene
+            self.context.manager.switch_to(GardenScene(**self.context.resources))
+            
+        back_btn = Button("← Back", self.layout.action_bar, go_to_garden, self.spec, variant="ghost", theme=DEFAULT_THEME)
         self.ui_components.append(back_btn)
         
         # Context-aware Enter button
@@ -264,21 +270,26 @@ class TeamScene(Scene):
         Label("CONQUEST MODE", (placeholder_rect.centerx, placeholder_rect.centery), self.spec, centered=True, size="lg", theme=DEFAULT_THEME).render(surface)
 
     def _back_to_garden(self):
-        self.request_scene("garden")
+        from src.apps.slime_breeder.ui.scene_garden import GardenScene
+        self.context.manager.switch_to(GardenScene(**self.context.resources))
 
     def _enter_dungeon(self):
         logger.info("⚔️ Launching Dungeon Crawler...")
         from src.apps.dungeon_crawler.ui.dungeon_session import DungeonSession
+        from src.apps.dungeon_crawler.ui.scene_dungeon_room import DungeonRoomScene
         session = DungeonSession()
         logger.info(f"Created dungeon session: {session}")
         logger.info(f"Session floor before start_run: {session.floor}")
         session.start_run("fighter")
         logger.info(f"Session floor after start_run: {session.floor}")
-        self.request_scene("dungeon_room", session=session)
+        kwargs = self.context.resources.copy()
+        kwargs["session"] = session
+        self.context.manager.switch_to(DungeonRoomScene(**kwargs))
     
     def _enter_racing(self):
         logger.info("🏁 Launching Racing...")
-        self.request_scene("racing")
+        from src.apps.slime_breeder.scenes.race_scene import RaceScene
+        self.context.manager.switch_to(RaceScene(**self.context.resources))
 
     def _assign_to_dungeon(self, slime: RosterSlime):
         if self.dungeon_team.assign(slime):
@@ -395,7 +406,7 @@ class TeamScene(Scene):
             if hasattr(comp, "handle_event") and comp.handle_event(event):
                 break
 
-    def update(self, dt: float) -> None:
+    def tick(self, dt: float) -> None:
         """Update scene state"""
         for comp in self.ui_components:
             comp.update(int(dt * 1000))
